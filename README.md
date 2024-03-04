@@ -4,7 +4,7 @@ This is the root repository for the MOJ data catalogue.
 
 ## Component repositories
 
-- [find-moj-data](https://github.com/ministryofjustice/find-moj-data/) - a read only view of the catalogue with GOV.UK styles
+- [find-moj-data](https://github.com/ministryofjustice/find-moj-data/) - a view of the catalogue with GOV.UK styles
 - [data-catalogue-metadata](https://github.com/ministryofjustice/data-catalogue-metadata) (internal) contains JSON files used to populate the catalogue in development
 
 ## Environments
