@@ -1,4 +1,4 @@
-name: deploy-dev
+name: Deploy staged
 
 on:
   push:

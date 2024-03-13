@@ -47,7 +47,7 @@ lite_sink.yaml:
 ```yaml
 pipeline_name: datahub_source_1
 datahub_api:
-  server: "https://data-platform-datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk/api/gms"
+  server: "https://datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk/api/gms"
   token: "xxxxx"
 source:
   type: datahub
