@@ -1,0 +1,165 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        description: 'which environment to deploy to'
+        required: true
+        type: string
+      datahub_helm_version:
+        description: 'version of the datahub helm chart to use for deploy'
+        required: true
+        type: string
+      datahub_prereqs_helm_version:
+        description: 'version of the datahub prerequisites helm chart to use for deploy'
+        required: true
+        type: string
+    secrets:
+      kube_namespace:
+        description: 'the kubernetes namespace to deploy to'
+        required: true
+      kube_cert:
+        description: 'cert used to verify identity to cluster'
+        required: true
+      kube_cluster:
+        description: 'address of the cluster to connect to'
+        required: true
+      kube_token:
+        description: 'used to authenticate to the cluster'
+        required: true
+      postgres_host: 
+        description: 'address of the metadata database, including port'
+        required: true
+      postgres_client_host:
+        description: 'address of the metadata database, without port'
+        required: true
+      postgres_url:
+        description: 'URI including the scheme designator (prefix) and database name'
+        required: true
+      opensearch_proxy_host:  
+        description: 'domain address to reach opensearch'
+        required: true
+
+concurrency: 
+  group: ${{ inputs.env }}
+
+jobs:
+  deploy:
+    name: Deploy Helm Chart into Cloud Platform
+    environment: ${{ inputs.env }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create cert certificate-authority
+        id: create-cert-authority
+        shell: bash
+        run: echo "${{ secrets.kube_cert }}" > ca.crt
+
+      - name: Authenticate to the cluster
+        shell: bash
+        id: authenticate
+        env:
+          KUBE_CLUSTER: ${{ secrets.kube_cluster }}
+        run: |
+          kubectl config set-cluster "${KUBE_CLUSTER}" --certificate-authority=ca.crt --server="https://${KUBE_CLUSTER}"
+          kubectl config set-credentials deploy-user --token="${{ secrets.kube_token }}"
+          kubectl config set-context "${KUBE_CLUSTER}" --cluster="${KUBE_CLUSTER}" --user=deploy-user --namespace="${{ secrets.kube_namespace }}"
+          kubectl config use-context "${KUBE_CLUSTER}"
+
+      - name: Create users-secret if it doesn't exist
+        shell: bash
+        id: create-users-secret-if-not-exists
+        env: 
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          RELEASE_NAME: datahub
+        run: |
+          NS_SECRETS=$(kubectl get secrets -n ${KUBE_NAMESPACE} -o=jsonpath='{range .items..metadata}{.name}{"\n"}{end}')
+          
+          USERS_SECRET_NAME=$(echo ${NS_SECRETS} | egrep "${RELEASE_NAME}-users-secret" || exit_code=$?
+          if (( exit_code > 1 )) ; then
+              exit $exit_code
+          fi)
+
+          if [[ -z ${USERS_SECRET_NAME} ]]; then
+            echo "users-secret doesn't exist. Creating..."
+
+            USER_PASS=$(openssl rand -base64 12)
+            
+            cat >/tmp/user.props <<EOL
+            // new user.props
+            datahub:${USER_PASS}
+          EOL
+            
+            kubectl create secret generic "${RELEASE_NAME}-users-secret" --from-file=/tmp/user.props -n ${KUBE_NAMESPACE} 
+          fi
+
+      - name: add helm repo
+        shell: bash
+        id: add-helm-repo
+        continue-on-error: true
+        run: |
+          helm repo add datahub https://helm.datahubproject.io/
+
+      - name: update helm repos
+        shell: bash
+        id: update-helm-repo
+        continue-on-error: true
+        run: |
+          helm repo update datahub
+
+      - name: install datahub pre-requisites charts
+        shell: bash
+        id: upgrade-helm-prereqs
+        env:
+          CHART_VERSION: ${{ inputs.datahub_prereqs_helm_version }}
+        run: |
+          helm upgrade \
+          --install prerequisites datahub/datahub-prerequisites \
+          --version ${CHART_VERSION} \
+          --atomic --timeout 5m0s \
+          --values helm_deploy/values_prerequisites-base.yaml \
+          --namespace ${{ secrets.kube_namespace }}
+
+      - name: set host names
+        env: 
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          BASE_HOST: apps.live.cloud-platform.service.justice.gov.uk
+          RELEASE_NAME: datahub
+        run: |-
+          echo "BASE_HOST=${BASE_HOST}" >> $GITHUB_ENV 
+          echo "APP_SHORT_HOST=${KUBE_NAMESPACE/data-platform-/}.${BASE_HOST}" >> $GITHUB_ENV
+          echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
+          
+      - name: install datahub helm charts
+        env:
+          POSTGRES_HOST: ${{ secrets.postgres_host }}
+          POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
+          POSTGRES_URL: ${{ secrets.postgres_url }}
+          OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
+          APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
+          RELEASE_NAME: datahub
+          CHART_VERSION: ${{ inputs.datahub_helm_version }}
+        # if many env-specific variables need setting, add --values files after 'base'
+        # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \` 
+        run: |
+          helm upgrade \
+          --install ${RELEASE_NAME} datahub/datahub \
+          --version ${CHART_VERSION} \
+          --atomic --timeout 10m0s \
+          --values helm_deploy/values-base.yaml \
+          --namespace ${{ secrets.kube_namespace }} \
+          --set "datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }}" \
+          --set "datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }}" \
+          --set "datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST}" \
+          --set "datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST}" \
+          --set "datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID}" \
+          --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
+          --set global.sql.datasource.host=${POSTGRES_HOST} \
+          --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
+          --set global.sql.datasource.url=${POSTGRES_URL}
