@@ -11,10 +11,10 @@ on:
       - 'main'
 
 jobs:
-  deploy-dev:
+  deploy-test:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
-      env: dev
+      env: test
       datahub_helm_version: "0.3.30"
       datahub_prereqs_helm_version: "0.1.8"
     secrets:
@@ -29,7 +29,7 @@ jobs:
 
   deploy-preprod:
     uses: ./.github/workflows/deploy-workflow.yml
-    needs: [deploy-dev]
+    needs: [deploy-test]
     with:
       env: preprod
       datahub_helm_version: "0.3.30"

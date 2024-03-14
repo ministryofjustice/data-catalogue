@@ -1,14 +1,14 @@
-name: deploy-test
+name: Deploy dev
 
 on:
   pull_request:
   workflow_dispatch:
 
 jobs:
-  deploy-test:
+  deploy-dev:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
-      env: test
+      env: dev
       datahub_helm_version: "0.3.30"
       datahub_prereqs_helm_version: "0.1.8"
     secrets:
