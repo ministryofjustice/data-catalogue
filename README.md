@@ -20,9 +20,6 @@ for the Datahub backend.
 - [DataHub (test)](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/data-platform-datahub-catalogue-test)
 - [DataHub (preprod)](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/data-platform-datahub-catalogue-preprod)
 
-- [Datahub (dev)](https://datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk/)
-- [Find MOJ data (dev)](https://data-platform-find-moj-data-dev.apps.live.cloud-platform.service.justice.gov.uk/)
-
 ## Managing database secrets
 
 The [k8s-rds-secrets-to-github-secrets.sh](/scripts/k8s-rds-secrets-to-github-secrets.sh) script can be used from a local device to populate this repo's environment secrets with the database secrets for the datahub environments deployed in cloud platform.
@@ -41,10 +38,10 @@ for example:
 
 Run `datahub init` and provide the following credentials
 
-- server: https://data-platform-datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk
+- server: https://datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk
 - token: `<generate PAT via the UI>`
 
-You may also need to set the environment variable `export DATAHUB_GMS_URL="https://data-platform-datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk/api/gms"`
+You may also need to set the environment variable `export DATAHUB_GMS_URL="https://datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk/api/gms"`
 
 #### Import metadata into a Datahub lite
 
