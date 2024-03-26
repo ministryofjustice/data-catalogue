@@ -101,14 +101,21 @@ kafka:
       default.replication.factor=1
       offsets.topic.replication.factor=1
       transaction.state.log.replication.factor=1
+    resources:
+      limits:
+        cpu: 400m
+        memory: 2400Mi
+      requests:
+        cpu: 80m
+        memory: 2000Mi
   kraft:
     enabled: false
   zookeeper:
     enabled: true
-  resources:
-    limits:
-      cpu: 400m
-      memory: 1600Mi
-    requests:
-      cpu: 80m
-      memory: 1000Mi
+    resources:
+      limits:
+        cpu: 400m
+        memory: 1600Mi
+      requests:
+        cpu: 80m
+        memory: 1000Mi
