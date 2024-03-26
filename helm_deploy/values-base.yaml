@@ -88,6 +88,8 @@ datahub-frontend:
 
 acryl-datahub-actions:
   enabled: true
+  serviceAccount:
+    name: ""
   podSecurityContext:
     fsGroup: 103
   securityContext:
