@@ -1,0 +1,9 @@
+pandas==2.0.1
+SQLAlchemy==2.0.12
+psycopg2-binary==2.9.6
+pytest==7.3.1
+boto3==1.26.125
+PyYAML==6.0
+moto==3.1.6
+pytest-github-actions-annotate-failures==0.2.0
+
