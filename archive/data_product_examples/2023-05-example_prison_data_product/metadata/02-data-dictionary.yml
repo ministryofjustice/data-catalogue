@@ -1,0 +1,71 @@
+---
+#-------------------------------------------------------------
+# Implementation notes
+#  - YAML validation required
+#  - Warn on missing recommended attributes
+#  - Warn on table & field names containing spaces or dashes
+#-------------------------------------------------------------
+
+# You must specify at least one collection of datasets. Some users may find it helpful to think of this as a "database"
+example_prison_data_product:
+  # model can be "domain" or "tabular"
+  model: "tabular"
+  # Add a description for your collection to help users find it.
+  # This is optional, as the data product description will also aid discoverability.
+  description: "Extracted from the Offender Management Statistics Quarterly publication - Adjudications data. Please refer to notes in that publication."
+  # limitations are optional, but you might want to tell users what they CAN'T do with this data
+  limitations:
+  # If versioning is enabled, the Data Platform will store a historical snaphot of the database each time an update is sent.
+  # This can add SIGNIFICANTLY to storage costs, so you may be asked to justify this.
+  enable-versioning: false
+  tables:
+    # Your database must contain at least one table. Each table must contain at least one column. If the data is time-based,
+    # please indicate which column is the primary date value using the "primary-period: true" attribute.
+    adj_example_1:
+      source_data: adjudications
+      description: "Prison adjudications by offence group"
+      update-strategy: "selected-dimensions"
+      update-dimensions: []
+      columns:
+        # A column must contain at least a name and a data type.
+        - name: "Establishment"
+          description: "Establishment / Prison"
+          data-type: "string"
+          column-type: "fact"
+          reference-table: "n/a"
+        - name: "Religion"
+          data-type: "string"
+          column-type: "dimension"
+        - name: "Offence"
+          data-type: "string"
+          column-type: "dimension"
+        - name: "Count"
+          data-type: "int"
+          column-type: "dimension"
+    adj_example_2:
+      source_data: adjudications
+      description: "Prison adjudication totals by prison"
+      update-strategy: "selected-dimensions"
+      update-dimensions: []
+      columns:
+        # A column must contain at least a name and a data type.
+        - name: "Establishment"
+          description: "Establishment / Prison"
+          data-type: "string"
+          column-type: "fact"
+        - name: "Count"
+          data-type: "int"
+          column-type: "dimension"
+    punishments_example_1:
+      source_data: punishments
+      description: aggregated punishments by prison
+      update-strategy: "selected-dimensions"
+      update-dimensions: []
+      columns:
+        - name: "Establishment"
+          description: "Establishment / Prison"
+          data-type: "string"
+          column-type: "fact"
+        - name: "Count"
+          data-type: "int"
+          column-type: "dimension"
