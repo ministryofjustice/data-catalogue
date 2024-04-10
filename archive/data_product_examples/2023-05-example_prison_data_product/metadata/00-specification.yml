@@ -1,0 +1,23 @@
+specification:
+  data-platform.justice.gov.uk/name: "Fake data product"
+  # A good title and description will help users find your data
+  data-platform.justice.gov.uk/title: "Fake Data Product"
+  data-platform.justice.gov.uk/description: "This is a data product that contains information about the number of offenders in a prison by religion and offence type"
+  # tags are an array of quoted strings to further aid discoverability - e.g. ["keyword1", "keyword2", "keyword3"]
+  data-platform.justice.gov.uk/product-tags: ["Test", "Fake Data Product", "Prison", "Offences"]
+  # status: please specify draft, development, testing, production, sunset, retired
+  data-platform.justice.gov.uk/status: "testing"
+  # limitations are optional, but you might want to tell users what they CAN'T do with this data
+  data-platform.justice.gov.uk//limitations: "This is a fake data product - do no use for production"
+  # we recommend you version the data product. adding new data does not change the version, but changing the data definition should.
+  data-platform.justice.gov.uk/product-version: 0.0.1
+  management:
+    # please provide an AAD (Azure Active Directory) group or GitHub team which has permission to make changes to this product
+    data-platform.justice.gov.uk/owner-github-team: "prison-probation-data-engineering"
+  support:
+    # Please provide at least one contact - group email, Slack channel or MS Teams (NOT an individual's email address please)
+    data-platform.justice.gov.uk/owner-email: "dataplatformlabs@digital.justice.gov.uk"
+    data-platform.justice.gov.uk/owner-ms-teams:
+    data-platform.justice.gov.uk/owner-slack-channel: "data-platform-labs"
+    # If you have written some guidance (SharePoint, GitHub, Confluence, Google doc...) add the URL here
+    data-platform.justice.gov.uk/product-guidance-url:

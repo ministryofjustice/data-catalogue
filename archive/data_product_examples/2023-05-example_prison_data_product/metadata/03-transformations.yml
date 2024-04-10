@@ -1,0 +1,18 @@
+# Specify and describe any transformations or cleansing the data has undergone.
+# The types of cleansing we recognise are described in our documentation.
+
+Establishment:
+  cleansing:
+    type: "none"
+  transformations:
+    type: "Aggregated and grouped by to get count of Offence"
+Religion:
+  cleansing:
+    type: "none"
+  transformations:
+    type: "Aggregated and grouped by to get count of Offence"
+Offence:
+  cleansing:
+    type: "none"
+  transformations:
+    type: "Aggregated and grouped by to get count of Offence"

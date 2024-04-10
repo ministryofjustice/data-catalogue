@@ -1,0 +1,6 @@
+product_for_test:
+  tables:
+    test_table1:
+      source_data: test1
+    test_table_2:
+      source_data: test2
