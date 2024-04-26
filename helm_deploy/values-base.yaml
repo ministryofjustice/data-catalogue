@@ -2,7 +2,7 @@
 datahub-gms:
   enabled: true
   image:
-    repository: linkedin/datahub-gms
+    repository: acryldata/datahub-gms
   securityContext:
     runAsUser: 100
   resources:
@@ -25,7 +25,7 @@ datahub-gms:
 datahub-frontend:
   enabled: true
   image:
-    repository: linkedin/datahub-frontend-react
+    repository: acryldata/datahub-frontend-react
     # tag: "v0.10.0" # # defaults to .global.datahub.version
   extraVolumes:
     - name: datahub-users
@@ -96,7 +96,7 @@ acryl-datahub-actions:
     runAsUser: 102
   image:
     repository: acryldata/datahub-actions
-    tag: v0.0.14
+    tag: v0.0.15
   # mount the k8s secret as a volume in the container, each key name is mounted as a 
   # file on the mount path /etc/datahub/ingestion-secret-files
   # ingestionSecretFiles:
@@ -117,8 +117,7 @@ elasticsearchSetupJob:
   enabled: true
   serviceAccount: ""
   image:
-    repository: linkedin/datahub-elasticsearch-setup
-    tag: "4f1a399" # defaults to .global.datahub.version
+    repository: acryldata/datahub-elasticsearch-setup
   extraEnvs:
     - name: USE_AWS_ELASTICSEARCH
       value: "true"
@@ -128,7 +127,7 @@ elasticsearchSetupJob:
 kafkaSetupJob:
   enabled: true
   image:
-    repository: linkedin/datahub-kafka-setup
+    repository: acryldata/datahub-kafka-setup
     # tag: "v0.11.0" # defaults to .global.datahub.version
   resources:
     limits:
@@ -240,6 +239,25 @@ datahubSystemUpdate:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-4"
     helm.sh/hook-delete-policy: before-hook-creation
+  # !! Requires version v0.13.0 or greater
+  # Split the system update into 2 jobs, one that is blocking the rest of
+  # the deployment and the other which is non-blocking. Once the blocking
+  # steps are completed, the non-blocking job runs while the rest of the
+  # system is starting.
+  nonblocking:
+    enabled: false
+    # When mode = 'nonblocking' the nonblocking job should not include the above helm.sh/hook annotations
+    annotations:
+      # This is what defines this resource as a hook. Without this line, the
+      # job is considered part of the release.
+      helm.sh/hook: post-install,post-upgrade
+      helm.sh/hook-delete-policy: before-hook-creation
+    image:
+      args:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      # command: customCommand
+      # args: []
   podSecurityContext:
     fsGroup: 101
   securityContext:
@@ -397,7 +415,7 @@ global:
 
 
   datahub:
-    version: v0.12.1
+    version: v0.13.2
     gms:
       port: "8080"
       nodePort: "30001"
@@ -428,7 +446,7 @@ global:
 
     managed_ingestion:
       enabled: true
-      defaultCliVersion: "0.12.0"
+      defaultCliVersion: "0.13.1.2"
 
     metadata_service_authentication:
       enabled: true
