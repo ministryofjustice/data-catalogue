@@ -271,10 +271,10 @@ datahubSystemUpdate:
   podAnnotations: {}
   resources:
     limits:
-      cpu: 500m
+      cpu: 800m
       memory: 512Mi
     requests:
-      cpu: 300m
+      cpu: 500m
       memory: 256Mi
   extraSidecars: []
   extraInitContainers: []
