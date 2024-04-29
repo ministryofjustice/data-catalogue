@@ -165,3 +165,11 @@ jobs:
           --set global.sql.datasource.host=${POSTGRES_HOST} \
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
           --set global.sql.datasource.url=${POSTGRES_URL}
+
+      - name: install datahub-monitoring helm
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+        run: |
+          kubectl apply -f helm_deploy/monitoring/ \
+          --namespace ${KUBE_NAMESPACE}
