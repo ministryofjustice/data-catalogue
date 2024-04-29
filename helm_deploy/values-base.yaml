@@ -21,6 +21,8 @@ datahub-gms:
     failureThreshold: 8
   service:
     type: ClusterIP
+  serviceMonitor:
+    create: true
 
 datahub-frontend:
   enabled: true
@@ -46,6 +48,8 @@ datahub-frontend:
       value: "true"
   service:
     type: ClusterIP
+  serviceMonitor:
+    create: true
   lifecycle:
     {}
   resources:
@@ -109,6 +113,8 @@ acryl-datahub-actions:
     requests:
       cpu: 500m
       memory: 1Gi
+  serviceMonitor:
+    create: true
 
 datahub-ingestion-cron:
   enabled: false
