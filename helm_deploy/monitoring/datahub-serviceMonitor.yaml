@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: datahub-service
-  namespace: $(KUBE_NAMESPACE)
+  namespace: ${KUBE_NAMESPACE}
 spec:
   selector:
     matchLabels:
