@@ -172,6 +172,6 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
         run: |
           envsubst < helm_deploy/monitoring/datahub-networkPolicy.yaml \
-          | kubectl apply -f --namespace=${KUBE_NAMESPACE} -
+          | kubectl apply -f - --namespace=${KUBE_NAMESPACE}
           envsubst < helm_deploy/monitoring/datahub-serviceMonitor.yaml \
-          | kubectl apply -f --namespace=${KUBE_NAMESPACE} -
+          | kubectl apply -f - --namespace=${KUBE_NAMESPACE}
