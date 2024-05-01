@@ -149,7 +149,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_Mean",
           "interval": "",
           "legendFormat": "Get Avg",
           "refId": "A"
@@ -157,7 +157,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "Get P75",
@@ -166,7 +166,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "Get P95",
@@ -245,7 +245,7 @@
           "hide": false,
           "interval": "",
           "legendFormat": "Ingest Count",
-          "refId": "E"
+          "refId": "A"
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
@@ -260,7 +260,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "increase((metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_Count[1m] - metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_success_Count[1m))/60",
+          "expr": "increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_Count{}[1m])/60 - increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_success_Count{}[1m])/60",
           "hide": false,
           "interval": "",
           "legendFormat": "Ingest Failure",
@@ -269,11 +269,29 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "increase((metrics_com_linkedin_metadata_resources_entity_EntityResource_batchIngest_Count[1m] - metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_success_Count[1m))/60",
+          "expr": "increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_success_Count{}[1m])/60",
           "hide": false,
           "interval": "",
           "legendFormat": "BatchIngest Failure",
           "refId": "D"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "exemplar": true,
+          "expr": "increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_success_Count{}[1m])/60",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Ingest Failure",
+          "refId": "E"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "exemplar": true,
+          "expr": "increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_batchIngest_Count{}[1m])/60 - increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_success_Count{}[1m])/60",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "BatchIngest Failure",
+          "refId": "F"
         }
       ],
       "title": "Ingest QPS",
@@ -329,7 +347,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -337,7 +355,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -346,7 +364,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -406,11 +424,11 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_entity_EntityServiceImpl_ingestAspectsToLocalDB_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_entity_EntityServiceImpl_ingestAspectsToLocalDB_Mean",
           "hide": false,
           "interval": "",
           "legendFormat": "Ingest To DB",
-          "refId": "B"
+          "refId": "A"
         }
       ],
       "title": "Ingest Steps",
@@ -1108,7 +1126,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1116,7 +1134,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -1125,7 +1143,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -1185,7 +1203,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_aggregateByValue_search_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_aggregateByValue_search_Mean",
           "hide": false,
           "interval": "",
           "legendFormat": "Aggregate by value Search",
@@ -1194,20 +1212,20 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Mean",
           "hide": false,
           "interval": "",
           "legendFormat": "Request Builder",
-          "refId": "D"
+          "refId": "B"
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean",
           "hide": false,
           "interval": "",
           "legendFormat": "Total Search",
-          "refId": "B"
+          "refId": "C"
         }
       ],
       "title": "Search Steps",
@@ -1346,7 +1364,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean{}",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1354,7 +1372,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_75thPercentile{}",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -1363,7 +1381,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_95thPercentile{}",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -1423,7 +1441,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESBrowseDAO_esGroupSearch_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESBrowseDAO_esGroupSearch_Mean",
           "hide": false,
           "interval": "",
           "legendFormat": "ES Groups Query",
@@ -1432,7 +1450,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean{}",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean",
           "hide": false,
           "interval": "",
           "legendFormat": "Total Browse",
@@ -1566,7 +1584,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_Mean{}",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1574,7 +1592,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "increase(metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_75thPercentile{})/60",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_75thPercentile",
           "interval": "",
           "legendFormat": "Search across Lineage P75",
           "refId": "B"
@@ -1582,7 +1600,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "increase(metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_95thPercentile{})/60",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_95thPercentile",
           "interval": "",
           "legendFormat": "Search across Lineage P95",
           "refId": "C"
@@ -1774,7 +1792,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1782,7 +1800,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -1791,7 +1809,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -1851,7 +1869,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1859,7 +1877,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -1868,7 +1886,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -1928,7 +1946,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1936,7 +1954,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -1945,7 +1963,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -2005,7 +2023,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_Mean{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_Mean",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -2013,7 +2031,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_75thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_75thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -2022,7 +2040,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_95thPercentile{}",
+          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_95thPercentile",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
