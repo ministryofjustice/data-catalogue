@@ -170,8 +170,18 @@ jobs:
         shell: bash
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          DASHBOARD_NAME: datahub-status-dashboard
         run: |
-          envsubst < helm_deploy/monitoring/datahub-networkPolicy.yaml \
+          envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml \
           | kubectl apply -f - --namespace=${KUBE_NAMESPACE}
-          envsubst < helm_deploy/monitoring/datahub-dashboard-configmap.yaml \
-          | kubectl apply -f - --namespace=${KUBE_NAMESPACE}
+
+          kubectl create configmap ${DASHBOARD_NAME} \
+          --from-file=helm_deploy/monitoring/datahub-dashboard.json \
+          --dry-run \
+          --output yaml \
+          | kubectl label -f- \
+          --dry-run \
+          --output yaml \
+          --local grafana_dashboard=${DASHBOARD_NAME} \
+          | kubectl apply -f- \
+          --namespace=${KUBE_NAMESPACE}
