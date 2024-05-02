@@ -4,44 +4,44 @@ on:
   workflow_call:
     inputs:
       env:
-        description: 'which environment to deploy to'
+        description: "which environment to deploy to"
         required: true
         type: string
       datahub_helm_version:
-        description: 'version of the datahub helm chart to use for deploy'
+        description: "version of the datahub helm chart to use for deploy"
         required: true
         type: string
       datahub_prereqs_helm_version:
-        description: 'version of the datahub prerequisites helm chart to use for deploy'
+        description: "version of the datahub prerequisites helm chart to use for deploy"
         required: true
         type: string
     secrets:
       kube_namespace:
-        description: 'the kubernetes namespace to deploy to'
+        description: "the kubernetes namespace to deploy to"
         required: true
       kube_cert:
-        description: 'cert used to verify identity to cluster'
+        description: "cert used to verify identity to cluster"
         required: true
       kube_cluster:
-        description: 'address of the cluster to connect to'
+        description: "address of the cluster to connect to"
         required: true
       kube_token:
-        description: 'used to authenticate to the cluster'
+        description: "used to authenticate to the cluster"
         required: true
-      postgres_host: 
-        description: 'address of the metadata database, including port'
+      postgres_host:
+        description: "address of the metadata database, including port"
         required: true
       postgres_client_host:
-        description: 'address of the metadata database, without port'
+        description: "address of the metadata database, without port"
         required: true
       postgres_url:
-        description: 'URI including the scheme designator (prefix) and database name'
+        description: "URI including the scheme designator (prefix) and database name"
         required: true
-      opensearch_proxy_host:  
-        description: 'domain address to reach opensearch'
+      opensearch_proxy_host:
+        description: "domain address to reach opensearch"
         required: true
 
-concurrency: 
+concurrency:
   group: ${{ inputs.env }}
 
 jobs:
@@ -75,12 +75,12 @@ jobs:
       - name: Create users-secret if it doesn't exist
         shell: bash
         id: create-users-secret-if-not-exists
-        env: 
+        env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           RELEASE_NAME: datahub
         run: |
           NS_SECRETS=$(kubectl get secrets -n ${KUBE_NAMESPACE} -o=jsonpath='{range .items..metadata}{.name}{"\n"}{end}')
-          
+
           USERS_SECRET_NAME=$(echo ${NS_SECRETS} | egrep "${RELEASE_NAME}-users-secret" || exit_code=$?
           if (( exit_code > 1 )) ; then
               exit $exit_code
@@ -127,7 +127,7 @@ jobs:
           --namespace ${{ secrets.kube_namespace }}
 
       - name: set host names
-        env: 
+        env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           BASE_HOST: apps.live.cloud-platform.service.justice.gov.uk
           RELEASE_NAME: datahub
@@ -135,7 +135,7 @@ jobs:
           echo "BASE_HOST=${BASE_HOST}" >> $GITHUB_ENV 
           echo "APP_SHORT_HOST=${KUBE_NAMESPACE/data-platform-/}.${BASE_HOST}" >> $GITHUB_ENV
           echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
-          
+
       - name: install datahub helm charts
         env:
           APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
@@ -147,7 +147,7 @@ jobs:
           POSTGRES_URL: ${{ secrets.postgres_url }}
           RELEASE_NAME: datahub
         # if many env-specific variables need setting, add --values files after 'base'
-        # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \` 
+        # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
         run: |
           helm upgrade \
           --install ${RELEASE_NAME} datahub/datahub \
@@ -165,3 +165,23 @@ jobs:
           --set global.sql.datasource.host=${POSTGRES_HOST} \
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
           --set global.sql.datasource.url=${POSTGRES_URL}
+
+      - name: install datahub-monitoring helm
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          DASHBOARD_NAME: datahub-status-dashboard
+        run: |
+          envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
+            kubectl apply -f - --namespace=${KUBE_NAMESPACE}
+
+          kubectl create configmap ${DASHBOARD_NAME} \
+          --from-file=helm_deploy/monitoring/datahub-dashboard.json \
+          --dry-run \
+          --output yaml | 
+            kubectl label -f- \
+            --dry-run \
+            --output yaml \
+            --local grafana_dashboard=${DASHBOARD_NAME} | 
+            kubectl apply -f- \
+            --namespace=${KUBE_NAMESPACE}
