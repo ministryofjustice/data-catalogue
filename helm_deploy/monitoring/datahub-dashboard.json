@@ -229,7 +229,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_Mean",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_Mean{}",
           "interval": "",
           "legendFormat": "Get Avg",
           "refId": "A"
@@ -240,7 +240,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Get P75",
@@ -252,7 +252,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_get_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Get P95",
@@ -525,7 +525,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_Mean",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -536,7 +536,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -548,7 +548,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_ingest_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -641,7 +641,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_entity_EntityServiceImpl_ingestAspectsToLocalDB_Mean",
+          "expr": "metrics_com_linkedin_metadata_entity_EntityServiceImpl_ingestAspectsToLocalDB_Mean{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Ingest To DB",
@@ -734,7 +734,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -745,7 +745,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -757,7 +757,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -851,7 +851,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_Mean{}",
           "legendFormat": "Avg",
           "range": true,
           "refId": "A"
@@ -863,7 +863,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_75thPercentile{}",
           "hide": false,
           "legendFormat": "P75",
           "range": true,
@@ -876,7 +876,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -971,7 +971,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_Mean{}",
           "legendFormat": "Average",
           "range": true,
           "refId": "A"
@@ -983,7 +983,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_75thPercentile{}",
           "hide": false,
           "legendFormat": "P75",
           "range": true,
@@ -996,7 +996,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_95thPercentile{}",
           "hide": false,
           "legendFormat": "P95",
           "range": true,
@@ -1090,7 +1090,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_Mean{}",
           "legendFormat": "Avg",
           "range": true,
           "refId": "A"
@@ -1102,7 +1102,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_75thPercentile{}",
           "hide": false,
           "legendFormat": "P75",
           "range": true,
@@ -1115,7 +1115,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_95thPercentile{}",
           "hide": false,
           "legendFormat": "P95",
           "range": true,
@@ -1209,7 +1209,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_Mean{}",
           "legendFormat": "Avg",
           "range": true,
           "refId": "A"
@@ -1221,7 +1221,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_75thPercentile{}",
           "hide": false,
           "legendFormat": "P75",
           "range": true,
@@ -1234,7 +1234,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_95thPercentile{}",
           "hide": false,
           "legendFormat": "P95",
           "range": true,
@@ -1328,7 +1328,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_Mean{}",
           "legendFormat": "Avg",
           "range": true,
           "refId": "A"
@@ -1340,7 +1340,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_75thPercentile{}",
           "hide": false,
           "legendFormat": "P75",
           "range": true,
@@ -1353,7 +1353,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_95thPercentile{}",
           "hide": false,
           "legendFormat": "P95",
           "range": true,
@@ -1447,7 +1447,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_Mean{}",
           "legendFormat": "Avg",
           "range": true,
           "refId": "A"
@@ -1459,7 +1459,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_75thPercentile{}",
           "hide": false,
           "instant": false,
           "legendFormat": "P75",
@@ -1473,7 +1473,7 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_95thPercentile{}",
           "hide": false,
           "legendFormat": "P95",
           "range": true,
@@ -1696,7 +1696,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -1707,7 +1707,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -1719,7 +1719,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -1812,7 +1812,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_aggregateByValue_search_Mean",
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_aggregateByValue_search_Mean{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Aggregate by value Search",
@@ -1824,7 +1824,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Mean",
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Mean{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Request Builder",
@@ -1836,7 +1836,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean",
+          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Total Search",
@@ -2059,7 +2059,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -2070,7 +2070,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_75thPercentile",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -2082,7 +2082,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_95thPercentile",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -2175,7 +2175,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESBrowseDAO_esGroupSearch_Mean",
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESBrowseDAO_esGroupSearch_Mean{}",
           "hide": false,
           "interval": "",
           "legendFormat": "ES Groups Query",
@@ -2187,7 +2187,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_browseV2_Mean{}",
           "hide": false,
           "interval": "",
           "legendFormat": "Total Browse",
@@ -2398,7 +2398,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_Mean",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -2409,7 +2409,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_75thPercentile",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_75thPercentile{}",
           "interval": "",
           "legendFormat": "Search across Lineage P75",
           "refId": "B"
@@ -2420,7 +2420,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_95thPercentile",
+          "expr": "metrics_com_datahub_graphql_GraphQLController_searchAcrossLineage_95thPercentile{}",
           "interval": "",
           "legendFormat": "Search across Lineage P95",
           "refId": "C"
@@ -2722,7 +2722,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -2733,7 +2733,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -2745,7 +2745,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeEventsProcessor_kafkaLag_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -2838,7 +2838,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -2849,7 +2849,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -2861,7 +2861,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeProposalsProcessor_kafkaLag_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -2954,7 +2954,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -2965,7 +2965,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -2977,7 +2977,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_kafkaLag_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
@@ -3070,7 +3070,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_Mean",
+          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_Mean{}",
           "interval": "",
           "legendFormat": "Avg",
           "refId": "A"
@@ -3081,7 +3081,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_75thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_75thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P75",
@@ -3093,7 +3093,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_95thPercentile",
+          "expr": "metrics_com_linkedin_metadata_kafka_DataHubUsageEventsProcessor_kafkaLag_95thPercentile{}",
           "hide": false,
           "interval": "",
           "legendFormat": "P95",
