@@ -831,9 +831,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_Mean{}",
+          "expr": "increase(metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_Count{}[$__rate_interval])",
           "interval": "",
-          "legendFormat": "Avg",
+          "legendFormat": "MCL Processes (Total)",
           "refId": "A"
         },
         {
@@ -842,10 +842,10 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_75thPercentile{}",
+          "expr": "increase(metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consumed_mcl_count_Count{}[$__rate_interval])",
           "hide": false,
           "interval": "",
-          "legendFormat": "P75",
+          "legendFormat": "Consumed MCL",
           "refId": "B"
         },
         {
@@ -854,14 +854,14 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_consume_95thPercentile{}",
+          "expr": "increase(metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_received_mcl_count_Count{}[$__rate_interval])",
           "hide": false,
           "interval": "",
-          "legendFormat": "P95",
+          "legendFormat": "Received MCL",
           "refId": "C"
         }
       ],
-      "title": "MCL Process Latency",
+      "title": "MCL Processes",
       "type": "timeseries"
     },
     {
@@ -949,7 +949,7 @@
           "editorMode": "builder",
           "exemplar": true,
           "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_Mean{}",
-          "legendFormat": "Avg",
+          "legendFormat": "MCL Change Event Generator",
           "range": true,
           "refId": "A"
         },
@@ -960,9 +960,8 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_75thPercentile{}",
-          "hide": false,
-          "legendFormat": "P75",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_SiblingAssociationHook_latency_Mean{}",
+          "legendFormat": "Sibling Association",
           "range": true,
           "refId": "B"
         },
@@ -973,15 +972,25 @@
           },
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_EntityChangeEventGeneratorHook_latency_95thPercentile{}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "P95",
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_IngestionSchedulerHook_latency_Mean{}",
+          "legendFormat": "Ingestion Scheduler",
           "range": true,
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "builder",
+          "exemplar": true,
+          "expr": "metrics_com_linkedin_metadata_kafka_MetadataChangeLogProcessor_UpdateIndicesHook_latency_Mean{}",
+          "legendFormat": "Update Indices",
+          "range": true,
+          "refId": "D"
         }
       ],
-      "title": "MCL Change Event Generator Latency",
+      "title": "MCL Process Latency",
       "type": "timeseries"
     },
     {
@@ -1451,9 +1460,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Count{}[$__rate_interval])",
+          "expr": "increase(metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_executeAndExtract_search_Count{}[$__rate_interval])",
           "interval": "",
-          "legendFormat": "Queries",
+          "legendFormat": "OpenSearch Extract and Execute Search",
           "refId": "A"
         },
         {
@@ -1462,14 +1471,119 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "increase(metrics_com_linkedin_metadata_resources_entity_EntityResource_search_success_Count{}[$__rate_interval])",
+          "expr": "increase(metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Count{}[$__rate_interval])",
           "hide": false,
           "interval": "",
-          "legendFormat": "Success",
+          "legendFormat": "OpenSearch Request Builder",
           "refId": "B"
         }
       ],
       "title": "Search Queries",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 14,
+        "y": 43
+      },
+      "id": 25,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "exemplar": true,
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_executeAndExtract_search_Mean{}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "OS Extract and Execute Average",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "exemplar": true,
+          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Mean{}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "SO Request Builder Average",
+          "refId": "B"
+        }
+      ],
+      "title": "Search Steps Latency",
       "type": "timeseries"
     },
     {
@@ -1586,123 +1700,6 @@
         }
       ],
       "title": "Search Latency",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 14,
-        "y": 43
-      },
-      "id": 25,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_executeAndExtract_search_Mean{}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "OpenSearch Extract and Execute Search",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_search_elasticsearch_query_ESSearchDAO_searchRequest_Mean{}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "OpenSearch Request Builder",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "exemplar": true,
-          "expr": "metrics_com_linkedin_metadata_resources_entity_EntityResource_search_Mean{}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Total Search",
-          "refId": "C"
-        }
-      ],
-      "title": "Search Steps",
       "type": "timeseries"
     },
     {
