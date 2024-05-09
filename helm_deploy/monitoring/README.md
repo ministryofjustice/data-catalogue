@@ -1,7 +1,7 @@
 
 
 #### EntityServiceImpl
-- [A class specifying CRU operations against metadata entities and aspects by primary key (urn)](https://github.com/datahub-project/datahub/blob/c00ddb2a0d4fb7be9b506d09d5f015082ab9742d/metadata-io/src/main/java/com/linkedin/metadata/entity/EntityServiceImpl.java#L107-L137)
+- [A class specifying Create, Read, and Update operations against metadata entities and aspects by primary key (urn)](https://github.com/datahub-project/datahub/blob/c00ddb2a0d4fb7be9b506d09d5f015082ab9742d/metadata-io/src/main/java/com/linkedin/metadata/entity/EntityServiceImpl.java#L107-L137)
 
   - **ingestAspectsToLocalDB** [Ingests (inserts) a new version of an entity aspect & emits a MetadataChangeLog (MCL)](https://github.com/datahub-project/datahub/blob/c00ddb2a0d4fb7be9b506d09d5f015082ab9742d/metadata-io/src/main/java/com/linkedin/metadata/entity/EntityServiceImpl.java#L649C6-L671)
 
