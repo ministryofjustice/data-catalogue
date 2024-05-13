@@ -134,7 +134,7 @@ jobs:
         run: |-
           echo "BASE_HOST=${BASE_HOST}" >> $GITHUB_ENV 
           echo "APP_SHORT_HOST=${KUBE_NAMESPACE/data-platform-/}.${BASE_HOST}" >> $GITHUB_ENV
-          echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
+          echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${{ inputs.env }}-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
 
       - name: install datahub helm charts
         env:
