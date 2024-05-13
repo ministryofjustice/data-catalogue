@@ -146,6 +146,7 @@ jobs:
           POSTGRES_HOST: ${{ secrets.postgres_host }}
           POSTGRES_URL: ${{ secrets.postgres_url }}
           RELEASE_NAME: datahub
+          FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
         # if many env-specific variables need setting, add --values files after 'base'
         # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
         run: |
@@ -155,6 +156,7 @@ jobs:
           --atomic --timeout 10m0s \
           --values helm_deploy/values-base.yaml \
           --namespace ${{ secrets.kube_namespace }} \
+          --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
           --set "datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }}" \
           --set "datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }}" \
           --set "datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST}" \
