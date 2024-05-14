@@ -126,7 +126,9 @@ jobs:
           --values helm_deploy/values_prerequisites-base.yaml \
           --namespace ${{ secrets.kube_namespace }}
 
-      - name: set host names
+      - name: set env vars
+        shell: bash
+        id: set-envs
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           BASE_HOST: apps.live.cloud-platform.service.justice.gov.uk
@@ -137,6 +139,8 @@ jobs:
           echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${{ inputs.env }}-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
 
       - name: install datahub helm charts
+        shell: bash
+        id: upgrade-helm-datahub
         env:
           APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
           CHART_VERSION: ${{ inputs.datahub_helm_version }}
@@ -168,22 +172,34 @@ jobs:
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
           --set global.sql.datasource.url=${POSTGRES_URL}
 
-      - name: install datahub-monitoring helm
+      - name: allow CP prometheus scraping 
+        if: ${{ inputs.env == 'dev' }}
         shell: bash
+        id: allow-prom-scrape
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
-          DASHBOARD_NAME: datahub-status-dashboard
         run: |
           envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
             kubectl apply -f - --namespace=${KUBE_NAMESPACE}
 
-          kubectl create configmap ${DASHBOARD_NAME} \
-          --from-file=helm_deploy/monitoring/datahub-dashboard.json \
-          --dry-run \
-          --output yaml | 
-            kubectl label -f- \
+      - name: update grafana dashboard configmaps
+        if: ${{ inputs.env == 'dev' }}
+        shell: bash
+        id: update-grafana-dashboards
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          DASHBOARDS: ("datahub-status-dashboard", "datahub-deployment-dashboard")
+        run: |
+          for DASHBOARD in $DASHBOARDS
+          do
+            kubectl create configmap ${DASHBOARD} \
+            --from-file=helm_deploy/monitoring/datahub-dashboard.json \
             --dry-run \
-            --output yaml \
-            --local grafana_dashboard=${DASHBOARD_NAME} | 
-            kubectl apply -f- \
-            --namespace=${KUBE_NAMESPACE}
+            --output yaml | 
+              kubectl label -f- \
+              --dry-run \
+              --output yaml \
+              --local grafana_dashboard=${DASHBOARD} | 
+              kubectl apply -f- \
+              --namespace=${KUBE_NAMESPACE}
+          done
