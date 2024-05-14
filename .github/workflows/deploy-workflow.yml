@@ -192,6 +192,7 @@ jobs:
         run: |
           for DASHBOARD in "${DASHBOARDS[@]}"
           do
+            echo ${DASHBOARD}
             kubectl create configmap ${DASHBOARD} \
             --from-file=helm_deploy/monitoring/datahub-dashboard.json \
             --dry-run \
