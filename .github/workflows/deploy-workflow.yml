@@ -188,9 +188,9 @@ jobs:
         id: update-grafana-dashboards
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
-          DASHBOARDS: ("datahub-status-dashboard" "datahub-deployment-dashboard")
+          DASHBOARDS: '["datahub-status-dashboard", "datahub-deployment-dashboard"]''
         run: |
-          for DASHBOARD in ${DASHBOARDS}
+          for DASHBOARD in fromJSON(${DASHBOARDS})
           do
             kubectl create configmap ${DASHBOARD} \
             --from-file=helm_deploy/monitoring/datahub-dashboard.json \
