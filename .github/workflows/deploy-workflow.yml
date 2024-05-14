@@ -188,14 +188,14 @@ jobs:
         id: update-grafana-dashboards
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
-          DASHBOARDS: "datahub-status-dashboard datahub-deployment-dashboard"
+          DASHBOARDS_JSON_STRING: '{"datahub-status-dashboard": "datahub-dashboard","datahub-deployment-dashboard": "datahub-deployment-dashboard"}'
         run: |
-          read -a DASHBOARD_NAMES <<< "${DASHBOARDS}"
-          for DASHBOARD in "${DASHBOARD_NAMES[@]}"
-          do
-            echo ${DASHBOARD}
+          DASHBOARDS_JSON=$(jq -n -c "$DASHBOARDS_JSON_STRING")
+          echo $DASHBOARDS_JSON | jq 'to_entries | .[].key' | while read DASHBOARD; do
+            DASHBOARD_FILE=$(echo $DATA | jq -r ".[$DASHBOARD]")
+            
             kubectl create configmap ${DASHBOARD} \
-            --from-file=helm_deploy/monitoring/datahub-dashboard.json \
+            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}.json" \
             --dry-run \
             --output yaml | 
               kubectl label -f- \
