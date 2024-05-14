@@ -190,8 +190,8 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           DASHBOARDS: ("datahub-status-dashboard" "datahub-deployment-dashboard")
         run: |
-          DASHBOARDS="${DASHBOARDS[@]}"
-          for DASHBOARD in "${DASHBOARDS[@]}"
+          DASHBOARD_NAMES="${DASHBOARDS}"
+          for DASHBOARD in "${DASHBOARD_NAMES[@]}"
           do
             echo ${DASHBOARD}
             kubectl create configmap ${DASHBOARD} \
