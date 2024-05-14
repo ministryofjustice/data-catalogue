@@ -26,6 +26,7 @@ datahub-gms:
 
 datahub-frontend:
   enabled: true
+  fullnameOverride: ""
   image:
     repository: acryldata/datahub-frontend-react
     # tag: "v0.10.0" # # defaults to .global.datahub.version
