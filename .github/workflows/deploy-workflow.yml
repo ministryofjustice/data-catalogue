@@ -191,8 +191,9 @@ jobs:
           DASHBOARDS_JSON_STRING: '{"datahub-status-dashboard": "datahub-dashboard","datahub-deployment-dashboard": "datahub-deployment-dashboard"}'
         run: |
           DASHBOARDS_JSON=$(jq -n -c "$DASHBOARDS_JSON_STRING")
+          echo $DASHBOARDS_JSON
           echo $DASHBOARDS_JSON | jq -r 'to_entries | .[].key' | while read DASHBOARD; do
-            DASHBOARD_FILE=$(echo $DATA | jq -r --arg e "${DASHBOARD}" ".[$e]")
+            DASHBOARD_FILE=$(echo $DATA | jq -r --arg e "${DASHBOARD}" '.[$e]')
             
             echo ${DASHBOARD}
             echo ${DASHBOARD_FILE}
