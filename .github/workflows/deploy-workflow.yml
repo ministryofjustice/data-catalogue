@@ -182,20 +182,17 @@ jobs:
           envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
             kubectl apply -f - --namespace=${KUBE_NAMESPACE}
 
-      - name: update grafana dashboard configmaps
+      - name: update grafana status dashboard configmap
         if: ${{ inputs.env == 'dev' }}
         shell: bash
-        id: update-grafana-dashboards
+        id: update-grafana-status-dashboard
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
-          DASHBOARDS_JSON_STRING: '{"datahub-status-dashboard": "datahub-dashboard","datahub-deployment-dashboard": "datahub-deployment-dashboard"}'
+          DASHBOARD: "datahub-status-dashboard"
+          DASHBOARD_FILE: "datahub-dashboard.json"
         run: |
-          DASHBOARDS_JSON=$(jq -n -c "$DASHBOARDS_JSON_STRING")
-          echo $DASHBOARDS_JSON | jq -r 'to_entries | .[].key' | while read DASHBOARD; do
-            DASHBOARD_FILE=$(echo $DASHBOARDS_JSON | jq -r --arg e "${DASHBOARD}" '.[$e]')
-
             kubectl create configmap ${DASHBOARD} \
-            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}.json" \
+            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}" \
             --dry-run \
             --output yaml | 
               kubectl label -f- \
@@ -204,4 +201,23 @@ jobs:
               --local grafana_dashboard=${DASHBOARD} | 
               kubectl apply -f- \
               --namespace=${KUBE_NAMESPACE}
-          done
+
+      - name: update grafana deployment dashboard configmap
+        if: ${{ inputs.env == 'dev' }}
+        shell: bash
+        id: update-grafana-deployment-dashboard
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          DASHBOARD: "datahub-deployment-dashboard"
+          DASHBOARD_FILE: "datahub-deployment-dashboard.json"
+        run: |
+          kubectl create configmap ${DASHBOARD} \
+            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}" \
+            --dry-run \
+            --output yaml | 
+              kubectl label -f- \
+              --dry-run \
+              --output yaml \
+              --local grafana_dashboard=${DASHBOARD} | 
+              kubectl apply -f- \
+              --namespace=${KUBE_NAMESPACE}
