@@ -138,39 +138,39 @@ jobs:
           echo "APP_SHORT_HOST=${KUBE_NAMESPACE/data-platform-/}.${BASE_HOST}" >> $GITHUB_ENV
           echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${{ inputs.env }}-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
 
-      # - name: install datahub helm charts
-      #   shell: bash
-      #   id: upgrade-helm-datahub
-      #   env:
-      #     APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
-      #     CHART_VERSION: ${{ inputs.datahub_helm_version }}
-      #     IRSA_SA: data-platform-${{ inputs.env }}
-      #     OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
-      #     POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
-      #     POSTGRES_HOST: ${{ secrets.postgres_host }}
-      #     POSTGRES_URL: ${{ secrets.postgres_url }}
-      #     RELEASE_NAME: datahub
-      #     FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
-      #   # if many env-specific variables need setting, add --values files after 'base'
-      #   # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
-      #   run: |
-      #     helm upgrade \
-      #     --install ${RELEASE_NAME} datahub/datahub \
-      #     --version ${CHART_VERSION} \
-      #     --atomic --timeout 10m0s \
-      #     --values helm_deploy/values-base.yaml \
-      #     --namespace ${{ secrets.kube_namespace }} \
-      #     --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
-      #     --set "datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }}" \
-      #     --set "datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }}" \
-      #     --set "datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST}" \
-      #     --set "datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST}" \
-      #     --set "datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID}" \
-      #     --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
-      #     --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
-      #     --set global.sql.datasource.host=${POSTGRES_HOST} \
-      #     --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
-      #     --set global.sql.datasource.url=${POSTGRES_URL}
+      - name: install datahub helm charts
+        shell: bash
+        id: upgrade-helm-datahub
+        env:
+          APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
+          CHART_VERSION: ${{ inputs.datahub_helm_version }}
+          IRSA_SA: data-platform-${{ inputs.env }}
+          OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
+          POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
+          POSTGRES_HOST: ${{ secrets.postgres_host }}
+          POSTGRES_URL: ${{ secrets.postgres_url }}
+          RELEASE_NAME: datahub
+          FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
+        # if many env-specific variables need setting, add --values files after 'base'
+        # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
+        run: |
+          helm upgrade \
+          --install ${RELEASE_NAME} datahub/datahub \
+          --version ${CHART_VERSION} \
+          --atomic --timeout 10m0s \
+          --values helm_deploy/values-base.yaml \
+          --namespace ${{ secrets.kube_namespace }} \
+          --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
+          --set datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }} \
+          --set datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }} \
+          --set datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST} \
+          --set datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST} \
+          --set datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
+          --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
+          --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
+          --set global.sql.datasource.host=${POSTGRES_HOST} \
+          --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
+          --set global.sql.datasource.url=${POSTGRES_URL}
 
       - name: allow CP prometheus scraping 
         if: ${{ inputs.env == 'dev' }}
