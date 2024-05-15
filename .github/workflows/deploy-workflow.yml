@@ -126,7 +126,9 @@ jobs:
           --values helm_deploy/values_prerequisites-base.yaml \
           --namespace ${{ secrets.kube_namespace }}
 
-      - name: set host names
+      - name: set env vars
+        shell: bash
+        id: set-envs
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           BASE_HOST: apps.live.cloud-platform.service.justice.gov.uk
@@ -137,6 +139,8 @@ jobs:
           echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${{ inputs.env }}-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
 
       - name: install datahub helm charts
+        shell: bash
+        id: upgrade-helm-datahub
         env:
           APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
           CHART_VERSION: ${{ inputs.datahub_helm_version }}
@@ -157,33 +161,63 @@ jobs:
           --values helm_deploy/values-base.yaml \
           --namespace ${{ secrets.kube_namespace }} \
           --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
-          --set "datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }}" \
-          --set "datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }}" \
-          --set "datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST}" \
-          --set "datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST}" \
-          --set "datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID}" \
+          --set datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }} \
+          --set datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }} \
+          --set datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST} \
+          --set datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST} \
+          --set datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
           --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
           --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
           --set global.sql.datasource.host=${POSTGRES_HOST} \
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
           --set global.sql.datasource.url=${POSTGRES_URL}
 
-      - name: install datahub-monitoring helm
+      - name: allow CP prometheus scraping 
+        if: ${{ inputs.env == 'dev' }}
         shell: bash
+        id: allow-prom-scrape
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
-          DASHBOARD_NAME: datahub-status-dashboard
         run: |
           envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
             kubectl apply -f - --namespace=${KUBE_NAMESPACE}
 
-          kubectl create configmap ${DASHBOARD_NAME} \
-          --from-file=helm_deploy/monitoring/datahub-dashboard.json \
-          --dry-run \
-          --output yaml | 
-            kubectl label -f- \
+      - name: update grafana status dashboard configmap
+        if: ${{ inputs.env == 'dev' }}
+        shell: bash
+        id: update-grafana-status-dashboard
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          DASHBOARD: "datahub-status-dashboard"
+          DASHBOARD_FILE: "datahub-dashboard.json"
+        run: |
+            kubectl create configmap ${DASHBOARD} \
+            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}" \
             --dry-run \
-            --output yaml \
-            --local grafana_dashboard=${DASHBOARD_NAME} | 
-            kubectl apply -f- \
-            --namespace=${KUBE_NAMESPACE}
+            --output yaml | 
+              kubectl label -f- \
+              --dry-run \
+              --output yaml \
+              --local grafana_dashboard=${DASHBOARD} | 
+              kubectl apply -f- \
+              --namespace=${KUBE_NAMESPACE}
+
+      - name: update grafana deployment dashboard configmap
+        if: ${{ inputs.env == 'dev' }}
+        shell: bash
+        id: update-grafana-deployment-dashboard
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          DASHBOARD: "datahub-deployment-dashboard"
+          DASHBOARD_FILE: "datahub-deployment-dashboard.json"
+        run: |
+          kubectl create configmap ${DASHBOARD} \
+            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}" \
+            --dry-run \
+            --output yaml | 
+              kubectl label -f- \
+              --dry-run \
+              --output yaml \
+              --local grafana_dashboard=${DASHBOARD} | 
+              kubectl apply -f- \
+              --namespace=${KUBE_NAMESPACE}
