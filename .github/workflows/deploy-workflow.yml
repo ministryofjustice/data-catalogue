@@ -194,6 +194,11 @@ jobs:
           echo $DASHBOARDS_JSON | jq -r 'to_entries | .[].key' | while read DASHBOARD; do
             DASHBOARD_FILE=$(echo $DATA | jq -r --arg e "${DASHBOARD}" ".[$e]")
             
+            echo ${DASHBOARD}
+            echo ${DASHBOARD_FILE}
+            echo grafana_dashboard=${DASHBOARD}
+            echo "helm_deploy/monitoring/${DASHBOARD_FILE}.json"
+
             kubectl create configmap ${DASHBOARD} \
             --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}.json" \
             --dry-run \
