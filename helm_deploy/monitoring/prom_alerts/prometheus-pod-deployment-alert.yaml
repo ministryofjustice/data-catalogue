@@ -1,0 +1,60 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ${KUBE_NAMESPACE}-alerting-ingress
+  labels:
+    role: alert-rules
+    prometheus: cloud-platform
+spec:
+  groups:
+    - name: application-rules
+      rules:
+        - alert: KubeDeploymentGenerationMismatch
+          annotations:
+            message:
+              Deployment generation for {{ $labels.namespace }}/{{ $labels.deployment
+              }} does not match, this indicates that the Deployment has failed but has
+              not been rolled back.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: |-
+            kube_deployment_status_observed_generation{namespace=~"${KUBE_NAMESPACE}", job="kube-state-metrics"}
+              !=
+            kube_deployment_metadata_generation{namespace=~"${KUBE_NAMESPACE}", job="kube-state-metrics"}
+          for: 15m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: KubeDeploymentReplicasMismatch
+          annotations:
+            message:
+              Deployment {{ $labels.namespace }}/{{ $labels.deployment }} has not
+              matched the expected number of replicas for longer than an hour.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: |-
+            kube_deployment_spec_replicas{namespace=~"${KUBE_NAMESPACE}", job="kube-state-metrics"}
+              !=
+            kube_deployment_status_replicas_available{namespace=~"${KUBE_NAMESPACE}", job="kube-state-metrics"}
+          for: 1h
+          labels:
+            severity: DataHub-${ENV}
+        - alert: KubeCronJobRunning
+          annotations:
+            message:
+              CronJob {{ $labels.namespace }}/{{ $labels.cronjob }} is taking more
+              than 1h to complete.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: time() - kube_cronjob_next_schedule_time{namespace=~"${KUBE_NAMESPACE}"} > 3600
+          for: 1h
+          labels:
+            severity: DataHub-${ENV}
+        - alert: KubeJobFailed
+          annotations:
+            message: Job {{ $labels.namespace }}/{{ $labels.job_name }} failed to complete.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: kube_job_status_failed{namespace=~"${KUBE_NAMESPACE}"}  > 0
+          for: 1h
+          labels:
+            severity: DataHub-${ENV}

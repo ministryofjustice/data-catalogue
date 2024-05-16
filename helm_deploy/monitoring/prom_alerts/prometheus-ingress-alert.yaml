@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ${KUBE_NAMESPACE}-alerting-ingress
+  labels:
+    role: alert-rules
+    prometheus: cloud-platform
+spec:
+  groups:
+    - name: application-rules
+      rules:
+        - alert: ModSecurityBlocking
+          annotations:
+            message: modsecurity is blocking ingress {{ $labels.ingress }}
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: |-
+            avg(rate(nginx_ingress_controller_request_duration_seconds_count{exported_namespace=~"${KUBE_NAMESPACE}", status="406"}[1m]) * 60 > 0) by (ingress)
+          for: 1m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ErrorResponses
+          annotations:
+            message: ingress {{ $labels.ingress }} is serving 5XX responses
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: |-
+            avg(rate(nginx_ingress_controller_request_duration_seconds_count{exported_namespace=~"${KUBE_NAMESPACE}", status=~"5.*"}[1m]) * 60 > 0) by (ingress)
+          for: 1m
+          labels:
+            severity: DataHub-${ENV}

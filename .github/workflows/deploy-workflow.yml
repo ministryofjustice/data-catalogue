@@ -133,10 +133,13 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           BASE_HOST: apps.live.cloud-platform.service.justice.gov.uk
           RELEASE_NAME: datahub
+          POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
         run: |-
           echo "BASE_HOST=${BASE_HOST}" >> $GITHUB_ENV 
           echo "APP_SHORT_HOST=${KUBE_NAMESPACE/data-platform-/}.${BASE_HOST}" >> $GITHUB_ENV
           echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${{ inputs.env }}-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
+          echo "OPENSEARCH_DOMAIN=$(echo ${OPENSEARCH_PROXY_HOST} | sed -e 's/[.].*$//' -e 's/opensearch-proxy-service-//')" >> $GITHUB_ENV
+          echo "RDS_DOMAIN=$(echo ${POSTGRES_CLIENT_HOST/[.]*/})" >> $GITHUB_ENV
 
       - name: install datahub helm charts
         shell: bash
@@ -181,6 +184,19 @@ jobs:
         run: |
           envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
             kubectl apply -f - --namespace=${KUBE_NAMESPACE}
+
+      - name: apply PrometheusRule alerts
+        shell: bash
+        id: apply-prom-rule-alerts
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          ENV: ${{ inputs.env }}
+        run: |
+          for filename in ./helm_deploy/monitoring/prom_alerts/prometheus-*-alert.yaml; do 
+            [ -e "$filename" ] || continue 
+            envsubst < "$filename" | 
+              kubectl apply -f - --namespace=${KUBE_NAMESPACE}
+          done
 
       - name: update grafana status dashboard configmap
         if: ${{ inputs.env == 'dev' }}

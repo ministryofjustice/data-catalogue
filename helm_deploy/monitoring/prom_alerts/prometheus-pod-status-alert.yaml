@@ -1,0 +1,84 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ${KUBE_NAMESPACE}-alerting-status
+  labels:
+    role: alert-rules
+    prometheus: cloud-platform
+spec:
+  groups:
+    - name: application-rules
+      rules:
+        - alert: OOMKiller
+          annotations:
+            message: :alert:Service '{{"{{" }} $labels.pod {{"}}"}}'
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: >-
+            (kube_pod_container_status_restarts_total{job="kube-state-metrics",namespace="${KUBE_NAMESPACE}"} 
+            - kube_pod_container_status_restarts_total{job="kube-state-metrics",namespace="${KUBE_NAMESPACE}"} offset 10m >= 1) 
+            and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{job="kube-state-metrics",namespace="${KUBE_NAMESPACE}",reason="OOMKilled"}[10m]) == 1
+          labels:
+            severity: DataHub-${ENV}
+        - alert: TooManyContainerRestarts
+          annotations:
+            message: :alert:Service '{{"{{" }} $labels.pod {{"}}"}}' was restarted many times
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: sum(increase(kube_pod_container_status_restarts_total{namespace="${KUBE_NAMESPACE}",pod_template_hash=""}[15m])) by (pod,namespace,container) > 10
+          for: 0m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: CrashLoopBackOff
+          annotations:
+            message: :alert:Service '{{"{{" }} $labels.pod {{"}}"}}' CrashLoopBackOff
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: sum by (namespace, pod) (kube_pod_status_phase{job="kube-state-metrics",namespace="${KUBE_NAMESPACE}",phase=~"CrashLoopBackOff"}) > 0
+          for: 0m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: PodNotReadyKube
+          annotations:
+            message: :alert:Service '{{"{{" }} $labels.pod {{"}}"}}' has been in a non-ready state for more than 15 minutes
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: sum by(namespace,pod)(kube_pod_status_phase{job="kube-state-metrics",namespace="${KUBE_NAMESPACE}",phase=~"Pending|Unknown"}) > 0
+          for: 15m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ContainerRestartAlert
+          annotations:
+            message: :alert:Service '{{"{{" }} $labels.pod {{"}}"}}' has restarted.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: (sum(increase(kube_pod_container_status_restarts_total{namespace="${KUBE_NAMESPACE}"}[10m])) by (container, namespace)) > 0
+          for: 5m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: KubePodCrashLooping
+          annotations:
+            message:
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container
+              }}) is restarting {{ printf "%.2f" $value }} times / 5 minutes.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr:
+            rate(kube_pod_container_status_restarts_total{namespace=~"${KUBE_NAMESPACE}", job="kube-state-metrics"}[15m])
+            * 60 * 5 > 0
+          for: 1h
+          labels:
+            severity: DataHub-${ENV}
+        - alert: KubePodNotReady
+          annotations:
+            message:
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-ready
+              state for longer than an hour.
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr:
+            sum by (namespace, pod) (kube_pod_status_phase{namespace=~"${KUBE_NAMESPACE}", job="kube-state-metrics",
+            phase=~"Pending|Unknown"}) > 0
+          for: 1h
+          labels:
+            severity: DataHub-${ENV}

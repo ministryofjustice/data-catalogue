@@ -1,0 +1,94 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ${KUBE_NAMESPACE}-alerting-ingress
+  labels:
+    role: alert-rules
+    prometheus: cloud-platform
+spec:
+  groups:
+    - name: application-rules
+      rules:
+        - alert: RDSLowStorage
+          annotations:
+            message: "[{{ $labels.dbinstance_identifier }}] RDS storage below 5GB."
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: aws_rds_free_storage_space_average{dbinstance_identifier=${RDS_DOMAIN}} offset 10m < 5000000000
+          for: 5m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: RDSCPUUtilization
+          annotations:
+            message: "[{{ $labels.dbinstance_identifier }}] RDS CPU utilization above 80%."
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: aws_rds_cpuutilization_average{dbinstance_identifier=${RDS_DOMAIN}} > 80
+          for: 15m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: RDSMaxConnections
+          annotations:
+            message: "[{{ $labels.dbinstance_identifier }}] RDS connections above 80% of maximum."
+            runbook_url: https://runbooks.data-catalogue.service.justice.gov.uk/
+            dashboard_url: https://grafana.live.cloud-platform.service.justice.gov.uk/d/2yTpJtUU4G8iGuqPdEkG/datahub-deployment-status-dashboard
+          expr: aws_rds_database_connections_maximum{dbinstance_identifier=${RDS_DOMAIN}} > 1044
+          for: 15m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterRedStatus
+          annotations:
+            message: "[{{ $labels.domain_name }}] At least one primary ElasticSearch shard and its replicas are not allocated to a node."
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-red-cluster-status
+          expr: aws_es_cluster_status_red_maximum{domain_name=${OPENSEARCH_DOMAIN}} >= 1
+          for: 1m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterYellowStatus
+          annotations:
+            message: "[{{ $labels.domain_name }}] At least one ElasticSearch replica shard is not allocated to a node"
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status
+          expr: aws_es_cluster_status_yellow_maximum{domain_name=${OPENSEARCH_DOMAIN}} >= 1
+          for: 6m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterFreeStorageSpace
+          annotations:
+            message: "[{{ $labels.domain_name }}] A node in the ElasticSearch cluster is down to 3 GiB of free storage space"
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-watermark
+          expr: aws_es_free_storage_space_maximum{domain_name=${OPENSEARCH_DOMAIN}} <= 3072
+          for: 1m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterIndexWritesBlocked
+          annotations:
+            message: "[{{ $labels.domain_name }}] The ElasticSearch cluster is blocking write requests"
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#troubleshooting-cluster-block
+          expr: aws_es_cluster_index_writes_blocked_maximum{domain_name=${OPENSEARCH_DOMAIN}} >= 1
+          for: 5m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterAutomatedSnapshotFailure
+          annotations:
+            message: "[{{ $labels.domain_name }}] An automated snapshot for the ElasticSearch cluster failed"
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/cloudwatch-alarms.html
+          expr: aws_es_automated_snapshot_failure_maximum{domain_name=${OPENSEARCH_DOMAIN}} >= 1
+          for: 1m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterJVMMemoryPressure
+          annotations:
+            message: "[{{ $labels.domain_name }}] The ElasticSearch cluster could encounter out of memory errors if usage increases"
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/cloudwatch-alarms.html
+          expr: aws_es_jvmmemory_pressure_maximum{domain_name=${OPENSEARCH_DOMAIN}} >= 80
+          for: 15m
+          labels:
+            severity: DataHub-${ENV}
+        - alert: ElasticSearchClusterCPUUtilization
+          annotations:
+            message: "[{{ $labels.domain_name }}] The ElasticSearch cluster has sustained high CPU usage"
+            runbook_url: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/cloudwatch-alarms.html
+          expr: aws_es_cpuutilization_maximum{domain_name=${OPENSEARCH_DOMAIN}} >= 80
+          for: 15m
+          labels:
+            severity: DataHub-${ENV}
