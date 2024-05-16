@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: ${KUBE_NAMESPACE}-alerting-ingress
+  name: ${KUBE_NAMESPACE}-alerting-aws-resources
   labels:
     role: alert-rules
     prometheus: cloud-platform
