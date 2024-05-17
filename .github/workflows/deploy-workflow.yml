@@ -133,10 +133,12 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
           BASE_HOST: apps.live.cloud-platform.service.justice.gov.uk
           RELEASE_NAME: datahub
+          OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
         run: |-
           echo "BASE_HOST=${BASE_HOST}" >> $GITHUB_ENV 
           echo "APP_SHORT_HOST=${KUBE_NAMESPACE/data-platform-/}.${BASE_HOST}" >> $GITHUB_ENV
           echo "EXT_DNS_ID=${RELEASE_NAME}-datahub-frontend-${{ inputs.env }}-${KUBE_NAMESPACE}-green" >> $GITHUB_ENV
+          echo "OPENSEARCH_DOMAIN=$(echo ${OPENSEARCH_PROXY_HOST} | sed -e 's/[.].*$//' -e 's/opensearch-proxy-service-//')" >> $GITHUB_ENV
 
       - name: install datahub helm charts
         shell: bash
@@ -173,7 +175,6 @@ jobs:
           --set global.sql.datasource.url=${POSTGRES_URL}
 
       - name: allow CP prometheus scraping 
-        if: ${{ inputs.env == 'dev' }}
         shell: bash
         id: allow-prom-scrape
         env:
@@ -211,8 +212,13 @@ jobs:
           DASHBOARD: "datahub-deployment-dashboard"
           DASHBOARD_FILE: "datahub-deployment-dashboard.json"
         run: |
+          DASHBOARD_JSON="helm_deploy/monitoring/${DASHBOARD_FILE}"
+          
+          jq --arg e ${OPENSEARCH_DOMAIN} '(.templating.list[] | (select(.label == "DomainName").current.text),select(.label == "DomainName").current.value) |= $e' $DASHBOARD_JSON > temp_json.json \
+            && mv temp_json.json $DASHBOARD_JSON
+          
           kubectl create configmap ${DASHBOARD} \
-            --from-file="helm_deploy/monitoring/${DASHBOARD_FILE}" \
+            --from-file=$DASHBOARD_JSON \
             --dry-run \
             --output yaml | 
               kubectl label -f- \

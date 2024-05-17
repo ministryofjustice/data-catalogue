@@ -60,15 +60,13 @@
   "liveNow": false,
   "panels": [
     {
-      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 39,
-      "panels": [],
+      "id": 58,
       "title": "Resource Usage",
       "type": "row"
     },
@@ -343,6 +341,737 @@
         "x": 0,
         "y": 9
       },
+      "id": 39,
+      "panels": [],
+      "title": "OpenSearch Status",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "$datasource"
+      },
+      "description": "Indicates shard allocation status.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short",
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterStatus.green_Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterStatus.red_Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterStatus.yellow_Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Red"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Green"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 30
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 10
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.3.3",
+      "targets": [
+        {
+          "alias": "Green",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "Green",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "ClusterStatus.green",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "A",
+          "region": "$region",
+          "statistic": "Maximum"
+        },
+        {
+          "alias": "Yellow",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "Yellow",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "ClusterStatus.yellow",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "B",
+          "region": "$region",
+          "statistic": "Maximum"
+        },
+        {
+          "alias": "Red",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "Red",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "ClusterStatus.red",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "C",
+          "region": "$region",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "OS Cluster Status",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "$datasource"
+      },
+      "description": "Indicates where data nodes can reach the master node. Failures are usually the result of a network connectivity problem.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "max": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short",
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Red"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 50
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Green"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 50
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 10
+      },
+      "id": 56,
+      "interval": "1m",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.3.3",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "hide": true,
+          "id": "m3",
+          "label": "",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "MasterReachableFromNode",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "A",
+          "region": "$region",
+          "statistic": "Maximum"
+        },
+        {
+          "alias": "Green",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {},
+          "expression": "m3",
+          "id": "",
+          "label": "Green",
+          "matchExact": true,
+          "metricEditorMode": 1,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "refId": "B",
+          "region": "$region",
+          "statistic": "Average"
+        },
+        {
+          "alias": "Red",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {},
+          "expression": "(m3*(-2))+2",
+          "id": "",
+          "label": "Red",
+          "matchExact": true,
+          "metricEditorMode": 1,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "refId": "C",
+          "region": "$region",
+          "statistic": "Average"
+        }
+      ],
+      "title": "OS master instance connection status",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "$datasource"
+      },
+      "description": "The number of requests to a domain, aggregated by HTTP response code (2xx, 3xx, 4xx, 5xx).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short",
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2XX"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 30
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "3XX"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 30
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "4XX"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 30
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5XX"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 30
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterStatus.green_Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterStatus.red_Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterStatus.yellow_Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Red"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 10
+      },
+      "id": 57,
+      "interval": "",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.3.3",
+      "targets": [
+        {
+          "alias": "2XX",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "2XX",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "2xx",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "period": "1m",
+          "refId": "D",
+          "region": "$region",
+          "statistic": "Sum"
+        },
+        {
+          "alias": "3XX",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "3XX",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "3xx",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "C",
+          "region": "$region",
+          "statistic": "Sum"
+        },
+        {
+          "alias": "4XX",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "4XX",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "4xx",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "B",
+          "region": "$region",
+          "statistic": "Sum"
+        },
+        {
+          "alias": "5XX",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dimensions": {
+            "ClientId": "$clientId",
+            "DomainName": "$domainName"
+          },
+          "expression": "",
+          "id": "",
+          "label": "5XX",
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "5xx",
+          "metricQueryType": 0,
+          "namespace": "AWS/ES",
+          "refId": "A",
+          "region": "$region",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "OS HTTP requests by response code",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
       "id": 38,
       "panels": [],
       "title": "Pod status",
@@ -443,7 +1172,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 10
+        "y": 16
       },
       "id": 21,
       "options": {
@@ -545,7 +1274,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 10
+        "y": 16
       },
       "id": 31,
       "options": {
@@ -648,7 +1377,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 10
+        "y": 16
       },
       "id": 32,
       "options": {
@@ -689,7 +1418,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 24
       },
       "id": 37,
       "panels": [],
@@ -791,7 +1520,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 19
+        "y": 25
       },
       "id": 19,
       "options": {
@@ -919,7 +1648,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 19
+        "y": 25
       },
       "id": 22,
       "options": {
@@ -1005,8 +1734,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1049,7 +1777,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 27
+        "y": 33
       },
       "id": 20,
       "options": {
@@ -1133,8 +1861,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1177,7 +1904,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 27
+        "y": 33
       },
       "id": 23,
       "options": {
@@ -1221,7 +1948,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 41
       },
       "id": 12,
       "panels": [],
@@ -1286,8 +2013,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1304,7 +2030,7 @@
         "h": 10,
         "w": 20,
         "x": 0,
-        "y": 36
+        "y": 42
       },
       "id": 15,
       "interval": "1m",
@@ -1357,8 +2083,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1371,7 +2096,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 36
+        "y": 42
       },
       "id": 34,
       "options": {
@@ -1426,8 +2151,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1440,7 +2164,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 39
+        "y": 45
       },
       "id": 28,
       "options": {
@@ -1495,8 +2219,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1509,7 +2232,7 @@
         "h": 2,
         "w": 4,
         "x": 20,
-        "y": 42
+        "y": 48
       },
       "id": 29,
       "options": {
@@ -1564,8 +2287,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1578,7 +2300,7 @@
         "h": 2,
         "w": 4,
         "x": 20,
-        "y": 44
+        "y": 50
       },
       "id": 33,
       "options": {
@@ -1652,7 +2374,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 46
+        "y": 52
       },
       "heatmap": {},
       "hideZeroBuckets": true,
@@ -1783,8 +2505,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1801,7 +2522,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 46
+        "y": 52
       },
       "id": 17,
       "options": {
@@ -1913,8 +2634,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1931,7 +2651,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 54
+        "y": 60
       },
       "id": 16,
       "options": {
@@ -2017,8 +2737,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2035,7 +2754,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 54
+        "y": 60
       },
       "id": 36,
       "options": {
@@ -2171,8 +2890,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2189,7 +2907,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 54
+        "y": 60
       },
       "id": 26,
       "options": {
@@ -2246,7 +2964,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 68
       },
       "id": 35,
       "panels": [],
@@ -2310,8 +3028,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2341,7 +3058,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 63
+        "y": 69
       },
       "id": 24,
       "options": {
@@ -2433,8 +3150,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2464,7 +3180,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 63
+        "y": 69
       },
       "id": 40,
       "options": {
@@ -2646,11 +3362,108 @@
         "regex": "Prometheus",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Cloudwatch-Datasource",
+          "value": "Cloudwatch-Datasource"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Datasource",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "cloudwatch",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        "datasource": {
+          "uid": "$datasource"
+        },
+        "definition": "regions()",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Region",
+        "multi": false,
+        "name": "region",
+        "options": [],
+        "query": "regions()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "uid": "$datasource"
+        },
+        "definition": "dimension_values($region, AWS/ES, ClusterStatus.green, DomainName)\t",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DomainName",
+        "multi": false,
+        "name": "domainName",
+        "options": [],
+        "query": "dimension_values($region, AWS/ES, ClusterStatus.green, DomainName)\t",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "uid": "$datasource"
+        },
+        "definition": "dimension_values($region, AWS/ES, ClusterStatus.green, ClientId)",
+        "hide": 2,
+        "includeAll": false,
+        "label": "ClientId",
+        "multi": false,
+        "name": "clientId",
+        "options": [],
+        "query": "dimension_values($region, AWS/ES, ClusterStatus.green, ClientId)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -2680,6 +3493,6 @@
   "timezone": "browser",
   "title": "DataHub deployment status dashboard",
   "uid": "2yTpJtUU4G8iGuqPdEkG",
-  "version": 10,
+  "version": 31,
   "weekStart": ""
 }
