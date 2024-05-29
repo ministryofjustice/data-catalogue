@@ -34,7 +34,7 @@ datahub-frontend:
     - name: datahub-users
       secret:
         defaultMode: 0444
-        secretName:  datahub-users-secret
+        secretName: datahub-users-secret
   extraVolumeMounts:
     - name: datahub-users
       mountPath: /datahub-frontend/conf/user.props
@@ -51,8 +51,7 @@ datahub-frontend:
     type: ClusterIP
   serviceMonitor:
     create: true
-  lifecycle:
-    {}
+  lifecycle: {}
   resources:
     limits:
       memory: 1400Mi
@@ -60,8 +59,10 @@ datahub-frontend:
       cpu: 100m
       memory: 512Mi
   podSecurityContext:
+    allowPrivilegeEscalation: false
     fsGroup: 101
   securityContext:
+    allowPrivilegeEscalation: false
     runAsUser: 100
   # Set up ingress to expose react front-end
   ingress:
@@ -98,11 +99,12 @@ acryl-datahub-actions:
   podSecurityContext:
     fsGroup: 103
   securityContext:
+    allowPrivilegeEscalation: false
     runAsUser: 102
   image:
     repository: acryldata/datahub-actions
     tag: v0.0.15
-  # mount the k8s secret as a volume in the container, each key name is mounted as a 
+  # mount the k8s secret as a volume in the container, each key name is mounted as a
   # file on the mount path /etc/datahub/ingestion-secret-files
   # ingestionSecretFiles:
   #   name: ${K8S_SECRET_NAME}
@@ -147,6 +149,7 @@ kafkaSetupJob:
   podSecurityContext:
     fsGroup: 101
   securityContext:
+    allowPrivilegeEscalation: false
     runAsUser: 1000
   annotations:
     helm.sh/hook: pre-install,pre-upgrade
@@ -174,6 +177,7 @@ postgresqlSetupJob:
   podSecurityContext:
     fsGroup: 101
   securityContext:
+    allowPrivilegeEscalation: false
     runAsUser: 1000
   annotations:
     helm.sh/hook: pre-install,pre-upgrade
@@ -205,6 +209,7 @@ datahubUpgrade:
   podSecurityContext:
     fsGroup: 101
   securityContext:
+    allowPrivilegeEscalation: false
     runAsUser: 100
   podAnnotations: {}
   extraSidecars: []
@@ -268,6 +273,7 @@ datahubSystemUpdate:
   podSecurityContext:
     fsGroup: 101
   securityContext:
+    allowPrivilegeEscalation: false
     runAsUser: 100
   podAnnotations: {}
   resources:
@@ -419,7 +425,6 @@ global:
             secretKeyRef:
               name: rds-postgresql-instance-output
               key: database_name
-
 
   datahub:
     version: v0.13.2
