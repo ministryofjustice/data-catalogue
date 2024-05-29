@@ -49,3 +49,25 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: datahub ingest -c ingestion/cadet.yaml
+
+      - name: Notify on failure
+        uses: slackapi/slack-github-action@v1.26.0
+        if: job.status == 'failure'
+        with:
+          channel-id: "C071VNHPUHZ"
+          payload: |
+            {
+                "text": ":warning: Unable to ingest CaDeT metadata!",
+                "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                }
+                ]
+            }
+
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.VULN_CHECK_SLACK_BOT_TOKEN }}
