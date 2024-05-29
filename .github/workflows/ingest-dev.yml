@@ -1,4 +1,4 @@
-name: Deploy dev
+name: Ingest metadata to dev
 
 on:
   schedule:
