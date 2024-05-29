@@ -29,7 +29,7 @@ on:
         default: eu-west-1
 
 jobs:
-  datahub-injest:
+  datahub-ingest:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
