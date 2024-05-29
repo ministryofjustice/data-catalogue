@@ -45,7 +45,7 @@ jobs:
         run: pip install acryl-datahub[dbt]
       - name: push metadata to datahub
         env:
-          DATAHUB_GMS_TOKEN: ${{ secrets.CATALOGUE_TOKEN }}
-          DATAHUB_GMS_URL: ${{ vars.CATALOGUE_URL }}
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: datahub ingest -c ingestion/cadet.yaml
