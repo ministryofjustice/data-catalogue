@@ -5,6 +5,7 @@ datahub-gms:
     repository: acryldata/datahub-gms
   securityContext:
     runAsUser: 100
+    allowPrivilegeEscalation: false
   resources:
     limits:
       memory: 2Gi
@@ -59,7 +60,6 @@ datahub-frontend:
       cpu: 100m
       memory: 512Mi
   podSecurityContext:
-    allowPrivilegeEscalation: false
     fsGroup: 101
   securityContext:
     allowPrivilegeEscalation: false
@@ -132,6 +132,8 @@ elasticsearchSetupJob:
       value: "true"
     - name: OPENSEARCH_USE_AWS_IAM_AUTH
       value: "true"
+  securityContext:
+    allowPrivilegeEscalation: false
 
 kafkaSetupJob:
   enabled: true
