@@ -1,6 +1,8 @@
 source:
   type: dbt
   config:
+    aws_connection:
+      aws_region: eu-west-1
     manifest_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
     catalog_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/catalog.json"
     test_results_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/run_results.json"
@@ -8,20 +10,29 @@ source:
     target_platform: athena
     target_platform_instance: athena_cadet
     infer_dbt_schemas: true
+    node_name_pattern:
+      allow:
+        - ".*bold_sm_spells.*"
+        - ".*common_platform.*"
+        - ".*sirius.*"
     entities_enabled:
-      test_results: true
-      seeds: false
-      snapshots: true
-      models: true
-      sources: true
-      test_definitions: true
+      test_results: "YES"
+      seeds: "NO"
+      snapshots: "YES"
+      models: "YES"
+      sources: "YES"
+      test_definitions: "YES"
     stateful_ingestion:
       remove_stale_metadata: true
 transformers:
-  - type: pattern_add_dataset_domain
+  - type: "pattern_add_dataset_domain"
     config:
       semantics: OVERWRITE
       domain_pattern:
         rules:
-          'urn:li:dataset:\(urn:li:dataPlatform:dbt,cadet\.awsdatacatalog\.courts.*':
-            [courts]
+          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*common_platform.*':
+            ["HMCTS"]
+          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*prison.*':
+            ["HMPPS"]
+          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*sirius.*':
+            ["OPG"]
