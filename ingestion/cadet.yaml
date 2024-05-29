@@ -1,6 +1,8 @@
 source:
   type: dbt
   config:
+    aws_connection:
+      aws_region: eu-west-1
     manifest_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
     catalog_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/catalog.json"
     test_results_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/run_results.json"
