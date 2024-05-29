@@ -48,5 +48,4 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.CATALOGUE_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.CATALOGUE_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: |
-          datahub ingest -c ingestion/cadet.yaml
+        run: datahub ingest -c ingestion/cadet.yaml
