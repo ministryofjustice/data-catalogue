@@ -70,4 +70,4 @@ jobs:
             }
 
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.VULN_CHECK_SLACK_BOT_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ALERT_WEBHOOK }}
