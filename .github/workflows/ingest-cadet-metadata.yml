@@ -5,6 +5,17 @@ permissions:
   contents: read
 
 on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "which environment to deploy to"
+        required: true
+        type: string
+      ecr_region:
+        description: "ecr region to connect to"
+        required: false
+        type: string
+        default: eu-west-1
   workflow_call:
     inputs:
       env:
