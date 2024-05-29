@@ -1,4 +1,4 @@
-name: Security Advisory Alert
+name: DataHub Security Advisory Alert
 
 on:
   schedule:

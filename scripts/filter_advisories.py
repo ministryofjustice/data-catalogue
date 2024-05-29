@@ -106,7 +106,7 @@ def main():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": ":alert: contains _high severity_ advisory :alert:",
+                        "text": ":warning: contains _high severity_ advisory :warning:",
                     },
                 },
             )
