@@ -6,6 +6,8 @@ datahub-gms:
   securityContext:
     runAsUser: 100
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsNonRoot: true
     capabilities:
       drop: ["ALL"]
@@ -67,6 +69,8 @@ datahub-frontend:
     fsGroup: 101
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsUser: 100
     runAsNonRoot: true
     capabilities:
@@ -108,6 +112,8 @@ acryl-datahub-actions:
     fsGroup: 103
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsUser: 102
     runAsNonRoot: true
     capabilities:
@@ -146,6 +152,8 @@ elasticsearchSetupJob:
       value: "true"
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsNonRoot: true
     runAsUser: 100
     capabilities:
@@ -169,6 +177,8 @@ kafkaSetupJob:
     fsGroup: 101
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsUser: 1000
     runAsNonRoot: true
     capabilities:
@@ -202,6 +212,8 @@ postgresqlSetupJob:
     fsGroup: 101
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsUser: 1000
     runAsNonRoot: true
     capabilities:
@@ -238,6 +250,8 @@ datahubUpgrade:
     fsGroup: 101
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsUser: 100
     runAsNonRoot: true
     capabilities:
@@ -306,6 +320,8 @@ datahubSystemUpdate:
     fsGroup: 101
   securityContext:
     allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
     runAsUser: 100
     runAsNonRoot: true
     capabilities:
