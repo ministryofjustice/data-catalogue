@@ -7,6 +7,8 @@ on:
       - "scripts/**.py"
       - "tests/**.py"
   push:
+    branches:
+      - main
     paths:
       - "scripts/**.py"
       - "tests/**.py"
