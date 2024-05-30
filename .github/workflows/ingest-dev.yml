@@ -1,0 +1,12 @@
+name: Ingest metadata to dev
+
+on:
+  schedule:
+    - cron: "0 10,15 * * *" # 10am, 3pm
+  workflow_dispatch:
+
+jobs:
+  ingest-cadet-dev:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      env: dev

@@ -1,0 +1,74 @@
+name: "Ingest DBT metadata from Create a Derived Table"
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "which environment to deploy to"
+        required: true
+        type: string
+      ecr_region:
+        description: "ecr region to connect to"
+        required: false
+        type: string
+        default: eu-west-1
+  workflow_call:
+    inputs:
+      env:
+        description: "which environment to deploy to"
+        required: true
+        type: string
+      ecr_region:
+        description: "ecr region to connect to"
+        required: false
+        type: string
+        default: eu-west-1
+
+jobs:
+  datahub-ingest:
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11.1
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.ECR_REGION }}
+      - name: install reqs
+        run: pip install acryl-datahub[dbt]
+      - name: push metadata to datahub
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: datahub ingest -c ingestion/cadet.yaml
+
+      - name: Notify on failure
+        uses: slackapi/slack-github-action@v1.26.0
+        if: job.status == 'failure'
+        with:
+          channel-id: "C071VNHPUHZ"
+          payload: |
+            {
+                "text": ":warning: Unable to ingest CaDeT metadata!",
+                "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                }
+                ]
+            }
+
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ALERT_WEBHOOK }}
