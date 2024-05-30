@@ -1,8 +1,8 @@
 name: Ingest metadata to test and preprod
 
 on:
-  schedule:
-    - cron: "0 3 * * *" # 3am UTC
+  # schedule:
+  #   - cron: "0 3 * * *" # 3am UTC
   workflow_dispatch:
 
 jobs:
