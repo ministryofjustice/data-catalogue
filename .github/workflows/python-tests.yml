@@ -26,4 +26,4 @@ jobs:
 
       - name: run unit tests
         id: python-tests
-        run: poetry run pytest tests/
+        run: pytest tests/
