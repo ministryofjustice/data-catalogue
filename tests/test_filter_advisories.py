@@ -200,9 +200,17 @@ class TestFormatSlackOutput:
     @pytest.mark.parametrize(
         "filtered_advisory_ids,expected_block_count,contains_high_severity",
         [
-            (["GHSA-xxxx-xxxx-xxxx", "GHSA-yyyy-yyyy-yyyy"], 5, True),
-            (["GHSA-xxxx-xxxx-xxxx"], 1, False),
-            (["GHSA-yyyy-yyyy-yyyy"], 3, True),
+            (
+                ["GHSA-xxxx-xxxx-xxxx", "GHSA-yyyy-yyyy-yyyy"],
+                5,  # 5 blocks: 1x warning, 2x div, 2x advisory
+                True,
+            ),
+            (["GHSA-xxxx-xxxx-xxxx"], 1, False),  # 1 blocks: 1x advisory
+            (
+                ["GHSA-yyyy-yyyy-yyyy"],
+                3,  # 3 blocks: 1x warning, 1x div, 1x advisory
+                True,
+            ),
         ],
     )
     def test_format_slack_output(
