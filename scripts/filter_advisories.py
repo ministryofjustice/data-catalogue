@@ -1,4 +1,3 @@
-import csv
 import json
 import re
 import sys
@@ -13,10 +12,51 @@ def to_snake_case(s: str) -> str:
     return re.sub(r"\W|^(?=\d)", "_", s).lower()
 
 
-def parse_advisories(filename: str) -> List[Dict[str, Any]]:
+def read_advisories(filename: str) -> List[Dict[str, Any]]:
     """Load advisories from a JSON file."""
     with open(filename, "r") as f:
         return json.load(f)
+
+
+class ValidationError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+
+def parse_vulnerabilities(
+    advisory: Dict[str, Any],
+    filtered: List[Dict[str, Any]],
+    minimal_version: semantic_version.Version,
+) -> List[Dict[str, Any]]:
+    for vulnerability in advisory.get("vulnerabilities", []):
+        vulnerable_range: str = vulnerability.get("vulnerable_version_range", "")
+
+        if not vulnerable_range:
+            raise ValidationError(
+                f"`vulnerabilities.vulnerable_version_range` field missing for {advisory['ghsa_id']}"
+            )
+
+        try:
+            if "all" in vulnerable_range.lower():
+                filtered.append(advisory)
+                break
+
+            for vuln in vulnerable_range.split(","):
+                parsed_vulnerable_range = re.sub(r"v(\d[.])", r"\1", vuln).replace(
+                    " ", ""
+                )
+
+                range_spec = semantic_version.NpmSpec(parsed_vulnerable_range)
+
+                if minimal_version in range_spec:
+                    filtered.append(advisory)
+                    break
+
+        except ValueError:
+            filtered.append(advisory)
+            break
+
+    return filtered
 
 
 def filter_advisories(
@@ -27,29 +67,22 @@ def filter_advisories(
     """Filter advisories based on the minimal vulnerable version and publication date."""
     filtered = []
     for advisory in advisories:
-        published_at = datetime.fromisoformat(advisory.get("published_at", ""))
+        published_date: str = advisory.get("published_at", "")
+
+        if not published_date:
+            raise ValidationError(
+                f"`published_at` field missing for {advisory['ghsa_id']}"
+            )
+
+        published_at: datetime = datetime.fromisoformat(published_date)
+
         if published_at > last_run_date:
-            for vulnerability in advisory.get("vulnerabilities", []):
-                vulnerable_range = vulnerability.get("vulnerable_version_range", "")
-                if vulnerable_range:
-                    try:
-                        if vulnerable_range == "ALL":
-                            filtered.append(advisory)
-                            break
-                        parsed_vulnerable_range = re.sub(
-                            "v(\\d[.])", "\\1", vulnerable_range
-                        ).replace(" ", "")
-                        range_spec = semantic_version.NpmSpec(parsed_vulnerable_range)
-                        if minimal_version in range_spec:
-                            filtered.append(advisory)
-                            break
-                    except ValueError:
-                        filtered.append(advisory)
-                        break
+            filtered = parse_vulnerabilities(advisory, filtered, minimal_version)
+
     return filtered
 
 
-def advisory_to_slack_block(advisory):
+def advisory_to_slack_block(advisory) -> tuple[dict[str, Any], bool]:
     severity = advisory["severity"]
     high_severity = False
     if severity in ["high", "critical"]:
@@ -71,27 +104,7 @@ def advisory_to_slack_block(advisory):
     }, high_severity
 
 
-def main():
-    # Load advisories
-    advisories = parse_advisories("advisories.json")
-
-    # Define the minimal version to compare against
-    # Set default last run date to the year 2000 if not provided
-    if len(sys.argv) < 3:
-        last_run_date_str = "2000-01-01T00:00:00Z"
-    else:
-        last_run_date_str = sys.argv[2]
-    minimal_version_str = re.sub("v(\\d[.])", "\\1", sys.argv[1])
-    minimal_version = semantic_version.Version(minimal_version_str)
-    last_run_date = datetime.fromisoformat(last_run_date_str)
-
-    if not minimal_version:
-        print(f"Invalid minimal version: {minimal_version_str}")
-        sys.exit(1)
-
-    # Filter advisories
-    filtered_advisories = filter_advisories(advisories, minimal_version, last_run_date)
-
+def format_slack_output(filtered_advisories) -> dict[str, list[Any]]:
     slack_blocks = []
     high_severity = False
     for advisory in filtered_advisories:
@@ -113,7 +126,31 @@ def main():
             slack_blocks.insert(1, {"type": "divider"})
             high_severity = block_severity
 
-    output = {"blocks": slack_blocks}
+    return {"blocks": slack_blocks}
+
+
+def main():
+    # Load advisories
+    advisories = read_advisories("advisories.json")
+
+    # Define the minimal version to compare against
+    # Set default last run date to the year 2000 if not provided
+    if len(sys.argv) < 3:
+        last_run_date_str = "2000-01-01T00:00:00Z"
+    else:
+        last_run_date_str: str = sys.argv[2]
+    minimal_version_str: str = re.sub(r"v(\d[.])", r"\1", sys.argv[1])
+    minimal_version = semantic_version.Version(minimal_version_str)
+    last_run_date: datetime = datetime.fromisoformat(last_run_date_str)
+
+    if not minimal_version:
+        print(f"Invalid minimal version: {minimal_version_str}")
+        sys.exit(1)
+
+    # Filter advisories
+    filtered_advisories = filter_advisories(advisories, minimal_version, last_run_date)
+
+    output = format_slack_output(filtered_advisories)
 
     with open("filtered_advisories.json", "w") as f:
         json.dump(output, f, indent=2)
