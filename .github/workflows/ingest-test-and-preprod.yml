@@ -1,0 +1,17 @@
+name: Ingest metadata to test and preprod
+
+on:
+  # schedule:
+  #   - cron: "0 3 * * *" # 3am UTC
+  workflow_dispatch:
+
+jobs:
+  ingest-cadet-test:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      env: test
+
+  ingest-cadet-preprod:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      env: preprod
