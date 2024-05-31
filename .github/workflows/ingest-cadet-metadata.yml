@@ -58,7 +58,7 @@ jobs:
           channel-id: "C071VNHPUHZ"
           payload: |
             {
-                "text": ":warning: Unable to ingest CaDeT metadata!",
+                "text": ":warning: Unable to ingest CaDeT metadata on ${{inputs.env}}!",
                 "blocks": [
                 {
                     "type": "section",
