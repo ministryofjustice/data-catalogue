@@ -25,14 +25,6 @@ source:
     stateful_ingestion:
       remove_stale_metadata: true
 transformers:
-  - type: "pattern_add_dataset_domain"
+  - type: "add_dataset_tags"
     config:
-      semantics: OVERWRITE
-      domain_pattern:
-        rules:
-          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*common_platform.*':
-            ["HMCTS"]
-          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*prison.*':
-            ["HMPPS"]
-          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*sirius.*':
-            ["OPG"]
+      get_tags_to_add: "ingestion.cadet_display_in_catalogue_tagger.add_display_in_catalogue_tag"
