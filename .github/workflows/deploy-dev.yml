@@ -3,7 +3,7 @@ name: Deploy dev
 on:
   pull_request:
     paths:
-      - 'helm_deploy/'
+      - 'helm_deploy/**'
       - '.github/workflows/**deploy**'
       - '!helm_deploy/**test**'
       - '!.github/workflows/**test**'
