@@ -115,26 +115,26 @@ class TestFilterAdvisories:
 class TestParseVulnerabilities:
 
     @pytest.mark.parametrize(
-        "minimal_version,advisory_id,expected_count,expected_ids",
+        "minimal_version,advisory_id,expected_ids",
         [
-            ("0.11.0", "GHSA-xxxx-xxxx-xxxx", 1, ["GHSA-xxxx-xxxx-xxxx"]),
-            ("0.12.0", "GHSA-xxxx-xxxx-xxxx", 0, []),
-            ("0.11.0", "GHSA-yyyy-yyyy-yyyy", 1, ["GHSA-yyyy-yyyy-yyyy"]),
-            ("0.11.0", "GHSA-zzzz-zzzz-zzzz", 0, []),
-            ("0.11.1", "GHSA-zzzz-zzzz-zzzz", 1, ["GHSA-zzzz-zzzz-zzzz"]),
-            ("0.10.0", "GHSA-zzzz-zzzz-zzzz", 1, ["GHSA-zzzz-zzzz-zzzz"]),
+            ("0.11.0", "GHSA-xxxx-xxxx-xxxx", ["GHSA-xxxx-xxxx-xxxx"]),
+            ("0.12.0", "GHSA-xxxx-xxxx-xxxx", []),
+            ("0.11.0", "GHSA-yyyy-yyyy-yyyy", ["GHSA-yyyy-yyyy-yyyy"]),
+            ("0.11.0", "GHSA-zzzz-zzzz-zzzz", []),
+            ("0.11.1", "GHSA-zzzz-zzzz-zzzz", ["GHSA-zzzz-zzzz-zzzz"]),
+            ("0.10.0", "GHSA-zzzz-zzzz-zzzz", ["GHSA-zzzz-zzzz-zzzz"]),
         ],
     )
     def test_parse_vulnerabilities(
-        self, advisories, minimal_version, advisory_id, expected_count, expected_ids
+        self, advisories, minimal_version, advisory_id, expected_ids
     ):
         minimal_version = semantic_version.Version(minimal_version)
         filtered = []
 
         advisory = next(adv for adv in advisories if adv["ghsa_id"] == advisory_id)
-        filtered = parse_vulnerabilities(advisory, filtered, minimal_version)
+        parse_vulnerabilities(advisory, filtered, minimal_version)
 
-        assert len(filtered) == expected_count
+        assert len(filtered) == len(expected_ids)
         assert [adv["ghsa_id"] for adv in filtered] == expected_ids
 
     @pytest.mark.parametrize(
@@ -169,7 +169,7 @@ class TestParseVulnerabilities:
             "html_url": "https://github.com/datahub-project/datahub/security/advisories/GHSA-aaaa-aaaa-aaaa",
             "vulnerabilities": [{"vulnerable_version_range": "invalid_version"}],
         }
-        filtered = parse_vulnerabilities(advisory, filtered, minimal_version)
+        parse_vulnerabilities(advisory, filtered, minimal_version)
         assert len(filtered) == 1
         assert filtered[0]["ghsa_id"] == advisory["ghsa_id"]
 

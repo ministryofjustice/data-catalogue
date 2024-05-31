@@ -29,11 +29,11 @@ jobs:
           | head -n 1)
           echo "last_run_date=${LAST_RUN_DATE}" >> "${GITHUB_OUTPUT}"
 
-      - name: Read minimal version from values.yaml
-        id: read_minimal_version
+      - name: Read current version from values.yaml
+        id: read_current_version
         run: |
-          MINIMAL_VERSION=$(python -c "import yaml; print(yaml.safe_load(open('helm_deploy/values.yaml'))['global']['datahub']['version'])")
-          echo "minimal_version=${MINIMAL_VERSION}" >> "${GITHUB_OUTPUT}"
+          CURRENT_VERSION=$(python -c "import yaml; print(yaml.safe_load(open('helm_deploy/values.yaml'))['global']['datahub']['version'])")
+          echo "current_version=${CURRENT_VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,7 +46,7 @@ jobs:
       - name: Filter advisories
         id: filter_advisories
         run: python scripts/filter_advisories.py \
-          "${{ steps.read_minimal_version.outputs.minimal_version }}" \
+          "${{ steps.read_current_version.outputs.current_version }}" \
           "${{ steps.get_last_run_date.outputs.last_run_date }}"
           
       - name: Send advisories to Slack

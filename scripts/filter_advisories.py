@@ -26,8 +26,8 @@ class ValidationError(Exception):
 def parse_vulnerabilities(
     advisory: Dict[str, Any],
     filtered: List[Dict[str, Any]],
-    minimal_version: semantic_version.Version,
-) -> List[Dict[str, Any]]:
+    current_version: semantic_version.Version,
+) -> None:
     for vulnerability in advisory.get("vulnerabilities", []):
         vulnerable_range: str = vulnerability.get("vulnerable_version_range", "")
 
@@ -48,7 +48,7 @@ def parse_vulnerabilities(
 
                 range_spec = semantic_version.NpmSpec(parsed_vulnerable_range)
 
-                if minimal_version in range_spec:
+                if current_version in range_spec:
                     filtered.append(advisory)
                     break
 
@@ -56,15 +56,13 @@ def parse_vulnerabilities(
             filtered.append(advisory)
             break
 
-    return filtered
-
 
 def filter_advisories(
     advisories: List[Dict[str, Any]],
-    minimal_version: semantic_version.Version,
+    current_version: semantic_version.Version,
     last_run_date: datetime,
 ) -> List[Dict[str, Any]]:
-    """Filter advisories based on the minimal vulnerable version and publication date."""
+    """Filter advisories based on the current version and publication date."""
     filtered = []
     for advisory in advisories:
         published_date: str = advisory.get("published_at", "")
@@ -77,7 +75,7 @@ def filter_advisories(
         published_at: datetime = datetime.fromisoformat(published_date)
 
         if published_at > last_run_date:
-            filtered = parse_vulnerabilities(advisory, filtered, minimal_version)
+            parse_vulnerabilities(advisory, filtered, current_version)
 
     return filtered
 
@@ -133,22 +131,22 @@ def main():
     # Load advisories
     advisories = read_advisories("advisories.json")
 
-    # Define the minimal version to compare against
+    # Define the current version to compare against
     # Set default last run date to the year 2000 if not provided
     if len(sys.argv) < 3:
         last_run_date_str = "2000-01-01T00:00:00Z"
     else:
         last_run_date_str: str = sys.argv[2]
-    minimal_version_str: str = re.sub(r"v(\d[.])", r"\1", sys.argv[1])
-    minimal_version = semantic_version.Version(minimal_version_str)
+    current_version_str: str = re.sub(r"v(\d[.])", r"\1", sys.argv[1])
+    current_version = semantic_version.Version(current_version_str)
     last_run_date: datetime = datetime.fromisoformat(last_run_date_str)
 
-    if not minimal_version:
-        print(f"Invalid minimal version: {minimal_version_str}")
+    if not current_version:
+        print(f"Invalid current version: {current_version_str}")
         sys.exit(1)
 
     # Filter advisories
-    filtered_advisories = filter_advisories(advisories, minimal_version, last_run_date)
+    filtered_advisories = filter_advisories(advisories, current_version, last_run_date)
 
     output = format_slack_output(filtered_advisories)
 
