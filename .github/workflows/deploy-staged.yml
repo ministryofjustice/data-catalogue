@@ -3,8 +3,8 @@ name: Deploy staged
 on:
   push:
     paths:
-      - 'helm_deploy/**'
-      - '.github/workflows/**'
+      - 'helm_deploy/'
+      - '.github/workflows/**deploy**'
       - '!helm_deploy/**test**'
       - '!.github/workflows/**test**'
     branches: 
