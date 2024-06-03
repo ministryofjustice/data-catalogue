@@ -94,16 +94,21 @@ jobs:
       - name: add helm repo
         shell: bash
         id: add-helm-repo
-        continue-on-error: true
         run: |
           helm repo add datahub https://helm.datahubproject.io/
 
-      - name: update helm repos
+      - name: update and build helm dependencies
         shell: bash
-        id: update-helm-repo
-        continue-on-error: true
+        id: build-helm-deps
         run: |
-          helm repo update datahub
+          helm dependency build helm_deploy/charts/datahub-cp
+
+      # - name: update helm repos
+      #   shell: bash
+      #   id: update-helm-repo
+      #   continue-on-error: true
+      #   run: |
+      #     helm repo update datahub
 
       # - name: install datahub pre-requisites charts
       #   shell: bash
