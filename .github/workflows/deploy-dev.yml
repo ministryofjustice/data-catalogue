@@ -14,8 +14,7 @@ jobs:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
       env: dev
-      datahub_helm_version: "0.4.9"
-      datahub_prereqs_helm_version: "0.1.10"
+      datahub_cp_version: "0.1.0"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
