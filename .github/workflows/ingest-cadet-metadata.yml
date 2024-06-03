@@ -5,35 +5,35 @@ permissions:
   contents: read
 
 on:
-  workflow_dispatch:
-    inputs:
-      env:
-        description: "which environment to deploy to"
-        required: true
-        type: string
-      ecr_region:
-        description: "ecr region to connect to"
-        required: false
-        type: string
-        default: eu-west-1
   workflow_call:
     inputs:
-      env:
-        description: "which environment to deploy to"
-        required: true
-        type: string
-      ecr_region:
+      ECR_REGION:
         description: "ecr region to connect to"
         required: false
         type: string
         default: eu-west-1
+      ENVIRONMENT:
+        description: "Environment to use for secrets"
+        required: true
+        type: string
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API Key for datahub GMS"
+        required: true
+      CADET_METADATA_ROLE_TO_ASSUME:
+        description: "AWS role to assume, which can access CaDeT metadata in S3"
+        required: true
+      SLACK_ALERT_WEBHOOK:
+        description: "Webhook for posting alerts to the team"
+        required: true
 
 jobs:
   datahub-ingest:
+    environment: ${{ inputs.ENVIRONMENT }}
     timeout-minutes: 120
     runs-on: ubuntu-latest
-    environment: ${{ inputs.env }}
     steps:
+      - run: echo "ENVIRONMENT=${{inputs.ENVIRONMENT}}; URL=${{vars.DATAHUB_GMS_URL}}"
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
