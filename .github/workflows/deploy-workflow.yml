@@ -7,10 +7,6 @@ on:
         description: "which environment to deploy to"
         required: true
         type: string
-      datahub_cp_version:
-        description: "version of the datahub helm chart to use for deploy"
-        required: true
-        type: string
     secrets:
       kube_namespace:
         description: "the kubernetes namespace to deploy to"
@@ -141,7 +137,6 @@ jobs:
         id: upgrade-helm-datahub
         env:
           APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
-          CHART_VERSION: ${{ inputs.datahub_cp_version }}
           IRSA_SA: data-platform-${{ inputs.env }}
           OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
           POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
@@ -154,7 +149,6 @@ jobs:
         run: |
           helm upgrade \
           --install ${RELEASE_NAME} datahub-cp \
-          --version ${CHART_VERSION} \
           --atomic --timeout 10m0s \
           --values helm_deploy/charts/datahub-cp/values/prerequisites-values.yaml \
           --values helm_deploy/charts/datahub-cp/values/datahub-values.yaml \

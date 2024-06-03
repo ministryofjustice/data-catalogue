@@ -15,8 +15,6 @@ jobs:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
       env: test
-      datahub_helm_version: "0.4.9"
-      datahub_prereqs_helm_version: "0.1.10"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
@@ -32,8 +30,6 @@ jobs:
     needs: [deploy-test]
     with:
       env: preprod
-      datahub_helm_version: "0.4.9"
-      datahub_prereqs_helm_version: "0.1.10"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
