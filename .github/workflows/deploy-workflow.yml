@@ -101,6 +101,7 @@ jobs:
         shell: bash
         id: build-helm-deps
         run: |
+          helm dependency update helm_deploy/charts/datahub-cp
           helm dependency build helm_deploy/charts/datahub-cp
 
       # - name: update helm repos
