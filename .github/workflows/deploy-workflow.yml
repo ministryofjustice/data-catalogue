@@ -7,12 +7,8 @@ on:
         description: "which environment to deploy to"
         required: true
         type: string
-      datahub_helm_version:
+      datahub_cp_version:
         description: "version of the datahub helm chart to use for deploy"
-        required: true
-        type: string
-      datahub_prereqs_helm_version:
-        description: "version of the datahub prerequisites helm chart to use for deploy"
         required: true
         type: string
     secrets:
@@ -113,18 +109,18 @@ jobs:
         run: |
           helm repo update datahub
 
-      - name: install datahub pre-requisites charts
-        shell: bash
-        id: upgrade-helm-prereqs
-        env:
-          CHART_VERSION: ${{ inputs.datahub_prereqs_helm_version }}
-        run: |
-          helm upgrade \
-          --install prerequisites datahub/datahub-prerequisites \
-          --version ${CHART_VERSION} \
-          --atomic --timeout 5m0s \
-          --values helm_deploy/values_prerequisites-base.yaml \
-          --namespace ${{ secrets.kube_namespace }}
+      # - name: install datahub pre-requisites charts
+      #   shell: bash
+      #   id: upgrade-helm-prereqs
+      #   env:
+      #     CHART_VERSION: ${{ inputs.datahub_prereqs_helm_version }}
+      #   run: |
+      #     helm upgrade \
+      #     --install prerequisites datahub/datahub-prerequisites \
+      #     --version ${CHART_VERSION} \
+      #     --atomic --timeout 5m0s \
+      #     --values helm_deploy/values_prerequisites-base.yaml \
+      #     --namespace ${{ secrets.kube_namespace }}
 
       - name: set env vars
         shell: bash
@@ -145,34 +141,35 @@ jobs:
         id: upgrade-helm-datahub
         env:
           APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
-          CHART_VERSION: ${{ inputs.datahub_helm_version }}
+          CHART_VERSION: ${{ inputs.datahub_cp_version }}
           IRSA_SA: data-platform-${{ inputs.env }}
           OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
           POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
           POSTGRES_HOST: ${{ secrets.postgres_host }}
           POSTGRES_URL: ${{ secrets.postgres_url }}
-          RELEASE_NAME: datahub
+          RELEASE_NAME: datahub-cp
           FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
         # if many env-specific variables need setting, add --values files after 'base'
         # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
         run: |
           helm upgrade \
-          --install ${RELEASE_NAME} datahub/datahub \
+          --install ${RELEASE_NAME} datahub-cp \
           --version ${CHART_VERSION} \
           --atomic --timeout 10m0s \
-          --values helm_deploy/values-base.yaml \
+          --values helm_deploy/charts/datahub-cp/values/prerequisites-values.yaml \
+          --values helm_deploy/charts/datahub-cp/values/datahub-values.yaml \
           --namespace ${{ secrets.kube_namespace }} \
-          --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
-          --set datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }} \
-          --set datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }} \
-          --set datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST} \
-          --set datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST} \
-          --set datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
-          --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
-          --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
-          --set global.sql.datasource.host=${POSTGRES_HOST} \
-          --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
-          --set global.sql.datasource.url=${POSTGRES_URL}
+          --set datahub.datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
+          --set datahub.datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }} \
+          --set datahub.datahub-frontend.oidcAuthentication.clientId=${{ vars.CLIENT_ID }} \
+          --set datahub.datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST} \
+          --set datahub.datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST} \
+          --set datahub.datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
+          --set datahub.acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
+          --set datahub.global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
+          --set datahub.global.sql.datasource.host=${POSTGRES_HOST} \
+          --set datahub.global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
+          --set datahub.global.sql.datasource.url=${POSTGRES_URL}
 
       - name: allow CP prometheus scraping 
         shell: bash

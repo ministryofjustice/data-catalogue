@@ -1,0 +1,12 @@
+apiVersion: v2
+name: datahub-cp
+type: application
+version: 0.1.0
+appVersion: "0.13.2"
+dependencies:
+  - name: datahub-prerequisites
+    version: "0.1.10"
+    repository: "https://helm.datahubproject.io"
+  - name: datahub
+    version: "0.4.9"
+    repository: "https://helm.datahubproject.io"
