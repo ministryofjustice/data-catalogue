@@ -36,7 +36,7 @@ jobs:
       - name: Read current version from values.yaml
         id: read_current_version
         run: |
-          CURRENT_VERSION=$(python -c "import yaml; print(yaml.safe_load(open('helm_deploy/values.yaml'))['global']['datahub']['version'])")
+          CURRENT_VERSION=$(python -c "import yaml; print(yaml.safe_load(open('helm_deploy/values-base.yaml'))['global']['datahub']['version'])")
           echo "current_version=${CURRENT_VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Set up Python
