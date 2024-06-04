@@ -13,11 +13,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch security advisories
+        env: 
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh api -H "Accept: application/vnd.github+json" /repos/datahub-project/datahub/security-advisories > advisories.json
-
+          
       - name: Get last run date for this Action
         id: get_last_run_date
+        env: 
+            GH_TOKEN: ${{ github.token }}
         run: |
           LAST_RUN_DATE=$(gh api \
           -H "Accept: application/vnd.github+json" \
