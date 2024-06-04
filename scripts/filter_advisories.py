@@ -18,6 +18,14 @@ def read_advisories(filename: str) -> List[Dict[str, Any]]:
         return json.load(f)
 
 
+def parse_version_string(version_string: str) -> semantic_version.Version:
+    """Parse semanatic version from provided version string"""
+    version_str: str = re.sub(r".?v\s?(\d[.])", r"\1", version_string).strip()
+    version = semantic_version.Version(version_str)
+
+    return version
+
+
 class ValidationError(Exception):
     def __init__(self, msg):
         self.msg = msg
@@ -84,7 +92,7 @@ def advisory_to_slack_block(advisory) -> tuple[dict[str, Any], bool]:
     severity = advisory["severity"]
     high_severity = False
     if severity in ["high", "critical"]:
-        severity = f":alert: *{severity}* :alert:"
+        severity = f":warning: *{severity}* :warning:"
         high_severity = True
     return {
         "type": "section",
@@ -132,14 +140,16 @@ def main():
     advisories = read_advisories("advisories.json")
 
     # Define the current version to compare against
-    # Set default last run date to the year 2000 if not provided
-    if len(sys.argv) < 3:
-        last_run_date_str = "2000-01-01T00:00:00Z"
+    # Set default last run date to the year 2000 if not provided or is blank
+    if (len(sys.argv) < 3) or (not sys.argv[2].strip()):
+        last_run_datetime_str = "2000-01-01T00:00:00Z"
     else:
-        last_run_date_str: str = sys.argv[2]
-    current_version_str: str = re.sub(r"v(\d[.])", r"\1", sys.argv[1])
-    current_version = semantic_version.Version(current_version_str)
-    last_run_date: datetime = datetime.fromisoformat(last_run_date_str)
+        last_run_datetime_str: str = sys.argv[2].strip()
+
+    current_version_str: str = sys.argv[1]
+    current_version = parse_version_string(current_version_str)
+
+    last_run_date: datetime = datetime.fromisoformat(last_run_datetime_str)
 
     if not current_version:
         print(f"Invalid current version: {current_version_str}")
@@ -154,7 +164,7 @@ def main():
         json.dump(output, f, indent=2)
 
     # Output the number of found advisories for GitHub Actions
-    print(f"::set-output name=found_advisories::{len(filtered_advisories)}")
+    print(f"{len(filtered_advisories)} advisories found")
 
 
 if __name__ == "__main__":
