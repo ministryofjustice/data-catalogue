@@ -8,9 +8,11 @@ from avrogen.dict_wrapper import DictWrapper
 from datahub.ingestion.graph.client import DataHubGraph
 from moto import mock_s3
 import os
+import sys
 
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 
+sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/.."))
 
 @pytest.fixture
 def mock_datahub_graph():

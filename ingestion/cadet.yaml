@@ -12,7 +12,9 @@ source:
     infer_dbt_schemas: true
     node_name_pattern:
       allow:
+        - ".*bold_sm_spells.*"
         - ".*common_platform.*"
+        - ".*sirius.*"
     entities_enabled:
       test_results: "YES"
       seeds: "NO"
@@ -22,10 +24,8 @@ source:
       test_definitions: "YES"
     stateful_ingestion:
       remove_stale_metadata: true
+
 transformers:
-  - type: "pattern_add_dataset_domain"
+  - type: "ingestion.transformers.cadet_transformer.AssignDerivedTableDomains"
     config:
-      semantics: OVERWRITE
-      domain_pattern:
-        rules:
-          'urn:li:dataset:\(urn:li:dataPlatform:dbt,awsdatacatalog.*common_platform.*': ["CICA"]
+      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
