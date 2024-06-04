@@ -9,6 +9,7 @@ from scripts.filter_advisories import (
     advisory_to_slack_block,
     filter_advisories,
     format_slack_output,
+    parse_version_string,
     parse_vulnerabilities,
 )
 
@@ -238,3 +239,34 @@ class TestFormatSlackOutput:
                 f"*ID:* {filtered_advisory_ids[0]}"
                 in result["blocks"][0]["text"]["text"]
             )
+
+
+@pytest.mark.parametrize(
+    "version_input,expected_version",
+    [
+        ("v0.10.1", semantic_version.Version("0.10.1")),
+        (" v0.10.1", semantic_version.Version("0.10.1")),
+        (" v0.10.1 ", semantic_version.Version("0.10.1")),
+        (" v 0.10.1 ", semantic_version.Version("0.10.1")),
+    ],
+)
+def test_parse_version_string(version_input, expected_version):
+    out_version = parse_version_string(version_input)
+
+    assert out_version == expected_version
+
+
+@pytest.mark.parametrize(
+    "version_input,expected_fail",
+    [
+        ("v0.10.1", False),
+        (" version0.10.1", True),
+        (" ver 0.10.1 ", True),
+    ],
+)
+def test_parse_version_fail(version_input, expected_fail):
+    if expected_fail:
+        with pytest.raises(ValueError):
+            parse_version_string(version_input)
+    else:
+        assert parse_version_string(version_input)
