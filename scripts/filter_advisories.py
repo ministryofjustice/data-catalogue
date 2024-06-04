@@ -142,14 +142,14 @@ def main():
     # Define the current version to compare against
     # Set default last run date to the year 2000 if not provided
     if len(sys.argv) < 3:
-        last_run_date_str = "2000-01-01T00:00:00Z"
+        last_run_datetime_str = "2000-01-01T00:00:00Z"
     else:
-        last_run_date_str: str = sys.argv[2]
+        last_run_datetime_str: str = sys.argv[2].strip()
 
     current_version_str: str = sys.argv[1]
     current_version = parse_version_string(current_version_str)
 
-    last_run_date: datetime = datetime.fromisoformat(last_run_date_str)
+    last_run_date: datetime = datetime.fromisoformat(last_run_datetime_str)
 
     if not current_version:
         print(f"Invalid current version: {current_version_str}")
