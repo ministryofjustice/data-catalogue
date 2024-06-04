@@ -92,7 +92,7 @@ def advisory_to_slack_block(advisory) -> tuple[dict[str, Any], bool]:
     severity = advisory["severity"]
     high_severity = False
     if severity in ["high", "critical"]:
-        severity = f":alert: *{severity}* :alert:"
+        severity = f":warning: *{severity}* :warning:"
         high_severity = True
     return {
         "type": "section",
