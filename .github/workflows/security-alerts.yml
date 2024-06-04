@@ -28,7 +28,7 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/ministryofjustice/data-catalogue/actions/runs \
           --jq '.workflow_runs[] 
-            | select(.conclusion=="success" and .status=="completed" and .path=={{ github.action_path }}) 
+            | select(.conclusion=="success" and .status=="completed" and .path==${{ github.action_path }}) 
             | .run_started_at' \
           | head -n 1)
           echo "last_run_date=${LAST_RUN_DATE}" >> "${GITHUB_OUTPUT}"
@@ -44,11 +44,16 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install semantic-version
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --no-cache-dir -r requirements.txt
 
       - name: Filter advisories
         id: filter_advisories
+        env:        
+          REPO: datahub
+          REPO_OWNER: datahub-project
         run: python scripts/filter_advisories.py \
           "${{ steps.read_current_version.outputs.current_version }}" \
           "${{ steps.get_last_run_date.outputs.last_run_date }}"

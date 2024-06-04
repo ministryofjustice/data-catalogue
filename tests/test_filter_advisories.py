@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 
 import pytest
@@ -22,7 +21,7 @@ def advisories():
             "severity": "medium",
             "published_at": "2023-06-01T00:00:00Z",
             "summary": "This is a test advisory",
-            "html_url": "https://github.com/datahub-project/datahub/security/advisories/GHSA-xxxx-xxxx-xxxx",
+            "html_url": "https://github.com/owner/target-repo/security/advisories/GHSA-xxxx-xxxx-xxxx",
             "vulnerabilities": [
                 {
                     "vulnerable_version_range": "< 0.12.0",
@@ -35,7 +34,7 @@ def advisories():
             "severity": "high",
             "published_at": "2023-07-01T00:00:00Z",
             "summary": "This is another test advisory",
-            "html_url": "https://github.com/datahub-project/datahub/security/advisories/GHSA-yyyy-yyyy-yyyy",
+            "html_url": "https://github.com/owner/target-repo/security/advisories/GHSA-yyyy-yyyy-yyyy",
             "vulnerabilities": [
                 {
                     "vulnerable_version_range": "ALL",
@@ -48,7 +47,7 @@ def advisories():
             "severity": "critical",
             "published_at": "2023-08-01T00:00:00Z",
             "summary": "This is yet another test advisory",
-            "html_url": "https://github.com/datahub-project/datahub/security/advisories/GHSA-zzzz-zzzz-zzzz",
+            "html_url": "https://github.com/owner/target-repo/security/advisories/GHSA-zzzz-zzzz-zzzz",
             "vulnerabilities": [
                 {
                     "vulnerable_version_range": "<= 0.10.1",
@@ -146,7 +145,7 @@ class TestParseVulnerabilities:
                 "severity": "low",
                 "published_at": "2023-06-03T00:00:00Z",
                 "summary": "Missing vulnerable version range",
-                "html_url": "https://github.com/datahub-project/datahub/security/advisories/GHSA-zzzz-zzzz-zzzz",
+                "html_url": "https://github.com/owner/target-repo/security/advisories/GHSA-zzzz-zzzz-zzzz",
                 "vulnerabilities": [{}],
             }
         ],
@@ -167,7 +166,7 @@ class TestParseVulnerabilities:
             "severity": "low",
             "published_at": "2023-06-04T00:00:00Z",
             "summary": "Invalid version range",
-            "html_url": "https://github.com/datahub-project/datahub/security/advisories/GHSA-aaaa-aaaa-aaaa",
+            "html_url": "https://github.com/owner/target-repo/security/advisories/GHSA-aaaa-aaaa-aaaa",
             "vulnerabilities": [{"vulnerable_version_range": "invalid_version"}],
         }
         parse_vulnerabilities(advisory, filtered, minimal_version)
