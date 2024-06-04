@@ -140,8 +140,8 @@ def main():
     advisories = read_advisories("advisories.json")
 
     # Define the current version to compare against
-    # Set default last run date to the year 2000 if not provided
-    if len(sys.argv) < 3:
+    # Set default last run date to the year 2000 if not provided or is blank
+    if (not sys.argv[2].strip()) or (len(sys.argv) < 3):
         last_run_datetime_str = "2000-01-01T00:00:00Z"
     else:
         last_run_datetime_str: str = sys.argv[2].strip()
