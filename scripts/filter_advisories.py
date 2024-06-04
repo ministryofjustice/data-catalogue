@@ -164,7 +164,7 @@ def main():
         json.dump(output, f, indent=2)
 
     # Output the number of found advisories for GitHub Actions
-    print(f"::set-output name=found_advisories::{len(filtered_advisories)}")
+    print(f"{len(filtered_advisories)} advisories found")
 
 
 if __name__ == "__main__":
