@@ -28,3 +28,7 @@ transformers:
     config:
       manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
       replace_existing: true
+  - type: "add_dataset_tags"
+
+    config:
+      get_tags_to_add: "ingestion.cadet_display_in_catalogue_tagger.add_display_in_catalogue_tag"
