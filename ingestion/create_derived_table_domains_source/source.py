@@ -42,7 +42,7 @@ class CreateDerivedTableDomains(Source):
     def _get_domains(self, manifest) -> set[str]:
         return set(
             manifest["nodes"][node]["fqn"][1]
-            for node, _ in manifest["nodes"].items()
+            for node in manifest["nodes"]
             if not manifest["nodes"][node]["resource_type"] == "seed"
         )
 
