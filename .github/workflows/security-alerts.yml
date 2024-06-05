@@ -61,7 +61,8 @@ jobs:
           "${{ steps.get_last_run_date.outputs.last_run_date }}"
           
       - name: Send advisories to Slack
-        id: slack
+        id: send_to_slack
+        if: ${{ steps.filter_advisories.outputs.num_filtered_advisories != '0' }}
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C071VNHPUHZ'
