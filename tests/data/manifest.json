@@ -4,8 +4,8 @@
             "fqn": [
                 "model",
                 "prison",
-                "prison_database",
-                "table1"
+                "offence",
+                "prison_database__table1"
             ],
             "resource_type": "table"
         },
@@ -13,8 +13,8 @@
             "fqn": [
                 "model",
                 "probation",
-                "probation_database",
-                "table1"
+                "youth",
+                "probation_database__table1"
             ],
             "resource_type": "table"
         },
@@ -22,8 +22,8 @@
             "fqn": [
                 "model",
                 "courts",
-                "courts_tables",
-                "table1"
+                "courts",
+                "courts_data__table1"
             ],
             "resource_type": "table"
         },
@@ -31,8 +31,8 @@
             "fqn": [
                 "model",
                 "hq",
-                "hq_tables",
-                "table1"
+                "hq",
+                "hq_database__table1"
             ],
             "resource_type": "table"
         },

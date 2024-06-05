@@ -4,10 +4,9 @@ import datahub.metadata.schema_classes as models
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import EndOfStream, PipelineContext, RecordEnvelope
 from datahub.ingestion.graph.client import DatahubClientConfig
-from ingestion.transformers.cadet_transformer import (
+from ingestion.transformers.assign_cadet_domains import (
     AssignDerivedTableDomains,
 )
-from datahub.configuration.common import TransformerSemantics
 from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
 from datahub.metadata.schema_classes import (
     MetadataChangeEventClass
@@ -16,7 +15,7 @@ from datahub.utilities.urns.urn import Urn
 
 
 def make_generic_dataset_mcp(
-    entity_urn: str = "urn:li:dataset:(urn:li:dataPlatform:bigquery,example1,PROD)",
+    entity_urn: str = "urn:li:dataset:(urn:li:dataPlatform:dbt,awsdatacatalog.prison_database.table1,PROD)",
     aspect_name: str = "status",
     aspect: Any = models.StatusClass(removed=False),
 ) -> MetadataChangeProposalWrapper:
@@ -44,7 +43,7 @@ def run_dataset_transformer_pipeline(
     if use_mce:
         dataset = MetadataChangeEventClass(
             proposedSnapshot=models.DatasetSnapshotClass(
-                urn="urn:li:dataset:(urn:li:dataPlatform:bigquery,example1,PROD)",
+                urn="urn:li:dataset:(urn:li:dataPlatform:dbt,awsdatacatalog.prison_database.table1,PROD)",
                 aspects=[],
             )
         )
@@ -76,7 +75,7 @@ class TestCadetTransformer:
         assert transformer.aspect_name() == models.DomainsClass.ASPECT_NAME
 
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
-        probation_domain = builder.make_domain_urn("probation")
+        prison_domain = builder.make_domain_urn("prison")
 
         pipeline_context: PipelineContext = PipelineContext(
             run_id="test_simple_add_dataset_domain"
@@ -85,11 +84,11 @@ class TestCadetTransformer:
 
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignDerivedTableDomains,
-            aspect=models.DomainsClass(domains=[probation_domain]),
+            aspect=models.DomainsClass(domains=[]),
             config={"manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"},
             pipeline_context=pipeline_context,
         )
-        print(output)
+
         assert len(output) == 2
         assert output[0] is not None
         assert output[0].record is not None
@@ -98,9 +97,10 @@ class TestCadetTransformer:
         assert isinstance(output[0].record.aspect, models.DomainsClass)
         transformed_aspect = cast(list, output[0].record.aspect)
         assert len(transformed_aspect.domains) == 1
-        assert probation_domain in transformed_aspect.domains
+        assert prison_domain in transformed_aspect.domains
 
-    def test_pattern_add_dataset_domain_no_match(self, mock_datahub_graph):
+    # A bug in datahub's transformers is that domains don't overwrite correctly.
+    def test_pattern_add_dataset_domain_overwrite(self, mock_datahub_graph):
         prison_domain = builder.make_domain_urn("prison")
         probation_domain = builder.make_domain_urn("probation")
 
@@ -112,7 +112,10 @@ class TestCadetTransformer:
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignDerivedTableDomains,
             aspect=models.DomainsClass(domains=[probation_domain]),
-            config={"manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"},
+            config={
+                "manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json",
+                "replace_existing": True,
+            },
             pipeline_context=pipeline_context,
         )
 
@@ -122,7 +125,7 @@ class TestCadetTransformer:
         assert isinstance(output[0].record, MetadataChangeProposalWrapper)
         assert output[0].record.aspect is not None
         assert isinstance(output[0].record.aspect, models.DomainsClass)
-        transformed_aspect = cast(models.DomainsClass, output[0].record.aspect)
+        transformed_aspect = cast(list, output[0].record.aspect)
         assert len(transformed_aspect.domains) == 1
-        assert probation_domain in transformed_aspect.domains
-        assert prison_domain not in transformed_aspect.domains
+        assert probation_domain not in transformed_aspect.domains
+        assert prison_domain in transformed_aspect.domains

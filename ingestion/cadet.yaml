@@ -6,9 +6,7 @@ source:
     manifest_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
     catalog_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/catalog.json"
     test_results_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/run_results.json"
-    platform_instance: cadet
     target_platform: athena
-    target_platform_instance: athena_cadet
     infer_dbt_schemas: true
     node_name_pattern:
       allow:
@@ -26,6 +24,7 @@ source:
       remove_stale_metadata: true
 
 transformers:
-  - type: "ingestion.transformers.cadet_transformer.AssignDerivedTableDomains"
+  - type: "ingestion.transformers.assign_cadet_domains.AssignDerivedTableDomains"
     config:
       manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+      replace_existing: true

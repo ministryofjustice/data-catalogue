@@ -1,6 +1,6 @@
 import time
-from typing import Dict, Optional, Type
-from unittest.mock import MagicMock, create_autospec
+from typing import Dict, Optional
+from unittest.mock import create_autospec
 import boto3
 import pytest
 import types
