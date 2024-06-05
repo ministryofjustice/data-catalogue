@@ -54,7 +54,7 @@ class CreateDerivedTableDomains(Source):
             file_key = "/".join(s3_parts[3:])
             response = s3.get_object(Bucket=bucket_name, Key=file_key)
             content = response["Body"].read().decode("utf-8")
-            manifest = json.loads(content)
+            manifest = json.loads(content, strict=False)
         except NoCredentialsError:
             print("Credentials not available.")
             raise
