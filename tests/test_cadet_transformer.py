@@ -13,7 +13,7 @@ from ingestion.transformers.assign_cadet_domains import AssignDerivedTableDomain
 
 
 def make_generic_dataset_mcp(
-    entity_urn: str = "urn:li:dataset:(urn:li:dataPlatform:dbt,awsdatacatalog.prison_database.table1,PROD)",
+    entity_urn: str = "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.prison_database.table1,PROD)",
     aspect_name: str = "status",
     aspect: Any = models.StatusClass(removed=False),
 ) -> MetadataChangeProposalWrapper:
@@ -41,7 +41,7 @@ def run_dataset_transformer_pipeline(
     if use_mce:
         dataset = MetadataChangeEventClass(
             proposedSnapshot=models.DatasetSnapshotClass(
-                urn="urn:li:dataset:(urn:li:dataPlatform:dbt,awsdatacatalog.prison_database.table1,PROD)",
+                urn="urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.prison_database.table1,PROD)",
                 aspects=[],
             )
         )

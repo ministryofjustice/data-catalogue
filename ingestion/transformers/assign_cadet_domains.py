@@ -89,7 +89,7 @@ class AssignDerivedTableDomains(AddDatasetDomain):
         node_table_name_no_double_underscore = node_table_name.replace("__", ".")
         urn = builder.make_dataset_urn_with_platform_instance(
                 platform="dbt",
-                platform_instance="awsdatacatalog",
+                platform_instance="cadet.awsdatacatalog",
                 name=node_table_name_no_double_underscore,
             )
         escaped_urn_for_regex = re.escape(urn)
