@@ -1,7 +1,7 @@
-import boto3
 import os
-import pytest
 
+import boto3
+import pytest
 from moto import mock_s3
 
 aws_region = "eu-west-1"
@@ -11,13 +11,13 @@ aws_region = "eu-west-1"
 def tests_env_setup_and_teardown():
 
     TEMP_ENV_VARS = {
-        "AWS_ACCESS_KEY_ID": 'testing',
-        "AWS_SECRET_ACCESS_KEY": 'testing',
-        "AWS_SECURITY_TOKEN": 'testing',
-        "AWS_SESSION_TOKEN": 'testing',
+        "AWS_ACCESS_KEY_ID": "testing",
+        "AWS_SECRET_ACCESS_KEY": "testing",
+        "AWS_SECURITY_TOKEN": "testing",
+        "AWS_SESSION_TOKEN": "testing",
         "AWS_DEFAULT_REGION": aws_region,
         "IAM_ROLE": "test_iam",
-        "BOTO_CONFIG": "/dev/null"
+        "BOTO_CONFIG": "/dev/null",
     }
 
     # Will be executed before the first test

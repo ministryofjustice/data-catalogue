@@ -1,20 +1,19 @@
+import json
 from typing import Dict, Iterable
 
-import json
 import boto3
-from botocore.exceptions import ClientError, NoCredentialsError
 import datahub.emitter.mce_builder as builder
+from botocore.exceptions import ClientError, NoCredentialsError
+from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
-from datahub.ingestion.api.source import (
-    SourceReport,
-    Source,
-)
-
-from datahub.metadata.schema_classes import DomainPropertiesClass, ChangeTypeClass
-from datahub.emitter.mcp import MetadataChangeProposalWrapper
+from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
-from ingestion.create_derived_table_domains_source.config import CreateDerivedTableDomainsConfig
+from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
+
+from ingestion.create_derived_table_domains_source.config import (
+    CreateDerivedTableDomainsConfig,
+)
 
 
 @config_class(CreateDerivedTableDomainsConfig)
@@ -54,14 +53,14 @@ class CreateDerivedTableDomains(Source):
             bucket_name = s3_parts[2]
             file_key = "/".join(s3_parts[3:])
             response = s3.get_object(Bucket=bucket_name, Key=file_key)
-            content = response['Body'].read().decode('utf-8')
+            content = response["Body"].read().decode("utf-8")
             manifest = json.loads(content)
         except NoCredentialsError:
             print("Credentials not available.")
             raise
         except ClientError as e:
             # If a client error is thrown, it will have a response attribute containing the error details
-            error_code = e.response['Error']['Code']
+            error_code = e.response["Error"]["Code"]
             print(f"Client error occurred: {error_code}")
             raise
         except json.JSONDecodeError:

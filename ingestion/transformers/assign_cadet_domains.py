@@ -1,18 +1,18 @@
 import json
+import re
 from typing import Callable, Dict, Union
-import boto3
-from botocore.exceptions import ClientError, NoCredentialsError
 
+import boto3
+import datahub.emitter.mce_builder as builder
+from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.configuration.common import (
     KeyValuePattern,
     TransformerSemanticsConfigModel,
 )
 from datahub.configuration.import_resolver import pydantic_resolve_key
-import datahub.emitter.mce_builder as builder
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_domain import AddDatasetDomain
 from datahub.metadata.schema_classes import DomainsClass
-import re
 
 
 class AddDatasetDomainSemanticsConfig(TransformerSemanticsConfigModel):
@@ -35,9 +35,7 @@ class CadetDatasetDomainSemanticsConfig(TransformerSemanticsConfigModel):
 class AssignDerivedTableDomains(AddDatasetDomain):
     """Transformer that adds a specified domains to each dataset."""
 
-    def __init__(
-        self, config: CadetDatasetDomainSemanticsConfig, ctx: PipelineContext
-    ):
+    def __init__(self, config: CadetDatasetDomainSemanticsConfig, ctx: PipelineContext):
         AddDatasetDomain.raise_ctx_configuration_error(ctx)
         manifest = self._get_manifest(config)
         domain_mappings = self._get_domain_mapping(manifest)
@@ -55,9 +53,7 @@ class AssignDerivedTableDomains(AddDatasetDomain):
         super().__init__(generic_config, ctx)
 
     @classmethod
-    def create(
-        cls, config_dict, ctx: PipelineContext
-    ) -> "AssignDerivedTableDomains":
+    def create(cls, config_dict, ctx: PipelineContext) -> "AssignDerivedTableDomains":
         try:
             manifest_s3_uri = config_dict.get("manifest_s3_uri")
             replace_existing = config_dict.get("replace_existing", False)
@@ -78,14 +74,14 @@ class AssignDerivedTableDomains(AddDatasetDomain):
             bucket_name = s3_parts[2]
             file_key = "/".join(s3_parts[3:])
             response = s3.get_object(Bucket=bucket_name, Key=file_key)
-            content = response['Body'].read().decode('utf-8')
+            content = response["Body"].read().decode("utf-8")
             manifest = json.loads(content, strict=False)
         except NoCredentialsError:
             print("Credentials not available.")
             raise
         except ClientError as e:
             # If a client error is thrown, it will have a response attribute containing the error details
-            error_code = e.response['Error']['Code']
+            error_code = e.response["Error"]["Code"]
             print(f"Client error occurred: {error_code}")
             raise
         except json.JSONDecodeError:
@@ -111,7 +107,7 @@ class AssignDerivedTableDomains(AddDatasetDomain):
             urn = builder.make_dataset_urn_with_platform_instance(
                 platform="dbt",
                 platform_instance="awsdatacatalog",
-                name=node_table_name_no_double_underscore
+                name=node_table_name_no_double_underscore,
             )
             escaped_urn_for_regex = re.escape(urn)
             domain_mappings[escaped_urn_for_regex] = [domain]

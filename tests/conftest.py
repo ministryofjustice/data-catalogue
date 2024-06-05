@@ -1,18 +1,19 @@
-import time
-from typing import Dict, Optional
-from unittest.mock import create_autospec
-import boto3
-import pytest
-import types
-from avrogen.dict_wrapper import DictWrapper
-from datahub.ingestion.graph.client import DataHubGraph
-from moto import mock_s3
 import os
 import sys
+import time
+import types
+from typing import Dict, Optional
+from unittest.mock import create_autospec
 
+import boto3
+import pytest
+from avrogen.dict_wrapper import DictWrapper
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
+from datahub.ingestion.graph.client import DataHubGraph
+from moto import mock_s3
 
-sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/.."))
+sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
+
 
 @pytest.fixture
 def mock_datahub_graph():
@@ -39,9 +40,7 @@ def mock_datahub_graph():
             # Tracking for emitted mcps.
             self.mcps_emitted: Dict[str, MetadataChangeProposalWrapper] = {}
 
-        def monkey_patch_emit_mcp(
-            self, mcpw: MetadataChangeProposalWrapper
-        ) -> None:
+        def monkey_patch_emit_mcp(self, mcpw: MetadataChangeProposalWrapper) -> None:
             """
             Mockey patched implementation of DatahubGraph.emit_mcp that caches the mcp locally in memory.
             """
@@ -76,15 +75,16 @@ def mock_time(monkeypatch):
 
     yield
 
+
 @pytest.fixture(autouse=True)
 def mock_manifest_in_s3():
     with mock_s3():
         s3 = boto3.client("s3")
         bucket = "mojap-derived-tables"
-        key = 'prod/run_artefacts/latest/target/manifest.json'
+        key = "prod/run_artefacts/latest/target/manifest.json"
         s3.create_bucket(
             Bucket=bucket,
-            CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'},
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
         )
         with open(
             os.path.join(os.path.dirname(__file__), "data", "manifest.json"),

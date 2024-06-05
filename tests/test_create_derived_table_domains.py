@@ -1,7 +1,11 @@
-from ingestion.create_derived_table_domains_source.source import CreateDerivedTableDomains
-from ingestion.create_derived_table_domains_source.config import CreateDerivedTableDomainsConfig
-
 from datahub.ingestion.api.common import PipelineContext
+
+from ingestion.create_derived_table_domains_source.config import (
+    CreateDerivedTableDomainsConfig,
+)
+from ingestion.create_derived_table_domains_source.source import (
+    CreateDerivedTableDomains,
+)
 
 
 def test_creating_domains_from_s3():

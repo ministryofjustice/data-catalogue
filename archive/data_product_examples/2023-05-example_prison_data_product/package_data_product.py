@@ -1,7 +1,7 @@
-import zipfile
-import logging
 import glob
+import logging
 import os
+import zipfile
 
 logging.getLogger().setLevel(logging.INFO)
 file_directory = os.path.dirname(os.path.abspath(__file__))

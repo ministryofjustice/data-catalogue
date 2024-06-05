@@ -1,17 +1,15 @@
 from typing import Any, List, Optional, Type, Union, cast
+
 import datahub.emitter.mce_builder as builder
 import datahub.metadata.schema_classes as models
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import EndOfStream, PipelineContext, RecordEnvelope
 from datahub.ingestion.graph.client import DatahubClientConfig
-from ingestion.transformers.assign_cadet_domains import (
-    AssignDerivedTableDomains,
-)
 from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
-from datahub.metadata.schema_classes import (
-    MetadataChangeEventClass
-)
+from datahub.metadata.schema_classes import MetadataChangeEventClass
 from datahub.utilities.urns.urn import Urn
+
+from ingestion.transformers.assign_cadet_domains import AssignDerivedTableDomains
 
 
 def make_generic_dataset_mcp(
@@ -69,8 +67,10 @@ class TestCadetTransformer:
         pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
 
         transformer = AssignDerivedTableDomains.create(
-            {"manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"},
-            pipeline_context
+            {
+                "manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+            },
+            pipeline_context,
         )
         assert transformer.aspect_name() == models.DomainsClass.ASPECT_NAME
 
@@ -85,7 +85,9 @@ class TestCadetTransformer:
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignDerivedTableDomains,
             aspect=models.DomainsClass(domains=[]),
-            config={"manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"},
+            config={
+                "manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+            },
             pipeline_context=pipeline_context,
         )
 
