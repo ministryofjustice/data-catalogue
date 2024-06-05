@@ -7,7 +7,7 @@
                 "offence",
                 "prison_database__table1"
             ],
-            "resource_type": "table"
+            "resource_type": "model"
         },
         "model.test_derived_tables.probation": {
             "fqn": [
@@ -16,7 +16,7 @@
                 "youth",
                 "probation_database__table1"
             ],
-            "resource_type": "table"
+            "resource_type": "model"
         },
         "model.test_derived_tables.courts": {
             "fqn": [
@@ -25,7 +25,7 @@
                 "courts",
                 "courts_data__table1"
             ],
-            "resource_type": "table"
+            "resource_type": "model"
         },
         "model.test_derived_tables.hq": {
             "fqn": [
@@ -34,9 +34,9 @@
                 "hq",
                 "hq_database__table1"
             ],
-            "resource_type": "table"
+            "resource_type": "model"
         },
-        "model.test_derived_tables.nope": {
+        "seed.test_derived_tables.nope": {
             "fqn": [
                 "model",
                 "nope",
@@ -44,6 +44,15 @@
                 "table1"
             ],
             "resource_type": "seed"
+        },
+        "source.test_derived_tables.nope": {
+            "fqn": [
+                "model",
+                "nope",
+                "test_derived_tables",
+                "table1"
+            ],
+            "resource_type": "source"
         }
     }
 }

@@ -101,7 +101,6 @@ class TestCadetTransformer:
         assert len(transformed_aspect.domains) == 1
         assert prison_domain in transformed_aspect.domains
 
-    # A bug in datahub's transformers is that domains don't overwrite correctly.
     def test_pattern_add_dataset_domain_overwrite(self, mock_datahub_graph):
         prison_domain = builder.make_domain_urn("prison")
         probation_domain = builder.make_domain_urn("probation")
