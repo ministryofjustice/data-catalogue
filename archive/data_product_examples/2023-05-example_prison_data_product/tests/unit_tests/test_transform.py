@@ -1,9 +1,10 @@
-from application.transform import generate_report, get_tables
+import os
+from pathlib import Path
 from unittest.mock import patch
+
 import pandas as pd
 import pytest
-from pathlib import Path
-import os
+from application.transform import generate_report, get_tables
 
 
 @pytest.fixture
@@ -24,8 +25,7 @@ data_product_directory = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "data"
 )
 
-sample_input = pd.read_csv(os.path.join(
-    data_product_directory, "sample_input.csv"))
+sample_input = pd.read_csv(os.path.join(data_product_directory, "sample_input.csv"))
 
 
 table_dict = {"product_for_test": ["adj_example_1"]}
@@ -53,8 +53,7 @@ def test_generate_report(mocked_data, mocked_tables):
 def test_get_tables(s3_mock_client, s3_test_bucket):
     s3_mock_client.upload_file(
         os.path.join(
-            Path(__file__).parent.absolute(
-            ), "test_metadata", "02-data-dictionary.yaml"
+            Path(__file__).parent.absolute(), "test_metadata", "02-data-dictionary.yaml"
         ),
         "product-test-bucket",
         "code/product_for_test/extracted/metadata/02-data-dictionary.yml",

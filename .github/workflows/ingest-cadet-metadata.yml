@@ -42,14 +42,42 @@ jobs:
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
           aws-region: ${{ inputs.ECR_REGION }}
-      - name: install reqs
-        run: pip install acryl-datahub[dbt]
+
+      - name: cache poetry install
+        uses: actions/cache@v4
+        with:
+          path: ~/.local
+          key: poetry-1.7.1-0
+
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+      - run: poetry install --no-interaction --no-root
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - run: poetry install --no-interaction
+
+      - name: create cadet domains
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: poetry run datahub ingest -c ingestion/create_derived_table_domains.yaml
+
       - name: push metadata to datahub
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: datahub ingest -c ingestion/cadet.yaml
+        run: poetry run datahub ingest -c ingestion/cadet.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.26.0
