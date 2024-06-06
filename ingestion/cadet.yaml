@@ -10,11 +10,6 @@ source:
     target_platform: athena
     target_platform_instance: athena_cadet
     infer_dbt_schemas: true
-    node_name_pattern:
-      allow:
-        - ".*bold_sm_spells.*"
-        - ".*common_platform.*"
-        - ".*sirius.*"
     entities_enabled:
       test_results: "YES"
       seeds: "NO"
