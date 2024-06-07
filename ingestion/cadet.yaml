@@ -19,6 +19,16 @@ source:
       test_definitions: "YES"
     stateful_ingestion:
       remove_stale_metadata: true
+    strip_user_ids_from_email: true
+    include_column_lineage: false
+    tag_prefix: ""
+    meta_mapping:
+      owner_email:
+        match: '.*'
+        operation: 'add_owner'
+        config:
+          owner_type: user
+          owner_category: DATAOWNER
 
 transformers:
   - type: "ingestion.transformers.assign_cadet_domains.AssignDerivedTableDomains"
