@@ -358,6 +358,7 @@ global:
       ## Dynamic settings which do not require reindexing are not affected
       ## Primarily this should be enabled when re-sharding is necessary for scaling/performance.
       enableSettingsReindex: true
+      
 
       ## Index settings can be overridden for entity indices or other indices on an index by index basis
       ## Some index settings, such as # of shards, requires reindexing while others, i.e. replicas, do not
@@ -393,9 +394,9 @@ global:
       ## Configuration around exact matching for search
       exactMatch:
         ## if false will only apply weights, if true will exclude non-exact
-        exclusive: false
+        exclusive: true
         ## include prefix exact matches
-        withPrefix: true
+        withPrefix: false
         ## boost multiplier when exact with case
         exactFactor: 2.0
         ## boost multiplier when exact prefix
