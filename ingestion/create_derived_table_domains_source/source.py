@@ -2,14 +2,14 @@ import json
 from typing import Dict, Iterable
 
 import boto3
-import datahub.emitter.mce_builder as builder
+import datahub.emitter.mce_builder as mce_builder
+import datahub.emitter.mcp_builder as mcp_builder
 from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
-from datahub.ingestion.source.sql.sql_utils import gen_containers, gen_database_key
 from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
@@ -47,14 +47,15 @@ class CreateDerivedTableDomains(Source):
         databases_with_domains = self._get_databases_with_domains(manifest)
         sub_types = [DatasetContainerSubTypes.DATABASE]
         for database, domain in databases_with_domains:
-            database_container_key = gen_database_key(
+            database_container_key = mcp_builder.DatabaseKey(
                 database=database,
                 platform="dbt",
-                platform_instance="cadet",
+                instance="cadet",
                 env="PROD",
+                backcompat_env_as_instance=True,
             )
-            domain_urn = builder.make_domain_urn(domain=domain)
-            yield from gen_containers(
+            domain_urn = mce_builder.make_domain_urn(domain=domain)
+            yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
                 name=database,
                 sub_types=sub_types,
@@ -91,7 +92,7 @@ class CreateDerivedTableDomains(Source):
         return mappings
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
-        domain_urn = builder.make_domain_urn(domain=domain_name)
+        domain_urn = mce_builder.make_domain_urn(domain=domain_name)
         domain_properties = DomainPropertiesClass(name=domain_name)
         metadata_event = MetadataChangeProposalWrapper(
             entityType="domain",
