@@ -70,7 +70,7 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: poetry run datahub ingest -c ingestion/create_derived_table_domains.yaml
+        run: poetry run datahub ingest -c ingestion/create_derived_table_databases.yaml
 
       - name: push metadata to datahub
         env:

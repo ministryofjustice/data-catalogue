@@ -1,4 +1,4 @@
 source:
-  type: "ingestion.create_derived_table_domains_source.source.CreateDerivedTableDomains"
+  type: "ingestion.create_derived_table_databases_source.source.CreateDerivedTableDatabases"
   config:
     manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"

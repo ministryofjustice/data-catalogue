@@ -13,23 +13,23 @@ from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
-from ingestion.create_derived_table_domains_source.config import (
-    CreateDerivedTableDomainsConfig,
+from ingestion.create_derived_table_databases_source.config import (
+    CreateDerivedTableDatabasesConfig,
 )
 
 
-@config_class(CreateDerivedTableDomainsConfig)
-class CreateDerivedTableDomains(Source):
-    source_config: CreateDerivedTableDomainsConfig
+@config_class(CreateDerivedTableDatabasesConfig)
+class CreateDerivedTableDatabases(Source):
+    source_config: CreateDerivedTableDatabasesConfig
     report: SourceReport = SourceReport()
 
-    def __init__(self, config: CreateDerivedTableDomainsConfig, ctx: PipelineContext):
+    def __init__(self, config: CreateDerivedTableDatabasesConfig, ctx: PipelineContext):
         super().__init__(ctx)
         self.source_config = config
 
     @classmethod
     def create(cls, config_dict, ctx):
-        config = CreateDerivedTableDomainsConfig.parse_obj(config_dict)
+        config = CreateDerivedTableDatabasesConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:

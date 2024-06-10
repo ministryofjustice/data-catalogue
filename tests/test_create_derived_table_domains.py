@@ -1,19 +1,19 @@
 from datahub.ingestion.api.common import PipelineContext
 
-from ingestion.create_derived_table_domains_source.config import (
-    CreateDerivedTableDomainsConfig,
+from ingestion.create_derived_table_databases_source.config import (
+    CreateDerivedTableDatabasesConfig,
 )
-from ingestion.create_derived_table_domains_source.source import (
-    CreateDerivedTableDomains,
+from ingestion.create_derived_table_databases_source.source import (
+    CreateDerivedTableDatabases,
 )
 import datahub.emitter.mce_builder as builder
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
 
 def test_creating_domains_from_s3():
-    source = CreateDerivedTableDomains(
+    source = CreateDerivedTableDatabases(
         ctx=PipelineContext(run_id="domain-source-test"),
-        config=CreateDerivedTableDomainsConfig(
+        config=CreateDerivedTableDatabasesConfig(
             manifest_s3_uri="s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
         ),
     )
