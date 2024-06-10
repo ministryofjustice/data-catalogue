@@ -6,6 +6,8 @@ from ingestion.create_derived_table_domains_source.config import (
 from ingestion.create_derived_table_domains_source.source import (
     CreateDerivedTableDomains,
 )
+import datahub.emitter.mce_builder as builder
+from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
 
 def test_creating_domains_from_s3():
@@ -19,8 +21,17 @@ def test_creating_domains_from_s3():
     results = list(source.get_workunits())
 
     assert results
+    assert len(results) == 24
 
-    domains = [result.metadata.aspect.name for result in results]
+    domain_creation_events = results[:4]
+    domains = [event.metadata.aspect.name for event in domain_creation_events]
     domains.sort()
-
     assert domains == ["courts", "hq", "prison", "probation"]
+
+    # 5 events are created per database, we'll just test one
+    # (create container, update status, add platform, add subtype, associate domain)
+    assert results[4].metadata.aspect.customProperties["database"] == "prison_database"
+    assert results[6].metadata.aspect.platform == builder.make_data_platform_urn(platform="dbt")
+    assert DatasetContainerSubTypes.DATABASE in results[7].metadata.aspect.typeNames
+    assert builder.make_domain_urn(domain="prison") in results[8].metadata.aspect.domains
+    assert results[8].metadata.entityUrn == results[4].metadata.entityUrn
