@@ -87,12 +87,12 @@ class CreateDerivedTableDatabases(Source):
         These mappings will only work with tables named {database}__{table}
         like create a derived table
         """
-        mappings = []
+        mappings = set()
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
-                database = manifest["nodes"][node]["fqn"][3].split("__")[0]
+                database = manifest["nodes"][node]["fqn"][-1].split("__")[0]
                 domain = manifest["nodes"][node]["fqn"][1]
-                mappings.append((database, domain))
+                mappings.add((database, domain))
         return mappings
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
