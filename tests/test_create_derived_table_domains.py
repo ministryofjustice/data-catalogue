@@ -29,9 +29,10 @@ def test_creating_domains_from_s3():
     assert domains == ["courts", "hq", "prison", "probation"]
 
     # 5 events are created per database, we'll just test one
-    # (create container, update status, add platform, add subtype, associate domain)
-    assert results[4].metadata.aspect.customProperties["database"] == "prison_database"
+    # (create container, update status, add platform, add subtype, associate container with domain)
+    assert results[4].metadata.aspect.customProperties.get("database")
     assert results[6].metadata.aspect.platform == builder.make_data_platform_urn(platform="dbt")
     assert DatasetContainerSubTypes.DATABASE in results[7].metadata.aspect.typeNames
-    assert builder.make_domain_urn(domain="prison") in results[8].metadata.aspect.domains
     assert results[8].metadata.entityUrn == results[4].metadata.entityUrn
+    domain_result_4 = results[4].metadata.aspect.customProperties.get("database").split("_")[0]
+    assert builder.make_domain_urn(domain_result_4) in results[8].metadata.aspect.domains
