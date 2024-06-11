@@ -58,7 +58,7 @@ class CreateDerivedTableDatabases(Source):
                 backcompat_env_as_instance=True,
             )
             domain_urn = mce_builder.make_domain_urn(domain=domain)
-            logging.info(f"Creating container for database {database}")
+            logging.info(f"Creating container {database=} with {domain=}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
                 name=database,
@@ -110,7 +110,7 @@ class CreateDerivedTableDatabases(Source):
         return self.report
 
     def close(self) -> None:
-        pass
+        logging.info("Completed ingestion")
 
 
 def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
