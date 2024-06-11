@@ -79,6 +79,13 @@ jobs:
           DATAHUB_TELEMETRY_ENABLED: false
         run: poetry run datahub ingest -c ingestion/cadet.yaml
 
+      - name: associate datasets from cadet with their database
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: poetry run datahub ingest -c ingestion/assign_cadet_databases.yaml
+
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.26.0
         if: job.status == 'failure'

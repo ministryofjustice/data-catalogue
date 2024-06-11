@@ -1,5 +1,6 @@
 import json
 from typing import Dict, Iterable
+import logging
 
 import boto3
 import datahub.emitter.mce_builder as mce_builder
@@ -13,6 +14,7 @@ from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
+from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_derived_table_databases_source.config import (
     CreateDerivedTableDatabasesConfig,
 )
@@ -35,26 +37,28 @@ class CreateDerivedTableDatabases(Source):
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:
         manifest = get_cadet_manifest(self.source_config.manifest_s3_uri)
 
-        # Create all the domain entites
+        # Create all the domain entities
         for domain_name in self._get_domains(manifest):
             mcp = self._make_domain(domain_name)
             wu = MetadataWorkUnit("single_mcp", mcp=mcp)
             self.report.report_workunit(wu)
+            logging.info(f"Creating domain {domain_name}")
 
             yield wu
 
-        # Create database entities and assign them to the domains
+        # Create database entities and assign them to their domains
         databases_with_domains = self._get_databases_with_domains(manifest)
         sub_types = [DatasetContainerSubTypes.DATABASE]
         for database, domain in databases_with_domains:
             database_container_key = mcp_builder.DatabaseKey(
                 database=database,
-                platform="dbt",
-                instance="cadet",
-                env="PROD",
+                platform=PLATFORM,
+                instance=INSTANCE,
+                env=ENV,
                 backcompat_env_as_instance=True,
             )
             domain_urn = mce_builder.make_domain_urn(domain=domain)
+            logging.info(f"Creating container for database {database}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
                 name=database,

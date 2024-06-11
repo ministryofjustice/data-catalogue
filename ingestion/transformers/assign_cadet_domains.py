@@ -9,6 +9,7 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_domain import AddDatasetDomain
 from datahub.metadata.schema_classes import DomainsClass
 
+from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_derived_table_databases_source.source import \
     get_cadet_manifest
 
@@ -74,24 +75,25 @@ class AssignDerivedTableDomains(AddDatasetDomain):
             node_info = nodes[node]
             if node_info["resource_type"] != "model":
                 continue
-            domain, escaped_urn_for_regex = self._convert_cadet_manifest_table_to_datahub(node_info)
+            domain, escaped_urn_for_regex = convert_cadet_manifest_table_to_datahub(node_info)
             domain_mappings[escaped_urn_for_regex] = [domain]
 
         pattern_input = {"domain_pattern": {"rules": domain_mappings}}
 
         return PatternDatasetDomainSemanticsConfig.parse_obj(pattern_input)
 
-    def _convert_cadet_manifest_table_to_datahub(self, node_info: dict) -> Tuple[str, str]:
-        domain = node_info.get("fqn", [])[1]
-        node_table_name = node_info.get("fqn", [])[-1]
+def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
+    domain = node_info.get("fqn", [])[1]
+    node_table_name = node_info.get("fqn", [])[-1]
 
-        # In CaDeT the convention is to name a table database__table
-        node_table_name_no_double_underscore = node_table_name.replace("__", ".")
-        urn = builder.make_dataset_urn_with_platform_instance(
-                platform="dbt",
-                platform_instance="cadet.awsdatacatalog",
-                name=node_table_name_no_double_underscore,
-            )
-        escaped_urn_for_regex = re.escape(urn)
+    # In CaDeT the convention is to name a table database__table
+    node_table_name_no_double_underscore = node_table_name.replace("__", ".")
+    urn = builder.make_dataset_urn_with_platform_instance(
+            platform=PLATFORM,
+            platform_instance=INSTANCE,
+            env=ENV,
+            name=node_table_name_no_double_underscore,
+        )
+    escaped_urn_for_regex = re.escape(urn)
 
-        return domain, escaped_urn_for_regex
+    return domain, escaped_urn_for_regex
