@@ -11,6 +11,8 @@ source:
     target_platform_instance: athena_cadet
     infer_dbt_schemas: true
     node_name_pattern:
+      # These tables are currently badly formatted in the manifest. The fix for it should
+      # go through when the dbt_docs workflow is working
       deny:
         - ".*use_of_force\\.summary_status_complete_dim.*"
         - ".*use_of_force\\.summary_status_in_progress_dim.*"

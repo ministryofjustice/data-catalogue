@@ -13,8 +13,7 @@ from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.assign_cadet_databases_source.config import (
     AssignCadetDatabasesConfig,
 )
-from ingestion.create_derived_table_databases_source.source import \
-    get_cadet_manifest
+from ingestion.dbt_manifest_utils import get_cadet_manifest, validate_fqn
 
 
 @config_class(AssignCadetDatabasesConfig)
@@ -46,26 +45,28 @@ class AssignCadetDatabases(Source):
         mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
-                node_table_name = manifest["nodes"][node]["fqn"][-1]
-                parts = node_table_name.split("__")
-                database = parts[0]
-                node_table_name_no_double_underscore = node_table_name.replace("__", ".")
+                fqn = manifest["nodes"][node]["fqn"]
+                if validate_fqn(fqn):
+                    node_table_name = fqn[-1]
+                    parts = node_table_name.split("__")
+                    database = parts[0]
+                    node_table_name_no_double_underscore = node_table_name.replace("__", ".")
 
-                dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
-                    name=node_table_name_no_double_underscore,
-                    platform=PLATFORM,
-                    platform_instance=INSTANCE,
-                    env=ENV,
-                )
-                database_key = mcp_builder.DatabaseKey(
-                    database=database,
-                    platform=PLATFORM,
-                    instance=INSTANCE,
-                    env=ENV,
-                    backcompat_env_as_instance=True,
-                )
+                    dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
+                        name=node_table_name_no_double_underscore,
+                        platform=PLATFORM,
+                        platform_instance=INSTANCE,
+                        env=ENV,
+                    )
+                    database_key = mcp_builder.DatabaseKey(
+                        database=database,
+                        platform=PLATFORM,
+                        instance=INSTANCE,
+                        env=ENV,
+                        backcompat_env_as_instance=True,
+                    )
 
-                mappings[dataset_urn] = database_key
+                    mappings[dataset_urn] = database_key
 
         return mappings
 

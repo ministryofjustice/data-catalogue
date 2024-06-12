@@ -1,11 +1,9 @@
-import json
-from typing import Dict, Iterable
+from typing import Iterable
 import logging
 
 import boto3
 import datahub.emitter.mce_builder as mce_builder
 import datahub.emitter.mcp_builder as mcp_builder
-from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
@@ -18,6 +16,7 @@ from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_derived_table_databases_source.config import (
     CreateDerivedTableDatabasesConfig,
 )
+from ingestion.dbt_manifest_utils import get_cadet_manifest, validate_fqn
 
 
 @config_class(CreateDerivedTableDatabasesConfig)
@@ -90,9 +89,11 @@ class CreateDerivedTableDatabases(Source):
         mappings = set()
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
-                database = manifest["nodes"][node]["fqn"][-1].split("__")[0]
-                domain = manifest["nodes"][node]["fqn"][1]
-                mappings.add((database, domain))
+                fqn = manifest["nodes"][node]["fqn"]
+                if validate_fqn(fqn):
+                    database = fqn[-1].split("__")[0]
+                    domain = fqn[1]
+                    mappings.add((database, domain))
         return mappings
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
@@ -111,30 +112,3 @@ class CreateDerivedTableDatabases(Source):
 
     def close(self) -> None:
         logging.info("Completed ingestion")
-
-
-def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
-    try:
-        s3 = boto3.client("s3")
-        s3_parts = manifest_s3_uri.split("/")
-        bucket_name = s3_parts[2]
-        file_key = "/".join(s3_parts[3:])
-        response = s3.get_object(Bucket=bucket_name, Key=file_key)
-        content = response["Body"].read().decode("utf-8")
-        manifest = json.loads(content, strict=False)
-    except NoCredentialsError:
-        print("Credentials not available.")
-        raise
-    except ClientError as e:
-        # If a client error is thrown, it will have a response attribute containing the error details
-        error_code = e.response["Error"]["Code"]
-        print(f"Client error occurred: {error_code}")
-        raise
-    except json.JSONDecodeError:
-        print("Error decoding manifest JSON.")
-        raise
-    except Exception as e:
-        # Catch any other exceptions
-        print(f"An error occurred: {str(e)}")
-        raise
-    return manifest

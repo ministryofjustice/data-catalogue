@@ -36,6 +36,15 @@
             ],
             "resource_type": "model"
         },
+        "model.test_derived_tables.invalid": {
+            "fqn": [
+                "model",
+                "prison",
+                "offence",
+                "invalid_fqn"
+            ],
+            "resource_type": "model"
+        },
         "seed.test_derived_tables.nope": {
             "fqn": [
                 "model",
