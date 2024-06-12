@@ -1,13 +1,14 @@
 import json
-from typing import Dict, Tuple
 import logging
 import re
+from typing import Dict, Tuple
 
 import boto3
-from botocore.exceptions import ClientError, NoCredentialsError
 import datahub.emitter.mce_builder as builder
+from botocore.exceptions import ClientError, NoCredentialsError
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
+
 
 def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
     try:
@@ -42,7 +43,9 @@ def validate_fqn(fqn: list[str]) -> bool:
 
     double_underscores = re.findall("__", table_name)
     if len(double_underscores) > 1:
-        logging.warning(f"{table_name=} has multiple double underscores which will confuse parsing")
+        logging.warning(
+            f"{table_name=} has multiple double underscores which will confuse parsing"
+        )
 
     match = re.match(r"\w+__\w+", table_name)
     if match:
@@ -50,6 +53,7 @@ def validate_fqn(fqn: list[str]) -> bool:
     if not match:
         logging.warning(f"{table_name=} does not match database__table format")
         return False
+
 
 def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
     """
@@ -62,11 +66,11 @@ def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
     # In CaDeT the convention is to name a table database__table
     node_table_name_no_double_underscore = node_table_name.replace("__", ".")
     urn = builder.make_dataset_urn_with_platform_instance(
-            platform=PLATFORM,
-            platform_instance=INSTANCE,
-            env=ENV,
-            name=node_table_name_no_double_underscore,
-        )
+        platform=PLATFORM,
+        platform_instance=INSTANCE,
+        env=ENV,
+        name=node_table_name_no_double_underscore,
+    )
     escaped_urn_for_regex = re.escape(urn)
 
     return domain, escaped_urn_for_regex

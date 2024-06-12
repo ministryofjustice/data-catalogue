@@ -1,4 +1,0 @@
-source:
-  type: "ingestion.assign_cadet_databases_source.source.AssignCadetDatabases"
-  config:
-    manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"

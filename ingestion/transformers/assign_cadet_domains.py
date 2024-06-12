@@ -1,15 +1,18 @@
 from typing import Callable, Union
 
-
-from datahub.configuration.common import (KeyValuePattern,
-                                          TransformerSemanticsConfigModel)
+from datahub.configuration.common import (
+    KeyValuePattern,
+    TransformerSemanticsConfigModel,
+)
 from datahub.configuration.import_resolver import pydantic_resolve_key
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_domain import AddDatasetDomain
 from datahub.metadata.schema_classes import DomainsClass
 
 from ingestion.dbt_manifest_utils import (
-    get_cadet_manifest, validate_fqn, convert_cadet_manifest_table_to_datahub
+    convert_cadet_manifest_table_to_datahub,
+    get_cadet_manifest,
+    validate_fqn,
 )
 
 
@@ -30,7 +33,7 @@ class CadetDatasetDomainSemanticsConfig(TransformerSemanticsConfigModel):
     manifest_s3_uri: str
 
 
-class AssignDerivedTableDomains(AddDatasetDomain):
+class AssignCadetDomains(AddDatasetDomain):
     """Transformer that adds a specified domains to each dataset."""
 
     def __init__(self, config: CadetDatasetDomainSemanticsConfig, ctx: PipelineContext):
@@ -51,7 +54,7 @@ class AssignDerivedTableDomains(AddDatasetDomain):
         super().__init__(generic_config, ctx)
 
     @classmethod
-    def create(cls, config_dict, ctx: PipelineContext) -> "AssignDerivedTableDomains":
+    def create(cls, config_dict, ctx: PipelineContext) -> "AssignCadetDomains":
         try:
             manifest_s3_uri = config_dict.get("manifest_s3_uri")
             replace_existing = config_dict.get("replace_existing", False)
@@ -75,7 +78,9 @@ class AssignDerivedTableDomains(AddDatasetDomain):
             if node_info["resource_type"] != "model":
                 continue
             if validate_fqn(nodes[node]["fqn"]):
-                domain, escaped_urn_for_regex = convert_cadet_manifest_table_to_datahub(node_info)
+                domain, escaped_urn_for_regex = convert_cadet_manifest_table_to_datahub(
+                    node_info
+                )
                 domain_mappings[escaped_urn_for_regex] = [domain]
 
         pattern_input = {"domain_pattern": {"rules": domain_mappings}}

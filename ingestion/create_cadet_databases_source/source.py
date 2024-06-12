@@ -1,5 +1,5 @@
-from typing import Iterable
 import logging
+from typing import Iterable
 
 import boto3
 import datahub.emitter.mce_builder as mce_builder
@@ -9,28 +9,28 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
-from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
+from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
-from ingestion.create_derived_table_databases_source.config import (
-    CreateDerivedTableDatabasesConfig,
+from ingestion.create_cadet_databases_source.config import (
+    CreateCadetDatabasesConfig,
 )
 from ingestion.dbt_manifest_utils import get_cadet_manifest, validate_fqn
 
 
-@config_class(CreateDerivedTableDatabasesConfig)
-class CreateDerivedTableDatabases(Source):
-    source_config: CreateDerivedTableDatabasesConfig
+@config_class(CreateCadetDatabasesConfig)
+class CreateCadetDatabases(Source):
+    source_config: CreateCadetDatabasesConfig
     report: SourceReport = SourceReport()
 
-    def __init__(self, config: CreateDerivedTableDatabasesConfig, ctx: PipelineContext):
+    def __init__(self, config: CreateCadetDatabasesConfig, ctx: PipelineContext):
         super().__init__(ctx)
         self.source_config = config
 
     @classmethod
     def create(cls, config_dict, ctx):
-        config = CreateDerivedTableDatabasesConfig.parse_obj(config_dict)
+        config = CreateCadetDatabasesConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:

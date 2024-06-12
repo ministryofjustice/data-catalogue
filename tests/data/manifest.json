@@ -41,7 +41,7 @@
                 "model",
                 "prison",
                 "offence",
-                "invalid_fqn"
+                "invalid_tablename"
             ],
             "resource_type": "model"
         },
