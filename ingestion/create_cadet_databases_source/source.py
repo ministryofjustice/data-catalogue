@@ -1,6 +1,6 @@
 import logging
-from typing import Iterable
 from datetime import datetime
+from typing import Iterable
 
 import datahub.emitter.mce_builder as mce_builder
 import datahub.emitter.mcp_builder as mcp_builder
@@ -13,9 +13,7 @@ from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
-from ingestion.create_cadet_databases_source.config import (
-    CreateCadetDatabasesConfig,
-)
+from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.dbt_manifest_utils import get_cadet_manifest, validate_fqn
 
 

@@ -2,12 +2,8 @@ import datahub.emitter.mce_builder as builder
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
-from ingestion.create_cadet_databases_source.config import (
-    CreateCadetDatabasesConfig,
-)
-from ingestion.create_cadet_databases_source.source import (
-    CreateCadetDatabases,
-)
+from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
+from ingestion.create_cadet_databases_source.source import CreateCadetDatabases
 
 
 def test_creating_domains_from_s3():

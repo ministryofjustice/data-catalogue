@@ -8,8 +8,8 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.graph.client import DatahubClientConfig
 from utils import run_dataset_transformer_pipeline
 
-from ingestion.transformers.assign_cadet_databases import AssignCadetDatabases
 from ingestion.config import ENV, INSTANCE, PLATFORM
+from ingestion.transformers.assign_cadet_databases import AssignCadetDatabases
 
 
 class TestAssignCadetDatabasesTransformer:
