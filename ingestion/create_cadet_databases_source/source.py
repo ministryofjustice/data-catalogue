@@ -1,7 +1,7 @@
 import logging
 from typing import Iterable
+from datetime import datetime
 
-import boto3
 import datahub.emitter.mce_builder as mce_builder
 import datahub.emitter.mcp_builder as mcp_builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
@@ -48,6 +48,7 @@ class CreateCadetDatabases(Source):
         # Create database entities and assign them to their domains
         databases_with_domains = self._get_databases_with_domains(manifest)
         sub_types = [DatasetContainerSubTypes.DATABASE]
+        last_modified = int(datetime.now().timestamp())
         for database, domain in databases_with_domains:
             database_container_key = mcp_builder.DatabaseKey(
                 database=database,
@@ -66,7 +67,7 @@ class CreateCadetDatabases(Source):
                 external_url=None,
                 description=None,
                 created=None,
-                last_modified=None,
+                last_modified=last_modified,
                 tags=None,
                 owner_urn=None,
                 qualified_name=None,
