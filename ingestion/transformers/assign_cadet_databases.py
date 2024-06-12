@@ -75,7 +75,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
 
     def _get_table_database_mappings(
         self, manifest
-    ) -> Dict[str, mcp_builder.DatabaseKey]:
+    ) -> Dict[str, str]:
         mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
