@@ -1,16 +1,19 @@
-import re
-from typing import Callable, Tuple, Union
+from typing import Callable, Union
 
-import datahub.emitter.mce_builder as builder
-from datahub.configuration.common import (KeyValuePattern,
-                                          TransformerSemanticsConfigModel)
+from datahub.configuration.common import (
+    KeyValuePattern,
+    TransformerSemanticsConfigModel,
+)
 from datahub.configuration.import_resolver import pydantic_resolve_key
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_domain import AddDatasetDomain
 from datahub.metadata.schema_classes import DomainsClass
 
-from ingestion.create_derived_table_domains_source.source import \
-    get_cadet_manifest
+from ingestion.dbt_manifest_utils import (
+    convert_cadet_manifest_table_to_datahub,
+    get_cadet_manifest,
+    validate_fqn,
+)
 
 
 class AddDatasetDomainSemanticsConfig(TransformerSemanticsConfigModel):
@@ -30,7 +33,7 @@ class CadetDatasetDomainSemanticsConfig(TransformerSemanticsConfigModel):
     manifest_s3_uri: str
 
 
-class AssignDerivedTableDomains(AddDatasetDomain):
+class AssignCadetDomains(AddDatasetDomain):
     """Transformer that adds a specified domains to each dataset."""
 
     def __init__(self, config: CadetDatasetDomainSemanticsConfig, ctx: PipelineContext):
@@ -51,7 +54,7 @@ class AssignDerivedTableDomains(AddDatasetDomain):
         super().__init__(generic_config, ctx)
 
     @classmethod
-    def create(cls, config_dict, ctx: PipelineContext) -> "AssignDerivedTableDomains":
+    def create(cls, config_dict, ctx: PipelineContext) -> "AssignCadetDomains":
         try:
             manifest_s3_uri = config_dict.get("manifest_s3_uri")
             replace_existing = config_dict.get("replace_existing", False)
@@ -74,24 +77,12 @@ class AssignDerivedTableDomains(AddDatasetDomain):
             node_info = nodes[node]
             if node_info["resource_type"] != "model":
                 continue
-            domain, escaped_urn_for_regex = self._convert_cadet_manifest_table_to_datahub(node_info)
-            domain_mappings[escaped_urn_for_regex] = [domain]
+            if validate_fqn(nodes[node]["fqn"]):
+                domain, escaped_urn_for_regex = convert_cadet_manifest_table_to_datahub(
+                    node_info
+                )
+                domain_mappings[escaped_urn_for_regex] = [domain]
 
         pattern_input = {"domain_pattern": {"rules": domain_mappings}}
 
         return PatternDatasetDomainSemanticsConfig.parse_obj(pattern_input)
-
-    def _convert_cadet_manifest_table_to_datahub(self, node_info: dict) -> Tuple[str, str]:
-        domain = node_info.get("fqn", [])[1]
-        node_table_name = node_info.get("fqn", [])[-1]
-
-        # In CaDeT the convention is to name a table database__table
-        node_table_name_no_double_underscore = node_table_name.replace("__", ".")
-        urn = builder.make_dataset_urn_with_platform_instance(
-                platform="dbt",
-                platform_instance="cadet.awsdatacatalog",
-                name=node_table_name_no_double_underscore,
-            )
-        escaped_urn_for_regex = re.escape(urn)
-
-        return domain, escaped_urn_for_regex
