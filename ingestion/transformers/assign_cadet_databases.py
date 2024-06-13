@@ -38,7 +38,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         return cls(config, ctx)
 
     def aspect_name(self):
-        pass
+        return "container"
 
     def transform_aspect(
         self, entity_urn: str, aspect_name: str, aspect: Optional[Aspect]
