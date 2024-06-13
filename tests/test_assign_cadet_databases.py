@@ -28,17 +28,17 @@ class TestAssignCadetDatabasesTransformer:
 
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignCadetDatabases,
-            aspect=models.StatusClass(removed=False),
+            aspect=models.ContainerClass(container=None),
             config={
                 "manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
             },
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 3
-        assert output[1] is not None
-        assert output[1].record is not None
-        assert isinstance(output[1].record, MetadataChangeProposalWrapper)
-        assert output[1].record.aspect is not None
-        assert isinstance(output[1].record.aspect, models.ContainerClass)
-        assert output[1].record.aspect.container == expected_key.as_urn()
+        assert len(output) == 2
+        assert output[0] is not None
+        assert output[0].record is not None
+        assert isinstance(output[0].record, MetadataChangeProposalWrapper)
+        assert output[0].record.aspect is not None
+        assert isinstance(output[0].record.aspect, models.ContainerClass)
+        assert output[0].record.aspect.container == expected_key.as_urn()
