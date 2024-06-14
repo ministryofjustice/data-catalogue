@@ -105,7 +105,7 @@ class CreateCadetDatabases(Source):
                     domain = fqn[1]
                     tag = (
                         "dc_display_in_catalogue"
-                        if "dc_display_in_catalogue" in node["tags"]
+                        if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
                         else None
                     )
                     mappings.add((database, domain))
