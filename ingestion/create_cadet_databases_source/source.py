@@ -44,7 +44,9 @@ class CreateCadetDatabases(Source):
             yield wu
 
         # Create database entities and assign them to their domains
-        databases_with_domains = self._get_databases_with_domains(manifest)
+        databases_with_domains, display_tags = (
+            self._get_databases_with_domains_and_display_tags(manifest)
+        )
         sub_types = [DatasetContainerSubTypes.DATABASE]
         last_modified = int(datetime.now().timestamp())
         for database, domain in databases_with_domains:
@@ -56,6 +58,8 @@ class CreateCadetDatabases(Source):
                 backcompat_env_as_instance=True,
             )
             domain_urn = mce_builder.make_domain_urn(domain=domain)
+            display_tag = display_tags.get(database)
+
             logging.info(f"Creating container {database=} with {domain=}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
@@ -66,7 +70,7 @@ class CreateCadetDatabases(Source):
                 description=None,
                 created=None,
                 last_modified=last_modified,
-                tags=None,
+                tags=display_tag,
                 owner_urn=None,
                 qualified_name=None,
                 extra_properties=None,
@@ -80,20 +84,35 @@ class CreateCadetDatabases(Source):
             if manifest["nodes"][node]["resource_type"] == "model"
         )
 
-    def _get_databases_with_domains(self, manifest) -> list[tuple[str, str]]:
+    def _get_databases_with_domains_and_display_tags(
+        self, manifest
+    ) -> tuple[set[tuple[str, str]], dict]:
         """
         These mappings will only work with tables named {database}__{table}
-        like create a derived table
+        like create a derived table.
+
+        returns a set of databases with associated domain and a dict for
+        display tags, where key is database and value is dc_display_in_catalogue
+        if any model is to be displayed
         """
         mappings = set()
+        tags = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
                     database = fqn[-1].split("__")[0]
                     domain = fqn[1]
+                    tag = (
+                        "dc_display_in_catalogue"
+                        if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
+                        else None
+                    )
                     mappings.add((database, domain))
-        return mappings
+                    if tag is not None:
+                        tags[database] = [tag]
+
+        return mappings, tags
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
         domain_urn = mce_builder.make_domain_urn(domain=domain_name)
