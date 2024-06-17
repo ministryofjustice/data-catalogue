@@ -125,9 +125,6 @@ class CreateCadetDatabases(Source):
         )
         return metadata_event
 
-    def _get_display_in_catalogue_tag(self, database):
-        pass
-
     def get_report(self) -> SourceReport:
         return self.report
 
