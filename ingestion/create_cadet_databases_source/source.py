@@ -70,7 +70,7 @@ class CreateCadetDatabases(Source):
                 description=None,
                 created=None,
                 last_modified=last_modified,
-                tags=[display_tag] if display_tag is not None else None,
+                tags=display_tag,
                 owner_urn=None,
                 qualified_name=None,
                 extra_properties=None,
@@ -110,7 +110,7 @@ class CreateCadetDatabases(Source):
                     )
                     mappings.add((database, domain))
                     if tag is not None:
-                        tags[database] = tag
+                        tags[database] = [tag]
 
         return mappings, tags
 
