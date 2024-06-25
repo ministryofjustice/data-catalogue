@@ -46,17 +46,43 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Python dependencies
-        run: |
-          pip install --upgrade pip
-          pip install --no-cache-dir -r requirements.txt
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.local
+          key: poetry-1.7.1-0
+
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Install project
+        run: poetry install --no-interaction
 
       - name: Filter advisories
         id: filter_advisories
         env:        
           REPO: datahub
           REPO_OWNER: datahub-project
-        run: python scripts/filter_advisories.py \
+        run: |
+          source .venv/bin/activate
+          python scripts/filter_advisories.py \
           "${{ steps.read_current_version.outputs.current_version }}" \
           "${{ steps.get_last_run_date.outputs.last_run_date }}"
           
