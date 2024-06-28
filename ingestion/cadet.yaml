@@ -26,7 +26,7 @@ source:
       test_definitions: "YES"
     stateful_ingestion:
       remove_stale_metadata: true
-    strip_user_ids_from_email: true
+    strip_user_ids_from_email: false
     include_column_lineage: false
     tag_prefix: ""
     meta_mapping:
