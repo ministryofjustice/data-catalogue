@@ -74,3 +74,21 @@ def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
     escaped_urn_for_regex = re.escape(urn)
 
     return domain, escaped_urn_for_regex
+
+
+BIG_OLD_ACRONYMS = set(("OPG", "HMPPS", "HMCTS", "LAA", "CICA", "HQ"))
+
+
+def format_domain_name(domain_name: str) -> str:
+    """
+    Format domain names from the manifest into a human readable format, e.g.
+    courts -> Courts
+    opg -> OPG
+    hmpps -> HMPPS
+    electronic_monitoring -> Electronic monitoring
+    """
+    acronym = domain_name.upper()
+    if acronym in BIG_OLD_ACRONYMS:
+        return acronym
+
+    return domain_name.capitalize().replace("_", " ")
