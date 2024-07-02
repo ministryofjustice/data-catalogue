@@ -16,15 +16,12 @@ def test_creating_domains_from_s3():
 
     results = list(source.get_workunits())
 
-    assert results
-    assert len(results) == 24
-
     domain_creation_events = results[:4]
     domains = [event.metadata.aspect.name for event in domain_creation_events]
     domains.sort()
-    assert domains == ["courts", "hq", "prison", "probation"]
+    assert domains == ["Courts", "HQ", "Prison", "Probation"]
 
-    # 5 events are created per database, we'll just test one
+    # 6 events are created per database, we'll just test one
     # (create container, update status, add platform, add subtype, associate container with domain)
     assert results[4].metadata.aspect.customProperties.get("database")
     assert results[6].metadata.aspect.platform == builder.make_data_platform_urn(

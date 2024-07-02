@@ -7,6 +7,10 @@
                 "offence",
                 "prison_database__table1"
             ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
+            ],
             "resource_type": "model"
         },
         "model.test_derived_tables.probation": {
@@ -15,6 +19,10 @@
                 "probation",
                 "youth",
                 "probation_database__table1"
+            ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
             ],
             "resource_type": "model"
         },
@@ -25,6 +33,10 @@
                 "courts",
                 "courts_data__table1"
             ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
+            ],
             "resource_type": "model"
         },
         "model.test_derived_tables.hq": {
@@ -33,6 +45,10 @@
                 "hq",
                 "hq",
                 "hq_database__table1"
+            ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
             ],
             "resource_type": "model"
         },
@@ -43,6 +59,10 @@
                 "offence",
                 "invalid_tablename"
             ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
+            ],
             "resource_type": "model"
         },
         "seed.test_derived_tables.nope": {
@@ -52,6 +72,10 @@
                 "test_derived_tables",
                 "table1"
             ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
+            ],
             "resource_type": "seed"
         },
         "source.test_derived_tables.nope": {
@@ -60,6 +84,10 @@
                 "nope",
                 "test_derived_tables",
                 "table1"
+            ],
+            "tags": [
+                "weekly",
+                "dc_display_in_catalogue"
             ],
             "resource_type": "source"
         }
