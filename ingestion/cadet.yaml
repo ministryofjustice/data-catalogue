@@ -20,7 +20,7 @@ source:
     entities_enabled:
       test_results: "YES"
       seeds: "NO"
-      snapshots: "YES"
+      snapshots: "NO"
       models: "YES"
       sources: "YES"
       test_definitions: "YES"
