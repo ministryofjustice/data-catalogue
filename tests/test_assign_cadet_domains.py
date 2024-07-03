@@ -26,7 +26,7 @@ class TestCadetTransformer:
         assert transformer.aspect_name() == models.DomainsClass.ASPECT_NAME
 
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
-        prison_domain = builder.make_domain_urn("prison")
+        prison_domain = builder.make_domain_urn("Prison")
 
         pipeline_context: PipelineContext = PipelineContext(
             run_id="test_simple_add_dataset_domain"
@@ -53,8 +53,8 @@ class TestCadetTransformer:
         assert prison_domain in transformed_aspect.domains
 
     def test_pattern_add_dataset_domain_overwrite(self, mock_datahub_graph):
-        prison_domain = builder.make_domain_urn("prison")
-        probation_domain = builder.make_domain_urn("probation")
+        prison_domain = builder.make_domain_urn("Prison")
+        probation_domain = builder.make_domain_urn("Probation")
 
         pipeline_context: PipelineContext = PipelineContext(
             run_id="test_simple_add_dataset_domain"
