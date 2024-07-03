@@ -60,7 +60,7 @@ def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
     eg 'database__table' is converted to a regex string to detect it's urn
     like 'urn:li:dataset:\\(urn:li:dataPlatform:dbt,cadet\\.awsdatacatalog\\.database\\.table,PROD\\)'
     """
-    domain = node_info.get("fqn", [])[1]
+    domain = format_domain_name(node_info.get("fqn", [])[1])
     node_table_name = node_info.get("fqn", [])[-1]
 
     # In CaDeT the convention is to name a table database__table
