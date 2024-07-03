@@ -14,7 +14,11 @@ from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesCla
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
-from ingestion.dbt_manifest_utils import get_cadet_manifest, validate_fqn
+from ingestion.dbt_manifest_utils import (
+    format_domain_name,
+    get_cadet_manifest,
+    validate_fqn,
+)
 
 
 @config_class(CreateCadetDatabasesConfig)
@@ -79,7 +83,7 @@ class CreateCadetDatabases(Source):
     def _get_domains(self, manifest) -> set[str]:
         """Only models are arranged by domain in CaDeT"""
         return set(
-            manifest["nodes"][node]["fqn"][1]
+            format_domain_name(manifest["nodes"][node]["fqn"][1])
             for node in manifest["nodes"]
             if manifest["nodes"][node]["resource_type"] == "model"
         )
