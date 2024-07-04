@@ -61,10 +61,11 @@ class CreateCadetDatabases(Source):
                 env=ENV,
                 backcompat_env_as_instance=True,
             )
-            domain_urn = mce_builder.make_domain_urn(domain=domain)
+            domain_name = format_domain_name(domain)
+            domain_urn = mce_builder.make_domain_urn(domain=domain_name)
             display_tag = display_tags.get(database)
 
-            logging.info(f"Creating container {database=} with {domain=}")
+            logging.info(f"Creating container {database=} with {domain_name=}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
                 name=database,
