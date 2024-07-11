@@ -193,7 +193,7 @@ jobs:
           AZURE_CLIENT_ID: ${{ vars.CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           TENANT_ID: ${{ vars.TENANT_ID }}
-        run:
+        run: |
           cat helm_deploy/secrets.yaml | envsubst > helm_deploy/secrets.yaml
           kubectl -n ${KUBE_NAMESPACE} apply -f helm_deploy/secrets.yaml
 
