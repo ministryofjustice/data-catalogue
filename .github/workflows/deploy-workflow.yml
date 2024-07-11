@@ -186,7 +186,7 @@ jobs:
           envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
             kubectl apply -f - --namespace=${KUBE_NAMESPACE}
 
-      - name: create-azure-k8s-secrets
+      - name: create azure k8s secrets
         shell: bash
         env:
           KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
@@ -194,8 +194,8 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           TENANT_ID: ${{ vars.TENANT_ID }}
         run: |
-          cat helm_deploy/secrets.yaml | envsubst > helm_deploy/secrets.yaml
-          kubectl -n ${KUBE_NAMESPACE} apply -f helm_deploy/secrets.yaml
+          envsubst < helm_deploy/secrets.yaml |
+          kubectl -n ${KUBE_NAMESPACE} apply -f -
 
       - name: update grafana status dashboard configmap
         if: ${{ inputs.env == 'dev' }}
