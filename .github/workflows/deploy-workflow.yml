@@ -194,7 +194,7 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           TENANT_ID: ${{ vars.TENANT_ID }}
         run:
-          cat helm_deploy/secrets.yml | envsubst > deployments/secrets.yml
+          cat helm_deploy/secrets.yaml | envsubst > deployments/secrets.yml
           kubectl -n ${KUBE_NAMESPACE} apply -f deployments/secrets.yml
 
       - name: update grafana status dashboard configmap
