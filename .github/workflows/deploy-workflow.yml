@@ -40,6 +40,9 @@ on:
       opensearch_proxy_host:
         description: "domain address to reach opensearch"
         required: true
+      azure_client_secret:
+        description: "client secret for azure authentication"
+        required: true
 
 concurrency:
   group: ${{ inputs.env }}
@@ -182,6 +185,17 @@ jobs:
         run: |
           envsubst < helm_deploy/monitoring/datahub-networkpolicy.yaml | 
             kubectl apply -f - --namespace=${KUBE_NAMESPACE}
+
+      - name: create azure k8s secrets
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          AZURE_CLIENT_ID: ${{ vars.CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          TENANT_ID: ${{ vars.TENANT_ID }}
+        run: |
+          envsubst < helm_deploy/secrets.yaml |
+          kubectl -n ${KUBE_NAMESPACE} apply -f -
 
       - name: update grafana status dashboard configmap
         if: ${{ inputs.env == 'dev' }}
