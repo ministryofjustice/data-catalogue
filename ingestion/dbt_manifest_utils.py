@@ -62,7 +62,10 @@ def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
     """
     domain = format_domain_name(node_info.get("fqn", [])[1])
     node_table_name = node_info.get("fqn", [])[-1]
-
+    # schema has the name of the database that has resulted from the filename parsing
+    database_name = node_info.get("schema", "")
+    if database_name.endswith("dev_dbt"):
+        node_table_name = f"{database_name}.{node_table_name.split('__')[-1]}"
     # In CaDeT the convention is to name a table database__table
     node_table_name_no_double_underscore = node_table_name.replace("__", ".")
     urn = builder.make_dataset_urn_with_platform_instance(
