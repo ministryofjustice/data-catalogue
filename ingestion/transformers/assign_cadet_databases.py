@@ -73,9 +73,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
 
         return mcps
 
-    def _get_table_database_mappings(
-        self, manifest
-    ) -> Dict[str, str]:
+    def _get_table_database_mappings(self, manifest) -> Dict[str, str]:
         mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
@@ -83,10 +81,8 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                 if validate_fqn(fqn):
                     node_table_name = fqn[-1]
                     parts = node_table_name.split("__")
-                    database = parts[0]
-                    node_table_name_no_double_underscore = node_table_name.replace(
-                        "__", "."
-                    )
+                    database = manifest["nodes"][node]["schema"]
+                    node_table_name_no_double_underscore = f"{database}.{parts[-1]}"
 
                     dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                         name=node_table_name_no_double_underscore,
