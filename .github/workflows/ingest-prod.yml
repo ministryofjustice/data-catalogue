@@ -1,5 +1,4 @@
-name: Ingest cadet metadata to production datahub
-
+name: Ingest metadata to prod
 on:
   # schedule:
   #   - cron: "0 3 * * *" # 3am UTC
@@ -14,4 +13,12 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-justice-data-prod:
+    uses: ./.github/workflows/ingest-justice-data.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: prod
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
