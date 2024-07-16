@@ -41,4 +41,3 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-    
