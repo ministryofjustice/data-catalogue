@@ -30,7 +30,7 @@ on:
 jobs:
   datahub-ingest:
     environment: ${{ inputs.ENVIRONMENT }}
-    timeout-minutes: 120
+    timeout-minutes: 180
     runs-on: ubuntu-latest
     steps:
       - run: echo "ENVIRONMENT=${{inputs.ENVIRONMENT}}; URL=${{vars.DATAHUB_GMS_URL}}"
