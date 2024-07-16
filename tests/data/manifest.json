@@ -1,6 +1,7 @@
 {
     "nodes": {
         "model.test_derived_tables.prison": {
+            "schema": "prison_database",
             "fqn": [
                 "model",
                 "prison",
@@ -14,6 +15,7 @@
             "resource_type": "model"
         },
         "model.test_derived_tables.probation": {
+            "schema": "probation_database",
             "fqn": [
                 "model",
                 "probation",
@@ -27,6 +29,7 @@
             "resource_type": "model"
         },
         "model.test_derived_tables.courts": {
+            "schema": "courts_data",
             "fqn": [
                 "model",
                 "courts",
@@ -40,6 +43,7 @@
             "resource_type": "model"
         },
         "model.test_derived_tables.hq": {
+            "schema": "hq_database",
             "fqn": [
                 "model",
                 "hq",
@@ -53,6 +57,7 @@
             "resource_type": "model"
         },
         "model.test_derived_tables.invalid": {
+            "schema": "invalid",
             "fqn": [
                 "model",
                 "prison",
@@ -66,6 +71,7 @@
             "resource_type": "model"
         },
         "seed.test_derived_tables.nope": {
+            "schema": "test_derived_tables_dev_dbt",
             "fqn": [
                 "model",
                 "nope",
@@ -79,6 +85,7 @@
             "resource_type": "seed"
         },
         "source.test_derived_tables.nope": {
+            "schema": "test_derived_tables",
             "fqn": [
                 "model",
                 "nope",

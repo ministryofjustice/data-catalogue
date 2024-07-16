@@ -106,7 +106,7 @@ class CreateCadetDatabases(Source):
             if manifest["nodes"][node]["resource_type"] == "model":
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
-                    database = fqn[-1].split("__")[0]
+                    database = manifest["nodes"][node]["schema"]
                     domain = fqn[1]
                     tag = (
                         "dc_display_in_catalogue"
