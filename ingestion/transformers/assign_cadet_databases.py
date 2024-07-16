@@ -12,7 +12,11 @@ from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
 from datahub.metadata.schema_classes import ContainerClass, MetadataChangeProposalClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
-from ingestion.dbt_manifest_utils import get_cadet_manifest, validate_fqn
+from ingestion.dbt_manifest_utils import (
+    get_cadet_manifest,
+    validate_fqn,
+    parse_database_and_table_names,
+)
 
 
 class AssignCadetDatabasesConfig(ConfigModel):
@@ -79,13 +83,12 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
             if manifest["nodes"][node]["resource_type"] == "model":
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
-                    node_table_name = fqn[-1]
-                    parts = node_table_name.split("__")
-                    database = manifest["nodes"][node]["schema"]
-                    node_table_name_no_double_underscore = f"{database}.{parts[-1]}"
+                    database, table_name = parse_database_and_table_names(
+                        manifest["nodes"][node]
+                    )
 
                     dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
-                        name=node_table_name_no_double_underscore,
+                        name=f"{database}.{table_name}",
                         platform=PLATFORM,
                         platform_instance=INSTANCE,
                         env=ENV,

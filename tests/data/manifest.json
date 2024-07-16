@@ -71,7 +71,7 @@
             "resource_type": "model"
         },
         "seed.test_derived_tables.nope": {
-            "schema": "probation_database",
+            "schema": "test_derived_tables_dev_dbt",
             "fqn": [
                 "model",
                 "nope",
