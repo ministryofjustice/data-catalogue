@@ -4,6 +4,7 @@ from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.create_cadet_databases_source.source import CreateCadetDatabases
+from ingestion.dbt_manifest_utils import format_domain_name
 
 
 def test_creating_domains_from_s3():
@@ -33,5 +34,6 @@ def test_creating_domains_from_s3():
         results[4].metadata.aspect.customProperties.get("database").split("_")[0]
     )
     assert (
-        builder.make_domain_urn(domain_result_4) in results[8].metadata.aspect.domains
+        builder.make_domain_urn(format_domain_name(domain_result_4))
+        in results[8].metadata.aspect.domains
     )

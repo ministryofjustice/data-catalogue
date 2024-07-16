@@ -51,6 +51,7 @@ class AssignCadetDomains(AddDatasetDomain):
             semantics=config.semantics,
             replace_existing=config.replace_existing,
         )
+
         super().__init__(generic_config, ctx)
 
     @classmethod

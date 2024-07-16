@@ -61,15 +61,14 @@ def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
     like 'urn:li:dataset:\\(urn:li:dataPlatform:dbt,cadet\\.awsdatacatalog\\.database\\.table,PROD\\)'
     """
     domain = format_domain_name(node_info.get("fqn", [])[1])
-    node_table_name = node_info.get("fqn", [])[-1]
 
-    # In CaDeT the convention is to name a table database__table
-    node_table_name_no_double_underscore = node_table_name.replace("__", ".")
+    database_name, table_name = parse_database_and_table_names(node_info)
+
     urn = builder.make_dataset_urn_with_platform_instance(
         platform=PLATFORM,
         platform_instance=INSTANCE,
         env=ENV,
-        name=node_table_name_no_double_underscore,
+        name=f"{database_name}.{table_name}",
     )
     escaped_urn_for_regex = re.escape(urn)
 
@@ -92,3 +91,19 @@ def format_domain_name(domain_name: str) -> str:
         return acronym
 
     return domain_name.capitalize().replace("_", " ")
+
+
+def parse_database_and_table_names(node: dict) -> tuple[str, str]:
+    """
+    takes a node from the dbt manifest and returns the athena database
+    and table names - as populated by the create-a-derived-table service
+    """
+
+    # In CaDeT the convention is to name a table database__table, which is
+    # found in the last item of fqn list.
+    node_table_name = node["fqn"][-1].split("__")[-1]
+    # schema holds the database name after parsing from cadet and so will be
+    # representative of the cadet env (where dev dbs have suffix `_dev_dbt`)
+    node_dataabse_name = node["schema"]
+
+    return node_dataabse_name, node_table_name
