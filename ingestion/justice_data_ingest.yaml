@@ -2,8 +2,3 @@ source:
   type: ingestion.justice_data_source.source.JusticeDataAPISource
   config:
     base_url: "https://data.justice.gov.uk/api"
-
-transformers:
-  - type: "add_dataset_tags"
-    config:
-      get_tags_to_add: "ingestion.taggers.display_in_catalogue_tagger.add_display_in_catalogue_tag"

@@ -19,7 +19,13 @@ from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.com.linkedin.pegasus2avro.common import ChangeAuditStamps, Status
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import ChartSnapshot
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
-from datahub.metadata.schema_classes import BrowsePathsV2Class, ChartInfoClass
+from datahub.metadata.schema_classes import (
+    BrowsePathsV2Class,
+    ChartInfoClass,
+    GlobalTagsClass,
+    TagAssociationClass,
+)
+
 
 from .api_client import JusticeDataAPIClient
 from .config import JusticeDataAPIConfig
@@ -76,6 +82,11 @@ class JusticeDataAPISource(TestableSource):
             chartUrl=self.web_url + chart_data.get("permalink", ""),
         )
         chart_snapshot.aspects.append(chart_info)
+
+        # add tag so entity displays in find-moj-data
+        tag_urn = builder.make_tag_urn(tag="dc_display_in_catalogue")
+        display_tag = GlobalTagsClass(tags=[TagAssociationClass(tag_urn)])
+        chart_snapshot.aspects.append(display_tag)
 
         # TODO: browse paths requires IDs, not just titles
         breadcrumb = chart_data.get("breadcrumb")
