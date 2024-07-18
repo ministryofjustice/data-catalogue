@@ -41,6 +41,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+          role-duration-seconds: 14400
           aws-region: ${{ inputs.ECR_REGION }}
 
       - name: cache poetry install
