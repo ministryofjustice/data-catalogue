@@ -1,5 +1,5 @@
 source:
-  type: justice_data_source.source.JusticeDataAPISource
+  type: ingestion.justice_data_source.source.JusticeDataAPISource
   config:
     base_url: "https://data.justice.gov.uk/api"
 
