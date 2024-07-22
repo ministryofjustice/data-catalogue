@@ -1,8 +1,10 @@
+from typing import Iterable
+
 from datahub.configuration.common import (
     KeyValuePattern,
     TransformerSemanticsConfigModel,
 )
-from datahub.ingestion.api.common import PipelineContext
+from datahub.ingestion.api.common import PipelineContext, RecordEnvelope
 from datahub.ingestion.transformer.dataset_domain import (
     AddDatasetDomain,
     AddDatasetDomainSemanticsConfig,
@@ -14,6 +16,7 @@ from ingestion.ingestion_utils import (
     get_cadet_manifest,
     validate_fqn,
 )
+from ingestion.utils import Stopwatch, report_time
 
 
 class PatternDatasetDomainSemanticsConfig(TransformerSemanticsConfigModel):
@@ -45,7 +48,21 @@ class AssignCadetDomains(AddDatasetDomain):
             get_domains_to_add=resolve_domain,
         )
 
+        self.transform_timer = Stopwatch(transformer="AssignCadetDomains")
+
         super().__init__(generic_config, ctx)
+
+    def _should_process(self, record):
+        if not self.transform_timer.running:
+            self.transform_timer.start()
+        return super()._should_process(record)
+
+    def _handle_end_of_stream(
+        self, envelope: RecordEnvelope
+    ) -> Iterable[RecordEnvelope]:
+        self.transform_timer.stop()
+        self.transform_timer.report()
+        return super()._handle_end_of_stream(envelope)
 
     @classmethod
     def create(cls, config_dict, ctx: PipelineContext) -> "AssignCadetDomains":
@@ -62,6 +79,7 @@ class AssignCadetDomains(AddDatasetDomain):
         )
         return cls(config_dict, ctx)
 
+    @report_time
     def _get_domain_mapping(self, manifest) -> PatternDatasetDomainSemanticsConfig:
         """Map regex patterns for tables to domains"""
         nodes = manifest.get("nodes")

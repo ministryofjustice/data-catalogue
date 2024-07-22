@@ -1,3 +1,4 @@
+import logging
 from io import BufferedReader
 from typing import Iterable, Optional
 
@@ -25,7 +26,6 @@ from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
 )
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.schema_classes import (
-    BrowsePathsV2Class,
     ChangeTypeClass,
     ChartInfoClass,
     CorpGroupInfoClass,
@@ -38,9 +38,12 @@ from datahub.metadata.schema_classes import (
 )
 
 from ingestion.ingestion_utils import list_datahub_domains
+from ingestion.utils import report_generator_time
 
 from .api_client import JusticeDataAPIClient
 from .config import JusticeDataAPIConfig
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @platform_name("File")
@@ -72,6 +75,7 @@ class JusticeDataAPISource(TestableSource):
         config = JusticeDataAPIConfig.parse_obj(config_dict)
         return cls(ctx, config)
 
+    @report_generator_time
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
         all_chart_data = self.client.list_all(self.config.exclude_id_list)
 
