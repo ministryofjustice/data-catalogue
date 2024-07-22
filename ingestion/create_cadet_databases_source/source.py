@@ -51,7 +51,7 @@ class CreateCadetDatabases(Source):
         databases_with_domains, display_tags = (
             self._get_databases_with_domains_and_display_tags(manifest)
         )
-        sub_types = [DatasetContainerSubTypes.DATABASE]
+        sub_types: list[str] = [DatasetContainerSubTypes.DATABASE]
         last_modified = int(datetime.now().timestamp())
         for database, domain in databases_with_domains:
             database_container_key = mcp_builder.DatabaseKey(

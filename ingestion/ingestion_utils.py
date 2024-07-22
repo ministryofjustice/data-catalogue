@@ -49,7 +49,7 @@ def validate_fqn(fqn: list[str]) -> bool:
             f"{table_name=} has multiple double underscores which will confuse parsing"
         )
 
-    match = re.match(r"\w+__\w+", table_name)
+    match: re.Match[str] | None = re.match(r"\w+__\w+", table_name)
     if match:
         return True
     if not match:
