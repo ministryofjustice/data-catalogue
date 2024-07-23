@@ -121,7 +121,7 @@ acryl-datahub-actions:
       add: ["NET_BIND_SERVICE"]
   image:
     repository: acryldata/datahub-actions
-    tag: v0.0.18
+    tag: v0.0.17
   # mount the k8s secret as a volume in the container, each key name is mounted as a
   # file on the mount path /etc/datahub/ingestion-secret-files
   # ingestionSecretFiles:
