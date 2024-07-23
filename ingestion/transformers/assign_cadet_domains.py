@@ -1,4 +1,7 @@
-from typing import Callable, Union
+import logging
+import time
+from typing import Callable, Union, Iterable, List
+from datahub.ingestion.api.common import RecordEnvelope
 
 from datahub.configuration.common import (
     KeyValuePattern,
@@ -37,6 +40,8 @@ class AssignCadetDomains(AddDatasetDomain):
     """Transformer that adds a specified domains to each dataset."""
 
     def __init__(self, config: CadetDatasetDomainSemanticsConfig, ctx: PipelineContext):
+        logging.info("Assign Cadet Domains INIT")
+        self.time_spent = 0
         AddDatasetDomain.raise_ctx_configuration_error(ctx)
         manifest = get_cadet_manifest(config.manifest_s3_uri)
         domain_mappings = self._get_domain_mapping(manifest)
@@ -54,8 +59,33 @@ class AssignCadetDomains(AddDatasetDomain):
 
         super().__init__(generic_config, ctx)
 
+    def transform(
+        self, record_envelopes: Iterable[RecordEnvelope]
+    ) -> Iterable[RecordEnvelope]:
+        start = time.perf_counter_ns()
+        val = super().transform(record_envelopes=record_envelopes)
+        end = time.perf_counter_ns()
+        # diff = (end - start) / 1e9
+        self.time_spent += end - start
+        # logging.info(
+        #     f"*** assign_cadet_domains transform - time taken: {diff:.2f} seconds"
+        # )
+        return val
+
+    def handle_end_of_stream(
+        self,
+    ):
+        diff = self.time_spent / 1e9
+
+        logging.info(
+            f"*** assign_cadet_domains handle_end_of_streams - time taken: {diff:.2f} seconds"
+        )
+
+        return super().handle_end_of_stream()
+
     @classmethod
     def create(cls, config_dict, ctx: PipelineContext) -> "AssignCadetDomains":
+        logging.info("*** creating instance of AssignCadetDomains ***")
         try:
             manifest_s3_uri = config_dict.get("manifest_s3_uri")
             replace_existing = config_dict.get("replace_existing", False)
@@ -71,6 +101,7 @@ class AssignCadetDomains(AddDatasetDomain):
 
     def _get_domain_mapping(self, manifest) -> PatternDatasetDomainSemanticsConfig:
         """Map regex patterns for tables to domains"""
+        start = time.time()
         nodes = manifest.get("nodes")
         domain_mappings = {}
 
@@ -85,5 +116,7 @@ class AssignCadetDomains(AddDatasetDomain):
                 domain_mappings[escaped_urn_for_regex] = [domain]
 
         pattern_input = {"domain_pattern": {"rules": domain_mappings}}
-
+        end = time.time()
+        diff = end - start
+        logging.info(f"*** get domain mapping - time taken: {diff} seconds")
         return PatternDatasetDomainSemanticsConfig.parse_obj(pattern_input)

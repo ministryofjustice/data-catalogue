@@ -1,5 +1,6 @@
 import logging
 from abc import ABCMeta
+import time
 from typing import Dict, List, Optional, Union
 
 import datahub.emitter.mce_builder as mce_builder
@@ -53,6 +54,8 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         self,
     ) -> List[Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]]:
 
+        # https://docs.python.org/3/library/time.html#time.perf_counter
+        start = time.perf_counter_ns()
         mcps: List[
             Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]
         ] = []
@@ -74,7 +77,9 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     aspect=ContainerClass(container=f"{container_urn}"),
                 )
             )
-
+        end = time.perf_counter_ns()
+        diff = (end - start) / 1e9
+        logging.info(f"Handle end of stream time difference = {diff} seconds")
         return mcps
 
     def _get_table_database_mappings(self, manifest) -> Dict[str, str]:

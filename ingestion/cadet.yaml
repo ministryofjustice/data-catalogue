@@ -4,6 +4,7 @@ source:
     aws_connection:
       aws_region: eu-west-1
     manifest_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+    # manifest_path: "s3://mojap-derived-tables/catalogue_static_dbt_docs/manifest_slim.json"
     catalog_path: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/catalog.json"
     run_results_paths: ["s3://mojap-derived-tables/prod/run_artefacts/latest/target/run_results.json"]
     # if platform_instance changes it needs to also change in config.py
@@ -46,11 +47,13 @@ source:
           owner_type: user
           owner_category: DATAOWNER
 
-transformers:
-  - type: "ingestion.transformers.assign_cadet_domains.AssignCadetDomains"
-    config:
-      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
-      replace_existing: true
-  - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
-    config:
-      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+# transformers:
+#   - type: "ingestion.transformers.assign_cadet_domains.AssignCadetDomains"
+#     config:
+#       # manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+#       manifest_s3_uri: "s3://mojap-derived-tables/catalogue_static_dbt_docs/manifest_slim.json"
+#       replace_existing: true
+#   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
+#     config:
+#       # manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+#       manifest_s3_uri: "s3://mojap-derived-tables/catalogue_static_dbt_docs/manifest_slim.json"
