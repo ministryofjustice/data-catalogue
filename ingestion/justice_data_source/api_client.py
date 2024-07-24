@@ -1,6 +1,6 @@
 import requests
 from ..dbt_manifest_utils import format_domain_name
-
+from datetime import datetime, date
 
 # These map the api ids to domains as set by create_cadet_database_source
 ID_TO_DOMAIN_MAPPING = {
@@ -21,6 +21,9 @@ class JusticeDataAPIClient:
     def __init__(self, base_url):
         self.session = requests.Session()
         self.base_url = base_url
+        self.publication_details: list[dict] = self.session.get(
+            f"{base_url}/publications"
+        ).json()
 
     def list_all(self):
         """
@@ -47,6 +50,15 @@ class JusticeDataAPIClient:
             breadcrumb = current.get("breadcrumb", []).copy()
             breadcrumb.append(current["name"])
 
+            publication_id = current.get("dataPublicationId")
+
+            if publication_id:
+                last_updated, refresh_frequency = self._get_publication_details(
+                    publication_id
+                )
+                current["last_updated"] = last_updated
+                current["refresh_frequency"] = refresh_frequency
+
             if current["children"] and current["children"] != [None]:
                 for child in current["children"]:
                     child["breadcrumb"] = breadcrumb
@@ -58,3 +70,13 @@ class JusticeDataAPIClient:
                 leaf_nodes[current["apiUrl"]] = current
 
         return list(leaf_nodes.values())
+
+    def _get_publication_details(self, id: str) -> tuple[date, str]:
+        for publication in self.publication_details:
+            if publication.get("id") == id:
+                refresh_frequency = publication.get("frequency")
+                last_updated = datetime.strptime(
+                    publication.get("currentPublishDate"), "%d %B %Y"
+                )
+
+        return last_updated, refresh_frequency
