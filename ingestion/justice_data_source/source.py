@@ -130,6 +130,14 @@ class JusticeDataAPISource(TestableSource):
             title=title,
             lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
             chartUrl=self.web_url + chart_data.get("permalink", ""),
+            lastRefreshed=(
+                int(chart_data["last_updated_timestamp"])
+                if chart_data.get("last_updated_timestamp")
+                else None
+            ),
+            customProperties={
+                "refresh_frequency": chart_data.get("refresh_frequency", "")
+            },
         )
         chart_snapshot.aspects.append(chart_info)
 
