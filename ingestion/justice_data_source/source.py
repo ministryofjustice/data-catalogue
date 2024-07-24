@@ -17,13 +17,22 @@ from datahub.ingestion.api.source import (
 )
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.com.linkedin.pegasus2avro.common import ChangeAuditStamps, Status
-from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import ChartSnapshot
-from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
+from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
+    ChartSnapshot,
+    DashboardSnapshot,
+)
+from datahub.metadata.com.linkedin.pegasus2avro.mxe import (
+    MetadataChangeEvent,
+)
+from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.metadata.schema_classes import (
     BrowsePathsV2Class,
     ChartInfoClass,
     GlobalTagsClass,
     TagAssociationClass,
+    DomainsClass,
+    ChangeTypeClass,
+    DashboardInfoClass,
 )
 
 
@@ -54,16 +63,57 @@ class JusticeDataAPISource(TestableSource):
         return cls(ctx, config)
 
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
-        # TODO generate metadata for the dashboard itself
 
-        for chart_data in self.client.list_all():
+        all_chart_data = self.client.list_all()
+        for chart_data in all_chart_data:
             mce = self._make_chart(chart_data)
             wu = MetadataWorkUnit("single_mce", mce=mce)
             self.report.report_workunit(wu)
             yield wu
 
+        # adds domains to each chart created previously
+        for chart_data in all_chart_data:
+            if chart_data.get("domain"):
+                mcp = self._assign_chart_to_domain(chart_data)
+                wu = MetadataWorkUnit("single_mcp", mcp=mcp)
+                self.report.report_workunit(wu)
+                yield wu
+
+        # TODO generate metadata for the dashboard itself
+        chart_urns = [
+            builder.make_chart_urn(self.platform_name, chart_data["id"])
+            for chart_data in all_chart_data
+        ]
+        mce = self._make_dashboard(chart_urns)
+        wu = MetadataWorkUnit("single_mce", mce=mce)
+        self.report.report_workunit(wu)
+        yield wu
+
     def get_report(self):
         return self.report
+
+    def _make_dashboard(self, chart_urns):
+        dashboard_urn = builder.make_dashboard_urn(self.platform_name, "Justice Data")
+        dashboard_snapshot = DashboardSnapshot(
+            urn=dashboard_urn,
+            aspects=[Status(removed=False)],
+        )
+
+        dashboard_info = DashboardInfoClass(
+            title="Justice Data",
+            description="A published collection of data visualisations relating to multiple domains",
+            lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
+            externalUrl="https://data.justice.gov.uk/",
+            charts=chart_urns,
+        )
+        dashboard_snapshot.aspects.append(dashboard_info)
+
+        # add tag so entity displays in find-moj-data
+        display_tag = self._make_tags_aspect()
+        dashboard_snapshot.aspects.append(display_tag)
+
+        dashboard_mce = MetadataChangeEvent(proposedSnapshot=dashboard_snapshot)
+        return dashboard_mce
 
     def _make_chart(self, chart_data) -> MetadataChangeEvent:
         chart_urn = builder.make_chart_urn(self.platform_name, chart_data["id"])
@@ -84,8 +134,7 @@ class JusticeDataAPISource(TestableSource):
         chart_snapshot.aspects.append(chart_info)
 
         # add tag so entity displays in find-moj-data
-        tag_urn = builder.make_tag_urn(tag="dc_display_in_catalogue")
-        display_tag = GlobalTagsClass(tags=[TagAssociationClass(tag_urn)])
+        display_tag = self._make_tags_aspect()
         chart_snapshot.aspects.append(display_tag)
 
         # TODO: browse paths requires IDs, not just titles
@@ -101,6 +150,30 @@ class JusticeDataAPISource(TestableSource):
         # TODO: add embed url?
 
         return chart_mce
+
+    def _assign_chart_to_domain(self, chart_data) -> MetadataChangeProposalWrapper:
+        """
+        because domain cannot be added via a MetadataChangeEvent we need to use
+        MetadataChangeProposal
+        """
+        domain_urn = builder.make_domain_urn(domain=chart_data["domain"])
+        chart_urn = builder.make_chart_urn(self.platform_name, chart_data["id"])
+
+        mcp = MetadataChangeProposalWrapper(
+            entityType="chart",
+            changeType=ChangeTypeClass.UPSERT,
+            entityUrn=chart_urn,
+            aspect=DomainsClass(domains=[domain_urn]),
+        )
+        return mcp
+
+    def _make_tags_aspect(
+        self, tag_names: list[str] = ["dc_display_in_catalogue"]
+    ) -> GlobalTagsClass:
+        tag_urns = [builder.make_tag_urn(tag=tag_name) for tag_name in tag_names]
+        tag_assocations = [TagAssociationClass(tag_urn) for tag_urn in tag_urns]
+        tags = GlobalTagsClass(tags=tag_assocations)
+        return tags
 
     @staticmethod
     def test_connection(config_dict: dict) -> TestConnectionReport:
