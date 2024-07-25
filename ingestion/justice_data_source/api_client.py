@@ -1,20 +1,11 @@
-import requests
-from ..dbt_manifest_utils import format_domain_name
-from datetime import datetime, date
+import logging
+import os
+from datetime import datetime
 
-# These map the api ids to domains as set by create_cadet_database_source
-ID_TO_DOMAIN_MAPPING = {
-    "prisons": "prison",
-    "probation": "probation",
-    "courts": "courts",
-    "electronic-monitoring": "electronic monitoring",
-    "electronic-monitoring-performance": "electronic monitoring",
-    "bass": "probation",
-    "cjs-crime": "general",
-    "cjs-reoffending": "general",
-    "cjs-sentence-types": "courts",
-    "cjs-entrants": "courts",
-}
+import requests
+
+from ..dbt_manifest_utils import format_domain_name
+from .config import ID_TO_DOMAIN_MAPPING
 
 
 class JusticeDataAPIClient:
@@ -22,23 +13,22 @@ class JusticeDataAPIClient:
         self.session = requests.Session()
         self.base_url = base_url
         self.publication_details: list[dict] = self.session.get(
-            f"{base_url}/publications"
+            os.path.join(self.base_url, "publications")
         ).json()
 
-    def list_all(self):
+    def list_all(self, exclude_id_list: list = []):
         """
         Traverse the metadata graph and return only leaf nodes.
         """
         leaf_nodes = {}
         to_process = []
         to_process.extend(self.session.get(self.base_url).json()["children"])
+        logging.info(f"ids in exclusion list: {exclude_id_list}")
         while to_process:
             current = to_process.pop()
             id = current.get("id")
 
-            # we are not ingesting justice-in-numbers - mainly repeated measures from other
-            # sections, plus a couple which are difficult to assign a domain as they're not MOJ
-            if id == "justice-in-numbers":
+            if id in exclude_id_list:
                 continue
 
             if ID_TO_DOMAIN_MAPPING.get(id):
@@ -53,11 +43,17 @@ class JusticeDataAPIClient:
             publication_id = current.get("dataPublicationId")
 
             if publication_id:
-                last_updated, refresh_frequency = self._get_publication_details(
+                last_updated, refresh_frequency = self._get_publication_timings(
                     publication_id
                 )
-                current["last_updated"] = last_updated
-                current["refresh_frequency"] = refresh_frequency
+                # datahub requires last updated to be an int or None if not known
+                current["last_updated_timestamp"] = (
+                    int(last_updated) if last_updated else None
+                )
+                # This is loaded as a custom property in datahub and so needs to be set as a string (even if empty)
+                current["refresh_frequency"] = (
+                    refresh_frequency if refresh_frequency else ""
+                )
 
             if current["children"] and current["children"] != [None]:
                 for child in current["children"]:
@@ -71,12 +67,24 @@ class JusticeDataAPIClient:
 
         return list(leaf_nodes.values())
 
-    def _get_publication_details(self, id: str) -> tuple[date, str]:
+    def _get_publication_timings(self, id: str) -> tuple[float | None, str | None]:
+        """
+        returns tuple of (last_updated, refresh_frequency), the current published date
+        (as a timestamp) and publication frequency for the source publication of
+        the chart id given as an input
+        """
+        last_updated_timestamp, refresh_frequency = None, None
         for publication in self.publication_details:
             if publication.get("id") == id:
                 refresh_frequency = publication.get("frequency")
-                last_updated = datetime.strptime(
-                    publication.get("currentPublishDate"), "%d %B %Y"
-                )
+                try:
+                    last_updated_timestamp = datetime.strptime(
+                        publication.get("currentPublishDate", ""), "%d %B %Y"
+                    ).timestamp()
+                except (ValueError, TypeError) as e:
+                    logging.warning(
+                        f"Chart with id: {id}, missing valid currentPublishDate. Error: {e}"
+                    )
+                    last_updated_timestamp = None
 
-        return last_updated, refresh_frequency
+        return last_updated_timestamp, refresh_frequency
