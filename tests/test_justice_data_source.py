@@ -1,5 +1,6 @@
 import vcr
 from datahub.ingestion.api.common import PipelineContext
+from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 
 from ingestion.justice_data_source.config import JusticeDataAPIConfig
 from ingestion.justice_data_source.source import JusticeDataAPISource
@@ -45,3 +46,17 @@ def test_ingest():
             chartinfo.description
             == '<p class="govuk-body">Applications determination granted.</p>'
         )
+
+        chart_with_domain = result[187].metadata
+        assert chart_with_domain.aspect.domains[0] == "urn:li:domain:Courts"
+
+        dashboard = result[-2].metadata.proposedSnapshot
+        dashboard.urn = "urn:li:dashboard:(justice-data,Justice Data)"
+        # make all chart urns list
+        chart_urns = [
+            r.metadata.proposedSnapshot.urn
+            for r in result
+            if isinstance(r.metadata, MetadataChangeEvent)
+            and "chart" in r.metadata.proposedSnapshot.urn
+        ].sort()
+        assert dashboard.aspects[1].charts.sort() == chart_urns
