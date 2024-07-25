@@ -2,3 +2,5 @@ source:
   type: ingestion.justice_data_source.source.JusticeDataAPISource
   config:
     base_url: "https://data.justice.gov.uk/api"
+    exclude_id_list:
+      - "justice-in-numbers"
