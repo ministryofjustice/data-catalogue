@@ -2,6 +2,7 @@ from io import BufferedReader
 from typing import Iterable, Optional
 
 import datahub.emitter.mce_builder as builder
+from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import (
     SupportStatus,
@@ -21,20 +22,16 @@ from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
     ChartSnapshot,
     DashboardSnapshot,
 )
-from datahub.metadata.com.linkedin.pegasus2avro.mxe import (
-    MetadataChangeEvent,
-)
-from datahub.emitter.mcp import MetadataChangeProposalWrapper
+from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.schema_classes import (
     BrowsePathsV2Class,
+    ChangeTypeClass,
     ChartInfoClass,
+    DashboardInfoClass,
+    DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,
-    DomainsClass,
-    ChangeTypeClass,
-    DashboardInfoClass,
 )
-
 
 from .api_client import JusticeDataAPIClient
 from .config import JusticeDataAPIConfig
@@ -64,14 +61,15 @@ class JusticeDataAPISource(TestableSource):
 
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
 
-        all_chart_data = self.client.list_all()
+        # creates each chart entity
+        all_chart_data = self.client.list_all(self.config.exclude_id_list)
         for chart_data in all_chart_data:
             mce = self._make_chart(chart_data)
             wu = MetadataWorkUnit("single_mce", mce=mce)
             self.report.report_workunit(wu)
             yield wu
 
-        # adds domains to each chart created previously
+        # adds domains to each chart created previously (if chart has a domain)
         for chart_data in all_chart_data:
             if chart_data.get("domain"):
                 mcp = self._assign_chart_to_domain(chart_data)
@@ -130,13 +128,9 @@ class JusticeDataAPISource(TestableSource):
             title=title,
             lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
             chartUrl=self.web_url + chart_data.get("permalink", ""),
-            lastRefreshed=(
-                int(chart_data["last_updated_timestamp"])
-                if chart_data.get("last_updated_timestamp")
-                else None
-            ),
+            lastRefreshed=chart_data.get("last_updated_timestamp"),
             customProperties={
-                "refresh_frequency": chart_data.get("refresh_frequency", "")
+                "refresh_period": chart_data.get("refresh_frequency", "")
             },
         )
         chart_snapshot.aspects.append(chart_info)
