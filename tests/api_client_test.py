@@ -82,7 +82,6 @@ def test_get_publication_timings(client):
         "ons-crime2",
         "ons-crime3",
     ]
-    # client.publication_details = MagicMock(return_value=test_published_details)
     client.publication_details = test_published_details
     for i, id in enumerate(ids):
         last_updated, refresh_frequency = client._get_publication_timings(id)
