@@ -59,13 +59,14 @@ test_published_details = [
         "nextPublishDate": "24 July 2024 9:30am",
         "nextPublishDateAsDateTime": "2024-07-24T09:30:00Z",
         "sourceName": "Office of National Statistics",
+        "ownerEmail": "somebody@justice.gov.uk",
     },
 ]
 
 
 @pytest.fixture
-def client():
-    return JusticeDataAPIClient("https://data.justice.gov.uk/api/")
+def client(default_owner_email):
+    return JusticeDataAPIClient("https://data.justice.gov.uk/api/", default_owner_email)
 
 
 def test_list_all(client):
@@ -73,7 +74,7 @@ def test_list_all(client):
     assert response
 
 
-def test_get_publication_timings(client):
+def test_get_publication_metadata(client, default_owner_email):
     # ons missing data
     ids = [
         "courts-civil",
@@ -84,7 +85,9 @@ def test_get_publication_timings(client):
     ]
     client.publication_details = test_published_details
     for i, id in enumerate(ids):
-        last_updated, refresh_frequency = client._get_publication_timings(id)
+        last_updated, refresh_frequency, owner_email = client._get_publication_metadata(
+            id
+        )
         if test_published_details[i].get("currentPublishDate"):
             expected_updated_timestamp = datetime.strptime(
                 test_published_details[i].get("currentPublishDate"),
@@ -94,3 +97,6 @@ def test_get_publication_timings(client):
             expected_updated_timestamp = None
         assert last_updated == expected_updated_timestamp
         assert refresh_frequency == test_published_details[i].get("frequency")
+        assert owner_email == test_published_details[i].get(
+            "ownerEmail", default_owner_email
+        )
