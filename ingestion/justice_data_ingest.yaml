@@ -3,5 +3,6 @@ source:
   config:
     base_url: "https://data.justice.gov.uk/api"
     exclude_id_list:
-      - "justice-in-numbers"
-    access_requirements: "You are free to re-use the data internally or externally without requesting permission."
+      - justice-in-numbers
+    access_requirements: You are free to re-use the data internally or externally without requesting permission.
+    default_owner_email: statistics.enquiries@justice.gov.uk

@@ -30,3 +30,8 @@ class JusticeDataAPIConfig(ConfigModel):
             default section in find-moj-data""",
         default="",
     )
+    default_owner_email: str = Field(
+        description="""
+            The owner email will default to this email if the `ownerEmail key is not found
+            at the /publications endpoint""",
+    )
