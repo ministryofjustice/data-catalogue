@@ -80,7 +80,11 @@ class JusticeDataAPIClient:
         (as a timestamp), publication frequency and owner email for the source publication of
         the chart id given as an input
         """
-        last_updated_timestamp, refresh_frequency = None, None
+        last_updated_timestamp, refresh_frequency, owner_email = (
+            None,
+            None,
+            self.default_owner_email,
+        )
         for publication in self.publication_details:
             if publication.get("id") == id:
                 refresh_frequency = publication.get("frequency")
@@ -94,6 +98,6 @@ class JusticeDataAPIClient:
                     )
                     last_updated_timestamp = None
 
-            owner_email = publication.get("ownerEmail", self.default_owner_email)
+                owner_email = publication.get("ownerEmail", self.default_owner_email)
 
         return last_updated_timestamp, refresh_frequency, owner_email
