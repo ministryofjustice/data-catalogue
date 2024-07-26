@@ -9,12 +9,13 @@ from .config import ID_TO_DOMAIN_MAPPING
 
 
 class JusticeDataAPIClient:
-    def __init__(self, base_url):
+    def __init__(self, base_url, default_owner_email):
         self.session = requests.Session()
         self.base_url = base_url
         self.publication_details: list[dict] = self.session.get(
             os.path.join(self.base_url, "publications")
         ).json()
+        self.default_owner_email = default_owner_email
 
     def list_all(self, exclude_id_list: list = []):
         """
@@ -43,8 +44,8 @@ class JusticeDataAPIClient:
             publication_id = current.get("dataPublicationId")
 
             if publication_id:
-                last_updated, refresh_frequency = self._get_publication_timings(
-                    publication_id
+                last_updated, refresh_frequency, owner_email = (
+                    self._get_publication_metadata(publication_id)
                 )
                 # datahub requires last updated to be an int or None if not known
                 current["last_updated_timestamp"] = (
@@ -54,6 +55,10 @@ class JusticeDataAPIClient:
                 current["refresh_frequency"] = (
                     refresh_frequency if refresh_frequency else ""
                 )
+
+                current["owner_email"] = owner_email
+            else:
+                current["owner_email"] = self.default_owner_email
 
             if current["children"] and current["children"] != [None]:
                 for child in current["children"]:
@@ -67,10 +72,12 @@ class JusticeDataAPIClient:
 
         return list(leaf_nodes.values())
 
-    def _get_publication_timings(self, id: str) -> tuple[float | None, str | None]:
+    def _get_publication_metadata(
+        self, id: str
+    ) -> tuple[float | None, str | None, str]:
         """
-        returns tuple of (last_updated, refresh_frequency), the current published date
-        (as a timestamp) and publication frequency for the source publication of
+        returns tuple of (last_updated, refresh_frequency, owner_email), the current published date
+        (as a timestamp), publication frequency and owner email for the source publication of
         the chart id given as an input
         """
         last_updated_timestamp, refresh_frequency = None, None
@@ -87,4 +94,6 @@ class JusticeDataAPIClient:
                     )
                     last_updated_timestamp = None
 
-        return last_updated_timestamp, refresh_frequency
+            owner_email = publication.get("ownerEmail", self.default_owner_email)
+
+        return last_updated_timestamp, refresh_frequency, owner_email
