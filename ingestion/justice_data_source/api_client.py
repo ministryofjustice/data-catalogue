@@ -99,5 +99,6 @@ class JusticeDataAPIClient:
                     last_updated_timestamp = None
 
                 owner_email = publication.get("ownerEmail", self.default_owner_email)
+                break
 
         return last_updated_timestamp, refresh_frequency, owner_email
