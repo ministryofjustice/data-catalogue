@@ -5,11 +5,162 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, br
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.31.0
+      - python-requests/2.32.3
+    method: GET
+    uri: https://data.justice.gov.uk/api/publications
+  response:
+    body:
+      string: "[{\"id\":\"courts-civil\",\"name\":\"Civil justice statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/civil-justice-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Volume of civil and judicial review
+        cases dealt with by the courts over time and the overall timeliness of these
+        cases. \",\"currentPublishDate\":\"6 June 2024\",\"currentPublishDateAsDate\":null,\"nextPublishDate\":\"5
+        September 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-09-05T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"community-performance\",\"name\":\"Community performance
+        annual\",\"indexUri\":\"https://www.gov.uk/government/collections/prison-and-probation-trusts-performance-statistics#community-performance-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"An annual release of performance statistics
+        for the Probation Service, incorporating Probation Service and Commissioned
+        Rehabilitative Services performance.\",\"currentPublishDate\":\"27 July 2023\",\"currentPublishDateAsDate\":\"2023-07-27T00:00:00+00:00\",\"nextPublishDate\":\"25
+        July 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-07-25T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"ons-crime\",\"name\":\"Crime in England and Wales\",\"indexUri\":\"https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables\",\"frequency\":\"Quarterly\",\"source\":\"ONS\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Crime against households and adults using data
+        from\\u00A0police recorded crime and the Crime Survey for England and Wales.\",\"currentPublishDate\":\"25
+        April 2024\",\"currentPublishDateAsDate\":\"2024-04-25T00:00:00+00:00\",\"nextPublishDate\":\"24
+        July 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-07-24T09:30:00Z\",\"sourceName\":\"Office
+        of National Statistics\"},{\"id\":\"crime-outcomes\",\"name\":\"Crime outcomes
+        in England and Wales\",\"indexUri\":\"https://www.gov.uk/government/collections/crime-outcomes-in-england-and-wales-statistics\",\"frequency\":\"Annual\",\"source\":\"HO\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Outcomes assigned to offences recorded to June
+        2023 and the total number of outcomes recorded, by outcome type and offence
+        type.\",\"currentPublishDate\":\"20 July 2023\",\"currentPublishDateAsDate\":\"2023-07-20T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Home
+        Office\"},{\"id\":\"courts-criminal\",\"name\":\"Criminal court statistics
+        quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/criminal-court-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Type and volume of cases received
+        and processed through the criminal court system of England and Wales, including
+        statistics on case timeliness. Also includes statistics on the use of language
+        interpreter and translation ser\u2026\",\"currentPublishDate\":\"28 March
+        2024\",\"currentPublishDateAsDate\":\"2024-03-28T00:00:00+00:00\",\"nextPublishDate\":\"26
+        September 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-09-26T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"cjs-statistics\",\"name\":\"Criminal justice system
+        statistics quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/criminal-justice-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Overview of trends in the use of out
+        of court disposals, defendants prosecuted, offenders convicted, remand and
+        sentencing decisions in England and Wales.\",\"currentPublishDate\":\"16 May
+        2024\",\"currentPublishDateAsDate\":\"2024-05-16T00:00:00+00:00\",\"nextPublishDate\":\"15
+        August 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-08-15T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"electronic-monitoring-performance\",\"name\":\"Electronic
+        Monitoring Statistics Annual Publication\",\"indexUri\":\"https://www.gov.uk/government/collections/electronic-monitoring-publication\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Covers the use and delivery of electronic tags,
+        including location monitoring tags and alcohol monitoring tags, for England
+        and Wales.\",\"currentPublishDate\":\"20 July 2023\",\"currentPublishDateAsDate\":\"2023-07-20T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"electronic-monitoring\",\"name\":\"Electronic Monitoring
+        Statistics Publication\",\"indexUri\":\"https://www.gov.uk/government/collections/electronic-monitoring-publication\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Covers the use and delivery of electronic tags,
+        including location monitoring tags and alcohol monitoring tags, for England
+        and Wales.\",\"currentPublishDate\":\"25 April 2024\",\"currentPublishDateAsDate\":\"2024-04-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"courts-family\",\"name\":\"Family court statistics
+        quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/family-court-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Volume of cases dealt with by family
+        courts over time, with statistics also broken down for the main types of case
+        involved. Includes data on Children Act cases (both public and private law),
+        Matrimonial matters, Domestic Vi\u2026\",\"currentPublishDate\":\"27 June
+        2024\",\"currentPublishDateAsDate\":\"2024-06-27T00:00:00+00:00\",\"nextPublishDate\":\"26
+        September 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-09-26T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"hmpps-workforce\",\"name\":\"HM Prison & Probation
+        Service workforce quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/national-offender-management-service-workforce-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Staffing numbers of directly employed staff
+        of the HM Prison and Probation Service.\",\"currentPublishDate\":\"16 May
+        2024\",\"currentPublishDateAsDate\":\"2024-05-16T00:00:00+00:00\",\"nextPublishDate\":\"15
+        August 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-08-15T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"hmpps-annual-digest\",\"name\":\"HM Prison and Probation
+        Service annual digest\",\"indexUri\":\"https://www.gov.uk/government/statistics/hmpps-annual-digest-april-2022-to-march-2023\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":null,\"description\":\"Range
+        of detailed statistics and measures for prisons and probation\",\"currentPublishDate\":\"15
+        February 2024\",\"currentPublishDateAsDate\":\"2024-02-15T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"legal-aid-statistics\",\"name\":\"Legal aid statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/legal-aid-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Activity in the legal aid system for
+        England and Wales, including criminal and civil legal aid, family mediation,
+        providers of legal aid, client characteristics and Central Funds payments.\",\"currentPublishDate\":\"27
+        June 2024\",\"currentPublishDateAsDate\":\"2024-06-27T00:00:00+00:00\",\"nextPublishDate\":\"26
+        September 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-09-26T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"omsq\",\"name\":\"Offender management statistics quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/offender-management-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Detailed quarterly statistics on offenders
+        in custody (including offence groups, sentence lengths and nationalities),
+        and quarterly statistics on prison receptions, prison releases, adjudications,
+        licence recalls and offende\u2026\",\"currentPublishDate\":\"25 April 2024\",\"currentPublishDateAsDate\":\"2024-04-25T00:00:00+00:00\",\"nextPublishDate\":\"25
+        July 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-07-25T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"prison-performance\",\"name\":\"Prison performance
+        ratings\",\"indexUri\":\"https://www.gov.uk/government/collections/prison-and-probation-trusts-performance-statistics#prison-performance-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Annual performance ratings of prison establishments
+        in England and Wales.\",\"currentPublishDate\":\"27 July 2023\",\"currentPublishDateAsDate\":\"2023-07-27T00:00:00+00:00\",\"nextPublishDate\":\"25
+        July 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-07-25T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"prison-population\",\"name\":\"Prison population statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/prison-population-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Statistics on the prison population.\",\"currentPublishDate\":\"12
+        January 2024\",\"currentPublishDateAsDate\":\"2024-01-12T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"prison-types\",\"name\":\"Prisons and their resettlement
+        providers\",\"indexUri\":\"https://www.gov.uk/government/publications/prisons-and-their-resettlement-providers\",\"frequency\":\"AdHoc\",\"source\":\"MOJ\",\"documentType\":null,\"description\":null,\"currentPublishDate\":\"24
+        January 2024\",\"currentPublishDateAsDate\":\"2024-01-24T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"proven-reoffending\",\"name\":\"Proven reoffending
+        statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/proven-reoffending-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Statistics on reoffending of offenders
+        who were released from custody, received a non-custodial conviction, or a
+        caution.\",\"currentPublishDate\":\"25 April 2024\",\"currentPublishDateAsDate\":\"2024-04-25T00:00:00+00:00\",\"nextPublishDate\":\"25
+        July 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-07-25T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"substance-misuse-treatment-successfully-engage\",\"name\":\"Public
+        Health Outcomes Framework\",\"indexUri\":\"https://fingertips.phe.org.uk/profile/public-health-outcomes-framework/data#page/4/gid/1000042/ati/15/iid/92544/age/168/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1/page-options/ovw-do-1_car-ao-1_car-do-1_tre-ao-0_tre-do-0\",\"frequency\":\"AdHoc\",\"source\":\"OHID\",\"documentType\":\"Official
+        Statistics\",\"description\":\"The Public Health Outcomes Framework (PHOF)
+        examines indicators that help us understand trends in public health. The data
+        are presented in an interactive tool that allows users to view them in a user-friendly
+        format. The dat\u2026\",\"currentPublishDate\":\"8 May 2024\",\"currentPublishDateAsDate\":null,\"nextPublishDate\":\"6
+        August 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-08-06T09:30:00Z\",\"sourceName\":\"Office
+        for Health Improvement and Disparities\"},{\"id\":\"safety-in-custody\",\"name\":\"Safety
+        in custody statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/safety-in-custody-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Quarterly update on deaths, self-harm
+        and assaults in prison custody in England and Wales. Annual detailed data
+        on assaults and self-harm in prison custody.\",\"currentPublishDate\":\"25
+        April 2024\",\"currentPublishDateAsDate\":\"2024-04-25T00:00:00+00:00\",\"nextPublishDate\":\"25
+        July 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-07-25T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"alcohol-drug-treatment-statistics\",\"name\":\"Substance
+        misuse treatment in secure settings\",\"indexUri\":\"https://www.gov.uk/government/collections/alcohol-and-drug-misuse-and-treatment-statistics#alcohol-and-drug-treatment-statistics:-prisons-and-secure-settings\",\"frequency\":\"Annual\",\"source\":\"OHID\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Alcohol and drug misuse and treatment in prisons
+        and other secure settings from the National Drug Treatment Monitoring System
+        (NDTMS).\",\"currentPublishDate\":\"25 January 2024\",\"currentPublishDateAsDate\":\"2024-01-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Office
+        for Health Improvement and Disparities\"},{\"id\":\"cost-of-crime\",\"name\":\"The
+        economic and social costs of crime\",\"indexUri\":\"https://www.gov.uk/government/publications/the-economic-and-social-costs-of-crime\",\"frequency\":\"AdHoc\",\"source\":\"HO\",\"documentType\":null,\"description\":null,\"currentPublishDate\":\"23
+        July 2018\",\"currentPublishDateAsDate\":\"2018-07-23T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Home
+        Office\"},{\"id\":\"courts-tribunals\",\"name\":\"Tribunals statistics quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/tribunals-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Type and volume of tribunal cases received,
+        disposed of or outstanding. This also includes statistics on the Gender Recognition
+        Certificate applied for and granted by HMCTS Gender Recognition Panel.\",\"currentPublishDate\":\"13
+        June 2024\",\"currentPublishDateAsDate\":\"2024-06-13T00:00:00+00:00\",\"nextPublishDate\":\"3
+        October 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-10-03T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"}]"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 26 Jul 2024 13:36:47 GMT
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
     method: GET
     uri: https://data.justice.gov.uk/api
   response:
@@ -28,20 +179,22 @@ interactions:
         can be found <a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/organisations/ministry-of-justice/about/statistics\\\">here</a>.</p>\",\"permalink\":\"/justice-in-numbers\",\"apiUrl\":\"/api/justice-in-numbers\",\"dataPublicationId\":null,\"children\":[{\"id\":\"jin-headline\",\"name\":\"Headline
         measures\",\"nameShortened\":\"Headline measures\",\"inlineName\":\"headline
         measures\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-headline\",\"apiUrl\":\"/api/justice-in-numbers/jin-headline\",\"dataPublicationId\":null,\"children\":[{\"id\":\"ons-crime-survey\",\"name\":\"Crime
-        figures from Crime Survey of England and Wales\",\"nameShortened\":\"Crime
-        figures from Crime Survey of England and Wales\",\"inlineName\":\"crime figures
-        from crime survey of england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Incidents
+        figures from Crime Survey for England and Wales\",\"nameShortened\":\"Crime
+        figures from Crime Survey for England and Wales\",\"inlineName\":\"crime figures
+        from crime survey for england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Incidents
         of crime against households and adults estimated from the Crime Survey for
         England and Wales. Includes fraud and computer misuse.</p><p class=\\\"govuk-body\\\">Figures
         are survey estimates and subject to sampling variance. Therefore, figures
         in this chart are rounded to the nearest 100,000 incidents.</p><p class=\\\"govuk-body\\\">Due
-        to the suspension of the CSEW, data is not available between the year ending
+        to the suspension of the CSEW, data are not available between the year ending
         March 2020 and the year ending March 2022.</p>\",\"permalink\":\"/cjs-statistics/cjs-crime/ons-crime-survey\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime/ons-crime-survey\",\"dataPublicationId\":\"ons-crime\",\"children\":[null]},{\"id\":\"ons-police-recorded-crime\",\"name\":\"Police
         recorded crime in England and Wales\",\"nameShortened\":\"Police recorded
         crime in England and Wales\",\"inlineName\":\"police recorded crime in england
         and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Police recorded
         crime statistics based on data from all 43 forces in England and Wales (including
-        the British Transport Police). All offences including fraud and computer misuse.</p>\",\"permalink\":\"/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"dataPublicationId\":\"ons-crime\",\"children\":[null]},{\"id\":\"cost-of-crime\",\"name\":\"Estimated
+        the British Transport Police). All offences including fraud and computer misuse
+        (recorded by Action Fraud or referred to the National Fraud Intelligence Bureau
+        since April 2011).</p>\",\"permalink\":\"/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"dataPublicationId\":\"ons-crime\",\"children\":[null]},{\"id\":\"cost-of-crime\",\"name\":\"Estimated
         total cost of crime in England and Wales\",\"nameShortened\":\"Estimated total
         cost of crime in England and Wales\",\"inlineName\":\"estimated total cost
         of crime in england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">The
@@ -58,11 +211,11 @@ interactions:
         caseload\",\"nameShortened\":\"Probation caseload\",\"inlineName\":\"probation
         caseload\",\"description\":\"<p class=\\\"govuk-body\\\">The statistics count
         each person once for each type of probation supervision being received on
-        the date shown. In addition, each person is counted only once in each total
-        or sub-total even if they were subject to several types of probation supervision
-        at the year end (the examples above apply). Thus, the sum of the numbers receiving
-        each type of court order probation supervision exceeds the number receiving
-        court order probation supervision in total.</p>\",\"permalink\":\"/probation/offender-management/caseload-total\",\"apiUrl\":\"/api/probation/offender-management/caseload-total\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"proven-reoffending\",\"name\":\"Proven
+        the date shown. In addition, each person is counted once only in each total
+        or sub-total even if they are subject to several types of probation supervision
+        on the date shown. For example, if a person is subject to both a community
+        order and a Supervision Default Order on the date shown, then the person would
+        be counted once only within the overall total for all supervision.</p>\",\"permalink\":\"/probation/offender-management/caseload-total\",\"apiUrl\":\"/api/probation/offender-management/caseload-total\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"proven-reoffending\",\"name\":\"Proven
         reoffending rate\",\"nameShortened\":\"Proven reoffending rate\",\"inlineName\":\"proven
         reoffending rate\",\"description\":\"<p class=\\\"govuk-body\\\">Proportion
         of all offenders who reoffend (%).</p><p class=\\\"govuk-body\\\">Although
@@ -92,18 +245,21 @@ interactions:
         courts - total judgments\",\"nameShortened\":\"Civil courts - total judgments\",\"inlineName\":\"civil
         courts - total judgments\",\"description\":\"<p class=\\\"govuk-body\\\">Total
         number of judgments in the county courts. Some civil cases are resolved via
-        mediation or settled out of court and don't proceed to a judgement.</p>\",\"permalink\":\"/courts/civil-courts/courts-civil-total-judgments\",\"apiUrl\":\"/api/courts/civil-courts/courts-civil-total-judgments\",\"dataPublicationId\":\"courts-civil\",\"children\":[null]},{\"id\":\"courts-family-total-disposals\",\"name\":\"Family
+        mediation or settled out of court and don't proceed to a judgment.</p>\",\"permalink\":\"/courts/civil-courts/courts-civil-total-judgments\",\"apiUrl\":\"/api/courts/civil-courts/courts-civil-total-judgments\",\"dataPublicationId\":\"courts-civil\",\"children\":[null]},{\"id\":\"courts-family-total-disposals\",\"name\":\"Family
         court - total cases disposed\",\"nameShortened\":\"Family court - total cases
         disposed\",\"inlineName\":\"family court - total cases disposed\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Total cases disposed at family court.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-disposals\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-disposals\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-tribunals-disposals-overall\",\"name\":\"Tribunals
+        class=\\\"govuk-body\\\">Total cases disposed at family court.</p><p class=\\\"govuk-body\\\">Data
+        for 2023 to 2024 are not available. Please refer to the <a class=\\\"govuk-link\\\"
+        href=\\\"https://www.gov.uk/government/statistics/family-court-statistics-quarterly-july-to-september-2023/family-court-statistics-quarterly-july-to-september-2023#data-quality-issues\\\">data
+        quality issues</a> section of the accompanying bulletin for further details.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-disposals\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-disposals\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-tribunals-disposals-overall\",\"name\":\"Tribunals
         disposals - overall\",\"nameShortened\":\"Tribunals disposals - overall\",\"inlineName\":\"tribunals
         disposals - overall\",\"description\":\"<p class=\\\"govuk-body\\\">The overall
-        total for 2021/22 and 2022/23 is unavailable due to migration of some tribunals.
-        An 'Interim Total' has been calculated for 2022/23. This is the sum of all
-        the tribunals excluding those tribunals with data missing or incomplete i.e.
-        Upper Tribunal (Immigration and Asylum Chamber). These tribunals are being
-        migrated to a new case management system and will be made available as soon
-        as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-disposals-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-disposals-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]}]},{\"id\":\"jin-public-protection\",\"name\":\"Public
+        total for 2021/22, 2022/23 and 2023/24 is unavailable due to migration of
+        some tribunals.</p><p class=\\\"govuk-body\\\">An 'Interim Total' has been
+        calculated. This is the sum of all the tribunals excluding those tribunals
+        with data missing or incomplete i.e. Upper Tribunal (Immigration and Asylum
+        Chamber). These tribunals are being migrated to a new case management system
+        and will be made available as soon as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-disposals-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-disposals-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]}]},{\"id\":\"jin-public-protection\",\"name\":\"Public
         protection\",\"nameShortened\":\"Public protection\",\"inlineName\":\"public
         protection\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-public-protection\",\"apiUrl\":\"/api/justice-in-numbers/jin-public-protection\",\"dataPublicationId\":null,\"children\":[{\"id\":\"jin-operational-capacity-subhead\",\"name\":\"Prison
         operational capacity\",\"nameShortened\":\"Prison operational capacity\",\"inlineName\":\"prison
@@ -155,10 +311,19 @@ interactions:
         over a longer period.</p>\",\"permalink\":\"/prisons/offender-management/rotl\",\"apiUrl\":\"/api/prisons/offender-management/rotl\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"jin-prison-type\",\"name\":\"Prison
         type - male / female\",\"nameShortened\":\"Prison type - male / female\",\"inlineName\":\"prison
         type - male / female\",\"description\":\"<p class=\\\"govuk-body\\\">Prisons
-        count by male, female and children (under 18 years old) establishments.</p>\",\"permalink\":\"/justice-in-numbers/jin-public-protection/jin-prison-type\",\"apiUrl\":\"/api/justice-in-numbers/jin-public-protection/jin-prison-type\",\"dataPublicationId\":\"prison-types\",\"children\":[null]},{\"id\":\"jin-prison-ownership\",\"name\":\"Prison
+        count by male, female and children (under 18 years old) establishments.</p><p
+        class=\\\"govuk-body\\\">Peterborough Female and Peterborough Male are counted
+        as two establishments, but are managed under a single contract.</p><p class=\\\"govuk-body\\\">Oakhill
+        Secure Training Centre is listed in the linked publication but not counted
+        here as a prison.</p>\",\"permalink\":\"/justice-in-numbers/jin-public-protection/jin-prison-type\",\"apiUrl\":\"/api/justice-in-numbers/jin-public-protection/jin-prison-type\",\"dataPublicationId\":\"prison-types\",\"children\":[null]},{\"id\":\"jin-prison-ownership\",\"name\":\"Prison
         type - public / private\",\"nameShortened\":\"Prison type - public / private\",\"inlineName\":\"prison
         type - public / private\",\"description\":\"<p class=\\\"govuk-body\\\">Prisons
-        count by ownership.</p>\",\"permalink\":\"/justice-in-numbers/jin-public-protection/jin-prison-ownership\",\"apiUrl\":\"/api/justice-in-numbers/jin-public-protection/jin-prison-ownership\",\"dataPublicationId\":\"prison-types\",\"children\":[null]},{\"id\":\"prison-opcap\",\"name\":\"Prison
+        count by ownership.</p><p class=\\\"govuk-body\\\">Note that Peterborough
+        Female and Peterborough Male are counted as two establishments, but are managed
+        under a single contract. Therefore the number of private prison contracts
+        is one fewer than the number of private prisons shown here.</p><p class=\\\"govuk-body\\\">Oakhill
+        Secure Training Centre is listed in the linked publication but not counted
+        here as a prison.</p>\",\"permalink\":\"/justice-in-numbers/jin-public-protection/jin-prison-ownership\",\"apiUrl\":\"/api/justice-in-numbers/jin-public-protection/jin-prison-ownership\",\"dataPublicationId\":\"prison-types\",\"children\":[null]},{\"id\":\"prison-opcap\",\"name\":\"Prison
         operational capacity\",\"nameShortened\":\"Prison operational capacity\",\"inlineName\":\"prison
         operational capacity\",\"description\":\"<p class=\\\"govuk-body\\\">The operational
         capacity of a prison is the total number of prisoners that an establishment
@@ -267,11 +432,11 @@ interactions:
         caseload\",\"nameShortened\":\"Probation caseload\",\"inlineName\":\"probation
         caseload\",\"description\":\"<p class=\\\"govuk-body\\\">The statistics count
         each person once for each type of probation supervision being received on
-        the date shown. In addition, each person is counted only once in each total
-        or sub-total even if they were subject to several types of probation supervision
-        at the year end (the examples above apply). Thus, the sum of the numbers receiving
-        each type of court order probation supervision exceeds the number receiving
-        court order probation supervision in total.</p>\",\"permalink\":\"/probation/offender-management/caseload-total\",\"apiUrl\":\"/api/probation/offender-management/caseload-total\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"probation-staff-in-post\",\"name\":\"Staff
+        the date shown. In addition, each person is counted once only in each total
+        or sub-total even if they are subject to several types of probation supervision
+        on the date shown. For example, if a person is subject to both a community
+        order and a Supervision Default Order on the date shown, then the person would
+        be counted once only within the overall total for all supervision.</p>\",\"permalink\":\"/probation/offender-management/caseload-total\",\"apiUrl\":\"/api/probation/offender-management/caseload-total\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"probation-staff-in-post\",\"name\":\"Staff
         in post (Probation Service)\",\"nameShortened\":\"Staff in post (Probation
         Service)\",\"inlineName\":\"staff in post (probation service)\",\"description\":\"<p
         class=\\\"govuk-body\\\">Full time equivalent staff in post for the Probation
@@ -382,12 +547,24 @@ interactions:
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals\",\"name\":\"Employment
-        tribunals disposals\",\"nameShortened\":\"Employment tribunals disposals\",\"inlineName\":\"employment
-        tribunals disposals\",\"description\":\"<p class=\\\"govuk-body\\\">Data for
-        2021/22 is missing due to this tribunal being migrated to a new case management
+        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals-single\",\"name\":\"Employment
+        tribunal disposals - single claims\",\"nameShortened\":\"Employment tribunal
+        disposals - single claims\",\"inlineName\":\"employment tribunal disposals
+        - single claims\",\"description\":\"<p class=\\\"govuk-body\\\">Employment
+        tribunals are independent judicial bodies established to resolve disputes
+        between employers and employees over employment rights.</p><p class=\\\"govuk-body\\\">Data
+        for 2021/22 is missing due to this tribunal being migrated to a new case management
         system. The data will be made available as soon as possible, and the data
-        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-disposals\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-disposals\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"jin-victim-experience-subhead\",\"name\":\"Victim
+        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-disposals-single\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-disposals-single\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals-multiple\",\"name\":\"Employment
+        tribunal disposals - multiple claims\",\"nameShortened\":\"Employment tribunal
+        disposals - multiple claims\",\"inlineName\":\"employment tribunal disposals
+        - multiple claims\",\"description\":\"<p class=\\\"govuk-body\\\">The large
+        number of employment tribunal multiple claims disposals in 2014/2015 is due
+        to a very large multiple airlines case covering 71,000 jurisdictions and relating
+        to the Working Time Directive ending.</p><p class=\\\"govuk-body\\\">Data
+        for 2021/22 is missing due to this tribunal being migrated to a new case management
+        system. The data will be made available as soon as possible, and the data
+        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-disposals-multiple\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-disposals-multiple\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"jin-victim-experience-subhead\",\"name\":\"Victim
         experience\",\"nameShortened\":\"Victim experience\",\"inlineName\":\"victim
         experience\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/jin-victim-experience-subhead\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/jin-victim-experience-subhead\",\"dataPublicationId\":null,\"children\":[null]},{\"id\":\"entry-to-completion-crown-mean-all\",\"name\":\"Mean
         days from receipt at Crown Court to completion\",\"nameShortened\":\"Mean
@@ -403,18 +580,21 @@ interactions:
         courts - total judgments\",\"nameShortened\":\"Civil courts - total judgments\",\"inlineName\":\"civil
         courts - total judgments\",\"description\":\"<p class=\\\"govuk-body\\\">Total
         number of judgments in the county courts. Some civil cases are resolved via
-        mediation or settled out of court and don't proceed to a judgement.</p>\",\"permalink\":\"/courts/civil-courts/courts-civil-total-judgments\",\"apiUrl\":\"/api/courts/civil-courts/courts-civil-total-judgments\",\"dataPublicationId\":\"courts-civil\",\"children\":[null]},{\"id\":\"courts-family-total-disposals\",\"name\":\"Family
+        mediation or settled out of court and don't proceed to a judgment.</p>\",\"permalink\":\"/courts/civil-courts/courts-civil-total-judgments\",\"apiUrl\":\"/api/courts/civil-courts/courts-civil-total-judgments\",\"dataPublicationId\":\"courts-civil\",\"children\":[null]},{\"id\":\"courts-family-total-disposals\",\"name\":\"Family
         court - total cases disposed\",\"nameShortened\":\"Family court - total cases
         disposed\",\"inlineName\":\"family court - total cases disposed\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Total cases disposed at family court.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-disposals\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-disposals\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-tribunals-disposals-overall\",\"name\":\"Tribunals
+        class=\\\"govuk-body\\\">Total cases disposed at family court.</p><p class=\\\"govuk-body\\\">Data
+        for 2023 to 2024 are not available. Please refer to the <a class=\\\"govuk-link\\\"
+        href=\\\"https://www.gov.uk/government/statistics/family-court-statistics-quarterly-july-to-september-2023/family-court-statistics-quarterly-july-to-september-2023#data-quality-issues\\\">data
+        quality issues</a> section of the accompanying bulletin for further details.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-disposals\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-disposals\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-tribunals-disposals-overall\",\"name\":\"Tribunals
         disposals - overall\",\"nameShortened\":\"Tribunals disposals - overall\",\"inlineName\":\"tribunals
         disposals - overall\",\"description\":\"<p class=\\\"govuk-body\\\">The overall
-        total for 2021/22 and 2022/23 is unavailable due to migration of some tribunals.
-        An 'Interim Total' has been calculated for 2022/23. This is the sum of all
-        the tribunals excluding those tribunals with data missing or incomplete i.e.
-        Upper Tribunal (Immigration and Asylum Chamber). These tribunals are being
-        migrated to a new case management system and will be made available as soon
-        as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-disposals-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-disposals-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"jin-legal-aid-subhead\",\"name\":\"Legal
+        total for 2021/22, 2022/23 and 2023/24 is unavailable due to migration of
+        some tribunals.</p><p class=\\\"govuk-body\\\">An 'Interim Total' has been
+        calculated. This is the sum of all the tribunals excluding those tribunals
+        with data missing or incomplete i.e. Upper Tribunal (Immigration and Asylum
+        Chamber). These tribunals are being migrated to a new case management system
+        and will be made available as soon as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-disposals-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-disposals-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"jin-legal-aid-subhead\",\"name\":\"Legal
         aid\",\"nameShortened\":\"Legal aid\",\"inlineName\":\"legal aid\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/jin-legal-aid-subhead\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/jin-legal-aid-subhead\",\"dataPublicationId\":null,\"children\":[null]},{\"id\":\"jin-legal-aid-total-expenditure\",\"name\":\"Legal
         aid - overall annual expenditure (\xA3m)\",\"nameShortened\":\"Legal aid -
         overall annual expenditure (\xA3m)\",\"inlineName\":\"legal aid - overall
@@ -433,20 +613,22 @@ interactions:
         statistics\",\"description\":\"<p class=\\\"govuk-body\\\">Crime against households
         and adults using data from police recorded crime and the Crime Survey for
         England and Wales (CSEW).</p>\",\"permalink\":\"/cjs-statistics/cjs-crime\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime\",\"dataPublicationId\":null,\"children\":[{\"id\":\"ons-crime-survey\",\"name\":\"Crime
-        figures from Crime Survey of England and Wales\",\"nameShortened\":\"Crime
-        figures from Crime Survey of England and Wales\",\"inlineName\":\"crime figures
-        from crime survey of england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Incidents
+        figures from Crime Survey for England and Wales\",\"nameShortened\":\"Crime
+        figures from Crime Survey for England and Wales\",\"inlineName\":\"crime figures
+        from crime survey for england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Incidents
         of crime against households and adults estimated from the Crime Survey for
         England and Wales. Includes fraud and computer misuse.</p><p class=\\\"govuk-body\\\">Figures
         are survey estimates and subject to sampling variance. Therefore, figures
         in this chart are rounded to the nearest 100,000 incidents.</p><p class=\\\"govuk-body\\\">Due
-        to the suspension of the CSEW, data is not available between the year ending
+        to the suspension of the CSEW, data are not available between the year ending
         March 2020 and the year ending March 2022.</p>\",\"permalink\":\"/cjs-statistics/cjs-crime/ons-crime-survey\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime/ons-crime-survey\",\"dataPublicationId\":\"ons-crime\",\"children\":[null]},{\"id\":\"ons-police-recorded-crime\",\"name\":\"Police
         recorded crime in England and Wales\",\"nameShortened\":\"Police recorded
         crime in England and Wales\",\"inlineName\":\"police recorded crime in england
         and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Police recorded
         crime statistics based on data from all 43 forces in England and Wales (including
-        the British Transport Police). All offences including fraud and computer misuse.</p>\",\"permalink\":\"/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"dataPublicationId\":\"ons-crime\",\"children\":[null]},{\"id\":\"cost-of-crime\",\"name\":\"Estimated
+        the British Transport Police). All offences including fraud and computer misuse
+        (recorded by Action Fraud or referred to the National Fraud Intelligence Bureau
+        since April 2011).</p>\",\"permalink\":\"/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"apiUrl\":\"/api/cjs-statistics/cjs-crime/ons-police-recorded-crime\",\"dataPublicationId\":\"ons-crime\",\"children\":[null]},{\"id\":\"cost-of-crime\",\"name\":\"Estimated
         total cost of crime in England and Wales\",\"nameShortened\":\"Estimated total
         cost of crime in England and Wales\",\"inlineName\":\"estimated total cost
         of crime in england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">The
@@ -820,7 +1002,7 @@ interactions:
         class=\\\"govuk-body\\\">The number of offenders starting court order probation
         supervision. Includes community orders, youth rehabilitation orders, suspended
         sentence orders, supervision default orders and a small number of pre-CJA
-        orders and deferred sentences.</p>\",\"permalink\":\"/probation/offender-management/starts-court-orders\",\"apiUrl\":\"/api/probation/offender-management/starts-court-orders\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"starts-supervision\",\"name\":\"Pre-release
+        orders and deferred sentences.</p>\",\"permalink\":\"/probation/offender-management/starts-court-orders\",\"apiUrl\":\"/api/probation/offender-management/starts-court-orders\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"starts-supervision\",\"name\":\"Pre-release
         probation supervision starts\",\"nameShortened\":\"Pre-release probation supervision
         starts\",\"inlineName\":\"pre-release probation supervision starts\",\"description\":\"<p
         class=\\\"govuk-body\\\">Home supervising officers along with probation staff
@@ -828,29 +1010,29 @@ interactions:
         including consideration of post-release issues.</p> <p class=\\\"govuk-body\\\">Under
         The Offender Rehabilitation Act 2014, all offenders given custodial sentences
         are now subject to statutory probation supervision on release from prison.
-        This change came into effect on 1st February 2015.</p>\",\"permalink\":\"/probation/offender-management/starts-supervision\",\"apiUrl\":\"/api/probation/offender-management/starts-supervision\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"caseload-total\",\"name\":\"Probation
+        This change came into effect on 1st February 2015.</p>\",\"permalink\":\"/probation/offender-management/starts-supervision\",\"apiUrl\":\"/api/probation/offender-management/starts-supervision\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"caseload-total\",\"name\":\"Probation
         caseload\",\"nameShortened\":\"Probation caseload\",\"inlineName\":\"probation
         caseload\",\"description\":\"<p class=\\\"govuk-body\\\">The statistics count
         each person once for each type of probation supervision being received on
-        the date shown. In addition, each person is counted only once in each total
-        or sub-total even if they were subject to several types of probation supervision
-        at the year end (the examples above apply). Thus, the sum of the numbers receiving
-        each type of court order probation supervision exceeds the number receiving
-        court order probation supervision in total.</p>\",\"permalink\":\"/probation/offender-management/caseload-total\",\"apiUrl\":\"/api/probation/offender-management/caseload-total\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"terminations-co\",\"name\":\"Terminations
+        the date shown. In addition, each person is counted once only in each total
+        or sub-total even if they are subject to several types of probation supervision
+        on the date shown. For example, if a person is subject to both a community
+        order and a Supervision Default Order on the date shown, then the person would
+        be counted once only within the overall total for all supervision.</p>\",\"permalink\":\"/probation/offender-management/caseload-total\",\"apiUrl\":\"/api/probation/offender-management/caseload-total\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"terminations-co\",\"name\":\"Terminations
         of community orders\",\"nameShortened\":\"Terminations of community orders\",\"inlineName\":\"terminations
         of community orders\",\"description\":\"<p class=\\\"govuk-body\\\">A period
         of Community Order probation supervision which comes to an end because the
         order has been completed successfully, because the order has been breached
         and terminated early for negative reasons (such as failing to comply with
         requirements) or because of some other reason, such as the order being quashed
-        by the court or because the offender has died.</p>\",\"permalink\":\"/probation/offender-management/terminations-co\",\"apiUrl\":\"/api/probation/offender-management/terminations-co\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"terminations-sso\",\"name\":\"Terminations
+        by the court or because the offender has died.</p>\",\"permalink\":\"/probation/offender-management/terminations-co\",\"apiUrl\":\"/api/probation/offender-management/terminations-co\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"terminations-sso\",\"name\":\"Terminations
         of suspended sentence orders\",\"nameShortened\":\"Terminations of suspended
         sentence orders\",\"inlineName\":\"terminations of suspended sentence orders\",\"description\":\"<p
         class=\\\"govuk-body\\\">A period of Suspended Sentence Order probation supervision
         which comes to an end because the order has been completed successfully, because
         the order has been breached and terminated early for negative reasons (such
         as failing to comply with requirements) or because of some other reason, such
-        as the order being quashed by the court or because the offender has died.</p>\",\"permalink\":\"/probation/offender-management/terminations-sso\",\"apiUrl\":\"/api/probation/offender-management/terminations-sso\",\"dataPublicationId\":\"omsqp\",\"children\":[null]},{\"id\":\"sfo-convictions\",\"name\":\"Serious
+        as the order being quashed by the court or because the offender has died.</p>\",\"permalink\":\"/probation/offender-management/terminations-sso\",\"apiUrl\":\"/api/probation/offender-management/terminations-sso\",\"dataPublicationId\":\"omsq\",\"children\":[null]},{\"id\":\"sfo-convictions\",\"name\":\"Serious
         further offence convictions\",\"nameShortened\":\"Serious further offence
         convictions\",\"inlineName\":\"serious further offence convictions\",\"description\":\"<p
         class=\\\"govuk-body\\\">SFO conviction figures are reported by the date of
@@ -1271,7 +1453,7 @@ interactions:
         courts - total judgments\",\"nameShortened\":\"Civil courts - total judgments\",\"inlineName\":\"civil
         courts - total judgments\",\"description\":\"<p class=\\\"govuk-body\\\">Total
         number of judgments in the county courts. Some civil cases are resolved via
-        mediation or settled out of court and don't proceed to a judgement.</p>\",\"permalink\":\"/courts/civil-courts/courts-civil-total-judgments\",\"apiUrl\":\"/api/courts/civil-courts/courts-civil-total-judgments\",\"dataPublicationId\":\"courts-civil\",\"children\":[null]}]},{\"id\":\"family-courts\",\"name\":\"Family
+        mediation or settled out of court and don't proceed to a judgment.</p>\",\"permalink\":\"/courts/civil-courts/courts-civil-total-judgments\",\"apiUrl\":\"/api/courts/civil-courts/courts-civil-total-judgments\",\"dataPublicationId\":\"courts-civil\",\"children\":[null]}]},{\"id\":\"family-courts\",\"name\":\"Family
         court\",\"nameShortened\":\"Family court\",\"inlineName\":\"family court\",\"description\":\"<p
         class=\\\"govuk-body\\\">Family law is the area of law that deals with:</p><ul
         class=\\\"govuk-list govuk-list--bullet\\\"><li>Public law - local authority
@@ -1289,12 +1471,15 @@ interactions:
         court - total cases started\",\"nameShortened\":\"Family court - total cases
         started\",\"inlineName\":\"family court - total cases started\",\"description\":\"<p
         class=\\\"govuk-body\\\">Total cases started at family court.</p><p class=\\\"govuk-body\\\">Data
-        for 2022 is not available. Please refer to the <a class=\\\"govuk-link\\\"
+        for 2022, 2023 and 2024 are not available. Please refer to the <a class=\\\"govuk-link\\\"
         href=\\\"https://www.gov.uk/government/statistics/family-court-statistics-quarterly-july-to-september-2023/family-court-statistics-quarterly-july-to-september-2023#data-quality-issues\\\">data
         quality issues</a> section of the accompanying bulletin for further details.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-cases\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-cases\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-family-total-disposals\",\"name\":\"Family
         court - total cases disposed\",\"nameShortened\":\"Family court - total cases
         disposed\",\"inlineName\":\"family court - total cases disposed\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Total cases disposed at family court.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-disposals\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-disposals\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-family-public-law\",\"name\":\"Children
+        class=\\\"govuk-body\\\">Total cases disposed at family court.</p><p class=\\\"govuk-body\\\">Data
+        for 2023 to 2024 are not available. Please refer to the <a class=\\\"govuk-link\\\"
+        href=\\\"https://www.gov.uk/government/statistics/family-court-statistics-quarterly-july-to-september-2023/family-court-statistics-quarterly-july-to-september-2023#data-quality-issues\\\">data
+        quality issues</a> section of the accompanying bulletin for further details.</p>\",\"permalink\":\"/courts/family-courts/courts-family-total-disposals\",\"apiUrl\":\"/api/courts/family-courts/courts-family-total-disposals\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-family-public-law\",\"name\":\"Children
         Act - public law\",\"nameShortened\":\"Children Act - public law\",\"inlineName\":\"children
         act - public law\",\"description\":\"<p class=\\\"govuk-body\\\">Public law
         - local authority intervention to protect children (annual total number of
@@ -1325,8 +1510,8 @@ interactions:
         Act (annual total number of cases starting), as defined under the Adoption
         and Children Act 2002, including placement, adoption, along with other non-adoption
         orders including revocation of placement, change of surname and removal from
-        the UK.</p><p class=\\\"govuk-body\\\">Data for 2022 is not available. Please
-        refer to the <a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/statistics/family-court-statistics-quarterly-july-to-september-2023/family-court-statistics-quarterly-july-to-september-2023#data-quality-issues\\\">data
+        the UK.</p><p class=\\\"govuk-body\\\">Data for 2022, 2023 and 2024 are not
+        available. Please refer to the <a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/statistics/family-court-statistics-quarterly-july-to-september-2023/family-court-statistics-quarterly-july-to-september-2023#data-quality-issues\\\">data
         quality issues</a> section of the accompanying bulletin for further details.</p>\",\"permalink\":\"/courts/family-courts/courts-family-adoption\",\"apiUrl\":\"/api/courts/family-courts/courts-family-adoption\",\"dataPublicationId\":\"courts-family\",\"children\":[null]},{\"id\":\"courts-family-mca\",\"name\":\"Applications
         made under the Mental Capacity Act 2005\",\"nameShortened\":\"Applications
         made under the Mental Capacity Act 2005\",\"inlineName\":\"applications made
@@ -1356,69 +1541,90 @@ interactions:
         tribunals statistics at MOJ for further information.</a></p>\",\"permalink\":\"/courts/tribunals\",\"apiUrl\":\"/api/courts/tribunals\",\"dataPublicationId\":null,\"children\":[{\"id\":\"courts-tribunals-receipts-overall\",\"name\":\"Tribunals
         receipts - overall\",\"nameShortened\":\"Tribunals receipts - overall\",\"inlineName\":\"tribunals
         receipts - overall\",\"description\":\"<p class=\\\"govuk-body\\\">The overall
-        total for 2021/22 and 2022/23 is unavailable due to migration of some tribunals.
-        An 'Interim Total' has been calculated for 2022/23. This is the sum of all
-        the tribunals excluding those tribunals with data missing or incomplete i.e.
-        Upper Tribunal (Immigration and Asylum Chamber). These tribunals are being
-        migrated to a new case management system and will be made available as soon
-        as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-receipts-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-receipts-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-disposals-overall\",\"name\":\"Tribunals
+        total for 2021/22, 2022/23 and 2023/24 is unavailable due to migration of
+        some tribunals.</p><p class=\\\"govuk-body\\\">An 'Interim Total' has been
+        calculated. This is the sum of all the tribunals excluding those tribunals
+        with data missing or incomplete i.e. Upper Tribunal (Immigration and Asylum
+        Chamber). These tribunals are being migrated to a new case management system
+        and will be made available as soon as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-receipts-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-receipts-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-disposals-overall\",\"name\":\"Tribunals
         disposals - overall\",\"nameShortened\":\"Tribunals disposals - overall\",\"inlineName\":\"tribunals
         disposals - overall\",\"description\":\"<p class=\\\"govuk-body\\\">The overall
-        total for 2021/22 and 2022/23 is unavailable due to migration of some tribunals.
-        An 'Interim Total' has been calculated for 2022/23. This is the sum of all
-        the tribunals excluding those tribunals with data missing or incomplete i.e.
-        Upper Tribunal (Immigration and Asylum Chamber). These tribunals are being
-        migrated to a new case management system and will be made available as soon
-        as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-disposals-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-disposals-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-first-tier\",\"name\":\"First
-        Tier Tribunal (Immigration and Asylum Chamber)\",\"nameShortened\":\"First
-        Tier Tribunal (Immigration and Asylum Chamber)\",\"inlineName\":\"first tier
-        tribunal (immigration and asylum chamber)\",\"description\":\"<p class=\\\"govuk-body\\\">Immigration
-        and asylum appeals are against decisions made by the Home Office relating
-        to permission to stay in the UK, deportation from the UK and entry clearance
-        to the UK.</p><p class=\\\"govuk-body\\\">The First Tier Tribunal Immigration
-        and Asylum Chamber (FTTIAC) is an independent Tribunal which deals with appeals
-        against decisions made by the Home Office in immigration, asylum and nationality
-        matters.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-first-tier\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-first-tier\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-upper-tribunal\",\"name\":\"Upper
-        Tribunal (Immigration and Asylum Chamber)\",\"nameShortened\":\"Upper Tribunal
-        (Immigration and Asylum Chamber)\",\"inlineName\":\"upper tribunal (immigration
-        and asylum chamber)\",\"description\":\"<p class=\\\"govuk-body\\\">The Upper
-        Tribunal Immigration and Asylum Chamber (UTIAC) is a superior court of record
-        dealing with appeals against decisions made by the First-tier Tribunal Immigration
-        and Asylum Chamber (FTTIAC).</p><p class=\\\"govuk-body\\\">Data for 2021/22
-        is missing due to this tribunal being migrated to a new case management system.
-        The data will be made available as soon as possible, and the data is quality
-        assured.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-upper-tribunal\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-upper-tribunal\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-judicial-reviews\",\"name\":\"UTIAC
-        judicial reviews\",\"nameShortened\":\"UTIAC judicial reviews\",\"inlineName\":\"UTIAC
-        judicial reviews\",\"description\":\"<p class=\\\"govuk-body\\\">Upper Tribunal
-        Immigration and Asylum Chamber (UTIAC) judicial reviews.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-judicial-reviews\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-judicial-reviews\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment\",\"name\":\"Employment
-        tribunals\",\"nameShortened\":\"Employment tribunals\",\"inlineName\":\"employment
-        tribunals\",\"description\":\"<p class=\\\"govuk-body\\\">Employment tribunals
+        total for 2021/22, 2022/23 and 2023/24 is unavailable due to migration of
+        some tribunals.</p><p class=\\\"govuk-body\\\">An 'Interim Total' has been
+        calculated. This is the sum of all the tribunals excluding those tribunals
+        with data missing or incomplete i.e. Upper Tribunal (Immigration and Asylum
+        Chamber). These tribunals are being migrated to a new case management system
+        and will be made available as soon as possible.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-disposals-overall\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-disposals-overall\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-first-tier\",\"name\":\"First
+        Tier Tribunal (Immigration and Asylum Chamber) receipts\",\"nameShortened\":\"First
+        Tier Tribunal (Immigration and Asylum Chamber) receipts\",\"inlineName\":\"first
+        tier tribunal (immigration and asylum chamber) receipts\",\"description\":\"<p
+        class=\\\"govuk-body\\\">Immigration and asylum appeals are against decisions
+        made by the Home Office relating to permission to stay in the UK, deportation
+        from the UK and entry clearance to the UK.</p><p class=\\\"govuk-body\\\">The
+        First Tier Tribunal Immigration and Asylum Chamber (FTTIAC) is an independent
+        Tribunal which deals with appeals against decisions made by the Home Office
+        in immigration, asylum and nationality matters.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-first-tier\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-first-tier\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-upper-tribunal\",\"name\":\"Upper
+        Tribunal (Immigration and Asylum Chamber) receipts\",\"nameShortened\":\"Upper
+        Tribunal (Immigration and Asylum Chamber) receipts\",\"inlineName\":\"upper
+        tribunal (immigration and asylum chamber) receipts\",\"description\":\"<p
+        class=\\\"govuk-body\\\">The Upper Tribunal Immigration and Asylum Chamber
+        (UTIAC) is a superior court of record dealing with appeals against decisions
+        made by the First-tier Tribunal Immigration and Asylum Chamber (FTTIAC).</p><p
+        class=\\\"govuk-body\\\">Data for 2021/22, 2022/23 and 2023/24 is unavailable
+        due to this tribunal being migrated to a new case management system. The data
+        will be made available as soon as possible, and the data is quality assured.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-upper-tribunal\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-upper-tribunal\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-judicial-reviews\",\"name\":\"UTIAC
+        judicial reviews receipts\",\"nameShortened\":\"UTIAC judicial reviews receipts\",\"inlineName\":\"UTIAC
+        judicial reviews receipts\",\"description\":\"<p class=\\\"govuk-body\\\">Upper
+        Tribunal Immigration and Asylum Chamber (UTIAC) judicial reviews.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-judicial-reviews\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-judicial-reviews\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-single\",\"name\":\"Employment
+        tribunal receipts - single claims\",\"nameShortened\":\"Employment tribunal
+        receipts - single claims\",\"inlineName\":\"employment tribunal receipts -
+        single claims\",\"description\":\"<p class=\\\"govuk-body\\\">Employment tribunals
         are independent judicial bodies established to resolve disputes between employers
         and employees over employment rights.</p><p class=\\\"govuk-body\\\">Data
         for 2021/22 is missing due to this tribunal being migrated to a new case management
         system. The data will be made available as soon as possible, and the data
-        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals\",\"name\":\"Employment
-        tribunals disposals\",\"nameShortened\":\"Employment tribunals disposals\",\"inlineName\":\"employment
-        tribunals disposals\",\"description\":\"<p class=\\\"govuk-body\\\">Data for
-        2021/22 is missing due to this tribunal being migrated to a new case management
+        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-single\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-single\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-multiple\",\"name\":\"Employment
+        tribunal receipts - multiple claims\",\"nameShortened\":\"Employment tribunal
+        receipts - multiple claims\",\"inlineName\":\"employment tribunal receipts
+        - multiple claims\",\"description\":\"<p class=\\\"govuk-body\\\">Employment
+        tribunals are independent judicial bodies established to resolve disputes
+        between employers and employees over employment rights.</p><p class=\\\"govuk-body\\\">Data
+        for 2021/22 is missing due to this tribunal being migrated to a new case management
         system. The data will be made available as soon as possible, and the data
-        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-disposals\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-disposals\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-social-security\",\"name\":\"Social
-        security and child support\",\"nameShortened\":\"Social security and child
-        support\",\"inlineName\":\"social security and child support\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Social Security and Child Support (SSCS) appeals
-        are against decisions made by the Department for Work and Pensions about entitlement
-        to benefits, for example Personal Independence Payment (PIP), Employment and
-        Support Allowance (ESA) and Universal Credit. The tribunal is impartial and
-        independent of government. The SSCS tribunal will listen to both sides before
-        making a decision.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-social-security\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-social-security\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-mental-health\",\"name\":\"Mental
-        health\",\"nameShortened\":\"Mental health\",\"inlineName\":\"mental health\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Hears applications and references for people detained
-        under the Mental Health Act 1983 (as amended by the Mental Health Act 2007)
-        or living in the community following the making of a conditional discharge,
-        or a community treatment or guardianship order.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-mental-health\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-mental-health\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-special-tribunals\",\"name\":\"Special
-        tribunals\",\"nameShortened\":\"Special tribunals\",\"inlineName\":\"special
-        tribunals\",\"description\":\"<p class=\\\"govuk-body\\\">There are also smaller
-        \\\"special\\\" tribunals covering other more detailed activities.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-special-tribunals\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-special-tribunals\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]}]}]},{\"id\":\"legalaid\",\"name\":\"Legal
+        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-multiple\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-multiple\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals-single\",\"name\":\"Employment
+        tribunal disposals - single claims\",\"nameShortened\":\"Employment tribunal
+        disposals - single claims\",\"inlineName\":\"employment tribunal disposals
+        - single claims\",\"description\":\"<p class=\\\"govuk-body\\\">Employment
+        tribunals are independent judicial bodies established to resolve disputes
+        between employers and employees over employment rights.</p><p class=\\\"govuk-body\\\">Data
+        for 2021/22 is missing due to this tribunal being migrated to a new case management
+        system. The data will be made available as soon as possible, and the data
+        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-disposals-single\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-disposals-single\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals-multiple\",\"name\":\"Employment
+        tribunal disposals - multiple claims\",\"nameShortened\":\"Employment tribunal
+        disposals - multiple claims\",\"inlineName\":\"employment tribunal disposals
+        - multiple claims\",\"description\":\"<p class=\\\"govuk-body\\\">The large
+        number of employment tribunal multiple claims disposals in 2014/2015 is due
+        to a very large multiple airlines case covering 71,000 jurisdictions and relating
+        to the Working Time Directive ending.</p><p class=\\\"govuk-body\\\">Data
+        for 2021/22 is missing due to this tribunal being migrated to a new case management
+        system. The data will be made available as soon as possible, and the data
+        is quality assured. </p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-employment-disposals-multiple\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-employment-disposals-multiple\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-social-security\",\"name\":\"Social
+        security and child support receipts\",\"nameShortened\":\"Social security
+        and child support receipts\",\"inlineName\":\"social security and child support
+        receipts\",\"description\":\"<p class=\\\"govuk-body\\\">Social Security and
+        Child Support (SSCS) appeals are against decisions made by the Department
+        for Work and Pensions about entitlement to benefits, for example Personal
+        Independence Payment (PIP), Employment and Support Allowance (ESA) and Universal
+        Credit. The tribunal is impartial and independent of government. The SSCS
+        tribunal will listen to both sides before making a decision.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-social-security\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-social-security\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-mental-health\",\"name\":\"Mental
+        health receipts\",\"nameShortened\":\"Mental health receipts\",\"inlineName\":\"mental
+        health receipts\",\"description\":\"<p class=\\\"govuk-body\\\">Hears applications
+        and references for people detained under the Mental Health Act 1983 (as amended
+        by the Mental Health Act 2007) or living in the community following the making
+        of a conditional discharge, or a community treatment or guardianship order.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-mental-health\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-mental-health\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]},{\"id\":\"courts-tribunals-special-tribunals\",\"name\":\"Special
+        tribunals receipts\",\"nameShortened\":\"Special tribunals receipts\",\"inlineName\":\"special
+        tribunals receipts\",\"description\":\"<p class=\\\"govuk-body\\\">There are
+        also smaller \\\"special\\\" tribunals covering other more detailed activities.</p>\",\"permalink\":\"/courts/tribunals/courts-tribunals-special-tribunals\",\"apiUrl\":\"/api/courts/tribunals/courts-tribunals-special-tribunals\",\"dataPublicationId\":\"courts-tribunals\",\"children\":[null]}]}]},{\"id\":\"legalaid\",\"name\":\"Legal
         aid data\",\"nameShortened\":\"Legal aid data\",\"inlineName\":\"legal aid
         data\",\"description\":\"<p class=\\\"govuk-body\\\">Legal aid can help meet
         the costs of legal advice, family mediation and representation in a court
@@ -1582,14 +1788,14 @@ interactions:
         received\",\"description\":\"<p class=\\\"govuk-body\\\">Applications received</p>\",\"permalink\":\"/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsreceived\",\"apiUrl\":\"/api/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsreceived\",\"dataPublicationId\":\"legal-aid-statistics\",\"children\":[null]},{\"id\":\"legal-aid-ecf-applicationsgranted\",\"name\":\"Applications
         granted\",\"nameShortened\":\"Applications granted\",\"inlineName\":\"applications
         granted\",\"description\":\"<p class=\\\"govuk-body\\\">Applications determination
-        granted.</p>\",\"permalink\":\"/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsgranted\",\"apiUrl\":\"/api/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsgranted\",\"dataPublicationId\":\"legal-aid-statistics\",\"children\":[null]}]}]}],\"domainCount\":7,\"sectionCount\":30,\"measureCount\":187}"
+        granted.</p>\",\"permalink\":\"/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsgranted\",\"apiUrl\":\"/api/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsgranted\",\"dataPublicationId\":\"legal-aid-statistics\",\"children\":[null]}]}]}],\"domainCount\":7,\"sectionCount\":30,\"measureCount\":189}"
     headers:
       Connection:
       - keep-alive
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Tue, 05 Mar 2024 13:22:33 GMT
+      - Fri, 26 Jul 2024 13:36:47 GMT
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       Transfer-Encoding:
