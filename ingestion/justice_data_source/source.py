@@ -20,6 +20,8 @@ from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.com.linkedin.pegasus2avro.common import ChangeAuditStamps, Status
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
     ChartSnapshot,
+    CorpGroupSnapshot,
+    CorpUserSnapshot,
     DashboardSnapshot,
 )
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
@@ -27,9 +29,13 @@ from datahub.metadata.schema_classes import (
     BrowsePathsV2Class,
     ChangeTypeClass,
     ChartInfoClass,
+    CorpGroupInfoClass,
+    CorpUserInfoClass,
     DashboardInfoClass,
     DomainsClass,
     GlobalTagsClass,
+    OwnerClass,
+    OwnershipClass,
     TagAssociationClass,
 )
 
@@ -50,7 +56,7 @@ class JusticeDataAPISource(TestableSource):
         self.config = config
         self.report = SourceReport()
         self.fp: Optional[BufferedReader] = None
-        self.client = JusticeDataAPIClient(config.base_url)
+        self.client = JusticeDataAPIClient(config.base_url, config.default_owner_email)
         self.platform_name = "justice-data"
         self.web_url = self.config.base_url.removesuffix("/api").removesuffix("/api/")
 
@@ -60,9 +66,17 @@ class JusticeDataAPISource(TestableSource):
         return cls(ctx, config)
 
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
+        all_chart_data = self.client.list_all(self.config.exclude_id_list)
+
+        # create group entities for publication owners
+        owner_emails = {chart["owner_email"] for chart in all_chart_data}
+        for owner_email in owner_emails:
+            mce = self._make_group(owner_email)
+            wu = MetadataWorkUnit("single_mce", mce=mce)
+            self.report.report_workunit(wu)
+            yield wu
 
         # creates each chart entity
-        all_chart_data = self.client.list_all(self.config.exclude_id_list)
         for chart_data in all_chart_data:
             mce = self._make_chart(chart_data)
             wu = MetadataWorkUnit("single_mce", mce=mce)
@@ -99,7 +113,7 @@ class JusticeDataAPISource(TestableSource):
 
         dashboard_info = DashboardInfoClass(
             title="Justice Data",
-            description="A published collection of data visualisations relating to multiple domains",
+            description="A public facing service containing data visualisations across multiple MoJ domains. Official statistical publications are the source data for everything contained within this dashboard.",
             lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
             externalUrl="https://data.justice.gov.uk/",
             charts=chart_urns,
@@ -146,7 +160,12 @@ class JusticeDataAPISource(TestableSource):
         # browse_path = BrowsePathsV2Class(path=["/justice-data/" + "/".join(breadcrumb)])
         # chart_snapshot.aspects.append(browse_path)
 
-        # TODO: propagate ownership from dashboard
+        # add chart ownership
+        owner_urn = builder.make_group_urn(chart_data["owner_email"].split("@")[0])
+        chart_owner = OwnershipClass(
+            owners=[OwnerClass(owner=owner_urn, type="DATAOWNER")]
+        )
+        chart_snapshot.aspects.append(chart_owner)
 
         chart_mce = MetadataChangeEvent(proposedSnapshot=chart_snapshot)
 
@@ -177,6 +196,28 @@ class JusticeDataAPISource(TestableSource):
         tag_assocations = [TagAssociationClass(tag_urn) for tag_urn in tag_urns]
         tags = GlobalTagsClass(tags=tag_assocations)
         return tags
+
+    def _make_group(self, owner_email) -> MetadataChangeEvent:
+        """
+        these groups will relate to emails on statistcal publication contacts
+        which are not individuals
+        """
+
+        group_urn = builder.make_group_urn(owner_email.split("@")[0])
+        group_snapshot = CorpGroupSnapshot(
+            urn=group_urn,
+            aspects=[Status(removed=False)],
+        )
+        group_info = CorpGroupInfoClass(
+            admins=[],
+            members=[],
+            groups=[],
+            displayName=owner_email.split("@")[0].replace(".", " "),
+            email=owner_email,
+        )
+        group_snapshot.aspects.append(group_info)
+        group_mce = MetadataChangeEvent(proposedSnapshot=group_snapshot)
+        return group_mce
 
     @staticmethod
     def test_connection(config_dict: dict) -> TestConnectionReport:
