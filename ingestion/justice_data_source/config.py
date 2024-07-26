@@ -23,3 +23,10 @@ class JusticeDataAPIConfig(ConfigModel):
         description="list of ids to exclude from the ingestion, inclusive of that id and all children",
         default=[],
     )
+    access_requirements: str = Field(
+        description="""
+            Paragraph explaning whether there are any specific access requirements related these data.
+            Justice data being published can have a blanket para but needs to be different from the
+            default section in find-moj-data""",
+        default="",
+    )

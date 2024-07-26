@@ -130,7 +130,8 @@ class JusticeDataAPISource(TestableSource):
             chartUrl=self.web_url + chart_data.get("permalink", ""),
             lastRefreshed=chart_data.get("last_updated_timestamp"),
             customProperties={
-                "refresh_period": chart_data.get("refresh_frequency", "")
+                "refresh_period": chart_data.get("refresh_frequency", ""),
+                "access_requirements": self.config.access_requirements,
             },
         )
         chart_snapshot.aspects.append(chart_info)
