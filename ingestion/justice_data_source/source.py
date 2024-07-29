@@ -91,7 +91,7 @@ class JusticeDataAPISource(TestableSource):
                 self.report.report_workunit(wu)
                 yield wu
 
-        # TODO generate metadata for the dashboard itself
+        # make the dashboard itself
         chart_urns = [
             builder.make_chart_urn(self.platform_name, chart_data["id"])
             for chart_data in all_chart_data

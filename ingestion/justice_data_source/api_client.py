@@ -34,7 +34,7 @@ class JusticeDataAPIClient:
 
             if ID_TO_DOMAIN_MAPPING.get(id):
                 domain = format_domain_name(ID_TO_DOMAIN_MAPPING.get(id, ""))
-            elif not current.get("is_child", False):
+            elif not current.get("is_child"):
                 domain = None
 
             current["domain"] = domain

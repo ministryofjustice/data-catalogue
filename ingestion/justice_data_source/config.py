@@ -1,8 +1,9 @@
 from datahub.configuration.common import ConfigModel
 from pydantic import Field
 
-# These map the api ids to domains as set by create_cadet_database_source
+# These map the api ids to domains as set by create_cadet_database_source.py
 # and all children of these ids will inherit their parent's domain
+# format {api_id: domain}
 ID_TO_DOMAIN_MAPPING = {
     "prisons": "prison",
     "probation": "probation",
