@@ -16,6 +16,7 @@ class JusticeDataAPIClient:
             os.path.join(self.base_url, "publications")
         ).json()
         self.default_owner_email = default_owner_email
+        self.ID_TO_DOMAIN_MAPPING = ID_TO_DOMAIN_MAPPING
 
     def list_all(self, exclude_id_list: list = []):
         """
@@ -32,9 +33,11 @@ class JusticeDataAPIClient:
             if id in exclude_id_list:
                 continue
 
-            if ID_TO_DOMAIN_MAPPING.get(id):
-                domain = format_domain_name(ID_TO_DOMAIN_MAPPING.get(id, ""))
-            elif not current.get("is_child"):
+            if self.ID_TO_DOMAIN_MAPPING.get(id):
+                domain = format_domain_name(self.ID_TO_DOMAIN_MAPPING.get(id, ""))
+            elif current.get("domain"):
+                domain = current["domain"]
+            else:
                 domain = None
 
             current["domain"] = domain
@@ -63,7 +66,6 @@ class JusticeDataAPIClient:
             if current["children"] and current["children"] != [None]:
                 for child in current["children"]:
                     child["breadcrumb"] = breadcrumb
-                    child["is_child"] = True
                     child["domain"] = domain
 
                 to_process.extend(current["children"])
