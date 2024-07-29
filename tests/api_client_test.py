@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+import vcr
 
 from ingestion.justice_data_source.api_client import JusticeDataAPIClient
 
@@ -66,12 +67,63 @@ test_published_details = [
 
 @pytest.fixture
 def client(default_owner_email):
-    return JusticeDataAPIClient("https://data.justice.gov.uk/api/", default_owner_email)
+    return JusticeDataAPIClient("https://data.justice.gov.uk/api", default_owner_email)
 
 
 def test_list_all(client):
     response = client.list_all()
     assert response
+
+
+ids_with_prison_domain = [
+    "prison-staff-sickness",
+    "prison-staff-in-post",
+    "releases-in-error",
+    "crowding",
+    "performance-band",
+    "prison-opcap",
+    "rotl",
+    "releases",
+    "receptions",
+    "population-remand",
+    "population-life",
+    "population-ipp",
+    "population",
+    "employment-on-release",
+    "accommodation-on-release",
+    "prisoner-work-hours",
+    "prisoners-working",
+    "alcohol-drug-treatment",
+    "random-mandatory-drug-testing-nps",
+    "random-mandatory-drug-testing",
+    "risk-management-audit",
+    "concerted-indiscipline",
+    "hostage",
+    "barricades",
+    "self-inflicted-deaths",
+    "self-harm-rate",
+    "assaults-rate-staff",
+    "assaults-rate-prisoner",
+    "security-audit",
+    "temporary-release-failures",
+    "absconds",
+    "escapes",
+]
+
+
+def test_list_all_domain_assignment(client):
+    with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data.yaml"):
+        client.ID_TO_DOMAIN_MAPPING = {
+            "prisons": "prison",
+            "incidents-at-height": "prison incidents",
+        }
+        results = client.list_all(exclude_id_list=["justice-in-numbers"])
+
+        for result in results:
+            if result["id"] in ids_with_prison_domain:
+                assert result["domain"] == "Prison"
+            elif result["id"] == "incidents-at-height":
+                assert result["domain"] == "Prison incidents"
 
 
 def test_get_publication_metadata(client, default_owner_email):
