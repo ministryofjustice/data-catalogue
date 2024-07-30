@@ -106,8 +106,8 @@ class JusticeDataAPIClient:
         return last_updated_timestamp, refresh_frequency, owner_email
 
     def validate_domains(self, datahub_domains) -> bool:
-        for domain in self._id_to_domain_mapping.values():
-            if domain.lower() not in datahub_domains:
+        for domain in set(self._id_to_domain_mapping.values()):
+            if domain.lower() not in set(datahub_domains):
                 raise ValueError(
                     f"Domain - {domain} does not exist in datahub - please review domain mappings in config.py"
                 )
