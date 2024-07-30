@@ -14,7 +14,7 @@ from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesCla
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
-from ingestion.dbt_manifest_utils import (
+from ingestion.ingestion_utils import (
     format_domain_name,
     get_cadet_manifest,
     validate_fqn,
