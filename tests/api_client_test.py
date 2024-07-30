@@ -113,7 +113,7 @@ ids_with_prison_domain = [
 
 def test_list_all_domain_assignment(client):
     with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data.yaml"):
-        client.ID_TO_DOMAIN_MAPPING = {
+        client._id_to_domain_mapping = {
             "prisons": "prison",
             "incidents-at-height": "prison incidents",
         }

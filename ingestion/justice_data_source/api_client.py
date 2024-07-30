@@ -16,7 +16,7 @@ class JusticeDataAPIClient:
             os.path.join(self.base_url, "publications")
         ).json()
         self.default_owner_email = default_owner_email
-        self.ID_TO_DOMAIN_MAPPING = ID_TO_DOMAIN_MAPPING
+        self._id_to_domain_mapping = ID_TO_DOMAIN_MAPPING
 
     def list_all(self, exclude_id_list: list = []):
         """
@@ -33,8 +33,8 @@ class JusticeDataAPIClient:
             if id in exclude_id_list:
                 continue
 
-            if self.ID_TO_DOMAIN_MAPPING.get(id):
-                domain = format_domain_name(self.ID_TO_DOMAIN_MAPPING.get(id, ""))
+            if self._id_to_domain_mapping.get(id):
+                domain = format_domain_name(self._id_to_domain_mapping.get(id, ""))
             elif current.get("domain"):
                 domain = current["domain"]
             else:
