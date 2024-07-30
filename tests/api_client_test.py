@@ -152,3 +152,30 @@ def test_get_publication_metadata(client, default_owner_email):
         assert owner_email == test_published_details[i].get(
             "ownerEmail", default_owner_email
         )
+
+
+@pytest.mark.parametrize(
+    "id_to_domain_mapping, datahub_domain_list, expect_error",
+    [
+        (
+            {"prisons": "prison", "probation": "probation"},
+            ["prison", "probation"],
+            False,
+        ),
+        (
+            {"prisons": "prison", "probation": "probation", "legal-aid": "LAA"},
+            ["prison", "probation"],
+            True,
+        ),
+    ],
+)
+def test_validate_domains(
+    id_to_domain_mapping, datahub_domain_list, expect_error, client
+):
+
+    client._id_to_domain_mapping = id_to_domain_mapping
+    if expect_error:
+        with pytest.raises(Exception):
+            client.validate_domains(datahub_domain_list)
+    else:
+        assert client.validate_domains(datahub_domain_list)

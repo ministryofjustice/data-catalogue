@@ -31,6 +31,7 @@ def mock_justice_data_api(default_owner_email):
                 base_url="https://data.justice.gov.uk/api",
                 default_owner_email=default_owner_email,
             ),
+            validate_domains=False,
         )
 
         results = list(source.get_workunits())

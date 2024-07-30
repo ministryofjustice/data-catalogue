@@ -21,7 +21,6 @@ from datahub.metadata.com.linkedin.pegasus2avro.common import ChangeAuditStamps,
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
     ChartSnapshot,
     CorpGroupSnapshot,
-    CorpUserSnapshot,
     DashboardSnapshot,
 )
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
@@ -30,7 +29,6 @@ from datahub.metadata.schema_classes import (
     ChangeTypeClass,
     ChartInfoClass,
     CorpGroupInfoClass,
-    CorpUserInfoClass,
     DashboardInfoClass,
     DomainsClass,
     GlobalTagsClass,
@@ -38,6 +36,8 @@ from datahub.metadata.schema_classes import (
     OwnershipClass,
     TagAssociationClass,
 )
+
+from ingestion.ingestion_utils import list_datahub_domains
 
 from .api_client import JusticeDataAPIClient
 from .config import JusticeDataAPIConfig
@@ -51,12 +51,19 @@ class JusticeDataAPISource(TestableSource):
     This plugin pulls metadata from the Justice Data API
     """
 
-    def __init__(self, ctx: PipelineContext, config: JusticeDataAPIConfig):
+    def __init__(
+        self,
+        ctx: PipelineContext,
+        config: JusticeDataAPIConfig,
+        validate_domains: bool = True,
+    ):
         self.ctx = ctx
         self.config = config
         self.report = SourceReport()
         self.fp: Optional[BufferedReader] = None
         self.client = JusticeDataAPIClient(config.base_url, config.default_owner_email)
+        if validate_domains:
+            self.client.validate_domains(list_datahub_domains())
         self.platform_name = "justice-data"
         self.web_url = self.config.base_url.removesuffix("/api").removesuffix("/api/")
 

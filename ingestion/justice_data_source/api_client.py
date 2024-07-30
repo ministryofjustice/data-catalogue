@@ -4,7 +4,7 @@ from datetime import datetime
 
 import requests
 
-from ..dbt_manifest_utils import format_domain_name
+from ..ingestion_utils import format_domain_name
 from .config import ID_TO_DOMAIN_MAPPING
 
 
@@ -104,3 +104,11 @@ class JusticeDataAPIClient:
                 break
 
         return last_updated_timestamp, refresh_frequency, owner_email
+
+    def validate_domains(self, datahub_domains) -> bool:
+        for domain in self._id_to_domain_mapping.values():
+            if domain.lower() not in datahub_domains:
+                raise ValueError(
+                    f"Domain - {domain} does not exist in datahub - please review domain mappings in config.py"
+                )
+        return True

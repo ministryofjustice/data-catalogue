@@ -142,7 +142,7 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 29 Jul 2024 09:08:39 GMT
+      - Tue, 30 Jul 2024 15:45:23 GMT
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       Transfer-Encoding:
@@ -178,7 +178,10 @@ interactions:
         month. A complete and up-to-date list of Ministry of Justice statistical publications
         can be found <a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/organisations/ministry-of-justice/about/statistics\\\">here</a>.</p>\",\"permalink\":\"/justice-in-numbers\",\"apiUrl\":\"/api/justice-in-numbers\",\"dataPublicationId\":null,\"children\":[{\"id\":\"jin-headline\",\"name\":\"Headline
         measures\",\"nameShortened\":\"Headline measures\",\"inlineName\":\"headline
-        measures\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-headline\",\"apiUrl\":\"/api/justice-in-numbers/jin-headline\",\"dataPublicationId\":null,\"children\":[{\"id\":\"ons-crime-survey\",\"name\":\"Crime
+        measures\",\"description\":\"<p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest criminal courts statistics has been postponed for further
+        quality assurance following concerns about the quality of key data inputs.
+        Please refer to the statement at the top of the access to justice section.</p>\",\"permalink\":\"/justice-in-numbers/jin-headline\",\"apiUrl\":\"/api/justice-in-numbers/jin-headline\",\"dataPublicationId\":null,\"children\":[{\"id\":\"ons-crime-survey\",\"name\":\"Crime
         figures from Crime Survey for England and Wales\",\"nameShortened\":\"Crime
         figures from Crime Survey for England and Wales\",\"inlineName\":\"crime figures
         from crime survey for england and wales\",\"description\":\"<p class=\\\"govuk-body\\\">Incidents
@@ -227,7 +230,10 @@ interactions:
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-outstanding\",\"name\":\"Crown
+        data.</p><p class=\\\"govuk-body app-call-to-action\\\">The release of the
+        latest statistics has been postponed for further quality assurance following
+        concerns about the quality of key data inputs. Please refer to the statement
+        at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-outstanding\",\"name\":\"Crown
         court outstanding\",\"nameShortened\":\"Crown court outstanding\",\"inlineName\":\"crown
         court outstanding\",\"description\":\"<p class=\\\"govuk-body\\\">A count
         of all cases where one or more offence remains incomplete. The data is a snapshot
@@ -235,13 +241,19 @@ interactions:
         is a count of live cases on the system and is not a calculation based on receipts
         and disposals. Transferred cases may be double counted for a period while
         they show in both sending and receiving courts; offences subsequently entered
-        in error may change the categorisation of the case.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-disposals\",\"name\":\"Magistrates'
+        in error may change the categorisation of the case.</p><p class=\\\"govuk-body
+        app-call-to-action\\\">The release of the latest statistics has been postponed
+        for further quality assurance following concerns about the quality of key
+        data inputs. Please refer to the statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-disposals\",\"name\":\"Magistrates'
         courts disposals\",\"nameShortened\":\"Magistrates' courts disposals\",\"inlineName\":\"magistrates'
         courts disposals\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-civil-total-judgments\",\"name\":\"Civil
+        data.</p><p class=\\\"govuk-body app-call-to-action\\\">The release of the
+        latest statistics has been postponed for further quality assurance following
+        concerns about the quality of key data inputs. Please refer to the statement
+        at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-civil-total-judgments\",\"name\":\"Civil
         courts - total judgments\",\"nameShortened\":\"Civil courts - total judgments\",\"inlineName\":\"civil
         courts - total judgments\",\"description\":\"<p class=\\\"govuk-body\\\">Total
         number of judgments in the county courts. Some civil cases are resolved via
@@ -520,14 +532,31 @@ interactions:
         treatment free from dependence\",\"description\":\"<p class=\\\"govuk-body\\\">The
         percentage of adults exiting treatment free from dependence on drugs or alcohol.</li></ul>\",\"permalink\":\"/prisons/prison-reform/alcohol-drug-treatment\",\"apiUrl\":\"/api/prisons/prison-reform/alcohol-drug-treatment\",\"dataPublicationId\":\"alcohol-drug-treatment-statistics\",\"children\":[null]}]},{\"id\":\"jin-access-to-justice\",\"name\":\"Access
         to justice\",\"nameShortened\":\"Access to justice\",\"inlineName\":\"access
-        to justice\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice\",\"dataPublicationId\":null,\"children\":[{\"id\":\"jin-court-capacity-subhead\",\"name\":\"Court
+        to justice\",\"description\":\"<div class=\\\"app-call-to-action\\\"><p class=\\\"govuk-body\\\">The
+        release of the latest criminal court statistics has been postponed for further
+        quality assurance following concerns about the quality of key data inputs.
+        This is in line with the Code of Practice for Statistics.</p><p class=\\\"govuk-body\\\">This
+        will also affect the published back series.</p><p class=\\\"govuk-body\\\">HMCTS
+        and MoJ are working at pace to conduct detailed case reviews in order to understand
+        the precise extent of these quality issues. Until this work concludes, it
+        is too early to quantify reliably the issue.</p><p class=\\\"govuk-body\\\">The
+        criminal court statistics page will be kept updated with future publication
+        plans and this service will be updated in line with this.</p></div><p class=\\\"govuk-body\\\">Justice
+        is a core public service relied upon by victims, families and businesses.
+        Whether to resolve a business dispute, protect a child at risk, or bring an
+        offender to justice - we aim to ensure that when our system is needed, it
+        can be accessed swiftly (<a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/publications/ministry-of-justice-outcome-delivery-plan/ministry-of-justice-outcome-delivery-plan-2021-22#deliver-swift-access-to-justice\\\">Ministry
+        of Justice outcome delivery plan</a>)</p>\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice\",\"dataPublicationId\":null,\"children\":[{\"id\":\"jin-court-capacity-subhead\",\"name\":\"Court
         capacity\",\"nameShortened\":\"Court capacity\",\"inlineName\":\"court capacity\",\"description\":\"\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/jin-court-capacity-subhead\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/jin-court-capacity-subhead\",\"dataPublicationId\":null,\"children\":[null]},{\"id\":\"courts-crowns-disposals\",\"name\":\"Crown
         court disposals\",\"nameShortened\":\"Crown court disposals\",\"inlineName\":\"crown
         court disposals\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-outstanding\",\"name\":\"Crown
+        data.</p><p class=\\\"govuk-body app-call-to-action\\\">The release of the
+        latest statistics has been postponed for further quality assurance following
+        concerns about the quality of key data inputs. Please refer to the statement
+        at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-outstanding\",\"name\":\"Crown
         court outstanding\",\"nameShortened\":\"Crown court outstanding\",\"inlineName\":\"crown
         court outstanding\",\"description\":\"<p class=\\\"govuk-body\\\">A count
         of all cases where one or more offence remains incomplete. The data is a snapshot
@@ -535,19 +564,31 @@ interactions:
         is a count of live cases on the system and is not a calculation based on receipts
         and disposals. Transferred cases may be double counted for a period while
         they show in both sending and receiving courts; offences subsequently entered
-        in error may change the categorisation of the case.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-cracked\",\"name\":\"Crown
+        in error may change the categorisation of the case.</p><p class=\\\"govuk-body
+        app-call-to-action\\\">The release of the latest statistics has been postponed
+        for further quality assurance following concerns about the quality of key
+        data inputs. Please refer to the statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-cracked\",\"name\":\"Crown
         courts cracked trials\",\"nameShortened\":\"Crown courts cracked trials\",\"inlineName\":\"crown
         courts cracked trials\",\"description\":\"<p class=\\\"govuk-body\\\">Cracked
-        trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-cracked\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-cracked\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-ineffective\",\"name\":\"Crown
+        trials as a percentage of total trials.</p><p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-cracked\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-cracked\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-ineffective\",\"name\":\"Crown
         courts ineffective trials\",\"nameShortened\":\"Crown courts ineffective trials\",\"inlineName\":\"crown
         courts ineffective trials\",\"description\":\"<p class=\\\"govuk-body\\\">Ineffective
-        trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-ineffective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-ineffective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-disposals\",\"name\":\"Magistrates'
+        trials as a percentage of total trials.</p><p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-ineffective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-ineffective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-disposals\",\"name\":\"Magistrates'
         courts disposals\",\"nameShortened\":\"Magistrates' courts disposals\",\"inlineName\":\"magistrates'
         courts disposals\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals-single\",\"name\":\"Employment
+        data.</p><p class=\\\"govuk-body app-call-to-action\\\">The release of the
+        latest statistics has been postponed for further quality assurance following
+        concerns about the quality of key data inputs. Please refer to the statement
+        at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-tribunals-employment-disposals-single\",\"name\":\"Employment
         tribunal disposals - single claims\",\"nameShortened\":\"Employment tribunal
         disposals - single claims\",\"inlineName\":\"employment tribunal disposals
         - single claims\",\"description\":\"<p class=\\\"govuk-body\\\">Employment
@@ -571,12 +612,19 @@ interactions:
         days from receipt at Crown Court to completion\",\"inlineName\":\"mean days
         from receipt at crown court to completion\",\"description\":\"<p class=\\\"govuk-body\\\">Completion
         means any outcome, including guilty pleas, acquittals and convictions. Data
-        from the Crown Court timeliness tool (all offences, all cases closed).</p>\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/entry-to-completion-crown-mean-all\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/entry-to-completion-crown-mean-all\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"court-number-of-receipts-rape\",\"name\":\"Number
+        from the Crown Court timeliness tool (all offences, all cases closed).</p><p
+        class=\\\"govuk-body app-call-to-action\\\">The release of the latest statistics
+        has been postponed for further quality assurance following concerns about
+        the quality of key data inputs. Please refer to the statement at the top of
+        this section.</p>\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/entry-to-completion-crown-mean-all\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/entry-to-completion-crown-mean-all\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"court-number-of-receipts-rape\",\"name\":\"Number
         of receipts of adult rape cases at the Crown Court\",\"nameShortened\":\"Number
         of receipts of adult rape cases at the Crown Court\",\"inlineName\":\"number
         of receipts of adult rape cases at the crown court\",\"description\":\"<p
         class=\\\"govuk-body\\\">Cases arriving at the Crown Court. Data from the
-        Crown Court cases received, disposed and outstanding tool.</p>\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/court-number-of-receipts-rape\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/court-number-of-receipts-rape\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-civil-total-judgments\",\"name\":\"Civil
+        Crown Court cases received, disposed and outstanding tool.</p><p class=\\\"govuk-body
+        app-call-to-action\\\">The release of the latest statistics has been postponed
+        for further quality assurance following concerns about the quality of key
+        data inputs. Please refer to the statement at the top of this section.</p>\",\"permalink\":\"/justice-in-numbers/jin-access-to-justice/court-number-of-receipts-rape\",\"apiUrl\":\"/api/justice-in-numbers/jin-access-to-justice/court-number-of-receipts-rape\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-civil-total-judgments\",\"name\":\"Civil
         courts - total judgments\",\"nameShortened\":\"Civil courts - total judgments\",\"inlineName\":\"civil
         courts - total judgments\",\"description\":\"<p class=\\\"govuk-body\\\">Total
         number of judgments in the county courts. Some civil cases are resolved via
@@ -1335,65 +1383,105 @@ interactions:
         statistics relating to the operation of the criminal and civil justice systems,
         including courts and tribunals. These are published on a quarterly basis and
         are the best, most comprehensive figures on this topic for most purposes.</p>\",\"permalink\":\"/courts\",\"apiUrl\":\"/api/courts\",\"dataPublicationId\":null,\"children\":[{\"id\":\"criminal-courts\",\"name\":\"Criminal
-        courts\",\"nameShortened\":\"Criminal courts\",\"inlineName\":\"criminal courts\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Virtually all criminal court cases in England and
-        Wales start in a magistrates' court. The less serious offences (summary and
-        some triable either-way) are handled entirely in magistrates' courts.</p>
-        <p class=\\\"govuk-body\\\">More serious offences (triable either-way or indictable
-        only) are passed via the magistrates' court on to the Crown Court, either
-        for sentencing after the defendant has been found guilty or for a trial with
-        a judge and jury. The Crown Court also receives appeals against decisions
-        of the magistrates' courts.</p> <p class=\\\"govuk-body\\\">The magistrates'
-        court is the first tier of criminal courts in England and Wales and is presided
-        over by three \u2018Justices of the Peace\u2019 (known as lay magistrates)
-        or by a district judge.</p> <p class=\\\"govuk-body\\\">The Crown Court is
-        a single entity that sits at various court centres across England and Wales,
-        it predominately deals with serious criminal cases. Unlike the magistrates'
-        court, trials in the Crown Court have a jury to determine the guilt of defendants
-        and a judge which can impose tougher sentences.</p> <p class=\\\"govuk-body
-        dnp\\\">See <a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/collections/criminal-court-statistics\\\">
+        courts\",\"nameShortened\":\"Criminal courts\",\"inlineName\":\"criminal courts\",\"description\":\"<div
+        class=\\\"app-call-to-action\\\"><p class=\\\"govuk-body\\\">The release of
+        the latest criminal court statistics has been postponed for further quality
+        assurance following concerns about the quality of key data inputs. This is
+        in line with the Code of Practice for Statistics.</p><p class=\\\"govuk-body\\\">This
+        will also affect the published back series.</p><p class=\\\"govuk-body\\\">HMCTS
+        and MoJ are working at pace to conduct detailed case reviews in order to understand
+        the precise extent of these quality issues. Until this work concludes, it
+        is too early to quantify reliably the issue.</p><p class=\\\"govuk-body\\\">The
+        criminal court statistics page will be kept updated with future publication
+        plans and this service will be updated in line with this.</p></div><p class=\\\"govuk-body\\\">Virtually
+        all criminal court cases in England and Wales start in a magistrates' court.
+        The less serious offences (summary and some triable either-way) are handled
+        entirely in magistrates' courts.</p> <p class=\\\"govuk-body\\\">More serious
+        offences (triable either-way or indictable only) are passed via the magistrates'
+        court on to the Crown Court, either for sentencing after the defendant has
+        been found guilty or for a trial with a judge and jury. The Crown Court also
+        receives appeals against decisions of the magistrates' courts.</p> <p class=\\\"govuk-body\\\">The
+        magistrates' court is the first tier of criminal courts in England and Wales
+        and is presided over by three \u2018Justices of the Peace\u2019 (known as
+        lay magistrates) or by a district judge.</p> <p class=\\\"govuk-body\\\">The
+        Crown Court is a single entity that sits at various court centres across England
+        and Wales, it predominately deals with serious criminal cases. Unlike the
+        magistrates' court, trials in the Crown Court have a jury to determine the
+        guilt of defendants and a judge which can impose tougher sentences.</p> <p
+        class=\\\"govuk-body dnp\\\">See <a class=\\\"govuk-link\\\" href=\\\"https://www.gov.uk/government/collections/criminal-court-statistics\\\">
         criminal court statistics at MOJ for further information.</a> </p>\",\"permalink\":\"/courts/criminal-courts\",\"apiUrl\":\"/api/courts/criminal-courts\",\"dataPublicationId\":null,\"children\":[{\"id\":\"courts-magistrates-receipts\",\"name\":\"Magistrates'
         courts receipts\",\"nameShortened\":\"Magistrates' courts receipts\",\"inlineName\":\"magistrates'
         courts receipts\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases where the case has been entered on the court administrative
-        system (following a process) within the reporting period.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-receipts\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-receipts\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-disposals\",\"name\":\"Magistrates'
+        system (following a process) within the reporting period.</p><p class=\\\"govuk-body
+        app-call-to-action\\\">The release of the latest statistics has been postponed
+        for further quality assurance following concerns about the quality of key
+        data inputs. Please refer to the statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-receipts\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-receipts\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-disposals\",\"name\":\"Magistrates'
         courts disposals\",\"nameShortened\":\"Magistrates' courts disposals\",\"inlineName\":\"magistrates'
         courts disposals\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-outstanding\",\"name\":\"Magistrates'
+        data.</p><p class=\\\"govuk-body app-call-to-action\\\">The release of the
+        latest statistics has been postponed for further quality assurance following
+        concerns about the quality of key data inputs. Please refer to the statement
+        at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-outstanding\",\"name\":\"Magistrates'
         courts outstanding\",\"nameShortened\":\"Magistrates' courts outstanding\",\"inlineName\":\"magistrates'
         courts outstanding\",\"description\":\"<p class=\\\"govuk-body\\\">A count
         of all cases where one or more offence remains incomplete. The data is a snapshot
         based on outstanding cases on the final day of the reporting period. This
         is a count of live cases on the system and is not a calculation based on receipts
-        and disposals.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials\",\"name\":\"Magistrates'
+        and disposals.</p><p class=\\\"govuk-body app-call-to-action\\\">The release
+        of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials\",\"name\":\"Magistrates'
         courts total number of trials\",\"nameShortened\":\"Magistrates' courts total
         number of trials\",\"inlineName\":\"magistrates' courts total number of trials\",\"description\":\"<p
         class=\\\"govuk-body\\\">A trial in the magistrates' court or Crown Court
         is a hearing at which the prosecution produces evidence to prove the case
         against the defendant.</p><p class=\\\"govuk-body\\\">Trials in the magistrates'
-        court are heard by two or three magistrates or by one district judge.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials-effective\",\"name\":\"Magistrates'
+        court are heard by two or three magistrates or by one district judge.</p><p
+        class=\\\"govuk-body app-call-to-action\\\">The release of the latest statistics
+        has been postponed for further quality assurance following concerns about
+        the quality of key data inputs. Please refer to the statement at the top of
+        this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials-effective\",\"name\":\"Magistrates'
         courts effective trials\",\"nameShortened\":\"Magistrates' courts effective
         trials\",\"inlineName\":\"magistrates' courts effective trials\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Effective trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials-effective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials-effective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials-cracked\",\"name\":\"Magistrates'
+        class=\\\"govuk-body\\\">Effective trials as a percentage of total trials.</p><p
+        class=\\\"govuk-body app-call-to-action\\\">The release of the latest statistics
+        has been postponed for further quality assurance following concerns about
+        the quality of key data inputs. Please refer to the statement at the top of
+        this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials-effective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials-effective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials-cracked\",\"name\":\"Magistrates'
         courts cracked trials\",\"nameShortened\":\"Magistrates' courts cracked trials\",\"inlineName\":\"magistrates'
         courts cracked trials\",\"description\":\"<p class=\\\"govuk-body\\\">Cracked
-        trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials-cracked\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials-cracked\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials-ineffective\",\"name\":\"Magistrates'
+        trials as a percentage of total trials.</p><p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials-cracked\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials-cracked\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-magistrates-trials-ineffective\",\"name\":\"Magistrates'
         courts ineffective trials\",\"nameShortened\":\"Magistrates' courts ineffective
         trials\",\"inlineName\":\"magistrates' courts ineffective trials\",\"description\":\"<p
-        class=\\\"govuk-body\\\">Ineffective trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials-ineffective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials-ineffective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-receipts\",\"name\":\"Crown
+        class=\\\"govuk-body\\\">Ineffective trials as a percentage of total trials.</p><p
+        class=\\\"govuk-body app-call-to-action\\\">The release of the latest statistics
+        has been postponed for further quality assurance following concerns about
+        the quality of key data inputs. Please refer to the statement at the top of
+        this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-magistrates-trials-ineffective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-magistrates-trials-ineffective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-receipts\",\"name\":\"Crown
         court receipts\",\"nameShortened\":\"Crown court receipts\",\"inlineName\":\"crown
         court receipts\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases where the case has been entered on the court administrative
-        system (following a validation process) within the reporting period.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-receipts\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-receipts\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-disposals\",\"name\":\"Crown
+        system (following a validation process) within the reporting period.</p><p
+        class=\\\"govuk-body app-call-to-action\\\">The release of the latest statistics
+        has been postponed for further quality assurance following concerns about
+        the quality of key data inputs. Please refer to the statement at the top of
+        this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-receipts\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-receipts\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-disposals\",\"name\":\"Crown
         court disposals\",\"nameShortened\":\"Crown court disposals\",\"inlineName\":\"crown
         court disposals\",\"description\":\"<p class=\\\"govuk-body\\\">A count of
         the number of cases only when all the offences have been completed (following
         a validation process) in the reporting period. Disposals figures in this report
         may change if the case results are entered after the first collation of the
-        data.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-outstanding\",\"name\":\"Crown
+        data.</p><p class=\\\"govuk-body app-call-to-action\\\">The release of the
+        latest statistics has been postponed for further quality assurance following
+        concerns about the quality of key data inputs. Please refer to the statement
+        at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-disposals\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-disposals\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-outstanding\",\"name\":\"Crown
         court outstanding\",\"nameShortened\":\"Crown court outstanding\",\"inlineName\":\"crown
         court outstanding\",\"description\":\"<p class=\\\"govuk-body\\\">A count
         of all cases where one or more offence remains incomplete. The data is a snapshot
@@ -1401,22 +1489,37 @@ interactions:
         is a count of live cases on the system and is not a calculation based on receipts
         and disposals. Transferred cases may be double counted for a period while
         they show in both sending and receiving courts; offences subsequently entered
-        in error may change the categorisation of the case.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials\",\"name\":\"Crown
+        in error may change the categorisation of the case.</p><p class=\\\"govuk-body
+        app-call-to-action\\\">The release of the latest statistics has been postponed
+        for further quality assurance following concerns about the quality of key
+        data inputs. Please refer to the statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-outstanding\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-outstanding\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials\",\"name\":\"Crown
         court total number of trials\",\"nameShortened\":\"Crown court total number
         of trials\",\"inlineName\":\"crown court total number of trials\",\"description\":\"<p
         class=\\\"govuk-body\\\">A trial in the magistrates' court or Crown Court
         is a hearing at which the prosecution produces evidence to prove the case
         against the defendant.</p><p class=\\\"govuk-body\\\">Trials in the Crown
-        Court are typically heard before a judge and jury.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-effective\",\"name\":\"Crown
+        Court are typically heard before a judge and jury.</p><p class=\\\"govuk-body
+        app-call-to-action\\\">The release of the latest statistics has been postponed
+        for further quality assurance following concerns about the quality of key
+        data inputs. Please refer to the statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-effective\",\"name\":\"Crown
         courts effective trials\",\"nameShortened\":\"Crown courts effective trials\",\"inlineName\":\"crown
         courts effective trials\",\"description\":\"<p class=\\\"govuk-body\\\">Effective
-        trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-effective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-effective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-cracked\",\"name\":\"Crown
+        trials as a percentage of total trials.</p><p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-effective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-effective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-cracked\",\"name\":\"Crown
         courts cracked trials\",\"nameShortened\":\"Crown courts cracked trials\",\"inlineName\":\"crown
         courts cracked trials\",\"description\":\"<p class=\\\"govuk-body\\\">Cracked
-        trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-cracked\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-cracked\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-ineffective\",\"name\":\"Crown
+        trials as a percentage of total trials.</p><p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-cracked\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-cracked\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]},{\"id\":\"courts-crowns-trials-ineffective\",\"name\":\"Crown
         courts ineffective trials\",\"nameShortened\":\"Crown courts ineffective trials\",\"inlineName\":\"crown
         courts ineffective trials\",\"description\":\"<p class=\\\"govuk-body\\\">Ineffective
-        trials as a percentage of total trials.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-ineffective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-ineffective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]}]},{\"id\":\"civil-courts\",\"name\":\"Civil
+        trials as a percentage of total trials.</p><p class=\\\"govuk-body app-call-to-action\\\">The
+        release of the latest statistics has been postponed for further quality assurance
+        following concerns about the quality of key data inputs. Please refer to the
+        statement at the top of this section.</p>\",\"permalink\":\"/courts/criminal-courts/courts-crowns-trials-ineffective\",\"apiUrl\":\"/api/courts/criminal-courts/courts-crowns-trials-ineffective\",\"dataPublicationId\":\"courts-criminal\",\"children\":[null]}]},{\"id\":\"civil-courts\",\"name\":\"Civil
         courts\",\"nameShortened\":\"Civil courts\",\"inlineName\":\"civil courts\",\"description\":\"<p
         class=\\\"govuk-body\\\">Civil cases are those that do not involve family
         matters or failure to pay council tax. Civil cases are mainly dealt with by
@@ -1795,7 +1898,7 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 29 Jul 2024 09:08:39 GMT
+      - Tue, 30 Jul 2024 15:45:23 GMT
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       Transfer-Encoding:
