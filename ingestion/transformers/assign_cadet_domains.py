@@ -9,7 +9,7 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_domain import AddDatasetDomain
 from datahub.metadata.schema_classes import DomainsClass
 
-from ingestion.dbt_manifest_utils import (
+from ingestion.ingestion_utils import (
     convert_cadet_manifest_table_to_datahub,
     get_cadet_manifest,
     validate_fqn,

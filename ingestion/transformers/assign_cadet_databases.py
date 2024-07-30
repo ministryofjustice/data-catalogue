@@ -12,10 +12,10 @@ from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
 from datahub.metadata.schema_classes import ContainerClass, MetadataChangeProposalClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
-from ingestion.dbt_manifest_utils import (
+from ingestion.ingestion_utils import (
     get_cadet_manifest,
-    validate_fqn,
     parse_database_and_table_names,
+    validate_fqn,
 )
 
 
