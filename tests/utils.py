@@ -6,7 +6,7 @@ from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import EndOfStream, PipelineContext, RecordEnvelope
 from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
 from datahub.metadata.schema_classes import MetadataChangeEventClass
-from datahub.utilities.urns.urn import Urn
+from datahub.utilities.urns._urn_base import Urn
 
 
 def make_generic_dataset_mcp(
@@ -16,7 +16,7 @@ def make_generic_dataset_mcp(
 ) -> MetadataChangeProposalWrapper:
     return MetadataChangeProposalWrapper(
         entityUrn=entity_urn,
-        entityType=Urn.create_from_string(entity_urn).get_type(),
+        entityType=Urn.from_string(entity_urn).entity_type,
         aspectName=aspect_name,
         changeType="UPSERT",
         aspect=aspect,
