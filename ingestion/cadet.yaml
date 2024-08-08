@@ -29,12 +29,8 @@ source:
     stateful_ingestion:
       remove_stale_metadata: true
 
-    # SQLglot sometimes raises RecursionError with valid SQL.
-    # See https://github.com/ministryofjustice/find-moj-data/issues/477
-    # Until this is fixed, we should avoid features that depend on
-    # formatting SQL from `node.compiled_code`.
-    include_compiled_code: false
-    include_column_lineage: false
+    include_compiled_code: true
+    include_column_lineage: true
 
     strip_user_ids_from_email: false
     tag_prefix: ""
