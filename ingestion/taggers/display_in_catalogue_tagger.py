@@ -4,6 +4,8 @@ from typing import List
 import datahub.emitter.mce_builder as builder
 from datahub.metadata.schema_classes import TagAssociationClass
 
+logging.basicConfig(level=logging.DEBUG)
+
 
 def add_display_in_catalogue_tag(entity_urn: str) -> List[TagAssociationClass]:
     """

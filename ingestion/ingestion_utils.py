@@ -10,8 +10,12 @@ from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
+from ingestion.utils import report_time
+
+logging.basicConfig(level=logging.DEBUG)
 
 
+@report_time
 def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
     try:
         s3 = boto3.client("s3")
@@ -49,7 +53,7 @@ def validate_fqn(fqn: list[str]) -> bool:
             f"{table_name=} has multiple double underscores which will confuse parsing"
         )
 
-    match = re.match(r"\w+__\w+", table_name)
+    match: re.Match[str] | None = re.match(r"\w+__\w+", table_name)
     if match:
         return True
     if not match:

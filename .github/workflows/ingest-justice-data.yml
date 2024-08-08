@@ -63,7 +63,7 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: poetry run datahub ingest -c ingestion/justice_data_ingest.yaml
+        run: time poetry run datahub ingest -c ingestion/justice_data_ingest.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.26.0
@@ -72,7 +72,7 @@ jobs:
           channel-id: "C071VNHPUHZ"
           payload: |
             {
-                "text": ":warning: Unable to ingest Justice Data metadata on ${{inputs.env}}!",
+                "text": ":warning: Unable to ingest Justice Data metadata on ${{inputs.ENVIRONMENT}}!",
                 "blocks": [
                 {
                     "type": "section",
