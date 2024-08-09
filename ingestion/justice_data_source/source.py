@@ -128,7 +128,9 @@ class JusticeDataAPISource(TestableSource):
             lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
             externalUrl="https://data.justice.gov.uk/",
             charts=chart_urns,
-            customProperties={"access_requirements": self.config.access_requirements},
+            customProperties={
+                "dc_access_requirements": self.config.access_requirements
+            },
         )
         dashboard_snapshot.aspects.append(dashboard_info)
 
@@ -157,7 +159,7 @@ class JusticeDataAPISource(TestableSource):
             lastRefreshed=chart_data.get("last_updated_timestamp"),
             customProperties={
                 "refresh_period": chart_data.get("refresh_frequency", ""),
-                "access_requirements": self.config.access_requirements,
+                "dc_access_requirements": self.config.access_requirements,
             },
         )
         chart_snapshot.aspects.append(chart_info)
