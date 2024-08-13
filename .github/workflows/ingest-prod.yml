@@ -2,7 +2,7 @@ name: Ingest metadata to prod
 on:
   schedule:
     - cron: "0 3 * * *" # 3am UTC
-
+  workflow_dispatch:
 
 jobs:
   ingest-cadet-prod:

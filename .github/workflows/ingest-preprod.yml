@@ -3,6 +3,7 @@ name: Ingest metadata to preprod on schedule
 on:
   schedule:
     - cron: "0 9 * * *" # 9am UTC
+  workflow_dispatch:
 
 jobs:
   ingest-cadet-preprod:
