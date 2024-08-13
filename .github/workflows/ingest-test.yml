@@ -1,5 +1,4 @@
-name: Ingest metadata to test and preprod
-
+name: Ingest metadata to test
 on:
   # schedule:
   #   - cron: "0 3 * * *" # 3am UTC
@@ -20,24 +19,6 @@ jobs:
     with:
       ECR_REGION: eu-west-1
       ENVIRONMENT: test
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-
-  ingest-cadet-preprod:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: preprod
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-justice-data-preprod:
-    uses: ./.github/workflows/ingest-justice-data.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: preprod
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
