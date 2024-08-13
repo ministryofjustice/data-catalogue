@@ -1,24 +1,24 @@
-name: Ingest metadata to prod
+name: Ingest metadata to preprod on schedule
+
 on:
   schedule:
-    - cron: "0 3 * * *" # 3am UTC
-
+    - cron: "0 9 * * *" # 9am UTC
 
 jobs:
-  ingest-cadet-prod:
+  ingest-cadet-preprod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
       ECR_REGION: eu-west-1
-      ENVIRONMENT: prod
+      ENVIRONMENT: preprod
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-justice-data-prod:
+  ingest-justice-data-preprod:
     uses: ./.github/workflows/ingest-justice-data.yml
     with:
       ECR_REGION: eu-west-1
-      ENVIRONMENT: prod
+      ENVIRONMENT: preprod
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
