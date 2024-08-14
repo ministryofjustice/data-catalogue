@@ -13,7 +13,7 @@ Populate a `.env` file in the `datahub_metrics` folder
 example for preprod - (swap out variables for secrets stored in 1password in the Datahub RDS Postgres instance category of the Data-Catalogue vault):
 
 ```
-DATABASE_URL=postgresql://{database_username}:{database_password}@localhost:1234/{database_name}
+DATABASE_URL=postgresql+psycopg://{database_username}:{database_password}@localhost:1234/{database_name}
 DATAHUB=preprod
 ```
 
