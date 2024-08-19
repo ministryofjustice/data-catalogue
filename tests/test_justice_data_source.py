@@ -73,7 +73,7 @@ def test_chart(mock_justice_data_api, default_owner_email):
     first_chart_domain = next(
         r.metadata for r in mock_justice_data_api if hasattr(r.metadata, "aspect")
     )
-    assert first_chart_domain.aspect.domains[0] == "urn:li:domain:Courts"
+    assert first_chart_domain.aspect.domains[0] == "urn:li:domain:General"
 
 
 def test_corp_group(mock_justice_data_api, default_owner_email):
