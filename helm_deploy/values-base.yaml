@@ -160,7 +160,7 @@ elasticsearchSetupJob:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
     # Schedule of CronJob when enabled
-    schedule: "0 8 * * *"
+    schedule: "0 8 * * 1-5"
 
 kafkaSetupJob:
   enabled: true
