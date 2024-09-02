@@ -16,8 +16,6 @@ from datahub.metadata.schema_classes import (
     DomainsClass,
 )
 
-# from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import DatasetSnapshot
-
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.dbt_manifest_utils import (
