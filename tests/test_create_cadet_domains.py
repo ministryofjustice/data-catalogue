@@ -4,7 +4,7 @@ from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.create_cadet_databases_source.source import CreateCadetDatabases
-from ingestion.dbt_manifest_utils import format_domain_name
+from ingestion.ingestion_utils import format_domain_name
 
 
 def test_creating_domains_from_s3():

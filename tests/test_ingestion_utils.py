@@ -1,10 +1,8 @@
-import pytest
 import json
 
-from ingestion.dbt_manifest_utils import (
-    format_domain_name,
-    parse_database_and_table_names,
-)
+import pytest
+
+from ingestion.ingestion_utils import format_domain_name, parse_database_and_table_names
 
 
 @pytest.mark.parametrize(

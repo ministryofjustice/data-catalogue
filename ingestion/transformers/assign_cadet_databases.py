@@ -12,11 +12,14 @@ from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
 from datahub.metadata.schema_classes import ContainerClass, MetadataChangeProposalClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
-from ingestion.dbt_manifest_utils import (
+from ingestion.ingestion_utils import (
     get_cadet_manifest,
-    validate_fqn,
     parse_database_and_table_names,
+    validate_fqn,
 )
+from ingestion.utils import report_time
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class AssignCadetDatabasesConfig(ConfigModel):
@@ -49,6 +52,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
     ) -> Optional[Aspect]:
         return None
 
+    @report_time
     def handle_end_of_stream(
         self,
     ) -> List[Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]]:
@@ -77,6 +81,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
 
         return mcps
 
+    @report_time
     def _get_table_database_mappings(self, manifest) -> Dict[str, str]:
         mappings = {}
         for node in manifest["nodes"]:

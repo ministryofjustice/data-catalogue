@@ -1,15 +1,21 @@
 import json
 import logging
+import os
 import re
 from typing import Dict, Tuple
 
 import boto3
 import datahub.emitter.mce_builder as builder
 from botocore.exceptions import ClientError, NoCredentialsError
+from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
+from ingestion.utils import report_time
+
+logging.basicConfig(level=logging.DEBUG)
 
 
+@report_time
 def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
     try:
         s3 = boto3.client("s3")
@@ -47,7 +53,7 @@ def validate_fqn(fqn: list[str]) -> bool:
             f"{table_name=} has multiple double underscores which will confuse parsing"
         )
 
-    match = re.match(r"\w+__\w+", table_name)
+    match: re.Match[str] | None = re.match(r"\w+__\w+", table_name)
     if match:
         return True
     if not match:
@@ -107,3 +113,40 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     node_dataabse_name = node["schema"]
 
     return node_dataabse_name, node_table_name
+
+
+def list_datahub_domains() -> list[str]:
+    """
+    Returns a list of domains as exists in datahub
+    """
+    server_config = DatahubClientConfig(
+        server=os.environ["DATAHUB_GMS_URL"], token=os.environ["DATAHUB_GMS_TOKEN"]
+    )
+
+    graph = DataHubGraph(server_config)
+
+    list_domains_query = """
+        {listDomains(
+            input: {start: 0, count: 50}
+        ) {
+        domains{
+            urn
+            properties{
+                name
+            }
+            entities(
+            input:{query:"*",start:0,count: 0}
+            ){
+                total
+            }
+        }
+        }
+        }
+        """
+    results = graph.execute_graphql(list_domains_query)
+
+    domains_list = [
+        domain["properties"]["name"].lower()
+        for domain in results["listDomains"]["domains"]
+    ]
+    return domains_list

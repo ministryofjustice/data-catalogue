@@ -71,14 +71,14 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
+        run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
 
       - name: push metadata to datahub
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: poetry run datahub ingest -c ingestion/cadet.yaml
+        run: time poetry run datahub ingest -c ingestion/cadet.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.26.0
@@ -87,7 +87,7 @@ jobs:
           channel-id: "C071VNHPUHZ"
           payload: |
             {
-                "text": ":warning: Unable to ingest CaDeT metadata on ${{inputs.env}}!",
+                "text": ":warning: Unable to ingest CaDeT metadata on ${{inputs.ENVIRONMENT}}!",
                 "blocks": [
                 {
                     "type": "section",

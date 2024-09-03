@@ -18,12 +18,15 @@ from datahub.metadata.schema_classes import (
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
-from ingestion.dbt_manifest_utils import (
+from ingestion.ingestion_utils import (
     format_domain_name,
     get_cadet_manifest,
     validate_fqn,
     parse_database_and_table_names,
 )
+from ingestion.utils import report_generator_time, report_time
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @config_class(CreateCadetDatabasesConfig)
@@ -31,6 +34,7 @@ class CreateCadetDatabases(Source):
     source_config: CreateCadetDatabasesConfig
     report: SourceReport = SourceReport()
 
+    @report_time
     def __init__(self, config: CreateCadetDatabasesConfig, ctx: PipelineContext):
         super().__init__(ctx)
         self.source_config = config
@@ -40,6 +44,7 @@ class CreateCadetDatabases(Source):
         config = CreateCadetDatabasesConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
+    @report_generator_time
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:
         manifest = get_cadet_manifest(self.source_config.manifest_s3_uri)
 
@@ -56,7 +61,7 @@ class CreateCadetDatabases(Source):
         databases_with_domains, tables_with_domains, display_tags = (
             self._get_databases_with_domains_and_display_tags(manifest)
         )
-        sub_types = [DatasetContainerSubTypes.DATABASE]
+        sub_types: list[str] = [DatasetContainerSubTypes.DATABASE]
         last_modified = int(datetime.now().timestamp())
         for database, domain in databases_with_domains:
             database_container_key = mcp_builder.DatabaseKey(
@@ -114,6 +119,7 @@ class CreateCadetDatabases(Source):
             if manifest["nodes"][node]["resource_type"] == "model"
         )
 
+    @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest
     ) -> tuple[set[tuple[str, str]], set[tuple[str, str, str]], dict]:

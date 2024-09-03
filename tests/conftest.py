@@ -16,6 +16,11 @@ sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
 
 
 @pytest.fixture
+def default_owner_email() -> str:
+    return "not.me@justice.gov.uk"
+
+
+@pytest.fixture
 def mock_datahub_graph():
     class MockDataHubGraphContext:
         pipeline_name: str = "test_pipeline"
