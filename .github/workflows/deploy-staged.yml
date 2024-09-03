@@ -7,7 +7,7 @@ on:
       - '.github/workflows/**deploy**'
       - '!helm_deploy/**test**'
       - '!.github/workflows/**test**'
-    branches: 
+    branches:
       - 'main'
 
 jobs:
@@ -15,15 +15,15 @@ jobs:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
       env: test
-      datahub_helm_version: "0.4.9"
-      datahub_prereqs_helm_version: "0.1.10"
+      datahub_helm_version: "0.4.23"
+      datahub_prereqs_helm_version: "0.1.13"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
       kube_cluster: "${{ secrets.KUBE_CLUSTER }}"
       kube_token: "${{ secrets.KUBE_TOKEN }}"
       postgres_host: ${{ secrets.POSTGRES_HOST}}
-      postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }} 
+      postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }}
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -33,15 +33,15 @@ jobs:
     needs: [deploy-test]
     with:
       env: preprod
-      datahub_helm_version: "0.4.9"
-      datahub_prereqs_helm_version: "0.1.10"
+      datahub_helm_version: "0.4.23"
+      datahub_prereqs_helm_version: "0.1.13"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
       kube_cluster: "${{ secrets.KUBE_CLUSTER }}"
       kube_token: "${{ secrets.KUBE_TOKEN }}"
       postgres_host: ${{ secrets.POSTGRES_HOST}}
-      postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }} 
+      postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }}
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -51,15 +51,15 @@ jobs:
     needs: [deploy-preprod]
     with:
       env: prod
-      datahub_helm_version: "0.4.9"
-      datahub_prereqs_helm_version: "0.1.10"
+      datahub_helm_version: "0.4.23"
+      datahub_prereqs_helm_version: "0.1.13"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
       kube_cluster: "${{ secrets.KUBE_CLUSTER }}"
       kube_token: "${{ secrets.KUBE_TOKEN }}"
       postgres_host: ${{ secrets.POSTGRES_HOST}}
-      postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }} 
+      postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }}
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
