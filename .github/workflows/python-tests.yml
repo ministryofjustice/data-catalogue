@@ -6,12 +6,14 @@ on:
     paths:
       - "scripts/**.py"
       - "tests/**.py"
+      - "ingestion/**.py"
   push:
     branches:
       - main
     paths:
       - "scripts/**.py"
       - "tests/**.py"
+      - "ingestion/**.py"
 
 jobs:
   python-unit-tests:
