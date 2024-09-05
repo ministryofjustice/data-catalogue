@@ -10,7 +10,11 @@ from datahub.ingestion.api.decorators import config_class
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
-from datahub.metadata.schema_classes import ChangeTypeClass, DomainPropertiesClass
+from datahub.metadata.schema_classes import (
+    ChangeTypeClass,
+    DomainPropertiesClass,
+    DomainsClass,
+)
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
@@ -18,6 +22,7 @@ from ingestion.ingestion_utils import (
     format_domain_name,
     get_cadet_manifest,
     validate_fqn,
+    parse_database_and_table_names,
 )
 from ingestion.utils import report_generator_time, report_time
 
@@ -53,7 +58,7 @@ class CreateCadetDatabases(Source):
             yield wu
 
         # Create database entities and assign them to their domains
-        databases_with_domains, display_tags = (
+        databases_with_domains, tables_with_domains, display_tags = (
             self._get_databases_with_domains_and_display_tags(manifest)
         )
         sub_types: list[str] = [DatasetContainerSubTypes.DATABASE]
@@ -86,6 +91,26 @@ class CreateCadetDatabases(Source):
                 extra_properties=None,
             )
 
+        for database, table, domain in tables_with_domains:
+            dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
+                platform=PLATFORM,
+                name=f"{database}.{table}",
+                platform_instance=INSTANCE,
+            )
+            domain_name = format_domain_name(domain)
+            domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+            mcp = MetadataChangeProposalWrapper(
+                entityType="dataset",
+                changeType=ChangeTypeClass.UPSERT,
+                entityUrn=dataset_urn,
+                aspect=DomainsClass(domains=[domain_urn]),
+            )
+
+            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
+            self.report.report_workunit(wu)
+            logging.info(f"Assigning {domain_name} domain to {database}.{table}")
+            yield wu
+
     def _get_domains(self, manifest) -> set[str]:
         """Only models are arranged by domain in CaDeT"""
         return set(
@@ -97,7 +122,7 @@ class CreateCadetDatabases(Source):
     @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest
-    ) -> tuple[set[tuple[str, str]], dict]:
+    ) -> tuple[set[tuple[str, str]], set[tuple[str, str, str]], dict]:
         """
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
@@ -106,24 +131,28 @@ class CreateCadetDatabases(Source):
         display tags, where key is database and value is dc_display_in_catalogue
         if any model is to be displayed
         """
-        mappings = set()
+        database_mappings = set()
+        table_mappings = set()
         tags = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] == "model":
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
-                    database = manifest["nodes"][node]["schema"]
+                    database, table = parse_database_and_table_names(
+                        manifest["nodes"][node]
+                    )
                     domain = fqn[1]
                     tag = (
                         "dc_display_in_catalogue"
                         if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
                         else None
                     )
-                    mappings.add((database, domain))
+                    database_mappings.add((database, domain))
+                    table_mappings.add((database, table, domain))
                     if tag is not None:
                         tags[database] = [tag]
 
-        return mappings, tags
+        return database_mappings, table_mappings, tags
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
         domain_urn = mce_builder.make_domain_urn(domain=domain_name)

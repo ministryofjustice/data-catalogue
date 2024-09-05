@@ -3,15 +3,9 @@ name: Run Python Tests
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - "scripts/**.py"
-      - "tests/**.py"
   push:
     branches:
       - main
-    paths:
-      - "scripts/**.py"
-      - "tests/**.py"
 
 jobs:
   python-unit-tests:
