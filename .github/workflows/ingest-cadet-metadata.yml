@@ -66,37 +66,28 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      # - name: create cadet domains
-      #   env:
-      #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      #     DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-      #     DATAHUB_TELEMETRY_ENABLED: false
-      #   run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
+      - name: create cadet domains
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
 
-      # - name: push metadata to datahub
-      #   id: push_datahub
-      #   env:
-      #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      #     DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-      #     DATAHUB_TELEMETRY_ENABLED: false
-      #   run: time poetry run datahub ingest -c ingestion/cadet.yaml
+      - name: push metadata to datahub
+        id: push_datahub
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: time poetry run datahub ingest -c ingestion/cadet.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
-        # if: failure() && steps.push_datahub.outcome == 'failure'
+        if: failure() && steps.push_datahub.outcome == 'failure'
         with:
           payload: |
             {
-                "text": ":warning: Unable to ingest CaDeT metadata on ${{inputs.ENVIRONMENT}}!",
-                "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                }
-                ]
+                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion failure on ${{inputs.ENVIRONMENT}}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
