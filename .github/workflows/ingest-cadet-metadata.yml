@@ -74,6 +74,7 @@ jobs:
         run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
 
       - name: push metadata to datahub
+        id: push_datahub
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
@@ -82,7 +83,7 @@ jobs:
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.26.0
-        if: job.status == 'failure'
+        if: failure() && steps.push_datahub.outcome == 'failure'
         with:
           channel-id: "C071VNHPUHZ"
           payload: |
