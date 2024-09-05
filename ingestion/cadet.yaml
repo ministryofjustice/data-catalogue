@@ -47,10 +47,6 @@ source:
           owner_category: DATAOWNER
 
 transformers:
-  - type: "ingestion.transformers.assign_cadet_domains.AssignCadetDomains"
-    config:
-      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
-      replace_existing: true
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
     config:
       manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
