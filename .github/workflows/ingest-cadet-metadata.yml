@@ -82,10 +82,9 @@ jobs:
         run: time poetry run datahub ingest -c ingestion/cadet.yaml
 
       - name: Notify on failure
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v1.27.0
         if: failure() && steps.push_datahub.outcome == 'failure'
         with:
-          channel-id: "C071VNHPUHZ"
           payload: |
             {
                 "text": ":warning: Unable to ingest CaDeT metadata on ${{inputs.ENVIRONMENT}}!",
@@ -99,6 +98,5 @@ jobs:
                 }
                 ]
             }
-
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
