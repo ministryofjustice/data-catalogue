@@ -83,7 +83,7 @@ jobs:
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
-        if: failure() && steps.push_datahub.outcome == 'failure'
+        if: failure()
         with:
           payload: |
             {
