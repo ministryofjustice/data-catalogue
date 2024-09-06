@@ -89,7 +89,7 @@ jobs:
       - name: Send advisories to Slack
         id: send_to_slack
         if: ${{ steps.filter_advisories.outputs.num_filtered_advisories != '0' }}
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v1.27.0
         with:
           channel-id: 'C071VNHPUHZ'
           payload-file-path: "./filtered_advisories.json"
