@@ -21,6 +21,7 @@ from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesC
 from ingestion.ingestion_utils import (
     format_domain_name,
     get_cadet_manifest,
+    get_tags,
     validate_fqn,
     parse_database_and_table_names,
 )
@@ -135,26 +136,24 @@ class CreateCadetDatabases(Source):
         """
         database_mappings = set()
         table_mappings = set()
-        tags = {}
+        tag_mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
+                # fqn = fully qualified name
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
                     domain = fqn[1]
-                    tag = (
-                        "dc_display_in_catalogue"
-                        if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
-                        else None
-                    )
                     database_mappings.add((database, domain))
                     table_mappings.add((database, table, domain))
-                    if tag is not None:
-                        tags[database] = [tag]
 
-        return database_mappings, table_mappings, tags
+                    tags = get_tags(manifest["nodes"][node])
+                    if tags:
+                        tag_mappings[database] = tags
+
+        return database_mappings, table_mappings, tag_mappings
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
         domain_urn = mce_builder.make_domain_urn(domain=domain_name)
