@@ -112,7 +112,9 @@ class CreateCadetDatabases(Source):
             yield wu
 
     def _get_domains(self, manifest) -> set[str]:
-        """Only models are arranged by domain in CaDeT"""
+        """Only models are arranged by domain in CaDeT.
+        Seeds should only be associated with a domain if it appears in models.
+        """
         return set(
             format_domain_name(manifest["nodes"][node]["fqn"][1])
             for node in manifest["nodes"]
@@ -135,7 +137,7 @@ class CreateCadetDatabases(Source):
         table_mappings = set()
         tags = {}
         for node in manifest["nodes"]:
-            if manifest["nodes"][node]["resource_type"] == "model":
+            if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
                     database, table = parse_database_and_table_names(
