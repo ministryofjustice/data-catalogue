@@ -16,15 +16,19 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 @report_time
-def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
+def get_cadet_metadata_json(s3_uri: str) -> Dict:
+    """
+    Returns dict object containin metadata from the json file at the given s3 path.
+    Examples are the manifest file or the database_metadata file
+    """
     try:
         s3 = boto3.client("s3")
-        s3_parts = manifest_s3_uri.split("/")
+        s3_parts = s3_uri.split("/")
         bucket_name = s3_parts[2]
         file_key = "/".join(s3_parts[3:])
         response = s3.get_object(Bucket=bucket_name, Key=file_key)
         content = response["Body"].read().decode("utf-8")
-        manifest = json.loads(content, strict=False)
+        metadata = json.loads(content, strict=False)
     except NoCredentialsError:
         print("Credentials not available.")
         raise
@@ -40,7 +44,7 @@ def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
         # Catch any other exceptions
         print(f"An error occurred: {str(e)}")
         raise
-    return manifest
+    return metadata
 
 
 def validate_fqn(fqn: list[str]) -> bool:

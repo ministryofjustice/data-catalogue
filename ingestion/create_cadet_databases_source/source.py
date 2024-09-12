@@ -10,8 +10,14 @@ from datahub.ingestion.api.decorators import config_class
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
+from datahub.metadata.com.linkedin.pegasus2avro.common import Status
+from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
+    CorpUserSnapshot,
+)
+from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
+    CorpUserInfoClass,
     DomainPropertiesClass,
     DomainsClass,
     GlobalTagsClass,
@@ -22,10 +28,10 @@ from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.ingestion_utils import (
     format_domain_name,
-    get_cadet_manifest,
+    get_cadet_metadata_json,
     get_tags,
-    validate_fqn,
     parse_database_and_table_names,
+    validate_fqn,
 )
 from ingestion.utils import report_generator_time, report_time
 
@@ -49,7 +55,10 @@ class CreateCadetDatabases(Source):
 
     @report_generator_time
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:
-        manifest = get_cadet_manifest(self.source_config.manifest_s3_uri)
+        manifest = get_cadet_metadata_json(self.source_config.manifest_s3_uri)
+        databases_metadata = get_cadet_metadata_json(
+            self.source_config.database_metadata_s3_uri
+        )
 
         # Create all the domain entities
         for domain_name in self._get_domains(manifest):
@@ -61,37 +70,62 @@ class CreateCadetDatabases(Source):
             yield wu
 
         # Create database entities and assign them to their domains
-        databases_with_domains, tables_with_domains, display_tags = (
-            self._get_databases_with_domains_and_display_tags(manifest)
+        databases_with_metadata, tables_with_domains, display_tags = (
+            self._get_databases_with_domains_and_display_tags(
+                manifest, databases_metadata
+            )
         )
         sub_types: list[str] = [DatasetContainerSubTypes.DATABASE]
         last_modified = int(datetime.now().timestamp())
-        for database, domain in databases_with_domains:
+
+        # make database owners as users in datahub
+        for _, db_meta_tuple in databases_with_metadata:
+            db_meta_dict = dict(db_meta_tuple)
+            if not db_meta_dict.get("dc_owner", "") == "":
+                mce = self._make_user(db_meta_dict["dc_owner"])
+                wu = MetadataWorkUnit("single_mce", mce=mce)
+                self.report.report_workunit(wu)
+                yield wu
+
+        for database_name, database_metadata in databases_with_metadata:
             database_container_key = mcp_builder.DatabaseKey(
-                database=database,
+                database=database_name,
                 platform=PLATFORM,
                 instance=INSTANCE,
                 env=ENV,
                 backcompat_env_as_instance=True,
             )
-            domain_name = format_domain_name(domain)
+            db_meta_dict = dict(database_metadata)
+            domain_name = format_domain_name(db_meta_dict["domain"])
             domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-            display_tag = display_tags.get(database)
+            display_tag = display_tags.get(database_name)
 
-            logging.info(f"Creating container {database=} with {domain_name=}")
+            if not db_meta_dict.get("dc_owner", "") == "":
+                owner_urn = mce_builder.make_user_urn(
+                    db_meta_dict.pop("dc_owner").split("@")[0]
+                )
+            else:
+                owner_urn = None
+
+            if not db_meta_dict.get("description", "") == "":
+                database_description = db_meta_dict.pop("description")
+            else:
+                database_description = None
+
+            logging.info(f"Creating container {database_name=} with {domain_name=}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
-                name=database,
+                name=database_name,
                 sub_types=sub_types,
                 domain_urn=domain_urn,
                 external_url=None,
-                description=None,
+                description=database_description,
                 created=None,
                 last_modified=last_modified,
                 tags=display_tag,
-                owner_urn=None,
+                owner_urn=owner_urn,
                 qualified_name=None,
-                extra_properties=None,
+                extra_properties=db_meta_dict,
             )
 
         # Add dc_display_in_catalogue tag to all seeds
@@ -116,10 +150,10 @@ class CreateCadetDatabases(Source):
             )
             wu = MetadataWorkUnit("single_mcp", mcp=mcp)
             self.report.report_workunit(wu)
-            logging.info(f"Tagging seed {database}.{table} with dc_display_in_catalogue")
+            logging.info(
+                f"Tagging seed {database}.{table} with dc_display_in_catalogue"
+            )
             yield wu
-
-
 
         # Assign domains to tables
         for database, table, domain in tables_with_domains:
@@ -152,10 +186,27 @@ class CreateCadetDatabases(Source):
             if manifest["nodes"][node]["resource_type"] == "model"
         )
 
+    def _make_user(self, email: str):
+        if not email.endswith(".gov.uk"):
+            email = email + "@justice.gov.uk"
+        user_urn = mce_builder.make_user_urn(email.split("@")[0])
+        user_snapshot = CorpUserSnapshot(
+            urn=user_urn,
+            aspects=[Status(removed=False)],
+        )
+        user_info = CorpUserInfoClass(
+            active=False,
+            displayName=email.split("@")[0].replace(".", " "),
+            email=email,
+        )
+        user_snapshot.aspects.append(user_info)
+        user_mce = MetadataChangeEvent(proposedSnapshot=user_snapshot)
+        return user_mce
+
     @report_time
     def _get_databases_with_domains_and_display_tags(
-        self, manifest
-    ) -> tuple[set[tuple[str, str]], set[tuple[str, str, str]], dict]:
+        self, manifest: dict, databases_metadata: dict
+    ) -> tuple[set[tuple[str, tuple]], set[tuple[str, str, str]], dict]:
         """
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
@@ -172,6 +223,34 @@ class CreateCadetDatabases(Source):
                 # fqn = fully qualified name
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
+                    database, table = parse_database_and_table_names(
+                        manifest["nodes"][node]
+                    )
+                    database_metadata_dict = {}
+                    tag = (
+                        "dc_display_in_catalogue"
+                        if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
+                        else None
+                    )
+
+                    if tag == "dc_display_in_catalogue":
+                        try:
+                            database_metadata_dict = databases_metadata["databases"][
+                                database
+                            ]
+                        except KeyError:
+                            logging.warning(
+                                f"{database} - has no database level metadata"
+                            )
+
+                    database_metadata_dict["domain"] = fqn[1]
+                    database_metadata_tuple = tuple(database_metadata_dict.items())
+                    database_mappings.add((database, database_metadata_tuple))
+                    table_mappings.add(
+                        (database, table, database_metadata_dict["domain"])
+                    )
+                    if tag is not None:
+                        tags[database] = [tag]
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
