@@ -23,7 +23,8 @@ class TestCreateCadetDatabases:
         source = CreateCadetDatabases(
             ctx=PipelineContext(run_id="domain-source-test"),
             config=CreateCadetDatabasesConfig(
-                manifest_s3_uri="s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+                manifest_s3_uri="s3://test_bucket/prod/run_artefacts/latest/target/manifest.json",
+                database_metadata_s3_uri="s3://test_bucket/prod/run_artefacts/latest/target/database_metadata.json",
             ),
         )
         self.results = list(source.get_workunits())
@@ -38,6 +39,14 @@ class TestCreateCadetDatabases:
         domain_creation_events = self.results_by_aspect_type[DomainPropertiesClass]
         domains = [event.metadata.aspect.name for event in domain_creation_events]
         assert domains == ["Courts", "HQ", "Prison", "Probation"]
+
+        # test for user mce
+        user_creation_events = self.results[4:6]
+        user_urns = [
+            event.metadata.proposedSnapshot.urn for event in user_creation_events
+        ]
+        user_urns.sort()
+        assert user_urns == ["urn:li:corpuser:some.one", "urn:li:corpuser:some.team"]
 
         # Events are created for the following aspects per database:
         # create container, update status, add platform, add subtype, associate container with domain, add tags

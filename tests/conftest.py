@@ -35,9 +35,7 @@ def mock_datahub_graph():
             # Make server stateful ingestion capable
             self.mock_graph.get_config.return_value = {"statefulIngestionCapable": True}
             # Bind mock_graph's emit_mcp to testcase's monkey_patch_emit_mcp so that we can emulate emits.
-            self.mock_graph.emit_mcp = types.MethodType(
-                self.monkey_patch_emit_mcp, self.mock_graph
-            )
+            self.mock_graph.emit_mcp = types.MethodType(self.monkey_patch_emit_mcp, self.mock_graph)
             # Bind mock_graph's get_latest_timeseries_value to monkey_patch_get_latest_timeseries_value
             self.mock_graph.get_latest_timeseries_value = types.MethodType(
                 self.monkey_patch_get_latest_timeseries_value, self.mock_graph
@@ -82,23 +80,29 @@ def mock_time(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
-def mock_manifest_in_s3():
+def mock_metadata_in_s3():
+    """
+    mocks both the manifest and database_metadata json files in s3
+    """
     with mock_s3():
         s3 = boto3.client("s3")
-        bucket = "mojap-derived-tables"
-        key = "prod/run_artefacts/latest/target/manifest.json"
+        bucket = "test_bucket"
         s3.create_bucket(
             Bucket=bucket,
             CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
         )
-        with open(
-            os.path.join(os.path.dirname(__file__), "data", "manifest.json"),
-            "rb",
-        ) as body:
-            s3.put_object(
-                Body=body,
-                Bucket=bucket,
-                Key=key,
-            )
+        files = ["manifest.json", "database_metadata.json"]
+        for file in files:
+            key = f"prod/run_artefacts/latest/target/{file}"
+
+            with open(
+                os.path.join(os.path.dirname(__file__), "data", file),
+                "rb",
+            ) as body:
+                s3.put_object(
+                    Body=body,
+                    Bucket=bucket,
+                    Key=key,
+                )
 
         yield
