@@ -159,3 +159,5 @@ def get_tags(dbt_manifest_node: dict) -> list[str]:
         tags += "dc_display_in_catalogue"
     if dbt_manifest_node["resource_type"] == "seed":
         tags += "dc_display_in_catalogue"
+
+    return tags
