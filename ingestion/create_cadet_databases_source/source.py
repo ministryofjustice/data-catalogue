@@ -116,7 +116,7 @@ class CreateCadetDatabases(Source):
             )
             wu = MetadataWorkUnit("single_mcp", mcp=mcp)
             self.report.report_workunit(wu)
-            logging.info(f"Tagging seed {domain_name} to display in catalogue")
+            logging.info(f"Tagging seed {database}.{table} with dc_display_in_catalogue")
             yield wu
 
 
