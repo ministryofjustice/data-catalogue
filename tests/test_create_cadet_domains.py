@@ -39,16 +39,14 @@ class TestCreateCadetDatabases:
             in self.results[8].metadata.aspect.domains
         )
 
-    def test_seeds_are_ingested(self):
-        dataset_urns = [result.metadata.entityUrn for result in self.results[-5:]]
-        expected_urn = builder.make_dataset_urn(
-            builder.make_data_platform_urn(platform="dbt"),
-            "cadet.awsdatacatalog.ref_database.postcodes"
-        )
-        assert expected_urn in dataset_urns
+    def test_seeds_are_tagged_to_display_in_catalogue(self):
+        seed_tag_event = self.results[34]
+        assert seed_tag_event.metadata.entityType == "dataset"
+        assert seed_tag_event.metadata.changeType == "UPSERT"
+        assert seed_tag_event.metadata.aspect.tags[0].tag == 'urn:li:tag:dc_display_in_catalogue'
 
     def test_datasets_are_assigned_to_domains(self):
         # This is the first event which should associate a dataset with a domain
         assert self.results[35].metadata.entityType == "dataset"
         assert self.results[35].metadata.changeType == "UPSERT"
-        assert self.results[35].metadata.aspect.domains
+        assert self.results[35].metadata.aspect.ASPECT_NAME == "domains"

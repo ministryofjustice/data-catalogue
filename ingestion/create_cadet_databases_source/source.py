@@ -14,6 +14,8 @@ from datahub.metadata.schema_classes import (
     ChangeTypeClass,
     DomainPropertiesClass,
     DomainsClass,
+    GlobalTagsClass,
+    TagAssociationClass,
 )
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
@@ -92,6 +94,34 @@ class CreateCadetDatabases(Source):
                 extra_properties=None,
             )
 
+        # Add dc_display_in_catalogue tag to all seeds
+        seed_nodes = [
+            manifest["nodes"][node]
+            for node in manifest["nodes"]
+            if manifest["nodes"][node]["resource_type"] == "seed"
+        ]
+        tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
+        tag_association_to_add = TagAssociationClass(tag=tag_to_add)
+        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
+        for node in seed_nodes:
+            database, table = parse_database_and_table_names(node)
+            dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
+                platform=PLATFORM,
+                name=f"{database}.{table}",
+                platform_instance=INSTANCE,
+            )
+            mcp: MetadataChangeProposalWrapper = MetadataChangeProposalWrapper(
+                entityUrn=dataset_urn,
+                aspect=current_tags,
+            )
+            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
+            self.report.report_workunit(wu)
+            logging.info(f"Tagging seed {domain_name} to display in catalogue")
+            yield wu
+
+
+
+        # Assign domains to tables
         for database, table, domain in tables_with_domains:
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
