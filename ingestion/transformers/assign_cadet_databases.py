@@ -64,7 +64,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         manifest = get_cadet_manifest(self.config.manifest_s3_uri)
         mappings = self._get_table_database_mappings(manifest)
 
-        logging.debug("Assigning databases to datasets")
+        logging.debug("Assigning datasets to databases")
         for dataset_urn in self.entity_map.keys():
             container_urn = mappings.get(dataset_urn)
             if not container_urn:
@@ -85,7 +85,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
     def _get_table_database_mappings(self, manifest) -> Dict[str, str]:
         mappings = {}
         for node in manifest["nodes"]:
-            if manifest["nodes"][node]["resource_type"] == "model":
+            if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
                     database, table_name = parse_database_and_table_names(

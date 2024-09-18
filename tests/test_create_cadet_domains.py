@@ -39,8 +39,14 @@ class TestCreateCadetDatabases:
             in self.results[8].metadata.aspect.domains
         )
 
+    def test_seeds_are_tagged_to_display_in_catalogue(self):
+        seed_tag_event = self.results[34]
+        assert seed_tag_event.metadata.entityType == "dataset"
+        assert seed_tag_event.metadata.changeType == "UPSERT"
+        assert seed_tag_event.metadata.aspect.tags[0].tag == 'urn:li:tag:dc_display_in_catalogue'
+
     def test_datasets_are_assigned_to_domains(self):
-        # This is the first event which should associate a dataset with a database
-        assert self.results[28].metadata.entityType == "dataset"
-        assert self.results[28].metadata.changeType == "UPSERT"
-        assert self.results[28].metadata.aspect.domains
+        # This is the first event which should associate a dataset with a domain
+        assert self.results[35].metadata.entityType == "dataset"
+        assert self.results[35].metadata.changeType == "UPSERT"
+        assert self.results[35].metadata.aspect.ASPECT_NAME == "domains"

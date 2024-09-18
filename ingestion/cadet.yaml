@@ -21,7 +21,7 @@ source:
         - ".*data_eng_uploader_prod_calc_release_dates\\.survey_data.*"
     entities_enabled:
       test_results: "YES"
-      seeds: "NO"
+      seeds: "YES"
       snapshots: "NO"
       models: "YES"
       sources: "YES"
