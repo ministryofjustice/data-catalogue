@@ -12,13 +12,16 @@ source:
     target_platform_instance: athena_cadet
     infer_dbt_schemas: true
     node_name_pattern:
-      # These tables are currently badly formatted in the manifest. The fix for it should
-      # go through when the dbt_docs workflow is working
       deny:
+        # These tables are currently badly formatted in the manifest. The fix for it should
+        # go through when the dbt_docs workflow is working
         - ".*use_of_force\\.summary_status_complete_dim.*"
         - ".*use_of_force\\.summary_status_in_progress_dim.*"
         - ".*use_of_force\\.summary_status_submitted_dim.*"
         - ".*data_eng_uploader_prod_calc_release_dates\\.survey_data.*"
+
+        # This table has a huge number of columns, which breaks things.
+        - "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data"
     entities_enabled:
       test_results: "YES"
       seeds: "YES"
