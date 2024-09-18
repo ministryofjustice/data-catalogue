@@ -42,8 +42,8 @@ with open("tests/data/manifest.json") as f:
         ),
         (
             test_manifest["nodes"]["seed.test_derived_tables.nope"],
-            "test_derived_tables_dev_dbt",
-            "table1",
+            "ref_database",
+            "postcodes",
         ),
     ],
 )

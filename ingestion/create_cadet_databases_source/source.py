@@ -14,6 +14,8 @@ from datahub.metadata.schema_classes import (
     ChangeTypeClass,
     DomainPropertiesClass,
     DomainsClass,
+    GlobalTagsClass,
+    TagAssociationClass,
 )
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
@@ -21,6 +23,7 @@ from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesC
 from ingestion.ingestion_utils import (
     format_domain_name,
     get_cadet_manifest,
+    get_tags,
     validate_fqn,
     parse_database_and_table_names,
 )
@@ -91,6 +94,34 @@ class CreateCadetDatabases(Source):
                 extra_properties=None,
             )
 
+        # Add dc_display_in_catalogue tag to all seeds
+        seed_nodes = [
+            manifest["nodes"][node]
+            for node in manifest["nodes"]
+            if manifest["nodes"][node]["resource_type"] == "seed"
+        ]
+        tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
+        tag_association_to_add = TagAssociationClass(tag=tag_to_add)
+        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
+        for node in seed_nodes:
+            database, table = parse_database_and_table_names(node)
+            dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
+                platform=PLATFORM,
+                name=f"{database}.{table}",
+                platform_instance=INSTANCE,
+            )
+            mcp: MetadataChangeProposalWrapper = MetadataChangeProposalWrapper(
+                entityUrn=dataset_urn,
+                aspect=current_tags,
+            )
+            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
+            self.report.report_workunit(wu)
+            logging.info(f"Tagging seed {database}.{table} with dc_display_in_catalogue")
+            yield wu
+
+
+
+        # Assign domains to tables
         for database, table, domain in tables_with_domains:
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
@@ -112,7 +143,9 @@ class CreateCadetDatabases(Source):
             yield wu
 
     def _get_domains(self, manifest) -> set[str]:
-        """Only models are arranged by domain in CaDeT"""
+        """Only models are arranged by domain in CaDeT.
+        Seeds should only be associated with a domain if it appears in models.
+        """
         return set(
             format_domain_name(manifest["nodes"][node]["fqn"][1])
             for node in manifest["nodes"]
@@ -133,26 +166,24 @@ class CreateCadetDatabases(Source):
         """
         database_mappings = set()
         table_mappings = set()
-        tags = {}
+        tag_mappings = {}
         for node in manifest["nodes"]:
-            if manifest["nodes"][node]["resource_type"] == "model":
+            if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
+                # fqn = fully qualified name
                 fqn = manifest["nodes"][node]["fqn"]
                 if validate_fqn(fqn):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
                     domain = fqn[1]
-                    tag = (
-                        "dc_display_in_catalogue"
-                        if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
-                        else None
-                    )
                     database_mappings.add((database, domain))
                     table_mappings.add((database, table, domain))
-                    if tag is not None:
-                        tags[database] = [tag]
 
-        return database_mappings, table_mappings, tags
+                    tags = get_tags(manifest["nodes"][node])
+                    if tags:
+                        tag_mappings[database] = tags
+
+        return database_mappings, table_mappings, tag_mappings
 
     def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
         domain_urn = mce_builder.make_domain_urn(domain=domain_name)
