@@ -1,6 +1,17 @@
+from collections import defaultdict
+
 import datahub.emitter.mce_builder as builder
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
+from datahub.metadata.schema_classes import (
+    ContainerPropertiesClass,
+    DataPlatformInstanceClass,
+    DomainPropertiesClass,
+    DomainsClass,
+    GlobalTagsClass,
+    StatusClass,
+    SubTypesClass,
+)
 
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.create_cadet_databases_source.source import CreateCadetDatabases
@@ -16,34 +27,66 @@ class TestCreateCadetDatabases:
             ),
         )
         self.results = list(source.get_workunits())
+        self.results.sort(key=lambda event: event.metadata.entityUrn)
+
+        self.results_by_aspect_type = defaultdict(list)
+        for result in self.results:
+            aspect_type = type(result.metadata.aspect)
+            self.results_by_aspect_type[aspect_type].append(result)
 
     def test_creating_domains_from_s3(self):
-        domain_creation_events = self.results[:4]
+        domain_creation_events = self.results_by_aspect_type[DomainPropertiesClass]
         domains = [event.metadata.aspect.name for event in domain_creation_events]
-        domains.sort()
         assert domains == ["Courts", "HQ", "Prison", "Probation"]
 
-        # 6 events are created per database, we'll just test one
-        # (create container, update status, add platform, add subtype, associate container with domain)
-        assert self.results[4].metadata.aspect.customProperties.get("database")
-        assert self.results[6].metadata.aspect.platform == builder.make_data_platform_urn(
-            platform="dbt"
+        # Events are created for the following aspects per database:
+        # create container, update status, add platform, add subtype, associate container with domain, add tags
+        container_events = self.results_by_aspect_type[ContainerPropertiesClass]
+        status_events = self.results_by_aspect_type[StatusClass]
+        platform_events = self.results_by_aspect_type[DataPlatformInstanceClass]
+        sub_types_events = self.results_by_aspect_type[SubTypesClass]
+        domains_events = self.results_by_aspect_type[DomainsClass]
+        tags_events = self.results_by_aspect_type[GlobalTagsClass]
+
+        assert (
+            len(container_events) == len(sub_types_events) == len(platform_events) == 5
         )
-        assert DatasetContainerSubTypes.DATABASE in self.results[7].metadata.aspect.typeNames
-        assert self.results[8].metadata.entityUrn == self.results[4].metadata.entityUrn
-        domain_result_4 = (
-            self.results[4].metadata.aspect.customProperties.get("database").split("_")[0]
+
+        assert len(domains_events) == 10
+
+        assert len(tags_events) == 6
+
+        assert container_events[0].metadata.aspect.customProperties.get("database")
+
+        assert (
+            platform_events[0].metadata.aspect.platform
+        ) == builder.make_data_platform_urn(platform="dbt")
+        assert (
+            DatasetContainerSubTypes.DATABASE
+            in sub_types_events[0].metadata.aspect.typeNames
         )
         assert (
-            builder.make_domain_urn(format_domain_name(domain_result_4))
-            in self.results[8].metadata.aspect.domains
+            container_events[0].metadata.entityUrn
+            == domains_events[0].metadata.entityUrn
+        )
+        expected_domain = (
+            container_events[0]
+            .metadata.aspect.customProperties.get("database")
+            .split("_")[0]
+        )
+        assert (
+            builder.make_domain_urn(format_domain_name(expected_domain))
+            in domains_events[0].metadata.aspect.domains
         )
 
     def test_seeds_are_tagged_to_display_in_catalogue(self):
         seed_tag_event = self.results[34]
         assert seed_tag_event.metadata.entityType == "dataset"
         assert seed_tag_event.metadata.changeType == "UPSERT"
-        assert seed_tag_event.metadata.aspect.tags[0].tag == 'urn:li:tag:dc_display_in_catalogue'
+        assert (
+            seed_tag_event.metadata.aspect.tags[0].tag
+            == "urn:li:tag:dc_display_in_catalogue"
+        )
 
     def test_datasets_are_assigned_to_domains(self):
         # This is the first event which should associate a dataset with a domain
