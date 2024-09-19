@@ -10,15 +10,8 @@ from datahub.ingestion.api.decorators import config_class
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
-from datahub.metadata.com.linkedin.pegasus2avro.common import Status
-from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
-    CorpUserSnapshot,
-)
-from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
-    CorpUserInfoClass,
-    DomainPropertiesClass,
     DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,
@@ -30,6 +23,8 @@ from ingestion.ingestion_utils import (
     format_domain_name,
     get_cadet_metadata_json,
     get_tags,
+    make_domain_mcp,
+    make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
 )
@@ -62,7 +57,7 @@ class CreateCadetDatabases(Source):
 
         # Create all the domain entities
         for domain_name in self._get_domains(manifest):
-            mcp = self._make_domain(domain_name)
+            mcp = make_domain_mcp(domain_name)
             wu = MetadataWorkUnit("single_mcp", mcp=mcp)
             self.report.report_workunit(wu)
             logging.info(f"Creating domain {domain_name}")
@@ -82,7 +77,7 @@ class CreateCadetDatabases(Source):
         for _, db_meta_tuple in databases_with_metadata:
             db_meta_dict = dict(db_meta_tuple)
             if not db_meta_dict.get("dc_owner", "") == "":
-                mcp = self._make_user(db_meta_dict["dc_owner"])
+                mcp = make_user_mcp(db_meta_dict["dc_owner"])
                 wu = MetadataWorkUnit("single_mcp", mcp=mcp)
                 self.report.report_workunit(wu)
                 yield wu
@@ -186,25 +181,6 @@ class CreateCadetDatabases(Source):
             if manifest["nodes"][node]["resource_type"] == "model"
         )
 
-    def _make_user(self, email: str) -> MetadataChangeProposalWrapper:
-        if not email.endswith(".gov.uk"):
-            email = email + "@justice.gov.uk"
-        user_urn = mce_builder.make_user_urn(email.split("@")[0])
-
-        user_info = CorpUserInfoClass(
-            active=False,
-            displayName=email.split("@")[0].replace(".", " "),
-            email=email,
-        )
-        user_mcp = MetadataChangeProposalWrapper(
-            entityType="corpuser",
-            changeType=ChangeTypeClass.UPSERT,
-            entityUrn=user_urn,
-            aspect=user_info,
-        )
-
-        return user_mcp
-
     @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest: dict, databases_metadata: dict
@@ -266,17 +242,6 @@ class CreateCadetDatabases(Source):
                         tag_mappings[database] = tags
 
         return database_mappings, table_mappings, tag_mappings
-
-    def _make_domain(self, domain_name) -> MetadataChangeProposalWrapper:
-        domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-        domain_properties = DomainPropertiesClass(name=domain_name)
-        metadata_event = MetadataChangeProposalWrapper(
-            entityType="domain",
-            changeType=ChangeTypeClass.UPSERT,
-            entityUrn=domain_urn,
-            aspect=domain_properties,
-        )
-        return metadata_event
 
     def get_report(self) -> SourceReport:
         return self.report

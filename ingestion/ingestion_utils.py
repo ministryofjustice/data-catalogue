@@ -6,8 +6,15 @@ from typing import Dict, Tuple
 
 import boto3
 import datahub.emitter.mce_builder as builder
+import datahub.emitter.mce_builder as mce_builder
 from botocore.exceptions import ClientError, NoCredentialsError
+from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
+from datahub.metadata.schema_classes import (
+    ChangeTypeClass,
+    CorpUserInfoClass,
+    DomainPropertiesClass,
+)
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
@@ -165,3 +172,35 @@ def get_tags(dbt_manifest_node: dict) -> list[str]:
         tags.append("dc_display_in_catalogue")
 
     return tags
+
+
+def make_user_mcp(email: str) -> MetadataChangeProposalWrapper:
+    if not email.endswith(".gov.uk"):
+        email = email + "@justice.gov.uk"
+    user_urn = mce_builder.make_user_urn(email.split("@")[0])
+
+    user_info = CorpUserInfoClass(
+        active=False,
+        displayName=email.split("@")[0].replace(".", " "),
+        email=email,
+    )
+    user_mcp = MetadataChangeProposalWrapper(
+        entityType="corpuser",
+        changeType=ChangeTypeClass.UPSERT,
+        entityUrn=user_urn,
+        aspect=user_info,
+    )
+
+    return user_mcp
+
+
+def make_domain_mcp(domain_name: str) -> MetadataChangeProposalWrapper:
+    domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+    domain_properties = DomainPropertiesClass(name=domain_name)
+    mcp = MetadataChangeProposalWrapper(
+        entityType="domain",
+        changeType=ChangeTypeClass.UPSERT,
+        entityUrn=domain_urn,
+        aspect=domain_properties,
+    )
+    return mcp
