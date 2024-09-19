@@ -11,6 +11,10 @@ source:
     target_platform: athena
     target_platform_instance: athena_cadet
     infer_dbt_schemas: true
+
+    # Tags, terms and owners from CaDeT should override what's already in the catalogue
+    write_semantics: OVERRIDE
+
     node_name_pattern:
       deny:
         # These tables are currently badly formatted in the manifest. The fix for it should
