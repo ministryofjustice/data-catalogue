@@ -99,6 +99,6 @@ class TestCreateCadetDatabases:
 
     def test_datasets_are_assigned_to_domains(self):
         # This is the first event which should associate a dataset with a domain
-        assert self.results[35].metadata.entityType == "dataset"
-        assert self.results[35].metadata.changeType == "UPSERT"
-        assert self.results[35].metadata.aspect.ASPECT_NAME == "domains"
+        assert self.results[39].metadata.entityType == "dataset"
+        assert self.results[39].metadata.changeType == "UPSERT"
+        assert self.results[39].metadata.aspect.ASPECT_NAME == "domains"

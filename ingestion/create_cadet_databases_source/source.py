@@ -249,14 +249,15 @@ class CreateCadetDatabases(Source):
                     table_mappings.add(
                         (database, table, database_metadata_dict["domain"])
                     )
-                    if tag is not None:
-                        tags[database] = [tag]
+
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
                     domain = fqn[1]
-                    database_mappings.add((database, domain))
-                    table_mappings.add((database, table, domain))
+                    database_mappings.add((database, database_metadata_tuple))
+                    table_mappings.add(
+                        (database, table, database_metadata_dict["domain"])
+                    )
 
                     tags = get_tags(manifest["nodes"][node])
                     if tags:
