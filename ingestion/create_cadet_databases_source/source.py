@@ -82,8 +82,8 @@ class CreateCadetDatabases(Source):
         for _, db_meta_tuple in databases_with_metadata:
             db_meta_dict = dict(db_meta_tuple)
             if not db_meta_dict.get("dc_owner", "") == "":
-                mce = self._make_user(db_meta_dict["dc_owner"])
-                wu = MetadataWorkUnit("single_mce", mce=mce)
+                mcp = self._make_user(db_meta_dict["dc_owner"])
+                wu = MetadataWorkUnit("single_mcp", mcp=mcp)
                 self.report.report_workunit(wu)
                 yield wu
 
@@ -186,22 +186,24 @@ class CreateCadetDatabases(Source):
             if manifest["nodes"][node]["resource_type"] == "model"
         )
 
-    def _make_user(self, email: str):
+    def _make_user(self, email: str) -> MetadataChangeProposalWrapper:
         if not email.endswith(".gov.uk"):
             email = email + "@justice.gov.uk"
         user_urn = mce_builder.make_user_urn(email.split("@")[0])
-        user_snapshot = CorpUserSnapshot(
-            urn=user_urn,
-            aspects=[Status(removed=False)],
-        )
+
         user_info = CorpUserInfoClass(
             active=False,
             displayName=email.split("@")[0].replace(".", " "),
             email=email,
         )
-        user_snapshot.aspects.append(user_info)
-        user_mce = MetadataChangeEvent(proposedSnapshot=user_snapshot)
-        return user_mce
+        user_mcp = MetadataChangeProposalWrapper(
+            entityType="corpuser",
+            changeType=ChangeTypeClass.UPSERT,
+            entityUrn=user_urn,
+            aspect=user_info,
+        )
+
+        return user_mcp
 
     @report_time
     def _get_databases_with_domains_and_display_tags(
