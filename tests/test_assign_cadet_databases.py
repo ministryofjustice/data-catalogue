@@ -30,7 +30,7 @@ class TestAssignCadetDatabasesTransformer:
             transformer_type=AssignCadetDatabases,
             aspect=models.ContainerClass(container=None),
             config={
-                "manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+                "manifest_s3_uri": "s3://test_bucket/prod/run_artefacts/latest/target/manifest.json",
             },
             pipeline_context=pipeline_context,
         )
