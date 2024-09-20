@@ -55,32 +55,60 @@ class CreateCadetDatabases(Source):
             self.source_config.database_metadata_s3_uri
         )
 
-        # Create all the domain entities
-        for domain_name in self._get_domains(manifest):
-            mcp = make_domain_mcp(domain_name)
-            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
-            self.report.report_workunit(wu)
-            logging.info(f"Creating domain {domain_name}")
+        mcps = []
 
-            yield wu
+        # Create all the domain entities mcps
+        mcps.extend(self.create_domain_mcps(manifest))
 
-        # Create database entities and assign them to their domains
+        # Get database metadata from the manifest and database metadata dicts
         databases_with_metadata, tables_with_domains, display_tags = (
             self._get_databases_with_domains_and_display_tags(
                 manifest, databases_metadata
             )
         )
-        sub_types: list[str] = [DatasetContainerSubTypes.DATABASE]
-        last_modified = int(datetime.now().timestamp())
 
-        # make database owners as users in datahub
+        # create mcps for database owner corpusers
+        mcps.extend(self.create_database_owner_mcps(databases_with_metadata))
+
+        # create mcps to tag seed datasets with dc_display_in_catalogue
+        mcps.extend(self.create_display_tag_for_seed_mcps(manifest))
+
+        # create assign domains to tables mcps
+        mcps.extend(self.create_table_domain_mcps(tables_with_domains))
+
+        # create the cadet databases tagged to display
+        yield from self.create_database_mcps(databases_with_metadata, display_tags)
+
+        for mcp in mcps:
+            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
+            logging.info(f"creating {wu.metadata.aspect} for {wu.metadata.entityUrn}")
+            yield wu
+
+    def create_domain_mcps(self, manifest) -> Iterable[MetadataWorkUnit]:
+        mcp_list = []
+        for domain_name in self._get_domains(manifest):
+            mcp = make_domain_mcp(domain_name)
+            mcp_list.append(mcp)
+
+        return mcp_list
+
+    def create_database_owner_mcps(
+        self, databases_with_metadata: set
+    ) -> Iterable[MetadataWorkUnit]:
+        mcp_list = []
         for _, db_meta_tuple in databases_with_metadata:
             db_meta_dict = dict(db_meta_tuple)
             if not db_meta_dict.get("dc_owner", "") == "":
                 mcp = make_user_mcp(db_meta_dict["dc_owner"])
-                wu = MetadataWorkUnit("single_mcp", mcp=mcp)
-                self.report.report_workunit(wu)
-                yield wu
+                mcp_list.append(mcp)
+
+        return mcp_list
+
+    def create_database_mcps(
+        self, databases_with_metadata, display_tags
+    ) -> Iterable[MetadataWorkUnit]:
+        sub_types: list[str] = [DatasetContainerSubTypes.DATABASE]
+        last_modified = int(datetime.now().timestamp())
 
         for database_name, database_metadata in databases_with_metadata:
             database_container_key = mcp_builder.DatabaseKey(
@@ -123,15 +151,17 @@ class CreateCadetDatabases(Source):
                 extra_properties=db_meta_dict,
             )
 
-        # Add dc_display_in_catalogue tag to all seeds
+    def create_display_tag_for_seed_mcps(self, manifest) -> Iterable[MetadataWorkUnit]:
+        mcp_list = []
+        tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
+        tag_association_to_add = TagAssociationClass(tag=tag_to_add)
+        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
+
         seed_nodes = [
             manifest["nodes"][node]
             for node in manifest["nodes"]
             if manifest["nodes"][node]["resource_type"] == "seed"
         ]
-        tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
-        tag_association_to_add = TagAssociationClass(tag=tag_to_add)
-        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
@@ -143,14 +173,14 @@ class CreateCadetDatabases(Source):
                 entityUrn=dataset_urn,
                 aspect=current_tags,
             )
-            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
-            self.report.report_workunit(wu)
-            logging.info(
-                f"Tagging seed {database}.{table} with dc_display_in_catalogue"
-            )
-            yield wu
 
-        # Assign domains to tables
+            mcp_list.append(mcp)
+        return mcp_list
+
+    def create_table_domain_mcps(
+        self, tables_with_domains
+    ) -> Iterable[MetadataWorkUnit]:
+        mcp_list = []
         for database, table, domain in tables_with_domains:
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
@@ -165,11 +195,8 @@ class CreateCadetDatabases(Source):
                 entityUrn=dataset_urn,
                 aspect=DomainsClass(domains=[domain_urn]),
             )
-
-            wu = MetadataWorkUnit("single_mcp", mcp=mcp)
-            self.report.report_workunit(wu)
-            logging.info(f"Assigning {domain_name} domain to {database}.{table}")
-            yield wu
+            mcp_list.append(mcp)
+        return mcp_list
 
     def _get_domains(self, manifest) -> set[str]:
         """Only models are arranged by domain in CaDeT.
@@ -189,7 +216,7 @@ class CreateCadetDatabases(Source):
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
 
-        returns a set of databases with associated domain and a dict for
+        returns a set of databases with associated metadata and a dict for
         display tags, where key is database and value is dc_display_in_catalogue
         if any model is to be displayed
         """
