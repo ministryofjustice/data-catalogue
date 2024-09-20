@@ -1,0 +1,28 @@
+{
+    "databases": {
+        "prison_database": {
+            "description": "test db for prison",
+            "dc_owner": "some.team@justice.gov.uk",
+            "dc_slack_channel_name": "#ask-me",
+            "dc_slack_channel_url": "https://slack.com/1233",
+            "dc_readable_name": "Prison database",
+            "dc_access_requirements": "https://user-guidance.justice.gov.uk"
+        },
+        "probation_database": {
+            "description": "test db for probation",
+            "dc_owner": "some.one",
+            "dc_slack_channel_name": "#ask-me-again",
+            "dc_slack_channel_url": "https://slack.com/123",
+            "dc_readable_name": "Probation database",
+            "dc_access_requirements": "https://user-guidance.justice.gov.uk"
+        },
+        "hq_database": {
+            "description": "test db for hq",
+            "dc_owner": "",
+            "dc_slack_channel_name": "#ask-me-again",
+            "dc_slack_channel_url": "https://slack.com/123",
+            "dc_readable_name": "HQ database",
+            "dc_access_requirements": "https://user-guidance.justice.gov.uk"
+        }
+    }
+}

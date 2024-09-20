@@ -13,7 +13,7 @@ from datahub.metadata.schema_classes import ContainerClass, MetadataChangePropos
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
-    get_cadet_manifest,
+    get_cadet_metadata_json,
     parse_database_and_table_names,
     validate_fqn,
 )
@@ -61,7 +61,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
             Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]
         ] = []
 
-        manifest = get_cadet_manifest(self.config.manifest_s3_uri)
+        manifest = get_cadet_metadata_json(self.config.manifest_s3_uri)
         mappings = self._get_table_database_mappings(manifest)
 
         logging.debug("Assigning datasets to databases")
