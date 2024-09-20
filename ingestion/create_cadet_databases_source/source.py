@@ -84,25 +84,23 @@ class CreateCadetDatabases(Source):
             logging.info(f"creating {wu.metadata.aspect} for {wu.metadata.entityUrn}")
             yield wu
 
-    def create_domain_mcps(self, manifest) -> Iterable[MetadataWorkUnit]:
-        mcp_list = []
-        for domain_name in self._get_domains(manifest):
-            mcp = make_domain_mcp(domain_name)
-            mcp_list.append(mcp)
-
-        return mcp_list
+    def create_domain_mcps(self, manifest) -> list[MetadataChangeProposalWrapper]:
+        domain_mcps = [
+            make_domain_mcp(domain_name) for domain_name in self._get_domains(manifest)
+        ]
+        return domain_mcps
 
     def create_database_owner_mcps(
         self, databases_with_metadata: set
-    ) -> Iterable[MetadataWorkUnit]:
-        mcp_list = []
+    ) -> list[MetadataChangeProposalWrapper]:
+        database_owner_mcps = []
         for _, db_meta_tuple in databases_with_metadata:
             db_meta_dict = dict(db_meta_tuple)
             if not db_meta_dict.get("dc_owner", "") == "":
                 mcp = make_user_mcp(db_meta_dict["dc_owner"])
-                mcp_list.append(mcp)
+                database_owner_mcps.append(mcp)
 
-        return mcp_list
+        return database_owner_mcps
 
     def create_database_mcps(
         self, databases_with_metadata, display_tags
@@ -151,8 +149,10 @@ class CreateCadetDatabases(Source):
                 extra_properties=db_meta_dict,
             )
 
-    def create_display_tag_for_seed_mcps(self, manifest) -> Iterable[MetadataWorkUnit]:
-        mcp_list = []
+    def create_display_tag_for_seed_mcps(
+        self, manifest
+    ) -> list[MetadataChangeProposalWrapper]:
+        seed_domain_mcps = []
         tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
         tag_association_to_add = TagAssociationClass(tag=tag_to_add)
         current_tags = GlobalTagsClass(tags=[tag_association_to_add])
@@ -174,13 +174,13 @@ class CreateCadetDatabases(Source):
                 aspect=current_tags,
             )
 
-            mcp_list.append(mcp)
-        return mcp_list
+            seed_domain_mcps.append(mcp)
+        return seed_domain_mcps
 
     def create_table_domain_mcps(
         self, tables_with_domains
-    ) -> Iterable[MetadataWorkUnit]:
-        mcp_list = []
+    ) -> list[MetadataChangeProposalWrapper]:
+        table_domain_mcps = []
         for database, table, domain in tables_with_domains:
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
@@ -195,8 +195,8 @@ class CreateCadetDatabases(Source):
                 entityUrn=dataset_urn,
                 aspect=DomainsClass(domains=[domain_urn]),
             )
-            mcp_list.append(mcp)
-        return mcp_list
+            table_domain_mcps.append(mcp)
+        return table_domain_mcps
 
     def _get_domains(self, manifest) -> set[str]:
         """Only models are arranged by domain in CaDeT.
