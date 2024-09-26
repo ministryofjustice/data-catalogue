@@ -487,29 +487,12 @@ global:
                 score_mode: multiply
                 boost_mode: replace
 
-            # Test criteria for phrase with underscores only
-            # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
-            - queryRegex: >-
-                ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
-              simpleQuery: false
-              prefixMatchQuery: true
-              exactMatchQuery: false
-              functionScore:
-                functions:
-                  - filter:
-                      term:
-                        deprecated:
-                          value: true
-                    weight: 0.25
-                score_mode: multiply
-                boost_mode: multiply
-
             # Criteria for exact-match only
             # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
             - queryRegex: >-
                 ^["'].+["']$|^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
               simpleQuery: false
-              prefixMatchQuery: true
+              prefixMatchQuery: false
               exactMatchQuery: true
               functionScore:
                 functions:
