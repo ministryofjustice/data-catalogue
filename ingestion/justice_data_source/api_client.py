@@ -38,7 +38,7 @@ class JusticeDataAPIClient:
             elif current.get("domain"):
                 domain = current["domain"]
             else:
-                domain = None
+                domain = "General"
 
             current["domain"] = domain
             breadcrumb = current.get("breadcrumb", []).copy()
@@ -101,6 +101,10 @@ class JusticeDataAPIClient:
                     last_updated_timestamp = None
 
                 owner_email = publication.get("ownerEmail", self.default_owner_email)
+
+                if owner_email is None:
+                    owner_email = self.default_owner_email
+
                 break
 
         return last_updated_timestamp, refresh_frequency, owner_email

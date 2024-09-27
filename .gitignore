@@ -61,3 +61,4 @@ env/
 *.sha256
 terraform.tfstate
 __pycache__
+.ipynb_checkpoints

@@ -71,12 +71,12 @@
             "resource_type": "model"
         },
         "seed.test_derived_tables.nope": {
-            "schema": "test_derived_tables_dev_dbt",
+            "schema": "ref_database",
             "fqn": [
-                "model",
-                "nope",
-                "test_derived_tables",
-                "table1"
+                "seed",
+                "General",
+                "ref_database",
+                "ref_database__postcodes"
             ],
             "tags": [
                 "weekly",
@@ -87,7 +87,7 @@
         "source.test_derived_tables.nope": {
             "schema": "test_derived_tables",
             "fqn": [
-                "model",
+                "source",
                 "nope",
                 "test_derived_tables",
                 "table1"

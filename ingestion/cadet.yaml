@@ -11,17 +11,24 @@ source:
     target_platform: athena
     target_platform_instance: athena_cadet
     infer_dbt_schemas: true
+
+    # Tags, terms and owners from CaDeT should override what's already in the catalogue
+    write_semantics: OVERRIDE
+
     node_name_pattern:
-      # These tables are currently badly formatted in the manifest. The fix for it should
-      # go through when the dbt_docs workflow is working
       deny:
+        # These tables are currently badly formatted in the manifest. The fix for it should
+        # go through when the dbt_docs workflow is working
         - ".*use_of_force\\.summary_status_complete_dim.*"
         - ".*use_of_force\\.summary_status_in_progress_dim.*"
         - ".*use_of_force\\.summary_status_submitted_dim.*"
         - ".*data_eng_uploader_prod_calc_release_dates\\.survey_data.*"
+
+        # This table has a huge number of columns, which breaks things.
+        - "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data"
     entities_enabled:
       test_results: "YES"
-      seeds: "NO"
+      seeds: "YES"
       snapshots: "NO"
       models: "YES"
       sources: "YES"
@@ -47,10 +54,6 @@ source:
           owner_category: DATAOWNER
 
 transformers:
-  - type: "ingestion.transformers.assign_cadet_domains.AssignCadetDomains"
-    config:
-      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
-      replace_existing: true
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
     config:
       manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"

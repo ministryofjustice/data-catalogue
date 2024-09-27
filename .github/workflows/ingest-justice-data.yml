@@ -58,6 +58,13 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
+      - name: clear existing justice data
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run:  poetry run datahub delete --platform justice-data --hard --force
+
       - name: justice data datahub ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
@@ -66,7 +73,7 @@ jobs:
         run: time poetry run datahub ingest -c ingestion/justice_data_ingest.yaml
 
       - name: Notify on failure
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v1.27.0
         if: job.status == 'failure'
         with:
           channel-id: "C071VNHPUHZ"

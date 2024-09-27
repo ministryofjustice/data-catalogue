@@ -159,6 +159,8 @@ elasticsearchSetupJob:
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
+    # Schedule of CronJob when enabled
+    schedule: "0 8 * * 1-5"
 
 kafkaSetupJob:
   enabled: true
@@ -415,10 +417,107 @@ global:
         maxResult: 10000
 
       custom:
-        enabled: false
+        enabled: true
         # See documentation: https://datahubproject.io/docs/how/search/#customizing-search
         # default config: https://github.com/acryldata/datahub-helm/blob/master/charts/datahub/values.yaml#L481-L554
+        config:
+          # Notes:
+          #
+          # First match wins
+          #
+          # queryRegex = Java regex syntax
+          #
+          # functionScores - See the following for function score syntax
+          # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/query-dsl-function-score-query.html
 
+          queryConfigurations:
+            # Select */explore all
+            # Attempt to rank active incidents at the top followed by enrichment factors
+            - queryRegex: "[*]|"
+              simpleQuery: false
+              prefixMatchQuery: false
+              exactMatchQuery: false
+              functionScore:
+                functions:
+                  - filter:
+                      term:
+                        hasActiveIncidents:
+                          value: true
+                    weight: 2.0
+                  - filter:
+                      term:
+                        hasDescription:
+                          value: true
+                    weight: 1.25
+                  - filter:
+                      term:
+                        hasOwners:
+                          value: true
+                    weight: 1.25
+                  - filter:
+                      term:
+                        hasDomain:
+                          value: true
+                    weight: 1.1
+                  - filter:
+                      term:
+                        hasGlossaryTerms:
+                          value: true
+                    weight: 1.1
+                  - filter:
+                      term:
+                        hasTags:
+                          value: true
+                    weight: 1.1
+                  - filter:
+                      term:
+                        hasRowCount:
+                          value: true
+                    weight: 1.05
+                  - filter:
+                      term:
+                        hasColumnCount:
+                          value: true
+                    weight: 1.05
+                  - filter:
+                      term:
+                        deprecated:
+                          value: true
+                    weight: 0.25
+                score_mode: multiply
+                boost_mode: replace
+
+            # Criteria for exact-match only
+            # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
+            - queryRegex: >-
+                ^["'].+["']$|^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
+              simpleQuery: false
+              prefixMatchQuery: false
+              exactMatchQuery: true
+              functionScore:
+                functions:
+                  - filter:
+                      term:
+                        deprecated:
+                          value: true
+                    weight: 0.25
+                score_mode: multiply
+                boost_mode: multiply
+
+            # default
+            - queryRegex: .*
+              simpleQuery: true
+              prefixMatchQuery: true
+              exactMatchQuery: true
+              functionScore:
+                functions:
+                  - filter:
+                      term:
+                        deprecated:
+                          value: true
+                    weight: 0.25
+                score_mode: multiply
+                boost_mode: multiply
   kafka:
     bootstrap:
       server: "prerequisites-kafka:9092"
@@ -454,6 +553,26 @@ global:
       # glue:
       #   region: us-east-1
       #   registry: datahub
+    metadataChangeLog:
+      hooks:
+        siblings:
+          enabled: true
+          consumerGroupSuffix: ""
+        updateIndices:
+          enabled: true
+          consumerGroupSuffix: ""
+        ingestionScheduler:
+          enabled: true
+          consumerGroupSuffix: ""
+        incidents:
+          enabled: true
+          consumerGroupSuffix: ""
+        entityChangeEvents:
+          enabled: true
+          consumerGroupSuffix: ""
+        forms:
+          enabled: true
+          consumerGroupSuffix: ""
 
   sql:
     datasource:
@@ -478,7 +597,7 @@ global:
               key: database_name
 
   datahub:
-    version: v0.13.3
+    version: v0.14.0.2
     gms:
       port: "8080"
       nodePort: "30001"
@@ -509,7 +628,7 @@ global:
 
     managed_ingestion:
       enabled: true
-      defaultCliVersion: "0.13.3"
+      defaultCliVersion: "0.14.0"
 
     metadata_service_authentication:
       enabled: true
@@ -541,3 +660,26 @@ global:
       show_browse_v2: true
       # If on, run the backfill upgrade job that generates default browse paths for relevant entities
       backfill_browse_v2: true
+
+    ## v0.13.4+
+    mcp:
+      throttle:
+        # updateIntervalMs: 60000
+        ## Versioned MCL topic
+        versioned:
+          ## Whether to throttle MCP processing based on MCL backlog
+          enabled: false
+        #  threshold: 4000
+        #  maxAttempts: 1000
+        #  initialIntervalMs: 100
+        #  multiplier: 10
+        #  maxIntervalMs:  30000
+        # Timeseries MCL topic
+        timeseries:
+          ## Whether to throttle MCP processing based on MCL backlog
+          enabled: false
+        #  threshold: 4000
+        #  maxAttempts: 1000
+        #  initialIntervalMs: 100
+        #  multiplier: 10
+        #  maxIntervalMs: 30000

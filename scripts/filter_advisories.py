@@ -148,6 +148,10 @@ def main():
         last_run_datetime_str: str = sys.argv[2].strip()
 
     current_version_str: str = sys.argv[1]
+
+    # trim version str to adhere to semantic versioning
+    version_parts = current_version_str.split(".")
+    current_version_str = ".".join(version_parts[:3])
     current_version = parse_version_string(current_version_str)
 
     last_run_date: datetime = datetime.fromisoformat(last_run_datetime_str)

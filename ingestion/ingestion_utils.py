@@ -6,8 +6,15 @@ from typing import Dict, Tuple
 
 import boto3
 import datahub.emitter.mce_builder as builder
+import datahub.emitter.mce_builder as mce_builder
 from botocore.exceptions import ClientError, NoCredentialsError
+from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
+from datahub.metadata.schema_classes import (
+    ChangeTypeClass,
+    CorpUserInfoClass,
+    DomainPropertiesClass,
+)
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
@@ -16,15 +23,19 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 @report_time
-def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
+def get_cadet_metadata_json(s3_uri: str) -> Dict:
+    """
+    Returns dict object containin metadata from the json file at the given s3 path.
+    Examples are the manifest file or the database_metadata file
+    """
     try:
         s3 = boto3.client("s3")
-        s3_parts = manifest_s3_uri.split("/")
+        s3_parts = s3_uri.split("/")
         bucket_name = s3_parts[2]
         file_key = "/".join(s3_parts[3:])
         response = s3.get_object(Bucket=bucket_name, Key=file_key)
         content = response["Body"].read().decode("utf-8")
-        manifest = json.loads(content, strict=False)
+        metadata = json.loads(content, strict=False)
     except NoCredentialsError:
         print("Credentials not available.")
         raise
@@ -40,7 +51,7 @@ def get_cadet_manifest(manifest_s3_uri: str) -> Dict:
         # Catch any other exceptions
         print(f"An error occurred: {str(e)}")
         raise
-    return manifest
+    return metadata
 
 
 def validate_fqn(fqn: list[str]) -> bool:
@@ -150,3 +161,46 @@ def list_datahub_domains() -> list[str]:
         for domain in results["listDomains"]["domains"]
     ]
     return domains_list
+
+
+def get_tags(dbt_manifest_node: dict) -> list[str]:
+    """Resolve the tags to assign to nodes in datahub."""
+    tags = []
+    if "dc_display_in_catalogue" in dbt_manifest_node["tags"]:
+        tags.append("dc_display_in_catalogue")
+    if dbt_manifest_node["resource_type"] == "seed":
+        tags.append("dc_display_in_catalogue")
+
+    return tags
+
+
+def make_user_mcp(email: str) -> MetadataChangeProposalWrapper:
+    if not email.endswith(".gov.uk"):
+        email = email + "@justice.gov.uk"
+    user_urn = mce_builder.make_user_urn(email.split("@")[0])
+
+    user_info = CorpUserInfoClass(
+        active=False,
+        displayName=email.split("@")[0].replace(".", " "),
+        email=email,
+    )
+    user_mcp = MetadataChangeProposalWrapper(
+        entityType="corpuser",
+        changeType=ChangeTypeClass.UPSERT,
+        entityUrn=user_urn,
+        aspect=user_info,
+    )
+
+    return user_mcp
+
+
+def make_domain_mcp(domain_name: str) -> MetadataChangeProposalWrapper:
+    domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+    domain_properties = DomainPropertiesClass(name=domain_name)
+    mcp = MetadataChangeProposalWrapper(
+        entityType="domain",
+        changeType=ChangeTypeClass.UPSERT,
+        entityUrn=domain_urn,
+        aspect=domain_properties,
+    )
+    return mcp
