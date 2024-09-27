@@ -487,12 +487,29 @@ global:
                 score_mode: multiply
                 boost_mode: replace
 
-            # Criteria for exact-match only
+            # Criteria for queries containing underscores
             # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
             - queryRegex: >-
-                ^["'].+["']$|^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
+                ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
               simpleQuery: false
-              prefixMatchQuery: false
+              prefixMatchQuery: true
+              exactMatchQuery: true
+              functionScore:
+                functions:
+                  - filter:
+                      term:
+                        deprecated:
+                          value: true
+                    weight: 0.25
+                score_mode: multiply
+                boost_mode: multiply
+
+            # Criteria quoted searches
+            # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
+            - queryRegex: >-
+                ^["'].+["']$
+              simpleQuery: false
+              prefixMatchQuery: true
               exactMatchQuery: true
               functionScore:
                 functions:
