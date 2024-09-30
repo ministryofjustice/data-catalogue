@@ -54,6 +54,8 @@ datahub-frontend:
       value: "true"
     - name: "OPENSEARCH_USE_AWS_IAM_AUTH"
       value: "true"
+    - name: "BUSINESS_ATTRIBUTE_ENTITY_ENABLED"
+      value: "true"
   service:
     type: ClusterIP
   serviceMonitor:
