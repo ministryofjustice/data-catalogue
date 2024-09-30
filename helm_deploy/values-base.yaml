@@ -3,6 +3,9 @@ datahub-gms:
   enabled: true
   image:
     repository: acryldata/datahub-gms
+  extraEnvs:
+    - name: "BUSINESS_ATTRIBUTE_ENTITY_ENABLED"
+      value: "true"
   securityContext:
     runAsUser: 100
     allowPrivilegeEscalation: false
