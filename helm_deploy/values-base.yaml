@@ -487,8 +487,7 @@ global:
                 score_mode: multiply
                 boost_mode: replace
 
-            # Criteria for queries containing underscores
-            # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
+            # Is a single term with `_`, `.`, or `-`
             - queryRegex: >-
                 ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
               simpleQuery: false
@@ -504,8 +503,7 @@ global:
                 score_mode: multiply
                 boost_mode: multiply
 
-            # Criteria quoted searches
-            # Contains quotes, is a single term with `_`, `.`, or `-` (normally consider for tokenization) then use exact match query
+            # Quoted search strings
             - queryRegex: >-
                 ^["'].+["']$
               simpleQuery: false
