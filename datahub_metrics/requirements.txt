@@ -1,8 +1,8 @@
 altair[all]==5.4.0
 arrow==1.3.0
 jupyterlab==4.2.5
-numpy==1.26.4
 pandas==2.2.3
+numpy==2.1.1
 psycopg[binary]
 python-dotenv==1.0.1
-SQLAlchemy==2.0.27
+SQLAlchemy==2.0.35
