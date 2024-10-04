@@ -5,4 +5,4 @@ numpy==1.26.4
 pandas==2.2.0
 psycopg[binary]
 python-dotenv==1.0.1
-SQLAlchemy==2.0.27
+SQLAlchemy==2.0.35
