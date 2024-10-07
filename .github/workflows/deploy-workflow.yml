@@ -160,7 +160,7 @@ jobs:
         env:
           APP_SHORT_HOST: ${{ env.APP_SHORT_HOST }}
           CHART_VERSION: ${{ inputs.datahub_helm_version }}
-          IRSA_SA: data-platform-${{ inputs.env }}
+          IRSA_SA: data-catalogue-${{ inputs.env }}
           OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
           POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
           POSTGRES_HOST: ${{ secrets.postgres_host }}
