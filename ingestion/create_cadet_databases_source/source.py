@@ -232,21 +232,13 @@ class CreateCadetDatabases(Source):
                         manifest["nodes"][node]
                     )
                     database_metadata_dict = {}
-                    tag = (
-                        "dc_display_in_catalogue"
-                        if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]
-                        else None
-                    )
 
-                    if tag == "dc_display_in_catalogue":
-                        try:
-                            database_metadata_dict = databases_metadata["databases"][
-                                database
-                            ]
-                        except KeyError:
-                            logging.warning(
-                                f"{database} - has no database level metadata"
-                            )
+                    try:
+                        database_metadata_dict = databases_metadata["databases"][
+                            database
+                        ]
+                    except KeyError:
+                        logging.debug(f"{database} - has no database level metadata")
 
                     database_metadata_dict["domain"] = fqn[1]
                     database_metadata_tuple = tuple(database_metadata_dict.items())
