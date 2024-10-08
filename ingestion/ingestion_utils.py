@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.DEBUG)
 @report_time
 def get_cadet_metadata_json(s3_uri: str) -> Dict:
     """
-    Returns dict object containin metadata from the json file at the given s3 path.
+    Returns dict object containing metadata from the json file at the given s3 path.
     Examples are the manifest file or the database_metadata file
     """
     try:
@@ -121,9 +121,9 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     node_table_name = node["fqn"][-1].split("__")[-1]
     # schema holds the database name after parsing from cadet and so will be
     # representative of the cadet env (where dev dbs have suffix `_dev_dbt`)
-    node_dataabse_name = node["schema"]
+    node_database_name = node["schema"]
 
-    return node_dataabse_name, node_table_name
+    return node_database_name, node_table_name
 
 
 def list_datahub_domains() -> list[str]:
