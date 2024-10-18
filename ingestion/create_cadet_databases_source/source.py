@@ -119,7 +119,7 @@ class CreateCadetDatabases(Source):
             db_meta_dict = dict(database_metadata)
             domain_name = format_domain_name(db_meta_dict["domain"])
             domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-            display_tag = display_tags.get(database_name)
+            display_tag = display_tags.get(database_name, ["dc_cadet"])
 
             if not db_meta_dict.get("dc_owner", "") == "":
                 owner_urn = mce_builder.make_user_urn(
