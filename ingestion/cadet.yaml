@@ -24,6 +24,11 @@ source:
         - ".*use_of_force\\.summary_status_submitted_dim.*"
         - ".*data_eng_uploader_prod_calc_release_dates\\.survey_data.*"
 
+        # These tables cause a `java.lang.NullPointerException` and are staging tables anyway
+        - ".*avature_stg\\.stg_people_fields_pivoted_wide.*"
+        - ".*avature_stg\\.stg_job_fields_pivoted_wide.*"
+        
+
         # This table has a huge number of columns, which breaks things.
         - "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data"
     entities_enabled:
