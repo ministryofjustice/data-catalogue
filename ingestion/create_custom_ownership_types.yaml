@@ -1,0 +1,5 @@
+# see https://datahubproject.io/docs/generated/ingestion/sources/file for complete documentation
+source:
+  type: "file"
+  config:
+    path: "ingestion/ownership_types/ownership_types.json"

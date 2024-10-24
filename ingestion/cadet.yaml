@@ -51,12 +51,12 @@ source:
     strip_user_ids_from_email: false
     tag_prefix: ""
     meta_mapping:
-      dc_owner:
-        match: '.*'
-        operation: 'add_owner'
+      dc_data_custodian:
+        match: ".*"
+        operation: "add_owner"
         config:
           owner_type: user
-          owner_category: DATAOWNER
+          owner_category: urn:li:ownershipType:data_custodian
 
 transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
