@@ -177,7 +177,13 @@ class JusticeDataAPISource(TestableSource):
         # add chart ownership
         owner_urn = builder.make_group_urn(chart_data["owner_email"].split("@")[0])
         chart_owner = OwnershipClass(
-            owners=[OwnerClass(owner=owner_urn, type="DATAOWNER")]
+            owners=[
+                OwnerClass(
+                    owner=owner_urn,
+                    type="CUSTOM",
+                    typeUrn="urn:li:ownershipType:data_custodian",
+                )
+            ]
         )
         chart_snapshot.aspects.append(chart_owner)
 
