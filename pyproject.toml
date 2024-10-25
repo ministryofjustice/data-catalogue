@@ -13,6 +13,7 @@ datahub = "^0.999.1"
 moto = "4"
 pandas = "^2.2.2"
 acryl-datahub = { extras = ["dbt"], version = "==0.14.1" }
+pandas = "^2.2.3"
 semantic-version = "^2.10.0"
 botocore = "^1.34.162"
 
