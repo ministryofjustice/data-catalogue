@@ -64,7 +64,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.27.0
         if: failure()
         with:
-          channel-id: "C071VNHPUHZ"
           payload: |
             {
                 "text": ":warning: Unable to ingest ownership types metadata on ${{inputs.ENVIRONMENT}}!",
