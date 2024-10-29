@@ -62,7 +62,7 @@ jobs:
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
-        if: job.status == 'failure'
+        if: failure()
         with:
           channel-id: "C071VNHPUHZ"
           payload: |
