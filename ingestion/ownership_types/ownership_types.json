@@ -1,0 +1,14 @@
+[
+    {
+      "auditHeader":null,
+      "entityType":"ownershipType",
+      "entityUrn": "urn:li:ownershipType:data_custodian",
+      "changeType":"UPSERT",
+      "aspectName":"ownershipTypeInfo",
+      "aspect":{
+        "value":"{\"name\": \"Data Custodian\", \"description\": \"Responsible for the capture, storage, and disposal of data as per the Data owner and Data steward's requirements, and within the limits of data quality and security limitations.\", \"created\": {\"time\": 1729781312000,  \"actor\": \"urn:li:corpuser:datahub\",  \"impersonator\": null},\n\"lastModified\": {\"time\": 1729781312000,  \"actor\": \"urn:li:corpuser:datahub\",  \"impersonator\": null}}",
+        "contentType":"application/json"
+      },
+      "systemMetadata":null
+    }
+]
