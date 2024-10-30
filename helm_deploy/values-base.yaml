@@ -612,7 +612,7 @@ global:
               key: database_name
 
   datahub:
-    version: v0.14.0.2
+    version: v0.14.1
     gms:
       port: "8080"
       nodePort: "30001"
