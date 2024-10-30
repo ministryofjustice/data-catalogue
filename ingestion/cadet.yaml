@@ -56,7 +56,8 @@ source:
         operation: "add_owner"
         config:
           owner_type: user
-          owner_category: urn:li:ownershipType:data_custodian
+          # owner_category: urn:li:ownershipType:data_custodian
+          owner_category: DATAOWNER
 
 transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
