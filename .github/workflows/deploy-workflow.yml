@@ -173,7 +173,7 @@ jobs:
           helm upgrade \
           --install ${RELEASE_NAME} datahub/datahub \
           --version ${CHART_VERSION} \
-          --atomic --timeout 10m0s \
+          --atomic --timeout 20m0s \
           --values helm_deploy/values-base.yaml \
           --namespace ${{ secrets.kube_namespace }} \
           --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
