@@ -6,6 +6,13 @@ on:
   workflow_dispatch:
 
 jobs:
+  ingest-ownership-types-preprod:
+    uses: ./.github/workflows/ingest-ownership-types.yml
+    with:
+      ENVIRONMENT: preprod
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   ingest-cadet-preprod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
