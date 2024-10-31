@@ -202,7 +202,7 @@ postgresqlSetupJob:
   image:
     repository: acryldata/datahub-postgres-setup
     # tag: "v0.11.0" # defaults to .global.datahub.version
-    tag: v0.14.0.2 # Workaround for no tag existing in v0.14.1 release
+    tag: 6a165a8 # Workaround for no tag existing in v0.14.1 release
   resources:
     limits:
       cpu: 500m
