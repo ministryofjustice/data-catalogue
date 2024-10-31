@@ -145,7 +145,7 @@ class CreateCadetDatabases(Source):
                 last_modified=last_modified,
                 tags=display_tag,
                 owner_urn=owner_urn,
-                qualified_name=None,
+                qualified_name=database_name,
                 extra_properties=db_meta_dict,
             )
 
