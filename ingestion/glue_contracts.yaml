@@ -1,0 +1,23 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: [
+        "contracts_rio_v1$",
+        "contracts_jaggaer_v1$",
+      ]
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+  - type: "ingestion.transformers.assign_glue_databases.AssignGlueDatabases"
+    config:
+      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+  # - type: "simple_add_dataset_domain"
+  #   config:
+  #     semantics: OVERWRITE
+  #     domains:
+  #       - urn:li:domain:Courts
