@@ -17,7 +17,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 class AssignGlueDatabasesConfig(ConfigModel):
     # dataset_urn -> data product urn
-    manifest_s3_uri: str
+    data_custodian: str
+    domain: str
 
 
 class AssignGlueDatabases(DatasetTransformer, metaclass=ABCMeta):
@@ -54,5 +55,4 @@ class AssignGlueDatabases(DatasetTransformer, metaclass=ABCMeta):
             Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]
         ] = []
 
-            return mcps
-
+        return mcps

@@ -3,9 +3,7 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: [
-        "sop_transformed_v1_ac$"
-      ]
+      allow: ["sop_transformed_v1_ac$"]
     extract_owners: False
 
 transformers:
@@ -13,9 +11,10 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
-#  - type: "ingestion.transformers.assign_glue_databases.AssignGlueDatabases"
-#    config:
-#      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+  - type: "ingestion.transformers.assign_glue_databases.AssignGlueDatabases"
+    config:
+      data_custodian: "urn:li:corpuser:holly.furniss"
+      domain: urn:li:domain:People
   - type: "simple_add_dataset_domain"
     config:
       semantics: OVERWRITE
@@ -23,7 +22,6 @@ transformers:
         - urn:li:domain:People
   - type: "simple_add_dataset_ownership"
     config:
-      semantics: OVERWRITE
       owner_urns:
         - "urn:li:corpuser:holly.furniss"
       ownership_type: "DATAOWNER"
