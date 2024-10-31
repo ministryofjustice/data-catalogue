@@ -56,7 +56,8 @@ source:
         operation: "add_owner"
         config:
           owner_type: user
-          owner_category: urn:li:ownershipType:data_custodian
+          owner_category: DATAOWNER
+          #owner_category: urn:li:ownershipType:data_custodian   # uncomment when we update to CLI 0.14.1.6 or later
 
 transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
