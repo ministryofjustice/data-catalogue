@@ -15,13 +15,23 @@ transformers:
     config:
       data_custodian: "urn:li:corpuser:holly.furniss"
       domain: urn:li:domain:People
+      ownership_type: "DATAOWNER"
   - type: "simple_add_dataset_domain"
     config:
       semantics: OVERWRITE
       domains:
         - urn:li:domain:People
+#  - type: "pattern_add_dataset_domain"
+#    config:
+#      is_container: True
+#      semantics: OVERWRITE # Based on user
+#      domain_pattern:
+#        rules:
+#          'urn:li:dataset:\(urn:li:dataPlatform:postgres,postgres\.public\.n.*': ["hr"]
+#          'urn:li:dataset:\(urn:li:dataPlatform:postgres,postgres\.public\.t.*': ["urn:li:domain:finance"]
   - type: "simple_add_dataset_ownership"
     config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
       owner_urns:
         - "urn:li:corpuser:holly.furniss"
-      ownership_type: "DATAOWNER"

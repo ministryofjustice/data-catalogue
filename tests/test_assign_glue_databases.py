@@ -14,6 +14,7 @@ from ingestion.transformers.assign_glue_databases import AssignGlueDatabases
 
 class TestAssignGlueDatabasesTransformer:
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
+
         pipeline_context: PipelineContext = PipelineContext(
             run_id="test_simple_add_dataset_domain"
         )
@@ -30,7 +31,8 @@ class TestAssignGlueDatabasesTransformer:
             transformer_type=AssignGlueDatabases,
             aspect=models.ContainerClass(container=None),
             config={
-                "manifest_s3_uri": "s3://test_bucket/prod/run_artefacts/latest/target/manifest.json",
+                "data_custodian": "alice",
+                "domain": "bob"
             },
             pipeline_context=pipeline_context,
         )
