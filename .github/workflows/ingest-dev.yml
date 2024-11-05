@@ -3,8 +3,7 @@ name: Ingest metadata to dev
 on:
   # schedule:
   #   - cron: "0 9,14 * * *" # 9am, 2pm UTC
-  # workflow_dispatch:
-  push:
+  workflow_dispatch:
 
 jobs:
   ingest-ownership-types-dev:
