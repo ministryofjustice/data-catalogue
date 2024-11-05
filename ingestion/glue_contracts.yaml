@@ -1,0 +1,28 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: ["contracts_rio_v1$", "contracts_jaggaer_v1$"]
+    extract_owners: False
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+    config:
+      data_custodian: "urn:li:corpuser:Supratik.Chowdhury"
+      domain: urn:li:domain:General
+  - type: "simple_add_dataset_domain"
+    config:
+      semantics: OVERWRITE
+      domains:
+        - urn:li:domain:General
+  - type: "simple_add_dataset_ownership"
+    config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
+      owner_urns:
+        - "urn:li:corpuser:Supratik.Chowdhury"
