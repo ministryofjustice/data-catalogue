@@ -1,10 +1,17 @@
 name: Ingest metadata to prod
 on:
   schedule:
-    - cron: "0 3 * * *" # 3am UTC
+    - cron: "15 7 * * *" # 7:15am UTC
   workflow_dispatch:
 
 jobs:
+  ingest-ownership-types-prod:
+    uses: ./.github/workflows/ingest-ownership-types.yml
+    with:
+      ENVIRONMENT: prod-ingestion
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   ingest-cadet-prod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
