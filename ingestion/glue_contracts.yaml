@@ -5,6 +5,7 @@ source:
     database_pattern:
       allow: ["contracts_rio_v1$", "contracts_jaggaer_v1$"]
     extract_owners: False
+    extract_transforms: False
 
 transformers:
   - type: "simple_add_dataset_tags"

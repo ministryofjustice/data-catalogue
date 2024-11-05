@@ -5,6 +5,7 @@ source:
     database_pattern:
       allow: ["sop_transformed_v1_ac$"]
     extract_owners: False
+    extract_transforms: False
 
 transformers:
   - type: "simple_add_dataset_tags"
