@@ -1,0 +1,89 @@
+name: "Ingest metadata from Justice Data public api"
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      ECR_REGION:
+        description: "ecr region to connect to"
+        required: false
+        type: string
+        default: eu-west-1
+      ENVIRONMENT:
+        description: "Environment to use for secrets"
+        required: true
+        type: string
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API Key for datahub GMS"
+        required: true
+      GLUE_ROLE_TO_ASSUME:
+        description: "AWS role to assume, which can access AP glue"
+        required: true
+      SLACK_ALERT_WEBHOOK:
+        description: "Webhook for posting alerts to the team"
+        required: true
+
+jobs:
+  datahub-ingest-glue-data:
+    environment: ${{ inputs.ENVIRONMENT }}
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+          role-duration-seconds: 14400
+          aws-region: ${{ inputs.ECR_REGION }}
+
+      - name: cache poetry install
+        uses: actions/cache@v4
+        with:
+          path: ~/.local
+          key: poetry-1.7.1-0
+
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+      - run: poetry install --no-interaction --no-root
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - run: poetry install --no-interaction
+
+      - name: datahub glue ingestion
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: |
+          time poetry run datahub ingest -c ingestion/glue_sop.yaml
+          time poetry run datahub ingest -c ingestion/glue_contracts.yaml
+
+      - name: Notify on failure
+        uses: slackapi/slack-github-action@v1.27.0
+        if: failure()
+        with:
+          payload: |
+            {
+                "text": ":warning: Glue ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
