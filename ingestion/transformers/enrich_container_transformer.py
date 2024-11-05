@@ -32,7 +32,7 @@ class EnrichContainerTransformerConfig(ConfigModel):
 
 
 class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
-    """Transformer that adds database container relationship
+    """Transformer that adds an owner, domain, and tag
     for a provided container"""
 
     ctx: PipelineContext
