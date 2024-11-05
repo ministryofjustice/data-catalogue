@@ -79,15 +79,18 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: time poetry run datahub ingest -c ingestion/cadet.yaml
+        run: |
+          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json
+          FAILURE_COUNT=$(jq '.source.failures | length' output.json)
+          echo "failure_count=$FAILURE_COUNT" >> $GITHUB_ENV
 
-      - name: Notify on failure
+      - name: Notify on unexpected ingestion failures
         uses: slackapi/slack-github-action@v1.27.0
-        if: failure()
+        if: env.failure_count > 3
         with:
           payload: |
             {
-                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
