@@ -1,4 +1,4 @@
-name: "Ingest metadata from Justice Data public api"
+name: "Ingest metadata from AP glue catalogue"
 
 permissions:
   id-token: write
