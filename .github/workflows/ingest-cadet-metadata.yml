@@ -82,13 +82,13 @@ jobs:
         run: |
           time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json || true
           if [ ! -f output.json ]; then
-            echo "report.json not found. Failing the job."
+            echo "Ingestion output file not found. Failing the job."
             exit 1
           fi
-          FAILURE_COUNT=$(jq '.source.failures | length' output.json)
+          FAILURE_COUNT=$(jq '.sink.report.failures | length' output.json)
           echo "failure_count=$FAILURE_COUNT" >> $GITHUB_ENV
 
-      - name: Notify on unexpected ingestion failures
+      - name: Notify on unexpected ingestion failures or an unhandled failure
         uses: slackapi/slack-github-action@v1.27.0
         if: env.failure_count > 3
         with:
