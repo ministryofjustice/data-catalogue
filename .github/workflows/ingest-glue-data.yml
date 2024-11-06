@@ -1,4 +1,4 @@
-name: "Ingest metadata from Justice Data public api"
+name: "Ingest metadata from AP glue catalogue"
 
 permissions:
   id-token: write
@@ -20,20 +20,30 @@ on:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
         required: true
+      GLUE_ROLE_TO_ASSUME:
+        description: "AWS role to assume, which can access AP glue"
+        required: true
       SLACK_ALERT_WEBHOOK:
         description: "Webhook for posting alerts to the team"
         required: true
 
 jobs:
-  datahub-ingest-justice-data:
+  datahub-ingest-glue-data:
     environment: ${{ inputs.ENVIRONMENT }}
     timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
+          role-duration-seconds: 3600
+          aws-region: ${{ inputs.ECR_REGION }}
 
       - name: cache poetry install
         uses: actions/cache@v4
@@ -53,41 +63,27 @@ jobs:
         with:
           path: .venv
           key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: clear existing justice data
+      - name: datahub glue ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: poetry run datahub delete --platform justice-data --hard --force
-
-      - name: justice data datahub ingestion
-        env:
-          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-          DATAHUB_TELEMETRY_ENABLED: false
-        run: time poetry run datahub ingest -c ingestion/justice_data_ingest.yaml
+        run: |
+          time poetry run datahub ingest -c ingestion/glue_sop.yaml
+          time poetry run datahub ingest -c ingestion/glue_contracts.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
-        if: job.status == 'failure'
+        if: failure()
         with:
           payload: |
             {
-                "text": ":warning: Unable to ingest Justice Data metadata on ${{inputs.ENVIRONMENT}}!",
-                "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                }
-                ]
+                "text": ":warning: Glue ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
