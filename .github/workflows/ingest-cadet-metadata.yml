@@ -80,7 +80,11 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json
+          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json || true
+          if [ ! -f output.json ]; then
+            echo "report.json not found. Failing the job."
+            exit 1
+          fi
           FAILURE_COUNT=$(jq '.source.failures | length' output.json)
           echo "failure_count=$FAILURE_COUNT" >> $GITHUB_ENV
 
@@ -91,6 +95,17 @@ jobs:
           payload: |
             {
                 "text": ":warning: ALERT: DataHub CaDeT metadata ingestion failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+
+      - name: Notify on ingestion not producing output.json
+        uses: slackapi/slack-github-action@v1.27.0
+        if: failure()
+        with:
+          payload: |
+            {
+                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion produced no output on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
