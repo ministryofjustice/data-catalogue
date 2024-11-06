@@ -90,7 +90,7 @@ jobs:
 
       - name: Notify on unexpected ingestion failures
         uses: slackapi/slack-github-action@v1.27.0
-        if: env.failure_count > 3
+        if: env.failure_count > 2
         with:
           payload: |
             {
