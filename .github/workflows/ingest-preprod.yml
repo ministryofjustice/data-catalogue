@@ -33,7 +33,7 @@ jobs:
   ingest-glue-data-preprod:
     uses: ./.github/workflows/ingest-glue-data.yml
     with:
-      ENVIRONMENT: preprod
+      ENVIRONMENT: preprod-ingestion
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
