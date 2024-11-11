@@ -4,10 +4,8 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: [
-        "sop_transformed_v1_ac$",
-        "sop_derived$",
-        "sop_lookups$",
-        "sop_preprocessed$"
+        "familyman_live_v4$",
+        "familyman_derived_live_v4$"
       ]
     extract_owners: False
     extract_transforms: False
@@ -19,16 +17,16 @@ transformers:
         - "urn:li:tag:dc_display_in_catalogue"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
-      data_custodian: "urn:li:corpuser:holly.furniss"
-      domain: urn:li:domain:People
+      data_custodian: "urn:li:corpuser:James.Baker2"
+      domain: urn:li:domain:Courts
   - type: "simple_add_dataset_domain"
     config:
       semantics: OVERWRITE
       domains:
-        - urn:li:domain:People
+        - urn:li:domain:Courts
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
-        - "urn:li:corpuser:holly.furniss"
+        - "urn:li:corpuser:James.Baker2"
