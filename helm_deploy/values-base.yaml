@@ -89,10 +89,11 @@ datahub-frontend:
       nginx.ingress.kubernetes.io/enable-modsecurity: "true"
       nginx.ingress.kubernetes.io/modsecurity-snippet: |
         SecRuleEngine On
-        SecRule REQUEST_URI "@beginsWith /api/v2/graphql" "id:1005,phase:2,t:none,ctl:ruleRemoveById=932150;ARGS:json.query"
-        SecRule REQUEST_URI "@beginsWith /api/v2/graphql" "id:1006,phase:2,t:none,ctl:ruleRemoveById=932115;ARGS:json.query"
-        SecRule REQUEST_URI "@beginsWith /api/v2/graphql" "id:1007,phase:2,t:none,ctl:ruleRemoveById=941180;ARGS:json.query"
-        SecRule REQUEST_URI "@beginsWith /api/v2/graphql" "id:1008,phase:2,t:none,ctl:ruleRemoveById=949110;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1001,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932100;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1002,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932105;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1003,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932115;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1004,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932150;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1005,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=949110;ARGS:json.query"
         SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
         SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
     tls:
