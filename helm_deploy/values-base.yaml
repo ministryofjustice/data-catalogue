@@ -79,7 +79,7 @@ datahub-frontend:
   # Set up ingress to expose react front-end
   ingress:
     enabled: true
-    className: default
+    className: modsec
     annotations:
       external-dns.alpha.kubernetes.io/set-identifier: ""
       external-dns.alpha.kubernetes.io/aws-weight: "100"
