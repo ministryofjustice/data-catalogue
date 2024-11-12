@@ -89,7 +89,9 @@ datahub-frontend:
       nginx.ingress.kubernetes.io/enable-modsecurity: "true"
       nginx.ingress.kubernetes.io/modsecurity-snippet: |
         SecRuleEngine DetectionOnly
-
+        SecRule REQUEST_URI "@beginsWith /api/v2/graphql" "id:1005,phase:2,t:none,ctl:ruleRemoveById=932150;ARGS:json.query"
+        SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
+        SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
     tls:
       - hosts:
           - ""
