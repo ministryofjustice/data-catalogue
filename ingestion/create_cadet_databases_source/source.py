@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
     "Audience": "Internal",
-    "Provider": "Create A Derived Table"
+    "Provider": "Analytical Platform"
 }
 
 
