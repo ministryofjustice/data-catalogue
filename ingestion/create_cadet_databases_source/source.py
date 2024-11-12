@@ -32,6 +32,11 @@ from ingestion.utils import report_generator_time, report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
+properties_to_add = {
+    "Audience": "Internal",
+    "Provider": "Analytical Platform"
+}
+
 
 @config_class(CreateCadetDatabasesConfig)
 class CreateCadetDatabases(Source):
@@ -117,6 +122,7 @@ class CreateCadetDatabases(Source):
                 backcompat_env_as_instance=True,
             )
             db_meta_dict = dict(database_metadata)
+            db_meta_dict.update(properties_to_add)
             domain_name = format_domain_name(db_meta_dict["domain"])
             domain_urn = mce_builder.make_domain_urn(domain=domain_name)
             display_tag = display_tags.get(database_name, ["dc_cadet"])

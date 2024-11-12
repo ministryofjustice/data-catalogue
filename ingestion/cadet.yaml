@@ -27,7 +27,7 @@ source:
         # These tables cause a `java.lang.NullPointerException` and are staging tables anyway
         - ".*avature_stg\\.stg_people_fields_pivoted_wide.*"
         - ".*avature_stg\\.stg_job_fields_pivoted_wide.*"
-        
+
 
         # This table has a huge number of columns, which breaks things.
         - "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data"
@@ -63,3 +63,8 @@ transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
     config:
       manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+  - type: "simple_add_dataset_properties"
+    config:
+      properties:
+        Audience: Internal
+        Provider: Analytical Platform
