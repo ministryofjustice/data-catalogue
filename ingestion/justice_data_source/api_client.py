@@ -18,6 +18,12 @@ class JusticeDataAPIClient:
         self.default_owner_email = default_owner_email
         self._id_to_domain_mapping = ID_TO_DOMAIN_MAPPING
 
+    def list_publications(self):
+        """
+        Return a list of publications
+        """
+        return self.session.get(self.base_url + "/publications").json()
+
     def list_all(self, exclude_id_list: list = []):
         """
         Traverse the metadata graph and return only leaf nodes.

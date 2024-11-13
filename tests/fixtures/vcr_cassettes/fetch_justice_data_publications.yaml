@@ -1,0 +1,173 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://data.justice.gov.uk/api/publications
+  response:
+    body:
+      string: "[{\"id\":\"courts-civil\",\"name\":\"Civil justice statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/civil-justice-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Volume of civil and judicial review
+        cases dealt with by the courts over time and the overall timeliness of these
+        cases. \",\"ownerEmail\":\"CAJS@justice.gov.uk\",\"currentPublishDate\":\"5
+        September 2024\",\"currentPublishDateAsDate\":null,\"nextPublishDate\":\"5
+        December 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-12-05T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"community-performance\",\"name\":\"Community performance
+        annual\",\"indexUri\":\"https://www.gov.uk/government/collections/prison-and-probation-trusts-performance-statistics#community-performance-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"An annual release of performance statistics
+        for the Probation Service, incorporating Probation Service and Commissioned
+        Rehabilitative Services performance.\",\"ownerEmail\":\"communityperformanceenquiries@justice.gov.uk\",\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"ons-crime\",\"name\":\"Crime in England and Wales\",\"indexUri\":\"https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables\",\"frequency\":\"Quarterly\",\"source\":\"ONS\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Crime against households and adults using data
+        from\\u00A0police recorded crime and the Crime Survey for England and Wales.\",\"ownerEmail\":\"crimestatistics@ons.gov.uk\",\"currentPublishDate\":\"24
+        October 2024\",\"currentPublishDateAsDate\":\"2024-10-24T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Office
+        of National Statistics\"},{\"id\":\"crime-outcomes\",\"name\":\"Crime outcomes
+        in England and Wales\",\"indexUri\":\"https://www.gov.uk/government/collections/crime-outcomes-in-england-and-wales-statistics\",\"frequency\":\"Annual\",\"source\":\"HO\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Outcomes assigned to offences recorded to June
+        2023 and the total number of outcomes recorded, by outcome type and offence
+        type.\",\"ownerEmail\":\"crimeandpolicestats@homeoffice.gov.uk\",\"currentPublishDate\":\"24
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-24T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Home
+        Office\"},{\"id\":\"courts-criminal\",\"name\":\"Criminal court statistics
+        quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/criminal-court-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Type and volume of cases received
+        and processed through the criminal court system of England and Wales, including
+        statistics on case timeliness. Also includes statistics on the use of language
+        interpreter and translation ser\u2026\",\"ownerEmail\":\"criminal_court_sta@justice.gov.uk\",\"currentPublishDate\":\"28
+        March 2024\",\"currentPublishDateAsDate\":\"2024-03-28T00:00:00+00:00\",\"nextPublishDate\":\"19
+        December 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-12-19T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"cjs-statistics\",\"name\":\"Criminal justice system
+        statistics quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/criminal-justice-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Overview of trends in the use of out
+        of court disposals, defendants prosecuted, offenders convicted, remand and
+        sentencing decisions in England and Wales.\",\"ownerEmail\":\"CJS_Statistics@justice.gov.uk\",\"currentPublishDate\":\"15
+        August 2024\",\"currentPublishDateAsDate\":\"2024-08-15T00:00:00+00:00\",\"nextPublishDate\":\"21
+        November 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-11-21T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"electronic-monitoring-performance\",\"name\":\"Electronic
+        Monitoring Statistics Annual Publication\",\"indexUri\":\"https://www.gov.uk/government/collections/electronic-monitoring-publication\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Covers the use and delivery of electronic tags,
+        including location monitoring tags and alcohol monitoring tags, for England
+        and Wales.\",\"ownerEmail\":\"ppas_statistics@justice.gov.uk\",\"currentPublishDate\":\"18
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-18T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"electronic-monitoring\",\"name\":\"Electronic Monitoring
+        Statistics Publication\",\"indexUri\":\"https://www.gov.uk/government/collections/electronic-monitoring-publication\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Covers the use and delivery of electronic tags,
+        including location monitoring tags and alcohol monitoring tags, for England
+        and Wales.\",\"ownerEmail\":\"ppas_statistics@justice.gov.uk\",\"currentPublishDate\":\"18
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-18T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"courts-family\",\"name\":\"Family court statistics
+        quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/family-court-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Volume of cases dealt with by family
+        courts over time, with statistics also broken down for the main types of case
+        involved. Includes data on Children Act cases (both public and private law),
+        Matrimonial matters, Domestic Vi\u2026\",\"ownerEmail\":\"familycourt.statistics@justice.gov.uk\",\"currentPublishDate\":\"26
+        September 2024\",\"currentPublishDateAsDate\":\"2024-09-26T00:00:00+00:00\",\"nextPublishDate\":\"19
+        December 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-12-19T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"hmpps-workforce\",\"name\":\"HM Prison & Probation
+        Service workforce quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/national-offender-management-service-workforce-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Staffing numbers of directly employed staff
+        of the HM Prison and Probation Service.\",\"ownerEmail\":\"robert.hartley@justice.gov.uk\",\"currentPublishDate\":\"17
+        August 2023\",\"currentPublishDateAsDate\":\"2023-08-17T00:00:00+00:00\",\"nextPublishDate\":\"21
+        November 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-11-21T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"hmpps-annual-digest\",\"name\":\"HM Prison and Probation
+        Service annual digest\",\"indexUri\":\"https://www.gov.uk/government/statistics/hmpps-annual-digest-april-2023-to-march-2024\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":null,\"description\":\"Range
+        of detailed statistics and measures for prisons and probation\",\"ownerEmail\":\"SUEPer_Stats@justice.gov.uk\",\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"legal-aid-statistics\",\"name\":\"Legal aid statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/legal-aid-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Activity in the legal aid system for
+        England and Wales, including criminal and civil legal aid, family mediation,
+        providers of legal aid, client characteristics and Central Funds payments.\\r\\n\",\"ownerEmail\":\"statistics@justice.gov.uk\",\"currentPublishDate\":\"26
+        September 2024\",\"currentPublishDateAsDate\":\"2024-09-26T00:00:00+00:00\",\"nextPublishDate\":\"19
+        December 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-12-19T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"community-accommodation-management\",\"name\":\"Offender
+        accommodation outcomes\",\"indexUri\":\"https://www.gov.uk/government/collections/offender-accommodation-outcome-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Performance statistics on housing and accommodation
+        outcomes for people supervised by the Probation Service.\",\"ownerEmail\":\"crosscuttingperformanceenquiries@justice.gov.uk\",\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"community-employment-management\",\"name\":\"Offender
+        employment outcomes\",\"indexUri\":\"https://www.gov.uk/government/collections/offender-employment-outcome-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Performance statistics on employment outcomes
+        for people supervised by the Probation Service.\",\"ownerEmail\":\"crosscuttingperformanceenquiries@justice.gov.uk\",\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"omsq\",\"name\":\"Offender management statistics quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/offender-management-statistics-quarterly\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Detailed quarterly statistics on offenders
+        in custody (including offence groups, sentence lengths and nationalities),
+        and quarterly statistics on prison receptions, prison releases, adjudications,
+        licence recalls and offenders\u2026\",\"ownerEmail\":\"OMSQ-SiC-publications@justice.gov.uk\",\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":\"31
+        October 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-10-31T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"prison-performance\",\"name\":\"Prison performance
+        ratings\",\"indexUri\":\"https://www.gov.uk/government/collections/prison-and-probation-trusts-performance-statistics#prison-performance-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Annual performance ratings of prison establishments
+        in England and Wales.\\r\\n\",\"ownerEmail\":\"SUEPer_Stats@justice.gov.uk\",\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":\"31
+        July 2025 9:30am\",\"nextPublishDateAsDateTime\":\"2025-07-31T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"prison-population\",\"name\":\"Prison population statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/prison-population-statistics\",\"frequency\":\"Annual\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Statistics on the prison population.\",\"ownerEmail\":null,\"currentPublishDate\":\"25
+        July 2024\",\"currentPublishDateAsDate\":\"2024-07-25T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"prison-types\",\"name\":\"Prisons and their resettlement
+        providers\",\"indexUri\":\"https://www.gov.uk/government/publications/prisons-and-their-resettlement-providers\",\"frequency\":\"AdHoc\",\"source\":\"MOJ\",\"documentType\":null,\"description\":null,\"ownerEmail\":null,\"currentPublishDate\":\"24
+        January 2024\",\"currentPublishDateAsDate\":\"2024-01-24T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"proven-reoffending\",\"name\":\"Proven reoffending
+        statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/proven-reoffending-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Statistics on reoffending of offenders
+        who were released from custody, received a non-custodial conviction, or a
+        caution.\",\"ownerEmail\":\"reoffendingstatistics@justice.gov.uk\",\"currentPublishDate\":\"31
+        October 2024\",\"currentPublishDateAsDate\":\"2024-10-31T00:00:00+00:00\",\"nextPublishDate\":\"30
+        January 2025 9:30am\",\"nextPublishDateAsDateTime\":\"2025-01-30T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"substance-misuse-treatment-successfully-engage\",\"name\":\"Public
+        Health Outcomes Framework\",\"indexUri\":\"https://fingertips.phe.org.uk/profile/public-health-outcomes-framework/data#page/4/gid/1000042/ati/15/iid/92544/age/168/sex/4/cat/-1/ctp/-1/yrr/1/cid/4/tbm/1/page-options/ovw-do-1_car-ao-1_car-do-1_tre-ao-0_tre-do-0\",\"frequency\":\"AdHoc\",\"source\":\"OHID\",\"documentType\":\"Official
+        Statistics\",\"description\":\"The Public Health Outcomes Framework (PHOF)
+        examines indicators that help us understand trends in public health. The data
+        are presented in an interactive tool that allows users to view them in a user-friendly
+        format. The dat\u2026\",\"ownerEmail\":null,\"currentPublishDate\":\"6 August
+        2024\",\"currentPublishDateAsDate\":null,\"nextPublishDate\":\"5 November
+        2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-11-05T09:30:00Z\",\"sourceName\":\"Office
+        for Health Improvement and Disparities\"},{\"id\":\"safety-in-custody\",\"name\":\"Safety
+        in custody statistics\",\"indexUri\":\"https://www.gov.uk/government/collections/safety-in-custody-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Accredited
+        official statistics\",\"description\":\"Quarterly update on deaths, self-harm
+        and assaults in prison custody in England and Wales. Annual detailed data
+        on assaults and self-harm in prison custody.\",\"ownerEmail\":\"OMSQ-SiC-publications@justice.gov.uk\",\"currentPublishDate\":\"31
+        October 2024\",\"currentPublishDateAsDate\":\"2024-10-31T00:00:00+00:00\",\"nextPublishDate\":\"30
+        January 2025 9:30am\",\"nextPublishDateAsDateTime\":\"2025-01-30T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"},{\"id\":\"alcohol-drug-treatment-statistics\",\"name\":\"Substance
+        misuse treatment in secure settings\",\"indexUri\":\"https://www.gov.uk/government/collections/alcohol-and-drug-misuse-and-treatment-statistics#alcohol-and-drug-treatment-statistics:-prisons-and-secure-settings\",\"frequency\":\"Annual\",\"source\":\"OHID\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Healthcare professionals can use these resources
+        to understand outcomes of alcohol and drug treatment services in secure settings
+        in England, the profile of adults and young people accessing alcohol and drug
+        treatment service\u2026\",\"ownerEmail\":\"evidenceapplicationteam@dhsc.gov.uk\",\"currentPublishDate\":\"25
+        January 2024\",\"currentPublishDateAsDate\":\"2024-01-25T00:00:00+00:00\",\"nextPublishDate\":\"30
+        January 2025 9:30am\",\"nextPublishDateAsDateTime\":\"2025-01-30T09:30:00Z\",\"sourceName\":\"Office
+        for Health Improvement and Disparities\"},{\"id\":\"cost-of-crime\",\"name\":\"The
+        economic and social costs of crime\",\"indexUri\":\"https://www.gov.uk/government/publications/the-economic-and-social-costs-of-crime\",\"frequency\":\"AdHoc\",\"source\":\"HO\",\"documentType\":null,\"description\":null,\"ownerEmail\":\"crimeandpolicestats@homeoffice.gov.uk\",\"currentPublishDate\":\"23
+        July 2018\",\"currentPublishDateAsDate\":\"2018-07-23T00:00:00+00:00\",\"nextPublishDate\":null,\"nextPublishDateAsDateTime\":null,\"sourceName\":\"Home
+        Office\"},{\"id\":\"courts-tribunals\",\"name\":\"Tribunals statistics quarterly\",\"indexUri\":\"https://www.gov.uk/government/collections/tribunals-statistics\",\"frequency\":\"Quarterly\",\"source\":\"MOJ\",\"documentType\":\"Official
+        Statistics\",\"description\":\"Type and volume of tribunal cases received,
+        disposed of or outstanding. This also includes statistics on the Gender Recognition
+        Certificate applied for and granted by HMCTS Gender Recognition Panel.\",\"ownerEmail\":\"CAJS@justice.gov.uk\",\"currentPublishDate\":\"3
+        October 2024\",\"currentPublishDateAsDate\":null,\"nextPublishDate\":\"12
+        December 2024 9:30am\",\"nextPublishDateAsDateTime\":\"2024-12-12T09:30:00Z\",\"sourceName\":\"Ministry
+        of Justice\"}]"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 13 Nov 2024 15:24:01 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: OK
+version: 1

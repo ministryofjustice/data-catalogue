@@ -179,3 +179,56 @@ def test_validate_domains(
             client.validate_domains(datahub_domain_list)
     else:
         assert client.validate_domains(datahub_domain_list)
+
+
+def test_list_publications(client):
+    with vcr.use_cassette(
+        "tests/fixtures/vcr_cassettes/fetch_justice_data_publications.yaml"
+    ):
+        assert client.list_publications()[:3] == [
+            {
+                "id": "courts-civil",
+                "name": "Civil justice statistics",
+                "indexUri": "https://www.gov.uk/government/collections/civil-justice-statistics-quarterly",
+                "frequency": "Quarterly",
+                "source": "MOJ",
+                "documentType": "Accredited official statistics",
+                "description": "Volume of civil and judicial review cases dealt with by the courts over time and the overall timeliness of these cases. ",
+                "ownerEmail": "CAJS@justice.gov.uk",
+                "currentPublishDate": "5 September 2024",
+                "currentPublishDateAsDate": None,
+                "nextPublishDate": "5 December 2024 9:30am",
+                "nextPublishDateAsDateTime": "2024-12-05T09:30:00Z",
+                "sourceName": "Ministry of Justice",
+            },
+            {
+                "id": "community-performance",
+                "name": "Community performance annual",
+                "indexUri": "https://www.gov.uk/government/collections/prison-and-probation-trusts-performance-statistics#community-performance-statistics",
+                "frequency": "Annual",
+                "source": "MOJ",
+                "documentType": "Official Statistics",
+                "description": "An annual release of performance statistics for the Probation Service, incorporating Probation Service and Commissioned Rehabilitative Services performance.",
+                "ownerEmail": "communityperformanceenquiries@justice.gov.uk",
+                "currentPublishDate": "25 July 2024",
+                "currentPublishDateAsDate": "2024-07-25T00:00:00+00:00",
+                "nextPublishDate": None,
+                "nextPublishDateAsDateTime": None,
+                "sourceName": "Ministry of Justice",
+            },
+            {
+                "id": "ons-crime",
+                "name": "Crime in England and Wales",
+                "indexUri": "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables",
+                "frequency": "Quarterly",
+                "source": "ONS",
+                "documentType": "Official Statistics",
+                "description": "Crime against households and adults using data from\xa0police recorded crime and the Crime Survey for England and Wales.",
+                "ownerEmail": "crimestatistics@ons.gov.uk",
+                "currentPublishDate": "24 October 2024",
+                "currentPublishDateAsDate": "2024-10-24T00:00:00+00:00",
+                "nextPublishDate": None,
+                "nextPublishDateAsDateTime": None,
+                "sourceName": "Office of National Statistics",
+            },
+        ]
