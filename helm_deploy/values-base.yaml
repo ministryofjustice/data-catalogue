@@ -79,10 +79,23 @@ datahub-frontend:
   # Set up ingress to expose react front-end
   ingress:
     enabled: true
-    className: default
+    className: modsec
     annotations:
       external-dns.alpha.kubernetes.io/set-identifier: ""
       external-dns.alpha.kubernetes.io/aws-weight: "100"
+      nginx.ingress.kubernetes.io/limit-whitelist: |
+        217.33.148.210/32,35.177.252.195/32,81.134.202.29/32,35.178.209.113/32,3.8.51.207/32,35.177.252.54/32,194.33.192.0/25,194.33.196.0/25,35.176.93.186/32,51.149.250.0/24,51.149.249.0/29,51.149.249.32/29,194.33.248.0/29,194.33.249.0/29,194.33.200.0/21,194.33.216.0/24,194.33.217.0/24,194.33.218.0/24,128.77.75.64/26,20.49.214.199/32,20.49.214.228/32,20.26.11.71/32,20.26.11.108/32
+      nginx.ingress.kubernetes.io/limit-rps: "200"
+      nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+      nginx.ingress.kubernetes.io/modsecurity-snippet: |
+        SecRuleEngine On
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1001,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932100;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1002,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932105;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1003,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932115;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1004,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932150;ARGS:json.query"
+        SecRule REQUEST_URI "@rx ^\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1005,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=949110;ARGS:json.query"
+        SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
+        SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
     tls:
       - hosts:
           - ""
