@@ -76,6 +76,8 @@ jobs:
         run: |
           time poetry run datahub ingest -c ingestion/glue_sop.yaml
           time poetry run datahub ingest -c ingestion/glue_contracts.yaml
+          time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
+          time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0

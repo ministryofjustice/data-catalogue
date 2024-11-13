@@ -4,10 +4,8 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: [
-        "sop_transformed_v1_ac$",
-        "sop_derived$",
-        "sop_lookups$",
-        "sop_preprocessed$"
+        "familyman_live_v4$",
+        "familyman_derived_live_v4$"
       ]
     extract_owners: False
     extract_transforms: False
@@ -20,12 +18,12 @@ transformers:
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "***REMOVED***"
-      domain: urn:li:domain:People
+      domain: urn:li:domain:Courts
   - type: "simple_add_dataset_domain"
     config:
       semantics: OVERWRITE
       domains:
-        - urn:li:domain:People
+        - urn:li:domain:Courts
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
