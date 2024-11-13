@@ -75,6 +75,12 @@ def test_chart(mock_justice_data_api, default_owner_email):
     )
     assert first_chart_domain.aspect.domains[0] == "urn:li:domain:General"
 
+    assert chartinfo.customProperties == {
+        "audience": "Published",
+        "dc_access_requirements": "",
+        "refresh_frequency": "Quarterly",
+    }
+
 
 def test_corp_group(mock_justice_data_api, default_owner_email):
     corp_group = next(

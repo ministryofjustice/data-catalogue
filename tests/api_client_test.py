@@ -135,7 +135,7 @@ def test_get_publication_metadata(client, default_owner_email):
         "ons-crime2",
         "ons-crime3",
     ]
-    client.publication_details = test_published_details
+    client.publication_details = {pub["id"]: pub for pub in test_published_details}
     for i, id in enumerate(ids):
         last_updated, refresh_frequency, owner_email = client._get_publication_metadata(
             id
@@ -144,7 +144,7 @@ def test_get_publication_metadata(client, default_owner_email):
             expected_updated_timestamp = datetime.strptime(
                 test_published_details[i].get("currentPublishDate"),
                 "%d %B %Y",
-            ).timestamp()
+            )
         else:
             expected_updated_timestamp = None
         assert last_updated == expected_updated_timestamp
