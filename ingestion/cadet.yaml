@@ -67,4 +67,3 @@ transformers:
     config:
       properties:
         audience: Internal
-        provider: Analytical Platform

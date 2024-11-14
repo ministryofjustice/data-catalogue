@@ -34,7 +34,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
     "audience": "Internal",
-    "provider": "Analytical Platform"
 }
 
 
