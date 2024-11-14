@@ -33,8 +33,8 @@ from ingestion.utils import report_generator_time, report_time
 logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
-    "Audience": "Internal",
-    "Provider": "Analytical Platform"
+    "audience": "Internal",
+    "provider": "Analytical Platform"
 }
 
 
