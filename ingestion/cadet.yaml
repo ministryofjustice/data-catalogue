@@ -66,5 +66,4 @@ transformers:
   - type: "simple_add_dataset_properties"
     config:
       properties:
-        Audience: Internal
-        Provider: Analytical Platform
+        audience: Internal
