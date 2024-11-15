@@ -1,5 +1,4 @@
 import logging
-import os
 from datetime import datetime
 
 import requests
@@ -12,11 +11,17 @@ class JusticeDataAPIClient:
     def __init__(self, base_url, default_owner_email):
         self.session = requests.Session()
         self.base_url = base_url
-        self.publication_details: list[dict] = self.session.get(
-            os.path.join(self.base_url, "publications")
-        ).json()
+        self.publication_details: dict[str, dict] = {
+            pub["id"]: pub for pub in self.list_publications()
+        }
         self.default_owner_email = default_owner_email
         self._id_to_domain_mapping = ID_TO_DOMAIN_MAPPING
+
+    def list_publications(self) -> dict:
+        """
+        Return a list of publications
+        """
+        return self.session.get(self.base_url + "/publications").json()
 
     def list_all(self, exclude_id_list: list = []):
         """
@@ -31,6 +36,11 @@ class JusticeDataAPIClient:
             id = current.get("id")
 
             if id in exclude_id_list:
+                continue
+
+            if current.get("permalink") is None:
+                # Skip anything without a permalink, e.g. jin-court-capacity-subhead
+                logging.info(f"{id=} has no permalink and will be skipped.")
                 continue
 
             if self._id_to_domain_mapping.get(id):
@@ -50,15 +60,9 @@ class JusticeDataAPIClient:
                 last_updated, refresh_frequency, owner_email = (
                     self._get_publication_metadata(publication_id)
                 )
-                # datahub requires last updated to be an int or None if not known
-                current["last_updated_timestamp"] = (
-                    int(last_updated) if last_updated else None
-                )
-                # This is loaded as a custom property in datahub and so needs to be set as a string (even if empty)
-                current["refresh_frequency"] = (
-                    refresh_frequency if refresh_frequency else ""
-                )
 
+                current["last_updated_timestamp"] = last_updated
+                current["refresh_frequency"] = refresh_frequency
                 current["owner_email"] = owner_email
             else:
                 current["owner_email"] = self.default_owner_email
@@ -76,38 +80,33 @@ class JusticeDataAPIClient:
 
     def _get_publication_metadata(
         self, id: str
-    ) -> tuple[float | None, str | None, str]:
+    ) -> tuple[datetime | None, str | None, str]:
         """
         returns tuple of (last_updated, refresh_frequency, owner_email), the current published date
         (as a timestamp), publication frequency and owner email for the source publication of
         the chart id given as an input
         """
-        last_updated_timestamp, refresh_frequency, owner_email = (
-            None,
-            None,
-            self.default_owner_email,
-        )
-        for publication in self.publication_details:
-            if publication.get("id") == id:
-                refresh_frequency = publication.get("frequency")
-                try:
-                    last_updated_timestamp = datetime.strptime(
-                        publication.get("currentPublishDate", ""), "%d %B %Y"
-                    ).timestamp()
-                except (ValueError, TypeError) as e:
-                    logging.warning(
-                        f"Chart with id: {id}, missing valid currentPublishDate. Error: {e}"
-                    )
-                    last_updated_timestamp = None
+        publication = self.publication_details.get(id)
+        if not publication:
+            return (None, None, self.default_owner_email)
 
-                owner_email = publication.get("ownerEmail", self.default_owner_email)
+        refresh_frequency = publication.get("frequency")
+        try:
+            current_publish_date = datetime.strptime(
+                publication.get("currentPublishDate", ""), "%d %B %Y"
+            )
+        except (ValueError, TypeError) as e:
+            logging.warning(
+                f"Chart with id: {id}, missing valid currentPublishDate. Error: {e}"
+            )
+            current_publish_date = None
 
-                if owner_email is None:
-                    owner_email = self.default_owner_email
+        owner_email = publication.get("ownerEmail", self.default_owner_email)
 
-                break
+        if owner_email is None:
+            owner_email = self.default_owner_email
 
-        return last_updated_timestamp, refresh_frequency, owner_email
+        return current_publish_date, refresh_frequency, owner_email
 
     def validate_domains(self, datahub_domains) -> bool:
         for domain in set(self._id_to_domain_mapping.values()):

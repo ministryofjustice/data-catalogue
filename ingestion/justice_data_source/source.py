@@ -1,8 +1,10 @@
 import logging
+from datetime import datetime
 from io import BufferedReader
-from typing import Iterable, Optional
+from typing import Any, Iterable, Literal, Optional
 
 import datahub.emitter.mce_builder as builder
+from datahub.emitter import mce_builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import (
@@ -18,7 +20,11 @@ from datahub.ingestion.api.source import (
     TestConnectionReport,
 )
 from datahub.ingestion.api.workunit import MetadataWorkUnit
-from datahub.metadata.com.linkedin.pegasus2avro.common import ChangeAuditStamps, Status
+from datahub.metadata.com.linkedin.pegasus2avro.common import (
+    AuditStamp,
+    ChangeAuditStamps,
+    Status,
+)
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
     ChartSnapshot,
     CorpGroupSnapshot,
@@ -36,6 +42,7 @@ from datahub.metadata.schema_classes import (
     OwnershipClass,
     TagAssociationClass,
 )
+from datahub.utilities.time import datetime_to_ts_millis
 
 from ingestion.ingestion_utils import list_datahub_domains
 from ingestion.utils import report_generator_time
@@ -141,7 +148,7 @@ class JusticeDataAPISource(TestableSource):
         dashboard_mce = MetadataChangeEvent(proposedSnapshot=dashboard_snapshot)
         return dashboard_mce
 
-    def _make_chart(self, chart_data) -> MetadataChangeEvent:
+    def _make_chart(self, chart_data: dict[str, Any]) -> MetadataChangeEvent:
         chart_urn = builder.make_chart_urn(self.platform_name, chart_data["id"])
         chart_snapshot = ChartSnapshot(
             urn=chart_urn,
@@ -149,17 +156,26 @@ class JusticeDataAPISource(TestableSource):
         )
 
         title = chart_data["name"]
+        refresh_frequency = self._format_update_frequency(
+            chart_data.get("refresh_frequency")
+        )
+        publication_date = chart_data.get("last_updated_timestamp")
 
         # TODO: generate a fully qualified name?
         chart_info = ChartInfoClass(
             description=chart_data.get("description") or "",
             title=title,
-            lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
+            lastModified=ChangeAuditStamps(
+                lastModified=self._format_audit_stamp(publication_date)
+            ),
             chartUrl=self.web_url + chart_data.get("permalink", ""),
-            lastRefreshed=chart_data.get("last_updated_timestamp"),
+            lastRefreshed=(
+                datetime_to_ts_millis(publication_date) if publication_date else None
+            ),
             customProperties={
-                "refresh_period": chart_data.get("refresh_frequency", ""),
+                "refresh_frequency": refresh_frequency or "",
                 "dc_access_requirements": self.config.access_requirements,
+                "audience": "Published",
             },
         )
         chart_snapshot.aspects.append(chart_info)
@@ -238,6 +254,29 @@ class JusticeDataAPISource(TestableSource):
         group_snapshot.aspects.append(group_info)
         group_mce = MetadataChangeEvent(proposedSnapshot=group_snapshot)
         return group_mce
+
+    def _format_audit_stamp(self, maybe_date: datetime | None) -> AuditStamp | None:
+        if not maybe_date:
+            return None
+
+        return AuditStamp(
+            time=datetime_to_ts_millis(maybe_date),
+            actor=mce_builder.make_user_urn("unknown"),
+        )
+
+    def _format_update_frequency(
+        self, maybe_frequency: str | None
+    ) -> Literal["Annual"] | Literal["Quarterly"] | Literal["AdHoc"] | Literal[""]:
+        if maybe_frequency is not None and maybe_frequency not in (
+            "Annual",
+            "Quarterly",
+            "AdHoc",
+        ):
+            raise ValueError(maybe_frequency)
+
+        # Datahub custom properties cannot be None, so default to
+        # empty string instead.
+        return maybe_frequency or ""
 
     @staticmethod
     def test_connection(config_dict: dict) -> TestConnectionReport:
