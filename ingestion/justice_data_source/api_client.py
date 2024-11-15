@@ -17,7 +17,7 @@ class JusticeDataAPIClient:
         self.default_owner_email = default_owner_email
         self._id_to_domain_mapping = ID_TO_DOMAIN_MAPPING
 
-    def list_publications(self):
+    def list_publications(self) -> dict:
         """
         Return a list of publications
         """
@@ -40,6 +40,7 @@ class JusticeDataAPIClient:
 
             if current.get("permalink") is None:
                 # Skip anything without a permalink, e.g. jin-court-capacity-subhead
+                logging.info(f"{id=} has no permalink and will be skipped.")
                 continue
 
             if self._id_to_domain_mapping.get(id):
