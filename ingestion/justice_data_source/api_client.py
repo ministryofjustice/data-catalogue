@@ -57,12 +57,12 @@ class JusticeDataAPIClient:
             publication_id = current.get("dataPublicationId")
 
             if publication_id:
-                last_updated, refresh_frequency, owner_email = (
+                last_updated, refresh_period, owner_email = (
                     self._get_publication_metadata(publication_id)
                 )
 
                 current["last_updated_timestamp"] = last_updated
-                current["refresh_frequency"] = refresh_frequency
+                current["refresh_period"] = refresh_period
                 current["owner_email"] = owner_email
             else:
                 current["owner_email"] = self.default_owner_email
@@ -82,7 +82,7 @@ class JusticeDataAPIClient:
         self, id: str
     ) -> tuple[datetime | None, str | None, str]:
         """
-        returns tuple of (last_updated, refresh_frequency, owner_email), the current published date
+        returns tuple of (last_updated, refresh_period, owner_email), the current published date
         (as a timestamp), publication frequency and owner email for the source publication of
         the chart id given as an input
         """
@@ -90,7 +90,7 @@ class JusticeDataAPIClient:
         if not publication:
             return (None, None, self.default_owner_email)
 
-        refresh_frequency = publication.get("frequency")
+        refresh_period = publication.get("frequency")
         try:
             current_publish_date = datetime.strptime(
                 publication.get("currentPublishDate", ""), "%d %B %Y"
@@ -106,7 +106,7 @@ class JusticeDataAPIClient:
         if owner_email is None:
             owner_email = self.default_owner_email
 
-        return current_publish_date, refresh_frequency, owner_email
+        return current_publish_date, refresh_period, owner_email
 
     def validate_domains(self, datahub_domains) -> bool:
         for domain in set(self._id_to_domain_mapping.values()):

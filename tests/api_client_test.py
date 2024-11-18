@@ -137,7 +137,7 @@ def test_get_publication_metadata(client, default_owner_email):
     ]
     client.publication_details = {pub["id"]: pub for pub in test_published_details}
     for i, id in enumerate(ids):
-        last_updated, refresh_frequency, owner_email = client._get_publication_metadata(
+        last_updated, refresh_period, owner_email = client._get_publication_metadata(
             id
         )
         if test_published_details[i].get("currentPublishDate"):
@@ -148,7 +148,7 @@ def test_get_publication_metadata(client, default_owner_email):
         else:
             expected_updated_timestamp = None
         assert last_updated == expected_updated_timestamp
-        assert refresh_frequency == test_published_details[i].get("frequency")
+        assert refresh_period == test_published_details[i].get("frequency")
         assert owner_email == test_published_details[i].get(
             "ownerEmail", default_owner_email
         )
