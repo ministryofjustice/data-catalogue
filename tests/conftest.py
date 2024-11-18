@@ -3,6 +3,7 @@ import sys
 import time
 import types
 from typing import Dict, Optional
+from unittest.mock import create_autospec
 
 import boto3
 import pytest
