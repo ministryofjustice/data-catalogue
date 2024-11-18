@@ -3,7 +3,6 @@ import sys
 import time
 import types
 from typing import Dict, Optional
-from unittest.mock import create_autospec, patch
 
 import boto3
 import pytest
@@ -16,7 +15,6 @@ from moto import mock_s3
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
 
 
-# write python code to open test_publication_mappings.yml and create as a pytest fixture
 @pytest.fixture
 def publication_mappings():
     with open(
