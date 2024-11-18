@@ -87,8 +87,7 @@ class MojPublicationsAPISource(TestableSource):
         yield from self._create_publication_collections_containers(collections_metadata)
         mcps = self._make_publication_dataset_mcps(all_publications_metadata)
         for mcp in mcps:
-            # print(mcp.entityUrn)
-            print(f"creating {mcp.aspectName} for {mcp.entityUrn}")
+            logging.info(f"creating {mcp.aspectName} for {mcp.entityUrn}")
             wu = MetadataWorkUnit(f"{mcp.entityUrn}-{mcp.aspectName}", mcp=mcp)
 
             yield wu
@@ -127,7 +126,7 @@ class MojPublicationsAPISource(TestableSource):
                 domain_urn = None
 
             collection_name = collection.get("title", "")
-            # logging.info(f"Creating container {collection_name=} with {domain_name=}")
+            logging.info(f"Creating container for {collection_name=}")
             yield from mcp_builder.gen_containers(
                 container_key=container_key,
                 name=collection_name,
