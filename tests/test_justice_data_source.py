@@ -78,7 +78,7 @@ def test_chart(mock_justice_data_api, default_owner_email):
     assert chartinfo.customProperties == {
         "audience": "Published",
         "dc_access_requirements": "",
-        "refresh_frequency": "Quarterly",
+        "refresh_period": "Quarterly",
     }
 
 

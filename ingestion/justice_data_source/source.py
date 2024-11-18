@@ -156,8 +156,8 @@ class JusticeDataAPISource(TestableSource):
         )
 
         title = chart_data["name"]
-        refresh_frequency = self._format_update_frequency(
-            chart_data.get("refresh_frequency")
+        refresh_period = self._format_update_frequency(
+            chart_data.get("refresh_period")
         )
         publication_date = chart_data.get("last_updated_timestamp")
 
@@ -173,7 +173,7 @@ class JusticeDataAPISource(TestableSource):
                 datetime_to_ts_millis(publication_date) if publication_date else None
             ),
             customProperties={
-                "refresh_frequency": refresh_frequency or "",
+                "refresh_period": refresh_period or "",
                 "dc_access_requirements": self.config.access_requirements,
                 "audience": "Published",
             },
