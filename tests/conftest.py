@@ -3,10 +3,11 @@ import sys
 import time
 import types
 from typing import Dict, Optional
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, patch
 
 import boto3
 import pytest
+import yaml
 from avrogen.dict_wrapper import DictWrapper
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.graph.client import DataHubGraph
@@ -15,9 +16,26 @@ from moto import mock_s3
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
 
 
+# write python code to open test_publication_mappings.yml and create as a pytest fixture
+@pytest.fixture
+def publication_mappings():
+    with open(
+        os.path.join(
+            os.path.dirname(__file__), "data", "test_publication_mappings.yml"
+        ),
+        "r",
+    ) as file:
+        return yaml.safe_load(file)
+
+
 @pytest.fixture
 def default_owner_email() -> str:
     return "not.me@justice.gov.uk"
+
+
+@pytest.fixture
+def default_contact_email() -> str:
+    return "the.contact@justice.gov.uk"
 
 
 @pytest.fixture
@@ -35,7 +53,9 @@ def mock_datahub_graph():
             # Make server stateful ingestion capable
             self.mock_graph.get_config.return_value = {"statefulIngestionCapable": True}
             # Bind mock_graph's emit_mcp to testcase's monkey_patch_emit_mcp so that we can emulate emits.
-            self.mock_graph.emit_mcp = types.MethodType(self.monkey_patch_emit_mcp, self.mock_graph)
+            self.mock_graph.emit_mcp = types.MethodType(
+                self.monkey_patch_emit_mcp, self.mock_graph
+            )
             # Bind mock_graph's get_latest_timeseries_value to monkey_patch_get_latest_timeseries_value
             self.mock_graph.get_latest_timeseries_value = types.MethodType(
                 self.monkey_patch_get_latest_timeseries_value, self.mock_graph

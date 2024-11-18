@@ -1,0 +1,103 @@
+accredited-programmes-annual-bulletin:
+  contact_email: statistics@justice.gov.uk
+  domain: Interventions
+ad-hoc-justice-statistics:
+  contact_email: statistics@justice.gov.uk
+  domain: General
+alcohol-and-drug-misuse-and-treatment-statistics:
+  domain: Interventions
+civil-justice-statistics:
+  contact_email: CAJS@justice.gov.uk
+  domain: Courts
+civil-justice-statistics-quarterly:
+  contact_email: CAJS@justice.gov.uk
+  domain: Courts
+court-statistics-quarterly:
+  domain: Courts
+crime-statistics:
+  contact_email: CrimeandPoliceStats@homeoffice.gov.uk
+criminal-court-statistics:
+  contact_email: criminal_court_sta@justice.gov.uk
+  domain: Courts
+criminal-justice-statistics:
+  contact_email: CJS_Statistics@justice.gov.uk
+  domain: General
+criminal-justice-statistics-quarterly:
+  contact_email: CJS_Statistics@justice.gov.uk
+  domain: General
+death-of-offenders-in-the-community:
+  contact_email: probation-statistics-enquiries@justice.gov.uk
+  domain: Probation
+electronic-monitoring-publication:
+  contact_email: ppas_statistics@justice.gov.uk
+  domain: Electronic monitoring
+family-court-statistics-quarterly:
+  contact_email: familycourt.statistics@justice.gov.uk
+  domain: Courts
+gender-recognition-certificate-statistics:
+  domain: Courts
+government-foi-statistics:
+  contact_email: foistatistics@cabinetoffice.gov.uk
+  domain: General
+hate-crime-statistics:
+  contact_email: crimeandpolicestats@homeoffice.gov.uk
+hmpps-annual-offender-equalities-report:
+  contact_email: sueper_stats@justice.gov.uk
+hmpps-annual-staff-equalities-report:
+  contact_email: robert.hartley@justice.gov.uk
+judicial-and-court-statistics:
+  domain: Courts
+judicial-diversity-statistics:
+  contact_email: judicial.statistics@justice.gov.uk
+  domain: Courts
+justice-data-lab-pilot-statistics:
+  contact_email: justice.datalab@justice.gov.uk
+  domain: General
+knife-possession-sentencing-quarterly:
+  contact_email: MOJPNCteam@justice.gov.uk
+  domain: Courts
+legal-aid-statistics:
+  contact_email: statistics@justice.gov.uk
+mortgage-and-landlord-possession-statistics:
+  contact_email: CAJS@justice.gov.uk
+  domain: Courts
+multi-agency-public-protection-arrangements-mappa-annual-reports:
+  contact_email: mappa@justice.gov.uk
+national-offender-management-service-workforce-statistics:
+  contact_email: robert.hartley@justice.gov.uk
+offender-management-statistics-quarterly:
+  contact_email: OMSQ-SiC-publications@justice.gov.uk
+payment-by-results-statistics:
+  domain: Probation
+prison-and-probation-trusts-performance-statistics:
+  contact_email: SUEPer_Stats@justice.gov.uk
+prison-population-statistics:
+  domain: Prison
+probation-service-workforce-quarterly-reports:
+  domain: Probation
+proven-reoffending-statistics:
+  contact_email: reoffendingstatistics@justice.gov.uk
+race-and-the-criminal-justice-system:
+  contact_email: CJS_Statistics@justice.gov.uk
+  domain: General
+restricted-patients-statistics-england-and-wales:
+  contact_email: MHCSMailbox@justice.gov.uk
+safety-in-custody-statistics:
+  contact_email: OMSQ-SiC-publications@justice.gov.uk
+  domain: Prison
+statistics-on-privacy-injunctions:
+  domain: Courts
+statistics-on-public-disorder-of-6-9-august-2011:
+  domain: General
+statistics-on-the-use-of-language-services-in-courts-and-tribunals:
+  domain: Courts
+topical-criminal-justice-publications:
+  domain: General
+tribunals-statistics:
+  contact_email: CAJS@justice.gov.uk
+women-and-the-criminal-justice-system:
+  contact_email: CJS_Statistics@justice.gov.uk
+  domain: General
+youth-justice-statistics:
+  contact_email: statistics@yjb.gov.uk
+  domain: General
