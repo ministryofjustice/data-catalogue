@@ -173,7 +173,7 @@ class JusticeDataAPISource(TestableSource):
                 datetime_to_ts_millis(publication_date) if publication_date else None
             ),
             customProperties={
-                "refresh_frequency": refresh_frequency or "",
+                "refresh_period": refresh_frequency or "",
                 "dc_access_requirements": self.config.access_requirements,
                 "audience": "Published",
             },
