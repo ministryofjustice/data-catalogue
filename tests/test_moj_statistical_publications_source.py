@@ -52,7 +52,7 @@ def test_host_port_parsing(default_contact_email):
                 start=0,
             ),
         }
-        config = MojPublicationsAPIConfig.model_validate(config_dict)
+        config = MojPublicationsAPIConfig.parse_obj(config_dict)
         assert config.base_url == example
 
 
