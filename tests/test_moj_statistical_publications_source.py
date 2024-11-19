@@ -117,12 +117,13 @@ def test_workunits(mock_justice_publication_api):
     domains_events = workunits_by_aspect_type[DomainsClass]
     tags_events = workunits_by_aspect_type[GlobalTagsClass]
 
-    # only containers have subtypes
-    assert len(container_events) == len(sub_types_events) == 51
+    # We expect 51 containers
+    assert len(container_events) == 51
     # datasets and containers have platform and status events
     assert (
         len(platform_events)
         == len(status_events)
+        == len(sub_types_events)
         == (len(container_events) + len(dataset_events))
     )
 
