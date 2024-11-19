@@ -29,11 +29,12 @@ from datahub.metadata.schema_classes import (
     DatasetPropertiesClass,
     DomainsClass,
     GlobalTagsClass,
+    SubTypesClass,
     TagAssociationClass,
 )
 from datahub.utilities.time import datetime_to_ts_millis
 
-from ingestion.ingestion_utils import format_domain_name
+from ingestion.ingestion_utils import FindMojDataEntityTypes, format_domain_name
 
 from .api_client import MojPublicationsAPIClient
 from .config import MojPublicationsAPIConfig
@@ -98,7 +99,7 @@ class MojPublicationsAPISource(TestableSource):
     def _create_publication_collections_containers(
         self, collections_metadata: List[Dict[str, Any]]
     ) -> Generator[MetadataWorkUnit, Any, None]:
-        sub_types: list[str] = [DatasetContainerSubTypes.FOLDER]
+        sub_types: list[str] = [FindMojDataEntityTypes.PUBLICATION_COLLECTION]
         custom_properties: dict = {
             "dc_access_requirements": self.config.access_requirements,
             "audience": "Published",
@@ -156,6 +157,7 @@ class MojPublicationsAPISource(TestableSource):
             "dc_access_requirements": self.config.access_requirements,
             "audience": "Published",
         }
+        sub_types: list[str] = [FindMojDataEntityTypes.PUBLICATION_DATASET]
         for publication in all_publications_metadata:
 
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
@@ -246,6 +248,14 @@ class MojPublicationsAPISource(TestableSource):
                 MetadataChangeProposalWrapper(
                     entityUrn=dataset_urn,
                     aspect=publication_properties,
+                )
+            )
+
+            # add subtype to all datasets
+            mcps.append(
+                MetadataChangeProposalWrapper(
+                    entityUrn=dataset_urn,
+                    aspect=SubTypesClass(typeNames=sub_types),
                 )
             )
 
