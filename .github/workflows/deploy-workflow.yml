@@ -43,6 +43,9 @@ on:
       azure_client_secret:
         description: "client secret for azure authentication"
         required: true
+      limit_whitelist:
+        description: "string of comma delimited subnets"
+        required: true
 
 concurrency:
   group: ${{ inputs.env }}
@@ -167,9 +170,12 @@ jobs:
           POSTGRES_URL: ${{ secrets.postgres_url }}
           RELEASE_NAME: datahub
           FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
+          # LIMIT_WHITELIST: ${{ secrets.limit_whitelist }}
+          LIMIT_WHITELIST: "10.0.0.0/16,10.10.0.0/23"
         # if many env-specific variables need setting, add --values files after 'base'
         # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
         run: |
+          echo "${LIMIT_WHITELIST}"
           helm upgrade \
           --install ${RELEASE_NAME} datahub/datahub \
           --version ${CHART_VERSION} \
@@ -182,6 +188,7 @@ jobs:
           --set datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST} \
           --set datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST} \
           --set datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
+          --set 'datahub-frontend.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/limit-whitelist="${LIMIT_WHITELIST}"' \
           --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
           --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
           --set global.sql.datasource.host=${POSTGRES_HOST} \

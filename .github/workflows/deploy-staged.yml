@@ -63,3 +63,4 @@ jobs:
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
