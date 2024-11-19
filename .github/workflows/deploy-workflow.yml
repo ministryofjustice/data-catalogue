@@ -160,7 +160,7 @@ jobs:
       - name: Populate limit_whitelist values
         shell: bash
         env:
-          LIMIT_WHITELIST: "{{ secrets.limit_whitelist }}"
+          LIMIT_WHITELIST: ${{ secrets.limit_whitelist }}
         run: |
           yq eval '.datahub-frontend.ingress.annotations."nginx.ingress.kubernetes.io/limit-whitelist" = strenv(LIMIT_WHITELIST)' -i helm_deploy/values-base.yaml
 
