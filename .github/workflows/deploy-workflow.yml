@@ -43,6 +43,9 @@ on:
       azure_client_secret:
         description: "client secret for azure authentication"
         required: true
+      limit_whitelist:
+        description: "Comma seperated sting of IP addresses to exlude from rate limiting"
+        required: true
 
 concurrency:
   group: ${{ inputs.env }}
@@ -154,10 +157,10 @@ jobs:
           envsubst < helm_deploy/secrets.yaml |
           kubectl -n ${KUBE_NAMESPACE} apply -f -
 
-      - name: Populate allowlist values
+      - name: Populate limit_whitelist values
         shell: bash
         env:
-          LIMIT_WHITELIST: "10.0.0.0/16,10.10.0.0/23"
+          LIMIT_WHITELIST: "{{ secrets.limit_whitelist }}"
         run: |
           yq eval '.datahub-frontend.ingress.annotations."nginx.ingress.kubernetes.io/limit-whitelist" = strenv(LIMIT_WHITELIST)' -i helm_deploy/values-base.yaml
 

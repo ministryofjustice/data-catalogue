@@ -27,6 +27,7 @@ jobs:
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      limit_whitelist: ${{ secrets.LIMIT_WHITELIST }}
 
   deploy-preprod:
     uses: ./.github/workflows/deploy-workflow.yml
@@ -45,6 +46,7 @@ jobs:
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      limit_whitelist: ${{ secrets.LIMIT_WHITELIST }}
 
   deploy-prod:
     uses: ./.github/workflows/deploy-workflow.yml
@@ -63,3 +65,4 @@ jobs:
       postgres_url: ${{ secrets.POSTGRES_URL }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      limit_whitelist: ${{ secrets.LIMIT_WHITELIST }}
