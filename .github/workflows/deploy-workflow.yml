@@ -154,6 +154,13 @@ jobs:
           envsubst < helm_deploy/secrets.yaml |
           kubectl -n ${KUBE_NAMESPACE} apply -f -
 
+      - name: Populate allowlist values
+        shell: bash
+        env:
+          LIMIT_WHITELIST: "10.0.0.0/16,10.10.0.0/23"
+        run: |
+          yq eval '.datahub-frontend.ingress.annotations."nginx.ingress.kubernetes.io/limit-whitelist" = strenv(LIMIT_WHITELIST)' -i helm_deploy/values-base.yaml
+
       - name: install datahub helm charts
         shell: bash
         id: upgrade-helm-datahub
@@ -167,7 +174,6 @@ jobs:
           POSTGRES_URL: ${{ secrets.postgres_url }}
           RELEASE_NAME: datahub
           FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
-          LIMIT_WHITELIST: "10.0.0.0/16\,10.10.0.0/23"
         # if many env-specific variables need setting, add --values files after 'base'
         # e.g. `--values helm_deploy/values-${{ inputs.env }}.yaml \`
         run: |
@@ -183,7 +189,6 @@ jobs:
           --set datahub-frontend.ingress.tls[0].hosts[0]=${APP_SHORT_HOST} \
           --set datahub-frontend.ingress.hosts[0].host=${APP_SHORT_HOST} \
           --set datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
-          --set-string "datahub-frontend.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/limit-whitelist=${LIMIT_WHITELIST}" \
           --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
           --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
           --set global.sql.datasource.host=${POSTGRES_HOST} \
