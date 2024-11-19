@@ -23,6 +23,8 @@ source:
         - ".*use_of_force\\.summary_status_in_progress_dim.*"
         - ".*use_of_force\\.summary_status_submitted_dim.*"
         - ".*data_eng_uploader_prod_calc_release_dates\\.survey_data.*"
+        # because oasys source has the same name as the genrated osays models
+        - "source.mojap_derived_tables.oasys.*"
 
         # These tables cause a `java.lang.NullPointerException` and are staging tables anyway
         - ".*avature_stg\\.stg_people_fields_pivoted_wide.*"
