@@ -40,11 +40,6 @@ def test_host_port_parsing(default_contact_email):
                 filter_content_store_document_type=[
                     "national_statistics",
                 ],
-                fields=[
-                    "description",
-                ],
-                count=100,
-                start=0,
             ),
         }
         config = MojPublicationsAPIConfig.parse_obj(config_dict)
@@ -72,16 +67,6 @@ def mock_justice_publication_api(default_contact_email, publication_mappings):
                         "national_statistics",
                         "official_statistics",
                     ],
-                    fields=[
-                        "description",
-                        "document_collections",
-                        "link",
-                        "public_timestamp",
-                        "title",
-                        "first_published_at",
-                    ],
-                    count=100,
-                    start=0,
                 ),
             ),
             validate_domains=False,
