@@ -6,19 +6,14 @@ import vcr
 from datahub.ingestion.api.common import PipelineContext
 from datahub.metadata.schema_classes import (
     ContainerPropertiesClass,
-    CorpUserInfoClass,
     DataPlatformInstanceClass,
     DatasetPropertiesClass,
-    DomainPropertiesClass,
     DomainsClass,
     GlobalTagsClass,
     StatusClass,
     SubTypesClass,
 )
 
-from ingestion.moj_statistical_publications_source.api_client import (
-    MojPublicationsAPIClient,
-)
 from ingestion.moj_statistical_publications_source.config import (
     MojPublicationsAPIConfig,
     MojPublicationsAPIParams,
@@ -58,8 +53,13 @@ def test_host_port_parsing(default_contact_email):
 
 @pytest.fixture()
 def mock_justice_publication_api(default_contact_email, publication_mappings):
+    vcr_decode = vcr.VCR(
+        decode_compressed_response=True,
+    )
 
-    with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_moj_publications.yaml"):
+    with vcr_decode.use_cassette(
+        "tests/fixtures/vcr_cassettes/fetch_moj_publications.yaml"
+    ):
         source = MojPublicationsAPISource(
             ctx=PipelineContext(run_id="moj-publications-api-source-test"),
             config=MojPublicationsAPIConfig(
