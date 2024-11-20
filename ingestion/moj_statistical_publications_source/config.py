@@ -19,19 +19,6 @@ class MojPublicationsAPIParams(BaseModel):
         description="The type of document to filter by",
         examples=["national_statistics", "official_statistics"],
     )
-    fields: list = Field(
-        description="A list of fields to return",
-        examples=[
-            "description",
-            "document_collections",
-            "link",
-        ],
-    )
-    count: int = Field(
-        description="The number of results to return",
-        examples=[100],
-    )
-    start: int = Field(description="the start index", examples=[0])
 
 
 class MojPublicationsAPIConfig(ConfigModel):

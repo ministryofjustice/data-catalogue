@@ -20,6 +20,23 @@ class MojPublicationsAPIClient:
 
     def list_all_publications_metadata(self):
         params_dict = dict(self.params)
+        # These params are unlikely to need to be changed and if fields are then
+        # we'll need to update the code to return any fields added
+        params_dict.update(
+            {
+                "fields": [
+                    "description",
+                    "document_collections",
+                    "link",
+                    "public_timestamp",
+                    "title",
+                    "first_published_at",
+                ],
+                # Maximum results per API call is 1500
+                "count": 1500,
+                "start": 0,
+            }
+        )
         all_results = []
         while True:
             # Construct the search URL

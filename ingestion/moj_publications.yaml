@@ -1,7 +1,7 @@
 source:
   type: ingestion.moj_statistical_publications_source.source.MojPublicationsAPISource
   config:
-    base_url: "https://www.gov.uk/api"
+    base_url: "https://gov.uk/api"
     default_contact_email: statistics.enquiries@justice.gsi.gov.uk
     collections_to_exclude: [
       "offender-management-statistics-quarterly--3"
@@ -13,14 +13,3 @@ source:
           "national_statistics",
           "official_statistics"
       ]
-      fields: [
-          "description",
-          "document_collections",
-          "link",
-          "public_timestamp",
-          "title",
-          "first_published_at"
-      ]
-      # Maximum results per API call is 1500
-      "count": 1500
-      "start": 0
