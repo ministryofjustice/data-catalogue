@@ -21,7 +21,6 @@ from datahub.ingestion.api.source import (
     TestConnectionReport,
 )
 from datahub.ingestion.api.workunit import MetadataWorkUnit
-from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 from datahub.metadata.com.linkedin.pegasus2avro.common import TimeStamp
 from datahub.metadata.schema_classes import (
     ContainerClass,
