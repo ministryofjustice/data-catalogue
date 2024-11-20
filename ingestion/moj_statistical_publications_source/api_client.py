@@ -67,9 +67,7 @@ class MojPublicationsAPIClient:
         for collection in unique_collections:
             # descriptions and last updated dates need to be fetched from the content API
             # for each collection
-            content_api_url = os.path.join(
-                self.base_url, f"content/{collection['link']}"
-            )
+            content_api_url = os.path.join(self.base_url, "content", collection["link"])
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
             collection["domain"] = self._id_to_domain_contact_mapping.get(
@@ -89,9 +87,9 @@ class MojPublicationsAPIClient:
             if val is not None
         ]
         domains = [domain for domain in domains if domain is not None]
-
+        datahub_domains = list_datahub_domains()
         for domain in set(domains):
-            if domain.lower() not in list_datahub_domains():
+            if domain.lower() not in datahub_domains:
                 raise ValueError(
                     f"""
                     Domain - {domain}, doesn't exist in datahub.
