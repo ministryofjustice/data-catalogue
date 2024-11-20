@@ -93,7 +93,7 @@ datahub-frontend:
         SecRule REQUEST_URI "@rx ^\/api\/gms\/entities\?action=ingest|\/api\/gms\/aspects\?action=ingestProposal$" "id:1002,phase:1,t:none,nolog,pass,ctl:ruleRemoveById=930120,ctl:ruleRemoveById=933210,ctl:ruleRemoveById=933160,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=200002"
         SecRule REQUEST_URI "@contains .profile" "id:1003,phase:1,t:lowercase,nolog,pass,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=930120"
         SecRule REQUEST_HEADERS:Content-Type "^application/json" "id:1004,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
-        SecRule ARGS:json.urn "@contains .profile" "id:1005,phase:1,t:lowercase,nolog,pass,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=930120"
+        SecRule ARGS:json.urn "@contains .profile" "id:1005,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=930120"
 
         SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
         SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
