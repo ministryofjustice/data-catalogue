@@ -91,7 +91,7 @@ class MojPublicationsAPIClient:
         domains = [domain for domain in domains if domain is not None]
 
         for domain in set(domains):
-            if domain.lower() not in set(list_datahub_domains()):
+            if domain.lower() not in list_datahub_domains():
                 raise ValueError(
                     f"""
                     Domain - {domain}, doesn't exist in datahub.
