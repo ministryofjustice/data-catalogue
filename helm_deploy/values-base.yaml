@@ -91,7 +91,7 @@ datahub-frontend:
         SecRule REQUEST_URI "@rx ^\/api\/graphql|\/api\/v2\/graphql|\/api\/gms\/api\/graphql$" "id:1001,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=932100,ctl:ruleRemoveById=932105,ctl:ruleRemoveById=932115,ctl:ruleRemoveById=932150,ctl:ruleRemoveById=949110;ARGS:json.query"
         SecRule REQUEST_URI "@rx ^\/api\/gms\/entities\?action=ingest|\/api\/gms\/aspects\?action=ingestProposal$" "id:1002,phase:1,t:none,nolog,pass,ctl:ruleRemoveById=930120,ctl:ruleRemoveById=933210,ctl:ruleRemoveById=933160,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=200002"
         SecRule REQUEST_URI "@contains .profile" "id:1003,phase:1,t:lowercase,nolog,pass,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=930120"
-        SecRule ARGS:json "@contains .profile" "id:1004,phase:1,t:lowercase,nolog,pass,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=930120"
+        SecRule ARGS:json.urn "@contains .profile" "id:1004,phase:1,t:lowercase,nolog,pass,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=930120"
 
         SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
         SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
