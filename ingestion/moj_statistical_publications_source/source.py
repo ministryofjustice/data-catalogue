@@ -82,10 +82,9 @@ class MojPublicationsAPISource(TestableSource):
             all_publications_metadata, self.config.collections_to_exclude
         )
 
-        mcps = []
-
         # create publication collections entities DatasetContainerSubTypes.FOLDER
         yield from self._create_publication_collections_containers(collections_metadata)
+
         mcps = self._make_publication_dataset_mcps(all_publications_metadata)
         for mcp in mcps:
             logging.info(f"creating {mcp.aspectName} for {mcp.entityUrn}")
