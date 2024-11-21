@@ -1,0 +1,15 @@
+source:
+  type: ingestion.moj_statistical_publications_source.source.MojPublicationsAPISource
+  config:
+    base_url: "https://gov.uk/api"
+    default_contact_email: statistics.enquiries@justice.gsi.gov.uk
+    collections_to_exclude: [
+      "offender-management-statistics-quarterly--3"
+    ]
+    access_requirements: You are free to re-use the data internally or externally without requesting permission.
+    params:
+      filter_organisations: [ministry-of-justice]
+      filter_content_store_document_type: [
+          "national_statistics",
+          "official_statistics"
+      ]

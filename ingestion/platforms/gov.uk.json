@@ -1,0 +1,21 @@
+[
+    {
+        "auditHeader": null,
+        "proposedSnapshot": {
+            "com.linkedin.pegasus2avro.metadata.snapshot.DataPlatformSnapshot": {
+                "urn": "urn:li:dataPlatform:GOV.UK",
+                "aspects": [
+                    {
+                        "com.linkedin.pegasus2avro.dataplatform.DataPlatformInfo": {
+                            "datasetNameDelimiter": "/",
+                            "name": "GOV.UK",
+                            "type": "OTHERS",
+                            "logoUrl": "https://www.gov.uk/assets/static/govuk-opengraph-image-03837e1cec82f217cf32514635a13c879b8c400ae3b1c207c5744411658c7635.png"
+                        }
+                    }
+                ]
+            }
+        },
+        "proposedDelta": null
+    }
+]

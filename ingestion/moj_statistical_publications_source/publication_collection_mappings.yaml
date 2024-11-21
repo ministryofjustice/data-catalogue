@@ -1,0 +1,154 @@
+accredited-programmes-annual-bulletin:
+  domain: Interventions
+  contact_email: statistics@justice.gov.uk  # This is really old and likely unsupported
+ad-hoc-justice-statistics:
+  domain: General
+  contact_email: statistics@justice.gov.uk
+alcohol-and-drug-misuse-and-treatment-statistics:
+  domain: Interventions
+  # contact_email:
+# antisocial-behaviour:
+#   domain: null  # a home office collection but with orders in the details, Courts?
+#   contact_email:
+civil-justice-statistics:
+  domain: Courts
+  contact_email: CAJS@justice.gov.uk
+civil-justice-statistics-quarterly:
+  domain: Courts
+  contact_email: CAJS@justice.gov.uk
+# compendium-of-re-offending:
+#   domain: null  # New reoffending domain maybe?
+#   contact_email:
+# coroners-and-burials-statistics:
+#   domain: null  # unsure where this would fit, could make General?
+#   contact_email:
+court-statistics-quarterly:
+  domain: Courts
+  # contact_email:
+crime-statistics:
+  # domain: Courts  # could we have an Other Gov Dept (OGD) domain?
+  contact_email: CrimeandPoliceStats@homeoffice.gov.uk
+criminal-court-statistics:
+  domain: Courts
+  contact_email: criminal_court_sta@justice.gov.uk
+criminal-justice-statistics:
+  domain: General  # cross-cutting so doesn't fit nicely in existing structure
+  contact_email: CJS_Statistics@justice.gov.uk
+criminal-justice-statistics-quarterly:
+  domain: General  # cross-cutting so doesn't fit nicely in existing structure
+  contact_email: CJS_Statistics@justice.gov.uk
+death-of-offenders-in-the-community:
+  domain: Probation
+  contact_email: probation-statistics-enquiries@justice.gov.uk
+electronic-monitoring-publication:
+  domain: Electronic monitoring
+  contact_email: ppas_statistics@justice.gov.uk
+family-court-statistics-quarterly:
+  domain: Courts
+  contact_email: familycourt.statistics@justice.gov.uk
+gender-recognition-certificate-statistics:
+  domain: Courts
+  # contact_email:
+government-foi-statistics:
+  domain: General
+  contact_email: foistatistics@cabinetoffice.gov.uk
+# Publication mappings to domains and to contact emails
+hate-crime-statistics:
+#   domain: null  # This is most Home Office with "An overview of hate crime in England and Wales" moj associated
+  contact_email: crimeandpolicestats@homeoffice.gov.uk
+# hm-prison-and-probation-service-covid-19-statistics-monthly:
+#   domain: null  # Need a HMPPS domain
+#   contact_email:
+hmpps-annual-offender-equalities-report:
+  # domain: null  # Need a HMPPS domain
+  contact_email: sueper_stats@justice.gov.uk
+hmpps-annual-staff-equalities-report:
+#   domain: null  # Need a HMPPS domain
+  contact_email: robert.hartley@justice.gov.uk
+# hmpps-covid-19-management-information-weekly:
+#   domain: null  # Need a HMPPS domain
+#   contact_email:
+judicial-and-court-statistics:
+  domain: Courts
+  # contact_email:
+judicial-diversity-statistics:
+  domain: Courts
+  contact_email: judicial.statistics@justice.gov.uk
+justice-data-lab-pilot-statistics:
+  domain: General
+  contact_email: justice.datalab@justice.gov.uk
+knife-possession-sentencing-quarterly:
+  domain: Courts
+  contact_email: MOJPNCteam@justice.gov.uk
+legal-aid-statistics:
+#   domain: null  # Need a LAA domain
+  contact_email: statistics@justice.gov.uk
+# legal-aid-statistics-data-files:
+#   domain: null  # Need a LAA domain
+#   contact_email:
+# local-adult-reoffending:
+#   domain: null  # New reoffending domain maybe?
+#   contact_email:
+mortgage-and-landlord-possession-statistics:
+  domain: Courts
+  contact_email: CAJS@justice.gov.uk
+multi-agency-public-protection-arrangements-mappa-annual-reports:
+#   domain: null  # Need a HMPPS domain
+  contact_email: mappa@justice.gov.uk
+national-offender-management-service-workforce-statistics:
+#   domain: null  # Need a HMPPS domain
+  contact_email: robert.hartley@justice.gov.uk
+# new-criminal-offences-statistics:
+#   domain: null  # unsure of this one
+#   contact_email:
+offender-management-statistics-quarterly:
+#   domain: null  # Need a HMPPS domain
+  contact_email: OMSQ-SiC-publications@justice.gov.uk
+payment-by-results-statistics:
+  domain: Probation
+  # contact_email:
+prison-and-probation-trusts-performance-statistics:
+#   domain: null  # Need a HMPPS domain
+  contact_email: SUEPer_Stats@justice.gov.uk
+prison-population-statistics:
+  domain: Prison
+  # contact_email:
+# prisons-and-probation-statistics:
+#   domain: null  # Need a HMPPS domain
+  # contact_email:
+probation-service-workforce-quarterly-reports:
+  domain: Probation
+  # contact_email:
+proven-reoffending-statistics:
+#   domain: null  # New reoffending domain maybe?
+  contact_email: reoffendingstatistics@justice.gov.uk
+race-and-the-criminal-justice-system:
+  domain: General
+  contact_email: CJS_Statistics@justice.gov.uk
+restricted-patients-statistics-england-and-wales:
+#   domain: null  # not sure for this
+  contact_email: MHCSMailbox@justice.gov.uk
+safety-in-custody-statistics:
+  domain: Prison
+  contact_email: OMSQ-SiC-publications@justice.gov.uk
+statistics-on-privacy-injunctions:
+  domain: Courts
+  # contact_email:
+statistics-on-public-disorder-of-6-9-august-2011:
+  domain: General
+  # contact_email:
+statistics-on-the-use-of-language-services-in-courts-and-tribunals:
+  domain: Courts
+  # contact_email:
+topical-criminal-justice-publications:
+  domain: General
+  # contact_email:
+tribunals-statistics:
+#   domain: null  # Could we have a HMCTS domain?
+  contact_email: CAJS@justice.gov.uk
+women-and-the-criminal-justice-system:
+  domain: General
+  contact_email: CJS_Statistics@justice.gov.uk
+youth-justice-statistics:
+  domain: General
+  contact_email: statistics@yjb.gov.uk
