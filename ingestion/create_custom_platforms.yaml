@@ -1,0 +1,4 @@
+source:
+  type: "file"
+  config:
+    path: "./ingestion/platforms/gov.uk.json"

@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+from enum import StrEnum
 from typing import Dict, Tuple
 
 import boto3
@@ -20,6 +21,18 @@ from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+class FindMojDataEntityTypes(StrEnum):
+    """
+    An enum to hold subtypes specific to moj data that are outside
+    of the datahub standard subtype offerings
+    """
+
+    # to be used as container subtype
+    PUBLICATION_COLLECTION = "Publication collection"
+    # to be used as dataset subtype
+    PUBLICATION_DATASET = "Publication dataset"
 
 
 @report_time
