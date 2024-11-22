@@ -11,7 +11,8 @@ def inject_run_result_paths_into_yaml_template(yaml_path):
 
     template["source"]["config"]["run_results_paths"] = get_cadet_run_result_paths()
 
-    with open("ingestion/cadet_with_run_results.yml", "w") as f:
+    # Overwite the original file with updated the run results paths.
+    with open(yaml_path, "w") as f:
         yaml.dump(template, f, indent=2, sort_keys=False, default_flow_style=False)
 
 
