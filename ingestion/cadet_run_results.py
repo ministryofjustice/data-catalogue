@@ -43,4 +43,4 @@ def get_cadet_run_result_paths(bucket_name="mojap-derived-tables", days=1):
 
 
 if __name__ == "__main__":
-    inject_run_result_paths_into_yaml_template("ingestion/cadet.yml")
+    inject_run_result_paths_into_yaml_template("ingestion/cadet.yaml")
