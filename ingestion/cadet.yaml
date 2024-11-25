@@ -1,3 +1,4 @@
+pipeline_name: ap_cadet
 source:
   type: dbt
   config:
