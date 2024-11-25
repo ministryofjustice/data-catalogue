@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta, timezone
 import os
-from unittest.mock import patch, mock_open
+from datetime import datetime, timedelta, timezone
+from unittest.mock import mock_open, patch
+
 import yaml
 
 from ingestion.cadet_run_results import (
@@ -18,8 +19,58 @@ yaml_data = {
             "run_results_paths": [
                 "s3://mojap-derived-tables/prod/run_artefacts/latest/target/run_results.json"
             ],
+            "platform_instance": "cadet",
+            "target_platform": "athena",
+            "target_platform_instance": "athena_cadet",
+            "infer_dbt_schemas": True,
+            "write_semantics": "OVERRIDE",
+            "node_name_pattern": {
+                "deny": [
+                    ".*use_of_force\\.summary_status_complete_dim.*",
+                    ".*use_of_force\\.summary_status_in_progress_dim.*",
+                    ".*use_of_force\\.summary_status_submitted_dim.*",
+                    ".*data_eng_uploader_prod_calc_release_dates\\.survey_data.*",
+                    "source.mojap_derived_tables.oasys.*",
+                    "source.mojap_derived_tables.delius.*",
+                    ".*avature_stg\\.stg_people_fields_pivoted_wide.*",
+                    ".*avature_stg\\.stg_job_fields_pivoted_wide.*",
+                    "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data",
+                ]
+            },
+            "entities_enabled": {
+                "test_results": "YES",
+                "seeds": "YES",
+                "snapshots": "NO",
+                "models": "YES",
+                "sources": "YES",
+                "test_definitions": "YES",
+            },
+            "stateful_ingestion": {"enabled": True, "remove_stale_metadata": True},
+            "include_compiled_code": False,
+            "include_column_lineage": False,
+            "strip_user_ids_from_email": False,
+            "tag_prefix": "",
+            "meta_mapping": {
+                "dc_data_custodian": {
+                    "match": ".*",
+                    "operation": "add_owner",
+                    "config": {"owner_type": "user", "owner_category": "DATAOWNER"},
+                }
+            },
         },
-    }
+    },
+    "transformers": [
+        {
+            "type": "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases",
+            "config": {
+                "manifest_s3_uri": "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+            },
+        },
+        {
+            "type": "simple_add_dataset_properties",
+            "config": {"properties": {"audience": "Internal"}},
+        },
+    ],
 }
 
 
@@ -40,23 +91,11 @@ def test_inject_run_results_into_yaml_template(
     with open(cadet_test_recipe_path) as f:
         template = yaml.safe_load(f)
 
-    assert (
-        template["source"]["config"]["aws_connection"]
-        == yaml_data["source"]["config"]["aws_connection"]
-    )
-    assert (
-        template["source"]["config"]["manifest_path"]
-        == yaml_data["source"]["config"]["manifest_path"]
-    )
-    assert (
-        template["source"]["config"]["catalog_path"]
-        == yaml_data["source"]["config"]["catalog_path"]
-    )
-
-    assert template["source"]["config"]["run_results_paths"] == [
+    yaml_data["source"]["config"]["run_results_paths"] = [
         "s3://mojap-derived-tables/prod/run_artefacts/run_results.json",
         "s3://mojap-derived-tables/prod/run_artefacts/123/run_results.json",
     ]
+    assert template == yaml_data
 
     os.remove(cadet_test_recipe_path)
 
