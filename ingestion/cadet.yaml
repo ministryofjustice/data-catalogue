@@ -42,6 +42,7 @@ source:
       sources: "YES"
       test_definitions: "YES"
     stateful_ingestion:
+      enabled: true
       remove_stale_metadata: true
 
     # SQLglot sometimes raises RecursionError with valid SQL.
