@@ -72,6 +72,9 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
+      
+      - name: run cadet_run_results.py
+        run: poetry run python ingestion/cadet_run_results.py
 
       - name: push metadata to datahub
         id: push_datahub
