@@ -1,3 +1,4 @@
+pipeline_name: justice-data
 source:
   type: ingestion.justice_data_source.source.JusticeDataAPISource
   config:
@@ -6,3 +7,6 @@ source:
       - justice-in-numbers
     access_requirements: You are free to re-use the data internally or externally without requesting permission.
     default_owner_email: statistics.enquiries@justice.gov.uk
+    stateful_ingestion:
+      enabled: true
+      remove_stale_metadata: true

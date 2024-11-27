@@ -20,6 +20,13 @@ from datahub.ingestion.api.source import (
     TestConnectionReport,
 )
 from datahub.ingestion.api.workunit import MetadataWorkUnit
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StaleEntityRemovalHandler,
+    StaleEntityRemovalSourceReport,
+)
+from datahub.ingestion.source.state.stateful_ingestion_base import (
+    StatefulIngestionSourceBase,
+)
 from datahub.metadata.com.linkedin.pegasus2avro.common import (
     AuditStamp,
     ChangeAuditStamps,
@@ -56,7 +63,7 @@ logging.basicConfig(level=logging.DEBUG)
 @platform_name("File")
 @config_class(JusticeDataAPIConfig)
 @support_status(SupportStatus.CERTIFIED)
-class JusticeDataAPISource(TestableSource):
+class JusticeDataAPISource(StatefulIngestionSourceBase):
     """
     This plugin pulls metadata from the Justice Data API
     """
@@ -67,9 +74,11 @@ class JusticeDataAPISource(TestableSource):
         config: JusticeDataAPIConfig,
         validate_domains: bool = True,
     ):
+        super().__init__(config, ctx)
+
         self.ctx = ctx
         self.config = config
-        self.report = SourceReport()
+        self.report = StaleEntityRemovalSourceReport()
         self.fp: Optional[BufferedReader] = None
         self.client = JusticeDataAPIClient(config.base_url, config.default_owner_email)
         if validate_domains:
@@ -77,10 +86,21 @@ class JusticeDataAPISource(TestableSource):
         self.platform_name = "justice-data"
         self.web_url = self.config.base_url.removesuffix("/api").removesuffix("/api/")
 
+        # Create and register the stateful ingestion use-case handler.
+        self.stale_entity_removal_handler = StaleEntityRemovalHandler.create(
+            self, self.config, ctx
+        )
+
     @classmethod
     def create(cls, config_dict, ctx):
         config = JusticeDataAPIConfig.parse_obj(config_dict)
         return cls(ctx, config)
+
+    def get_workunit_processors(self):
+        return [
+            *super().get_workunit_processors(),
+            self.stale_entity_removal_handler.workunit_processor,
+        ]
 
     @report_generator_time
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
@@ -156,9 +176,7 @@ class JusticeDataAPISource(TestableSource):
         )
 
         title = chart_data["name"]
-        refresh_period = self._format_update_frequency(
-            chart_data.get("refresh_period")
-        )
+        refresh_period = self._format_update_frequency(chart_data.get("refresh_period"))
         publication_date = chart_data.get("last_updated_timestamp")
 
         # TODO: generate a fully qualified name?
