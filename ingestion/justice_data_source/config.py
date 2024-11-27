@@ -1,4 +1,12 @@
+from typing import Optional
+
 from datahub.configuration.common import ConfigModel
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StatefulStaleMetadataRemovalConfig,
+)
+from datahub.ingestion.source.state.stateful_ingestion_base import (
+    StatefulIngestionConfigBase,
+)
 from pydantic import Field
 
 # These map the api ids to domains as set by create_cadet_database_source.py
@@ -18,7 +26,7 @@ ID_TO_DOMAIN_MAPPING = {
 }
 
 
-class JusticeDataAPIConfig(ConfigModel):
+class JusticeDataAPIConfig(StatefulIngestionConfigBase):
     base_url: str = Field(description="URL to justice data API")
     exclude_id_list: list[str] = Field(
         description="list of ids to exclude from the ingestion, inclusive of that id and all children",
@@ -35,4 +43,11 @@ class JusticeDataAPIConfig(ConfigModel):
         description="""
             The owner email will default to this email if the `ownerEmail key is not found
             at the /publications endpoint""",
+    )
+    stateful_ingestion: Optional[StatefulStaleMetadataRemovalConfig] = Field(
+        description="""
+            Can configure whether the ingestion is be be staeful and can remove stale metadata.
+            see https://datahubproject.io/docs/metadata-ingestion/docs/dev_guides/stateful/#stale-entity-removal
+            """,
+        default=None,
     )
