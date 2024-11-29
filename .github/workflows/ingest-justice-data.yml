@@ -57,13 +57,6 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: clear existing justice data
-        env:
-          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-          DATAHUB_TELEMETRY_ENABLED: false
-        run: poetry run datahub delete --platform justice-data --hard --force
-
       - name: justice data datahub ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
