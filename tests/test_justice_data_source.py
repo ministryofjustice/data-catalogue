@@ -64,12 +64,6 @@ def test_chart(mock_justice_data_api, default_owner_email):
         == '<p class="govuk-body">Applications determination granted.</p>'
     )
 
-    chart_owner = first_chart.aspects[-1]
-    assert (
-        chart_owner.owners[0].owner
-        == f"urn:li:corpGroup:{default_owner_email.split('@')[0]}"
-    )
-
     first_chart_domain = next(
         r.metadata for r in mock_justice_data_api if hasattr(r.metadata, "aspect")
     )
@@ -79,17 +73,8 @@ def test_chart(mock_justice_data_api, default_owner_email):
         "audience": "Published",
         "dc_access_requirements": "",
         "refresh_period": "Quarterly",
+        "dc_team_email": "not.me@justice.gov.uk",
     }
-
-
-def test_corp_group(mock_justice_data_api, default_owner_email):
-    corp_group = next(
-        r.metadata.proposedSnapshot
-        for r in mock_justice_data_api
-        if "corpgroup" in r.metadata.proposedSnapshot.urn.lower()
-    )
-
-    assert corp_group.urn == f"urn:li:corpGroup:{default_owner_email.split('@')[0]}"
 
 
 def test_dashboard(mock_justice_data_api):
