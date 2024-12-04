@@ -38,6 +38,7 @@ from datahub.metadata.schema_classes import (
     DashboardInfoClass,
     DomainsClass,
     GlobalTagsClass,
+    OwnershipClass,
     TagAssociationClass,
 )
 from datahub.utilities.time import datetime_to_ts_millis
@@ -181,11 +182,14 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         # add tag so entity displays in find-moj-data
         display_tag = self._make_tags_aspect()
 
+        # wipe all owners (this can be removed if/when we reintroduce owners to Justice Data charts)
+        owners = OwnershipClass(owners=[])
+
         yield from [
             mcp.as_workunit()
             for mcp in MetadataChangeProposalWrapper.construct_many(
                 entityUrn=chart_urn,
-                aspects=[chart_info, display_tag, Status(removed=False)],
+                aspects=[chart_info, display_tag, Status(removed=False), owners],
             )
         ]
 
