@@ -14,13 +14,15 @@ from datahub.ingestion.api.decorators import (
     platform_name,
     support_status,
 )
-from datahub.ingestion.api.source import (
-    CapabilityReport,
-    SourceReport,
-    TestableSource,
-    TestConnectionReport,
-)
+from datahub.ingestion.api.source import CapabilityReport, TestConnectionReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StaleEntityRemovalHandler,
+    StaleEntityRemovalSourceReport,
+)
+from datahub.ingestion.source.state.stateful_ingestion_base import (
+    StatefulIngestionSourceBase,
+)
 from datahub.metadata.com.linkedin.pegasus2avro.common import TimeStamp
 from datahub.metadata.schema_classes import (
     ContainerClass,
@@ -44,7 +46,7 @@ logging.basicConfig(level=logging.DEBUG)
 @platform_name("File")
 @config_class(MojPublicationsAPIConfig)
 @support_status(SupportStatus.CERTIFIED)
-class MojPublicationsAPISource(TestableSource):
+class MojPublicationsAPISource(StatefulIngestionSourceBase):
     """
     This plugin pulls metadata from the gov.uk publications search and content APIs
     """
@@ -55,9 +57,11 @@ class MojPublicationsAPISource(TestableSource):
         config: MojPublicationsAPIConfig,
         validate_domains: bool = True,
     ) -> None:
+        super().__init__(config, ctx)
+
         self.ctx = ctx
         self.config = config
-        self.report = SourceReport()
+        self.report = StaleEntityRemovalSourceReport()
         self.fp: Optional[BufferedReader] = None
         self.client = MojPublicationsAPIClient(
             config.base_url, config.default_contact_email, config.params
@@ -70,10 +74,21 @@ class MojPublicationsAPISource(TestableSource):
         self.access_requirements = config.access_requirements
         self.web_url = self.config.base_url.removesuffix("/api").removesuffix("/api/")
 
+        # Create and register the stateful ingestion use-case handler.
+        self.stale_entity_removal_handler = StaleEntityRemovalHandler.create(
+            self, self.config, ctx
+        )
+
     @classmethod
     def create(cls, config_dict, ctx):
         config = MojPublicationsAPIConfig.model_validate(config_dict)
         return cls(ctx, config)
+
+    def get_workunit_processors(self):
+        return [
+            *super().get_workunit_processors(),
+            self.stale_entity_removal_handler.workunit_processor,
+        ]
 
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
         all_publications_metadata = self.client.list_all_publications_metadata()
@@ -263,9 +278,7 @@ class MojPublicationsAPISource(TestableSource):
                     entityUrn=dataset_urn,
                     aspect=GlobalTagsClass(
                         tags=[
-                            TagAssociationClass(
-                                tag="urn:li:tag:dc_display_in_catalogue"
-                            )
+                            TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")
                         ]
                     ),
                 )

@@ -1,5 +1,12 @@
+from typing import Optional
+
 import yaml
-from datahub.configuration.common import ConfigModel
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StatefulStaleMetadataRemovalConfig,
+)
+from datahub.ingestion.source.state.stateful_ingestion_base import (
+    StatefulIngestionConfigBase,
+)
 from pydantic import BaseModel, Field
 
 with open(
@@ -21,7 +28,7 @@ class MojPublicationsAPIParams(BaseModel):
     )
 
 
-class MojPublicationsAPIConfig(ConfigModel):
+class MojPublicationsAPIConfig(StatefulIngestionConfigBase):
     base_url: str = Field(description="URL to gov.uk search API")
 
     default_contact_email: str | None = Field(
@@ -49,9 +56,13 @@ class MojPublicationsAPIConfig(ConfigModel):
             MojPublicationsAPIParams(
                 filter_organisations=["ministry-of-justice"],
                 filter_content_store_document_type=["national_statistics"],
-                fields=["description", "document_collections", "link"],
-                count=100,
-                start=0,
             )
         ],
+    )
+    stateful_ingestion: Optional[StatefulStaleMetadataRemovalConfig] = Field(
+        description="""
+            Can configure whether the ingestion is be be stateful and can remove stale metadata.
+            see https://datahubproject.io/docs/metadata-ingestion/docs/dev_guides/stateful/#stale-entity-removal
+            """,
+        default=None,
     )
