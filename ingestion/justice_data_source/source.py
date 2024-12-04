@@ -13,12 +13,7 @@ from datahub.ingestion.api.decorators import (
     platform_name,
     support_status,
 )
-from datahub.ingestion.api.source import (
-    CapabilityReport,
-    SourceReport,
-    TestableSource,
-    TestConnectionReport,
-)
+from datahub.ingestion.api.source import CapabilityReport, TestConnectionReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.state.stale_entity_removal_handler import (
     StaleEntityRemovalHandler,
@@ -34,18 +29,15 @@ from datahub.metadata.com.linkedin.pegasus2avro.common import (
 )
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
     ChartSnapshot,
-    CorpGroupSnapshot,
     DashboardSnapshot,
 )
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
     ChartInfoClass,
-    CorpGroupInfoClass,
     DashboardInfoClass,
     DomainsClass,
     GlobalTagsClass,
-    OwnerClass,
     OwnershipClass,
     TagAssociationClass,
 )
@@ -106,20 +98,11 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
         all_chart_data = self.client.list_all(self.config.exclude_id_list)
 
-        # create group entities for publication owners
-        owner_emails = {chart["owner_email"] for chart in all_chart_data}
-        for owner_email in owner_emails:
-            mce = self._make_group(owner_email)
-            wu = MetadataWorkUnit("single_mce", mce=mce)
-            self.report.report_workunit(wu)
-            yield wu
-
         # creates each chart entity
         for chart_data in all_chart_data:
-            mce = self._make_chart(chart_data)
-            wu = MetadataWorkUnit("single_mce", mce=mce)
-            self.report.report_workunit(wu)
-            yield wu
+            for wu in self._make_chart(chart_data):
+                self.report.report_workunit(wu)
+                yield wu
 
         # adds domains to each chart created previously (if chart has a domain)
         for chart_data in all_chart_data:
@@ -168,12 +151,10 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         dashboard_mce = MetadataChangeEvent(proposedSnapshot=dashboard_snapshot)
         return dashboard_mce
 
-    def _make_chart(self, chart_data: dict[str, Any]) -> MetadataChangeEvent:
+    def _make_chart(
+        self, chart_data: dict[str, Any]
+    ):  # -> Generator[MetadataWorkUnit, Any, None]:
         chart_urn = builder.make_chart_urn(self.platform_name, chart_data["id"])
-        chart_snapshot = ChartSnapshot(
-            urn=chart_urn,
-            aspects=[Status(removed=False)],
-        )
 
         title = chart_data["name"]
         refresh_period = self._format_update_frequency(chart_data.get("refresh_period"))
@@ -194,38 +175,23 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
                 "refresh_period": refresh_period or "",
                 "dc_access_requirements": self.config.access_requirements,
                 "audience": "Published",
+                "dc_team_email": chart_data["owner_email"],
             },
         )
-        chart_snapshot.aspects.append(chart_info)
 
         # add tag so entity displays in find-moj-data
         display_tag = self._make_tags_aspect()
-        chart_snapshot.aspects.append(display_tag)
 
-        # TODO: browse paths requires IDs, not just titles
-        breadcrumb = chart_data.get("breadcrumb")
-        breadcrumb.append(title)
-        # browse_path = BrowsePathsV2Class(path=["/justice-data/" + "/".join(breadcrumb)])
-        # chart_snapshot.aspects.append(browse_path)
+        # wipe all owners (this can be removed if/when we reintroduce owners to Justice Data charts)
+        owners = OwnershipClass(owners=[])
 
-        # add chart ownership
-        owner_urn = builder.make_group_urn(chart_data["owner_email"].split("@")[0])
-        chart_owner = OwnershipClass(
-            owners=[
-                OwnerClass(
-                    owner=owner_urn,
-                    type="CUSTOM",
-                    typeUrn="urn:li:ownershipType:data_custodian",
-                )
-            ]
-        )
-        chart_snapshot.aspects.append(chart_owner)
-
-        chart_mce = MetadataChangeEvent(proposedSnapshot=chart_snapshot)
-
-        # TODO: add embed url?
-
-        return chart_mce
+        yield from [
+            mcp.as_workunit()
+            for mcp in MetadataChangeProposalWrapper.construct_many(
+                entityUrn=chart_urn,
+                aspects=[chart_info, display_tag, Status(removed=False), owners],
+            )
+        ]
 
     def _assign_chart_to_domain(self, chart_data) -> MetadataChangeProposalWrapper:
         """
@@ -250,28 +216,6 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         tag_assocations = [TagAssociationClass(tag_urn) for tag_urn in tag_urns]
         tags = GlobalTagsClass(tags=tag_assocations)
         return tags
-
-    def _make_group(self, owner_email) -> MetadataChangeEvent:
-        """
-        these groups will relate to emails on statistcal publication contacts
-        which are not individuals
-        """
-
-        group_urn = builder.make_group_urn(owner_email.split("@")[0])
-        group_snapshot = CorpGroupSnapshot(
-            urn=group_urn,
-            aspects=[Status(removed=False)],
-        )
-        group_info = CorpGroupInfoClass(
-            admins=[],
-            members=[],
-            groups=[],
-            displayName=owner_email.split("@")[0].replace(".", " "),
-            email=owner_email,
-        )
-        group_snapshot.aspects.append(group_info)
-        group_mce = MetadataChangeEvent(proposedSnapshot=group_snapshot)
-        return group_mce
 
     def _format_audit_stamp(self, maybe_date: datetime | None) -> AuditStamp | None:
         if not maybe_date:
