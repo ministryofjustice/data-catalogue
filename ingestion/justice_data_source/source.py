@@ -99,10 +99,9 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
 
         # creates each chart entity
         for chart_data in all_chart_data:
-            mce = self._make_chart(chart_data)
-            wu = MetadataWorkUnit("single_mce", mce=mce)
-            self.report.report_workunit(wu)
-            yield wu
+            for wu in self._make_chart(chart_data):
+                self.report.report_workunit(wu)
+                yield wu
 
         # adds domains to each chart created previously (if chart has a domain)
         for chart_data in all_chart_data:
@@ -151,12 +150,10 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         dashboard_mce = MetadataChangeEvent(proposedSnapshot=dashboard_snapshot)
         return dashboard_mce
 
-    def _make_chart(self, chart_data: dict[str, Any]) -> MetadataChangeEvent:
+    def _make_chart(
+        self, chart_data: dict[str, Any]
+    ):  # -> Generator[MetadataWorkUnit, Any, None]:
         chart_urn = builder.make_chart_urn(self.platform_name, chart_data["id"])
-        chart_snapshot = ChartSnapshot(
-            urn=chart_urn,
-            aspects=[Status(removed=False)],
-        )
 
         title = chart_data["name"]
         refresh_period = self._format_update_frequency(chart_data.get("refresh_period"))
@@ -180,18 +177,17 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
                 "dc_team_email": chart_data["owner_email"],
             },
         )
-        chart_snapshot.aspects.append(chart_info)
 
         # add tag so entity displays in find-moj-data
         display_tag = self._make_tags_aspect()
-        chart_snapshot.aspects.append(display_tag)
 
-        breadcrumb = chart_data.get("breadcrumb")
-        breadcrumb.append(title)
-
-        chart_mce = MetadataChangeEvent(proposedSnapshot=chart_snapshot)
-
-        return chart_mce
+        yield from [
+            mcp.as_workunit()
+            for mcp in MetadataChangeProposalWrapper.construct_many(
+                entityUrn=chart_urn,
+                aspects=[chart_info, display_tag, Status(removed=False)],
+            )
+        ]
 
     def _assign_chart_to_domain(self, chart_data) -> MetadataChangeProposalWrapper:
         """

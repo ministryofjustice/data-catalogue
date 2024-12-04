@@ -44,16 +44,15 @@ def test_workunits_created(mock_justice_data_api):
 
 
 def test_chart(mock_justice_data_api, default_owner_email):
-    first_chart = next(
-        r.metadata.proposedSnapshot
-        for r in mock_justice_data_api
-        if "chart" in r.metadata.proposedSnapshot.urn
-    )
-    assert (
-        first_chart.urn
+    chart_aspects = {
+        wu.metadata.aspectName: wu.metadata.aspect
+        for wu in mock_justice_data_api
+        if wu.get_urn()
         == "urn:li:chart:(justice-data,legal-aid-ecf-applicationsgranted)"
-    )
-    chartinfo = first_chart.aspects[1]
+    }
+    assert chart_aspects
+
+    chartinfo = chart_aspects["chartInfo"]
     assert (
         chartinfo.chartUrl
         == "https://data.justice.gov.uk/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsgranted"
@@ -64,10 +63,8 @@ def test_chart(mock_justice_data_api, default_owner_email):
         == '<p class="govuk-body">Applications determination granted.</p>'
     )
 
-    first_chart_domain = next(
-        r.metadata for r in mock_justice_data_api if hasattr(r.metadata, "aspect")
-    )
-    assert first_chart_domain.aspect.domains[0] == "urn:li:domain:General"
+    first_chart_domain = chart_aspects["domains"]
+    assert first_chart_domain.domains[0] == "urn:li:domain:General"
 
     assert chartinfo.customProperties == {
         "audience": "Published",
