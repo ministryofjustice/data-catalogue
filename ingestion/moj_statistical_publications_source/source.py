@@ -81,7 +81,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
     @classmethod
     def create(cls, config_dict, ctx):
-        config = MojPublicationsAPIConfig.model_validate(config_dict)
+        config = MojPublicationsAPIConfig.parse_obj(config_dict)
         return cls(ctx, config)
 
     def get_workunit_processors(self):
@@ -278,7 +278,9 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                     entityUrn=dataset_urn,
                     aspect=GlobalTagsClass(
                         tags=[
-                            TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")
+                            TagAssociationClass(
+                                tag="urn:li:tag:dc_display_in_catalogue"
+                            )
                         ]
                     ),
                 )

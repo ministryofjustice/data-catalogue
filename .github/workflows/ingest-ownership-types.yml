@@ -61,22 +61,15 @@ jobs:
         run: time poetry run datahub ingest -c ingestion/create_custom_ownership_types.yaml
 
       - name: Notify on failure
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         if: failure()
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
-            {
-                "text": ":warning: Unable to ingest ownership types metadata on ${{inputs.ENVIRONMENT}}!",
-                "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                }
-                ]
-            }
-
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+            text: ":warning: Unable to ingest ownership types metadata on ${{inputs.ENVIRONMENT}}!"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
