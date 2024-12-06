@@ -40,7 +40,7 @@ jobs:
   ingest-moj-publications-prod:
     uses: ./.github/workflows/ingest-moj-publications.yml
     with:
-      ENVIRONMENT: prod
+      ENVIRONMENT: prod-ingestion
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
