@@ -41,7 +41,7 @@ jobs:
   ingest-moj-publications-preprod:
     uses: ./.github/workflows/ingest-moj-publications.yml
     with:
-      ENVIRONMENT: preprod
+      ENVIRONMENT: preprod-ingestion
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
