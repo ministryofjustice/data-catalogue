@@ -9,7 +9,12 @@ from datahub.emitter.mce_builder import Aspect
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
-from datahub.metadata.schema_classes import ContainerClass, MetadataChangeProposalClass
+from datahub.metadata.schema_classes import (
+    ContainerClass,
+    GlobalTagsClass,
+    MetadataChangeProposalClass,
+    TagAssociationClass,
+)
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
@@ -66,10 +71,12 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
 
         logging.debug("Assigning datasets to databases")
         for dataset_urn in self.entity_map.keys():
-            container_urn = mappings.get(dataset_urn)
-            if not container_urn:
+            dataset_info = mappings.get(dataset_urn)
+            if not dataset_info:
                 logging.warning(f"No container mapping for {dataset_urn=}")
                 continue
+
+            container_urn, tags = dataset_info
 
             logging.info(f"Assigning {dataset_urn=} to {container_urn=}")
             mcps.append(
@@ -78,16 +85,34 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     aspect=ContainerClass(container=f"{container_urn}"),
                 )
             )
+            mcps.append(
+                MetadataChangeProposalWrapper(
+                    entityUrn=dataset_urn,
+                    aspect=GlobalTagsClass(
+                        tags=[
+                            TagAssociationClass(mce_builder.make_tag_urn(tag=tag_name))
+                            for tag_name in tags
+                        ]
+                    ),
+                )
+            )
 
         return mcps
 
     @report_time
-    def _get_table_database_mappings(self, manifest) -> Dict[str, str]:
+    def _get_table_database_mappings(self, manifest) -> Dict[str, tuple[str, list]]:
         mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
                 fqn = manifest["nodes"][node]["fqn"]
+
+                # This is a proof of concept
+                # It ignores any existing tags that do not come from the dbt manifest
+                tags = manifest["nodes"][node]["tags"]
                 if validate_fqn(fqn):
+                    domain = fqn[1]
+                    tags.append(domain)
+
                     database, table_name = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
@@ -107,6 +132,6 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     )
                     database_urn = database_key.as_urn()
 
-                    mappings[dataset_urn] = database_urn
+                    mappings[dataset_urn] = (database_urn, tags)
 
         return mappings
