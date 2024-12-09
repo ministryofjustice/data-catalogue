@@ -9,10 +9,10 @@ from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_transformer import ContainerTransformer
 from datahub.metadata._schema_classes import (
-    OwnerClass,
-    OwnershipClass,
     DomainsClass,
     GlobalTagsClass,
+    OwnerClass,
+    OwnershipClass,
     TagAssociationClass,
 )
 from datahub.metadata.schema_classes import MetadataChangeProposalClass
@@ -72,8 +72,11 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
 
         # All containers need the catalogue tag
         tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
+        domain_tag_to_add = mce_builder.make_tag_urn(self.config.domain.split(":")[-1])
         tag_association_to_add = TagAssociationClass(tag=tag_to_add)
-        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
+        current_tags = GlobalTagsClass(
+            tags=[tag_association_to_add, TagAssociationClass(tag=domain_tag_to_add)]
+        )
 
         owner_to_add = OwnerClass(
             self.config.data_custodian, self.config.ownership_type
