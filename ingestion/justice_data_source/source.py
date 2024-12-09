@@ -180,7 +180,9 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         )
 
         # add tag so entity displays in find-moj-data
-        display_tag = self._make_tags_aspect()
+        tags = ["dc_display_in_catalogue"]
+        tags.append(chart_data["domain"])
+        tag_aspect = self._make_tags_aspect(tags)
 
         # wipe all owners (this can be removed if/when we reintroduce owners to Justice Data charts)
         owners = OwnershipClass(owners=[])
@@ -189,7 +191,7 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
             mcp.as_workunit()
             for mcp in MetadataChangeProposalWrapper.construct_many(
                 entityUrn=chart_urn,
-                aspects=[chart_info, display_tag, Status(removed=False), owners],
+                aspects=[chart_info, tag_aspect, Status(removed=False), owners],
             )
         ]
 
