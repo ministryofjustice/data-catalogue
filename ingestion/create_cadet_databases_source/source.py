@@ -22,6 +22,7 @@ from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
+    ContainerClass,
     DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,
@@ -218,6 +219,21 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 aspect=DomainsClass(domains=[domain_urn]),
             )
             table_domain_mcps.append(mcp)
+
+            database_container_key = mcp_builder.DatabaseKey(
+                database=database,
+                platform=PLATFORM,
+                instance=INSTANCE,
+                env=ENV,
+                backcompat_env_as_instance=True,
+            )
+            db_urn = database_container_key.as_urn()
+            table_domain_mcps.append(
+                MetadataChangeProposalWrapper(
+                    entityUrn=dataset_urn,
+                    aspect=ContainerClass(container=db_urn),
+                )
+            )
         return table_domain_mcps
 
     def _get_domains(self, manifest) -> set[str]:
