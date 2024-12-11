@@ -32,22 +32,37 @@ It creates dataset entities in two platforms within datahub:
 
 There is a sibling relationship created for these 2 entities in datahub, but for the purpose of Find MoJ data we only display the entities from the `dbt` platform. This is done by tagging only the `dbt` entities with `dc_display_in_catalogue`. And because users may not be familiar with the terminalogy used in dbt we display `Model` and `View` dataset entities from the `dbt` platform as `Table` in Find MoJ data.
 
-We have also developed a [custom transformers](https://datahubproject.io/docs/actions/guides/developing-a-transformer/) for this ingestion. Transformers are a way of adding metadata to entities during an ingestion see [datahub transfomrer definition](https://datahubproject.io/docs/metadata-ingestion/docs/transformer/intro/) .
+## Cadet transformers
+We have also developed a [custom transformer](https://datahubproject.io/docs/actions/guides/developing-a-transformer/) for this ingestion, alongside transformer that datahub provides. Transformers are a way of adding metadata to entities during an ingestion see [datahub transfomrer definition](https://datahubproject.io/docs/metadata-ingestion/docs/transformer/intro/) .
 
-These transformers are:
-- [assign_cadet_databases](ingestion/transformers/assign_cadet_databases.py) - Assigns each ingested dataset entity to its parent database
+Transformers used are:
+- [assign_cadet_databases](ingestion/transformers/assign_cadet_databases.py) - Custom transformer. Assigns each ingested dataset entity to its parent database
+- simple_add_dataset_properties - Datahub provided transformer. Adds the `audience` custom property to all ingested entities.
 
 The recipe file for this component can be found [here](ingestion/cadet.yaml)
 
 ### Cadet ingestion workflow
 The workflow for the cadet ingestion can be found [here](.github/workflows/ingest-cadet-metadata.yml)
 
-## Glue databases and tables
+## Glue ingestion
+For these data we use Datahub's native [Glue ingestion source](https://datahubproject.io/docs/generated/ingestion/sources/glue/).
 
-These transformers are:
-- [enrich_container_transformer](ingestion/transformers/enrich_container_transformer.py) - adds an owner, domain, and tag for a provided container
+### Glue databases and tables
+We define a recipe file for glue databases in an area, they'll be prefixed `glue_`, eg. [glue_sop.yaml](ingestion/glue_sop.yaml). The recipe may contain several databases but they will have common metadata properties set, such as data custodian and domain.
 
+### Glue transformers
+We have defined a transformer to add some additional metadata properties to the created entities.
+
+Transformers used are:
+- [enrich_container_transformer](ingestion/transformers/enrich_container_transformer.py) - Custom transformer. Adds an owner, domain, and tag for a provided container.
+- simple_add_dataset_tags - Datahub provided transformer. Adds the `dc_display_in_catalogue` tag to all ingested entities.
+- simple_add_dataset_domain - Datahub provided transformer. Adds the given domain to all ingested entities.
+- simple_add_dataset_ownership - Datahub provided transformer. Adds the given owner to all ingested entities.
+
+### Glue ingestion workflow
+The workflow for the Glue ingestion can be found [here](.github/workflows/ingest-glue-data.yml)
 
 ## Justice Data
+We have developed a [custom ingestion source for Justice Data](ingestion/justice_data_source/source.py). It uses [this python script](ingestion/justice_data_source/api_client.py) to fetch data from the Justice Data public API parsing the metadata into a format which can be used by the source.py file to create each meatdata aspect for the Chart entities it creates.
 
 ## GOV.UK statistical publications 
