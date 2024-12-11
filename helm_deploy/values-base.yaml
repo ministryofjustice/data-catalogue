@@ -405,7 +405,7 @@ global:
     ## Search related configuration
     search:
       ## Maximum terms in aggregations
-      maxTermBucketSize: 20
+      maxTermBucketSize: 100
 
       ## Configuration around exact matching for search
       exactMatch:
