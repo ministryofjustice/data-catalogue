@@ -53,7 +53,7 @@ The recipe file for this component can be found [here](ingestion/cadet.yaml)
 ### Cadet ingestion workflow
 The workflow for the cadet ingestion can be found [here](.github/workflows/ingest-cadet-metadata.yml)
 
-</br>
+---
 
 ## Glue ingestion
 For these data we use Datahub's native [Glue ingestion source](https://datahubproject.io/docs/generated/ingestion/sources/glue/).
