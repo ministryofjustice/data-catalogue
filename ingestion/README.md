@@ -3,6 +3,15 @@ Here is where we have the configuration files ([recipes](https://datahubproject.
 
 We have some other metadata in [data-catalogue-metadata](https://github.com/ministryofjustice/data-catalogue-metadata), however this is an internal repository and has currently been used for ingestions we've not scheduled and do not have as robust a way to automate the ingestion pipeline.
 
+These github action workflows ingest the data covered below into each environment:
+- [ingest-prod.yml](.github/workflows/ingest-prod.yml) - Ingests into prod and runs daily at 7:15am UTC
+- [ingest-preprod.yml](.github/workflows/ingest-preprod.yml) - Ingests into preprod and runs daily at 9:00am UTC
+- [ingest-test.yml](.github/workflows/ingest-test.yml) - Ingests into test and needs to be manually triggered
+- [ingest-dev.yml](.github/workflows/ingest-dev.yml) - Ingests into dev and needs to be manually triggered
+
+prod and preprod workflows uses different github environments to avoid needing approval on each workflow that runs. These are `prod-ingestion` and `preprod-ingestion`
+
+</br>
 
 ## Create a Derived Table (Cadet) ingestion
 
@@ -44,6 +53,8 @@ The recipe file for this component can be found [here](ingestion/cadet.yaml)
 ### Cadet ingestion workflow
 The workflow for the cadet ingestion can be found [here](.github/workflows/ingest-cadet-metadata.yml)
 
+</br>
+
 ## Glue ingestion
 For these data we use Datahub's native [Glue ingestion source](https://datahubproject.io/docs/generated/ingestion/sources/glue/).
 
@@ -62,7 +73,32 @@ Transformers used are:
 ### Glue ingestion workflow
 The workflow for the Glue ingestion can be found [here](.github/workflows/ingest-glue-data.yml)
 
-## Justice Data
-We have developed a [custom ingestion source for Justice Data](ingestion/justice_data_source/source.py). It uses [this python script](ingestion/justice_data_source/api_client.py) to fetch data from the Justice Data public API parsing the metadata into a format which can be used by the source.py file to create each meatdata aspect for the Chart entities it creates.
+</br>
 
-## GOV.UK statistical publications 
+## Justice data
+
+### Justice data dashboard and charts
+We have developed a [custom ingestion source for Justice Data](ingestion/justice_data_source/source.py). It uses [this python script](ingestion/justice_data_source/api_client.py) to fetch data from the Justice Data public API parsing the metadata into a format which can be used by the source.py file to create each metadata aspect for the Chart entities it creates. It also attaches the chart entities it creates into a single dashboard entity called Justice Data. Here is the [config](ingestion/justice_data_source/config.py) developed for the justice data ingestion to be used in the recipe.
+
+It loads all entities into a custom platform called `justice-data`
+
+[see the recipe](ingestion/justice_data_ingest.yaml) for this ingestion. 
+
+### Justice data ingestion workflow
+The workflow for the Glue ingestion can be found [here](.github/workflows/ingest-justice-data.yml)
+
+</br>
+
+## GOV.UK statistical publications
+
+### GOV.UK statistical publication collections and datasets
+We have developed a [custom ingestion source for GOV.UK publications](ingestion/moj_statistical_publications_source/source.py). It uses [this python script](ingestion/moj_statistical_publications_source/api_client.py) to fetch data from the GOV.UK public APIs (search and content) parsing the metadata into a format which can be used by the source.py file to create each metadata aspect for the Publication collection and Publication datasets entities it creates. Where Publication collection is a container for Publication Datasets. Here is the [config](ingestion/moj_statistical_publications_source/config.py) developed for the publications ingestion to be used in the recipe.
+
+It loads all entities into a custom platform called `GOV.UK`
+
+This ingestion also has a mapping yaml file which maps publication collections to domains and team contact emails. Publication datasets inherit the domain and contact details from their parent collection.
+
+[see the recipe](ingestion/moj_publications.yaml) for this ingestion. 
+
+### GOV.UK statistical publications ingestion workflow
+The workflow for the Glue ingestion can be found [here](.github/workflows/ingest-moj-publications.yml)
