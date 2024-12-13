@@ -41,7 +41,7 @@ It creates dataset entities in two platforms within datahub:
 
 There is a sibling relationship created for these 2 entities in datahub, but for the purpose of Find MoJ data we only display the entities from the `dbt` platform. This is done by tagging only the `dbt` entities with `dc_display_in_catalogue`. And because users may not be familiar with the terminalogy used in dbt we display `Model` and `View` dataset entities from the `dbt` platform as `Table` in Find MoJ data.
 
-## Cadet transformers
+### Cadet transformers
 We have also developed a [custom transformer](https://datahubproject.io/docs/actions/guides/developing-a-transformer/) for this ingestion, alongside transformer that datahub provides. Transformers are a way of adding metadata to entities during an ingestion see [datahub transfomrer definition](https://datahubproject.io/docs/metadata-ingestion/docs/transformer/intro/) .
 
 Transformers used are:
