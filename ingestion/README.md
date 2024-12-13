@@ -26,7 +26,7 @@ This custom code is required because the dbt manifest file, used to ingest the m
 
 In the simplest terms this ingestion infers parent databases for the entities within the manifest and creates the container entities of subtype databases within datahub. 
 
-It was also updated to include assigning all cadet tables to domains in datahub. This was previously done via a transformer in the standard dbt ingestion but caused the ingestion to last 3 hours. This way is much more efficient.
+It also assigns all cadet tables to domains in datahub.
 
 The recipe file for this component can be found [here](ingestion/create_cadet_databases.yaml)
 
