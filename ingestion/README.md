@@ -4,8 +4,8 @@ Here is where we have the configuration files ([recipes](https://datahubproject.
 We have some other metadata in [data-catalogue-metadata](https://github.com/ministryofjustice/data-catalogue-metadata), however this is an internal repository and has currently been used for ingestions we've not scheduled and do not have as robust a way to automate the ingestion pipeline.
 
 These github action workflows ingest the data covered below into each environment:
-- [ingest-prod.yml](.github/workflows/ingest-prod.yml) - Ingests into prod and runs daily at 7:15am UTC
-- [ingest-preprod.yml](.github/workflows/ingest-preprod.yml) - Ingests into preprod and runs daily at 9:00am UTC
+- [ingest-prod.yml](.github/workflows/ingest-prod.yml) - Ingests into prod and runs on a daily schedule
+- [ingest-preprod.yml](.github/workflows/ingest-preprod.yml) - Ingests into preprod and runs on a daily schedule
 - [ingest-test.yml](.github/workflows/ingest-test.yml) - Ingests into test and needs to be manually triggered
 - [ingest-dev.yml](.github/workflows/ingest-dev.yml) - Ingests into dev and needs to be manually triggered
 
