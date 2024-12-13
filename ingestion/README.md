@@ -11,7 +11,7 @@ These github action workflows ingest the data covered below into each environmen
 
 Prod and Preprod workflows use different Github environments to avoid needing approval on each workflow that runs. These are `prod-ingestion` and `preprod-ingestion`
 
-</br>
+---
 
 ## Create a Derived Table (Cadet) ingestion
 
@@ -87,7 +87,7 @@ It loads all entities into a custom platform called `justice-data`
 ### Justice data ingestion workflow
 The workflow for the Glue ingestion can be found [here](.github/workflows/ingest-justice-data.yml)
 
-</br>
+---
 
 ## GOV.UK statistical publications ingestion
 
