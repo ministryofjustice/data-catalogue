@@ -9,7 +9,7 @@ These github action workflows ingest the data covered below into each environmen
 - [ingest-test.yml](.github/workflows/ingest-test.yml) - Ingests into test and needs to be manually triggered
 - [ingest-dev.yml](.github/workflows/ingest-dev.yml) - Ingests into dev and needs to be manually triggered
 
-prod and preprod workflows uses different github environments to avoid needing approval on each workflow that runs. These are `prod-ingestion` and `preprod-ingestion`
+Prod and Preprod workflows use different Github environments to avoid needing approval on each workflow that runs. These are `prod-ingestion` and `preprod-ingestion`
 
 </br>
 
