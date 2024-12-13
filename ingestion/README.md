@@ -73,7 +73,7 @@ Transformers used are:
 ### Glue ingestion workflow
 The workflow for the Glue ingestion can be found [here](.github/workflows/ingest-glue-data.yml)
 
-</br>
+---
 
 ## Justice data ingestion
 
