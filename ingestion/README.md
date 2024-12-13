@@ -75,7 +75,7 @@ The workflow for the Glue ingestion can be found [here](.github/workflows/ingest
 
 </br>
 
-## Justice data
+## Justice data ingestion
 
 ### Justice data dashboard and charts
 We have developed a [custom ingestion source for Justice Data](ingestion/justice_data_source/source.py). It uses [this python script](ingestion/justice_data_source/api_client.py) to fetch data from the Justice Data public API parsing the metadata into a format which can be used by the source.py file to create each metadata aspect for the Chart entities it creates. It also attaches the chart entities it creates into a single dashboard entity called Justice Data. Here is the [config](ingestion/justice_data_source/config.py) developed for the justice data ingestion to be used in the recipe.
@@ -89,7 +89,7 @@ The workflow for the Glue ingestion can be found [here](.github/workflows/ingest
 
 </br>
 
-## GOV.UK statistical publications
+## GOV.UK statistical publications ingestion
 
 ### GOV.UK statistical publication collections and datasets
 We have developed a [custom ingestion source for GOV.UK publications](ingestion/moj_statistical_publications_source/source.py). It uses [this python script](ingestion/moj_statistical_publications_source/api_client.py) to fetch data from the GOV.UK public APIs (search and content) parsing the metadata into a format which can be used by the source.py file to create each metadata aspect for the Publication collection and Publication datasets entities it creates. Where Publication collection is a container for Publication Datasets. Here is the [config](ingestion/moj_statistical_publications_source/config.py) developed for the publications ingestion to be used in the recipe.
