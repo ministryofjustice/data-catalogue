@@ -1,17 +1,28 @@
 import logging
 from datetime import datetime
-from typing import Iterable
+from typing import Iterable, List, Optional
 
 import datahub.emitter.mce_builder as mce_builder
 import datahub.emitter.mcp_builder as mcp_builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
-from datahub.ingestion.api.source import Source, SourceReport
+from datahub.ingestion.api.source import SourceReport, MetadataWorkUnitProcessor
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StaleEntityRemovalSourceReport,
+)
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StaleEntityRemovalHandler,
+)
+from datahub.ingestion.source.state.stateful_ingestion_base import (
+    StatefulIngestionSourceBase,
+)
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
+
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
+    ContainerClass,
     DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,
@@ -38,19 +49,26 @@ properties_to_add = {
 
 
 @config_class(CreateCadetDatabasesConfig)
-class CreateCadetDatabases(Source):
-    source_config: CreateCadetDatabasesConfig
-    report: SourceReport = SourceReport()
+class CreateCadetDatabases(StatefulIngestionSourceBase):
 
     @report_time
     def __init__(self, config: CreateCadetDatabasesConfig, ctx: PipelineContext):
-        super().__init__(ctx)
+        super().__init__(config, ctx)
         self.source_config = config
+        self.report = StaleEntityRemovalSourceReport()
 
     @classmethod
     def create(cls, config_dict, ctx):
         config = CreateCadetDatabasesConfig.parse_obj(config_dict)
         return cls(config, ctx)
+
+    def get_workunit_processors(self) -> List[Optional[MetadataWorkUnitProcessor]]:
+        return [
+            *super().get_workunit_processors(),
+            StaleEntityRemovalHandler.create(
+                self, self.config, self.ctx
+            ).workunit_processor,
+        ]
 
     @report_generator_time
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:
