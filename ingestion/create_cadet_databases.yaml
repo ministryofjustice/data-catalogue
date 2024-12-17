@@ -1,5 +1,9 @@
+pipeline_name: create-cadet-databases
 source:
   type: "ingestion.create_cadet_databases_source.source.CreateCadetDatabases"
   config:
     manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
     database_metadata_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/latest/target/database_metadata.json"
+    stateful_ingestion:
+      enabled: true
+      remove_stale_metadata: true
