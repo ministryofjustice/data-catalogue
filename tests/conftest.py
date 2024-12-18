@@ -1,8 +1,9 @@
+import json
 import os
 import sys
 import time
 import types
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from unittest.mock import create_autospec
 
 import boto3
@@ -10,10 +11,12 @@ import pytest
 import yaml
 from avrogen.dict_wrapper import DictWrapper
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
-from datahub.ingestion.graph.client import DataHubGraph
+from datahub.ingestion.graph.client import DataHubGraph, RelatedEntity
 from moto import mock_s3
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
+
+from ingestion.post_ingestion_checks import _get_table_database_mappings
 
 
 @pytest.fixture
@@ -38,15 +41,38 @@ def default_contact_email() -> str:
 
 
 @pytest.fixture
-def mock_datahub_graph():
+def manifest():
+    s3_client = boto3.client("s3")
+    response = s3_client.get_object(
+        Bucket="test_bucket", Key="prod/run_artefacts/latest/target/manifest.json"
+    )
+    content = response["Body"].read().decode("utf-8")
+    manifest = json.loads(content, strict=False)
+    return manifest
+
+
+@pytest.fixture
+def table_database_mappings(manifest, request):
+    param = getattr(request, "param", False)
+    mappings = _get_table_database_mappings(manifest)
+    if param:
+        mappings["urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.no_relations)"] = (
+            "urn:li:container:27c5c4df57bf429bf9e56e51b30003ed"
+        )
+    return mappings
+
+
+@pytest.fixture
+def mock_datahub_graph(manifest):
     class MockDataHubGraphContext:
         pipeline_name: str = "test_pipeline"
         run_id: str = "test_run"
 
-        def __init__(self) -> None:
+        def __init__(self, manifest) -> None:
             """
             Create a new monkey-patched instance of the DataHubGraph graph client.
             """
+            self.table_database_mappings = _get_table_database_mappings(manifest)
             # ensure this mock keeps the same api of the original class
             self.mock_graph = create_autospec(DataHubGraph)
             # Make server stateful ingestion capable
@@ -61,6 +87,11 @@ def mock_datahub_graph():
             )
             # Tracking for emitted mcps.
             self.mcps_emitted: Dict[str, MetadataChangeProposalWrapper] = {}
+
+            # Bind mock_graph's get_related_entities to monkey_patch_get_related_entities
+            self.mock_graph.get_related_entities = types.MethodType(
+                self.monkey_patch_get_related_entities, self.mock_graph
+            )
 
         def monkey_patch_emit_mcp(self, mcpw: MetadataChangeProposalWrapper) -> None:
             """
@@ -84,7 +115,24 @@ def mock_datahub_graph():
                 return mcpw.aspect
             return None
 
-    mock_datahub_graph_ctx = MockDataHubGraphContext()
+        def monkey_patch_get_related_entities(
+            self,
+            cls,
+            entity_urn: str,
+            relationship_types: List[str],
+            direction: DataHubGraph.RelationshipDirection,
+        ) -> List[RelatedEntity]:
+            related_entities = []
+            if self.table_database_mappings.get(entity_urn):
+                related_entities.append(
+                    RelatedEntity(
+                        urn=self.table_database_mappings[entity_urn],
+                        relationship_type=relationship_types[0],
+                    )
+                )
+            return related_entities
+
+    mock_datahub_graph_ctx = MockDataHubGraphContext(manifest)
     return mock_datahub_graph_ctx.mock_graph
 
 
