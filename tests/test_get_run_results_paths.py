@@ -128,6 +128,10 @@ def test_get_run_result_paths(mock_datetime, mock_boto3_client):
                     "Key": "prod/run_artefacts/other_file.json",
                     "LastModified": datetime(2023, 10, 9, tzinfo=timezone.utc),
                 },
+                {
+                    "Key": "prod/run_artefacts/deploy-docs/run_results.json",
+                    "LastModified": datetime(2023, 11, 10, tzinfo=timezone.utc),
+                },
             ]
         }
     ]
