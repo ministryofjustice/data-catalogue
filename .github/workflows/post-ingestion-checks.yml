@@ -1,0 +1,66 @@
+name: Compare Environments
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check_is_part_of_relationships:
+    runs-on: ubuntu-latest
+    environment: prod-ingestion
+    outputs:
+      missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
+    steps:
+      - name: check datasets' IsPartOf relations
+        id: set_relations
+        run: |
+            python ingestion/post_ingestion_checks.py relations --env PROD \
+            --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+
+  get_counts_prod_datahub:
+    runs-on: ubuntu-latest
+    environment: prod-ingestion
+    outputs:
+      prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
+    steps:
+      - name: Query prod datahub
+        id: set_prod_counts
+        run: |
+            python ingestion/post_ingestion_checks.py relations --env prod \
+            --platforms dbt glue justice-data GOV.UK
+
+  get_counts_preprod_datahub:
+    runs-on: ubuntu-latest
+    environment: preprod-ingestion
+    outputs:
+      preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
+    steps:
+      - name: Query preprod datahub
+        id: set_preprod_counts
+        run: |
+            python ingestion/post_ingestion_checks.py relations --env preprod \
+            --platforms dbt glue justice-data GOV.UK
+
+  compare_count_results:
+    runs-on: ubuntu-latest
+    needs: [get_counts_prod_datahub, get_counts_preprod_datahub]
+    outputs:
+      comparison_results: ${{ steps.compare_results.outputs.comparison_results }}
+    steps:
+      - name: Compare results
+        id: compare_results
+        run: |
+          python ingestion/post_ingestion_checks.py compare \
+          --prod-counts '${{ needs.get_counts_prod_datahub.outputs.prod_counts }}' \
+          --preprod-counts '${{ needs.get_counts_preprod_datahub.outputs.preprod_counts }}'
+
+  post_ingestion_checks_report:
+    runs-on: ubuntu-latest
+    environment: prod-ingestion
+    needs: [check_is_part_of_relationships, compare_count_results]
+    steps:
+      - name: Report datasets with missing container relationships
+        run: |
+          echo "Missing IsPartOf relations: ${{ needs.check_is_part_of_relationships.outputs.missing_is_part_of }}"
+      - name: Report on prod vs preprod comparison results
+        run: |
+          echo "Comparison results: ${{ needs.compare_count_results.outputs.comparison_results }}"
