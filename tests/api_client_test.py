@@ -137,9 +137,7 @@ def test_get_publication_metadata(client, default_owner_email):
     ]
     client.publication_details = {pub["id"]: pub for pub in test_published_details}
     for i, id in enumerate(ids):
-        last_updated, refresh_period, owner_email = client._get_publication_metadata(
-            id
-        )
+        last_updated, refresh_period, owner_email = client._get_publication_metadata(id)
         if test_published_details[i].get("currentPublishDate"):
             expected_updated_timestamp = datetime.strptime(
                 test_published_details[i].get("currentPublishDate"),
@@ -232,3 +230,18 @@ def test_list_publications(client):
                 "sourceName": "Office of National Statistics",
             },
         ]
+
+
+@pytest.mark.parametrize(
+    "input,expected",
+    [
+        ({"currentPublishDate": "5 September 2024"}, datetime(2024, 9, 5)),
+        ({"currentPublishDate": "unknown"}, None),
+        ({"currentPublishDate": None}, None),
+        ({}, None),
+        ({"currentPublishDate": "5 September 1872"}, None),
+        ({"currentPublishDate": "5 September 3872"}, None),
+    ],
+)
+def test_parse_current_publish_date(client, input, expected):
+    assert client.parse_current_publish_date(input) == expected
