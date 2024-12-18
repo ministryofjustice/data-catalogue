@@ -97,6 +97,8 @@ class JusticeDataAPIClient:
 
         if owner_email is None:
             owner_email = self.default_owner_email
+        elif owner_email and ("@" not in owner_email or len(owner_email) > 320):
+            raise ValueError(f"Invalid email for publication {id}: {owner_email}")
 
         return current_publish_date, refresh_period, owner_email
 
