@@ -34,7 +34,11 @@ def get_cadet_run_result_paths(bucket_name="mojap-derived-tables", days=1):
             for obj in page["Contents"]:
                 key = obj["Key"]
                 last_modified = obj["LastModified"]
-                if key.endswith("run_results.json") and last_modified >= date_to_return:
+                if (
+                    key.endswith("run_results.json")
+                    and "deploy-docs" not in key
+                    and last_modified >= date_to_return
+                ):
                     keys_with_run_results.append(
                         os.path.join("s3://", bucket_name, key)
                     )
