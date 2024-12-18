@@ -91,15 +91,7 @@ class JusticeDataAPIClient:
             return (None, None, self.default_owner_email)
 
         refresh_period = publication.get("frequency")
-        try:
-            current_publish_date = datetime.strptime(
-                publication.get("currentPublishDate", ""), "%d %B %Y"
-            )
-        except (ValueError, TypeError) as e:
-            logging.warning(
-                f"Chart with id: {id}, missing valid currentPublishDate. Error: {e}"
-            )
-            current_publish_date = None
+        current_publish_date = self.parse_current_publish_date(publication)
 
         owner_email = publication.get("ownerEmail", self.default_owner_email)
 
@@ -115,3 +107,25 @@ class JusticeDataAPIClient:
                     f"Domain - {domain} does not exist in datahub - please review domain mappings in config.py"
                 )
         return True
+
+    def parse_current_publish_date(self, publication: dict) -> datetime | None:
+        try:
+            current_publish_date = datetime.strptime(
+                publication.get("currentPublishDate", ""), "%d %B %Y"
+            )
+        except (ValueError, TypeError) as e:
+            logging.warning(
+                f"Chart with id: {id}, missing valid currentPublishDate. Error: {e}"
+            )
+            return None
+
+        # Check we have parsed a reasonable looking date in the past
+        if current_publish_date > datetime.now() or current_publish_date <= datetime(
+            1970, 1, 1
+        ):
+            logging.warning(
+                f"Chart with id: {id}, has unexpected currentPublishDate {current_publish_date}"
+            )
+            return None
+
+        return current_publish_date
