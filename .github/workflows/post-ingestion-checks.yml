@@ -1,4 +1,4 @@
-name: Compare Environments
+name: Post Ingestion Checks
 
 on:
   workflow_dispatch:
