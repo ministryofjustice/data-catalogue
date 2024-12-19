@@ -7,19 +7,16 @@ import datahub.emitter.mcp_builder as mcp_builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
-from datahub.ingestion.api.source import SourceReport, MetadataWorkUnitProcessor
-from datahub.ingestion.source.state.stale_entity_removal_handler import (
-    StaleEntityRemovalSourceReport,
-)
+from datahub.ingestion.api.source import MetadataWorkUnitProcessor, SourceReport
+from datahub.ingestion.api.workunit import MetadataWorkUnit
+from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 from datahub.ingestion.source.state.stale_entity_removal_handler import (
     StaleEntityRemovalHandler,
+    StaleEntityRemovalSourceReport,
 )
 from datahub.ingestion.source.state.stateful_ingestion_base import (
     StatefulIngestionSourceBase,
 )
-from datahub.ingestion.api.workunit import MetadataWorkUnit
-from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
-
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
     ContainerClass,
@@ -142,7 +139,8 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             db_meta_dict.update(properties_to_add)
             domain_name = format_domain_name(db_meta_dict["domain"])
             domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-            display_tag = display_tags.get(database_name, ["dc_cadet"])
+            tags = display_tags.get(database_name, ["dc_cadet"])
+            tags.append(domain_name)
 
             if not db_meta_dict.get("dc_owner", "") == "":
                 owner_urn = mce_builder.make_user_urn(
@@ -166,7 +164,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 description=database_description,
                 created=None,
                 last_modified=last_modified,
-                tags=display_tag,
+                tags=tags,
                 owner_urn=owner_urn,
                 qualified_name=None,
                 extra_properties=db_meta_dict,
