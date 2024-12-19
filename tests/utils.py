@@ -8,7 +8,7 @@ from datahub.ingestion.transformer.dataset_transformer import (
     ContainerTransformer,
     DatasetTransformer,
 )
-from datahub.metadata.schema_classes import MetadataChangeEventClass
+from datahub.metadata.schema_classes import MetadataChangeEventClass, _Aspect
 from datahub.utilities.urns._urn_base import Urn
 
 
@@ -98,18 +98,24 @@ def run_container_transformer_pipeline(
     return outputs
 
 
-def group_metadata(workunits):
+def group_metadata(
+    workunits,
+) -> dict[str, dict[str, list[_Aspect]]]:
     """
     Parse the result into a nested structure, indexed first by URN, then by aspect
-
-    TODO: maybe this should be further grouped by entity type
     """
     metadata_by_urn = {}
     for wu in workunits:
-        if urn := wu.get_urn():
+        urn = wu.get_urn()
+        if isinstance(wu.metadata, MetadataChangeProposalWrapper):
+            aspect = wu.metadata.aspect
+            aspect_name = wu.metadata.aspectName
             aspects_by_name = metadata_by_urn.setdefault(urn, {})
-            aspects_by_name.setdefault(wu.metadata.aspectName, []).append(
-                wu.metadata.aspect
-            )
+            aspects_by_name.setdefault(aspect_name, []).append(aspect)
+        elif isinstance(wu.metadata, MetadataChangeEventClass):
+            for aspect in wu.metadata.proposedSnapshot.aspects:
+                aspect_name = aspect.get_aspect_name()
+                aspects_by_name = metadata_by_urn.setdefault(urn, {})
+                aspects_by_name.setdefault(aspect_name, []).append(aspect)
 
     return metadata_by_urn
