@@ -98,7 +98,7 @@ def check_is_part_of_relationships(mappings, graph):
 
 
 def create_query_input(platform: str) -> dict:
-    query_input = {
+    return {
         "input": {
             "types": [],
             "facets": ["_entityType", "tags", "domains", "owners"],
@@ -117,15 +117,13 @@ def create_query_input(platform: str) -> dict:
             "searchFlags": {"maxAggValues": 2000},
         }
     }
-    return query_input
 
 
 def parse_count_by_platform_results(result: dict):
-    parsed_result = {
+    return {
         field["field"]: field["aggregations"]
         for field in result["aggregateAcrossEntities"]["facets"]
     }
-    return parsed_result
 
 
 def counts_by_platform(env: str, platforms: list):
@@ -148,8 +146,6 @@ def relations_check(s3_manifest_path: str, graph: DataHubGraph):
     missing_is_part_of = check_is_part_of_relationships(mappings, graph)
 
     print(f"::set-output name=missing_is_part_of::{json.dumps(missing_is_part_of)}")
-
-    return None
 
 
 def _calculate_missing_values(prod_values: set, preprod_values: set) -> dict:
