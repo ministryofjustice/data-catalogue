@@ -7,7 +7,7 @@ from ingestion.create_cadet_databases_source.source import (
     CreateCadetDatabases,
     CreateCadetDatabasesConfig,
 )
-from tests.utils import group_metadata
+from tests.utils import extract_tag_names, group_metadata
 
 
 def run_source(mock_datahub_graph):
@@ -23,10 +23,6 @@ def run_source(mock_datahub_graph):
     )
 
     return group_metadata(source.get_workunits())
-
-
-def extract_tag_names(global_tags_list):
-    return [tag.tag for association in global_tags_list for tag in association.tags]
 
 
 def test_tags(mock_datahub_graph):

@@ -5,7 +5,7 @@ from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 
 from ingestion.justice_data_source.config import JusticeDataAPIConfig
 from ingestion.justice_data_source.source import JusticeDataAPISource
-from tests.utils import group_metadata
+from tests.utils import extract_tag_names, group_metadata
 
 
 def test_host_port_parsing(default_owner_email):
@@ -40,7 +40,7 @@ def test_workunits_created(source_with_mock_justice_data_api):
     assert source_with_mock_justice_data_api.get_workunits()
 
 
-def test_chart(source_with_mock_justice_data_api, default_owner_email):
+def test_chart(source_with_mock_justice_data_api):
     metadata = group_metadata(source_with_mock_justice_data_api.get_workunits())
 
     chart_aspects = metadata[
@@ -68,6 +68,18 @@ def test_chart(source_with_mock_justice_data_api, default_owner_email):
         "refresh_period": "Quarterly",
         "dc_team_email": "not.me@justice.gov.uk",
     }
+
+
+def test_tags(source_with_mock_justice_data_api):
+    metadata = group_metadata(source_with_mock_justice_data_api.get_workunits())
+
+    tags = extract_tag_names(
+        metadata["urn:li:chart:(justice-data,legal-aid-ecf-applicationsgranted)"][
+            "globalTags"
+        ]
+    )
+
+    assert set(tags) == {"urn:li:tag:dc_display_in_catalogue", "urn:li:tag:General"}
 
 
 def test_dashboard(source_with_mock_justice_data_api):

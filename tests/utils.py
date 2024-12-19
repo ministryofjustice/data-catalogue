@@ -119,3 +119,7 @@ def group_metadata(
                 aspects_by_name.setdefault(aspect_name, []).append(aspect)
 
     return metadata_by_urn
+
+
+def extract_tag_names(global_tags_list):
+    return [tag.tag for association in global_tags_list for tag in association.tags]
