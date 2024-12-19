@@ -92,7 +92,7 @@ def check_is_part_of_relationships(mappings, graph):
                 DataHubGraph.RelationshipDirection.OUTGOING,
             )
         )
-        if len(relations) == 0:
+        if not relations:
             missing_is_part_of.append(dataset)
     return missing_is_part_of
 
