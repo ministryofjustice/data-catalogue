@@ -43,6 +43,8 @@ Run `datahub init` and provide the following credentials
 
 You may also need to set the environment variable `export DATAHUB_GMS_URL="https://datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk/api/gms"`
 
+You can find more information about the Datahub cli and various command available at https://datahubproject.io/docs/cli/
+
 #### Import metadata into a Datahub lite
 
 [Datahub lite](https://datahubproject.io/docs/datahub_lite/) is a developer interface for local debugging.
