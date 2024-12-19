@@ -7,6 +7,7 @@ from ingestion.create_cadet_databases_source.source import (
     CreateCadetDatabases,
     CreateCadetDatabasesConfig,
 )
+from tests.utils import group_metadata
 
 
 def run_source(mock_datahub_graph):
@@ -21,17 +22,7 @@ def run_source(mock_datahub_graph):
         ctx=PipelineContext(run_id="abc", graph=mock_datahub_graph),
     )
 
-    # Parse the result into a nested structure, indexed first by URN, then by aspect
-    # TODO: maybe this should be further grouped by entity type
-    metadata_by_urn = {}
-    for wu in source.get_workunits():
-        if urn := wu.get_urn():
-            aspects_by_name = metadata_by_urn.setdefault(urn, {})
-            aspects_by_name.setdefault(wu.metadata.aspectName, []).append(
-                wu.metadata.aspect
-            )
-
-    return metadata_by_urn
+    return group_metadata(source.get_workunits())
 
 
 def extract_tag_names(global_tags_list):
