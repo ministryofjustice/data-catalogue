@@ -2,10 +2,10 @@ import pytest
 import vcr
 from datahub.ingestion.api.common import PipelineContext
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
+from utils import extract_tag_names, group_metadata
 
 from ingestion.justice_data_source.config import JusticeDataAPIConfig
 from ingestion.justice_data_source.source import JusticeDataAPISource
-from tests.utils import extract_tag_names, group_metadata
 
 
 def test_host_port_parsing(default_owner_email):

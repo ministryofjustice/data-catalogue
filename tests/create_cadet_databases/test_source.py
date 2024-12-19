@@ -2,12 +2,12 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.source.state.stale_entity_removal_handler import (
     StatefulStaleMetadataRemovalConfig,
 )
+from utils import extract_tag_names, group_metadata
 
 from ingestion.create_cadet_databases_source.source import (
     CreateCadetDatabases,
     CreateCadetDatabasesConfig,
 )
-from tests.utils import extract_tag_names, group_metadata
 
 
 def run_source(mock_datahub_graph):
