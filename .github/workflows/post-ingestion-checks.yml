@@ -4,9 +4,21 @@ on:
   workflow_dispatch:
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      python-version: "3.11"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
   check_is_part_of_relationships:
     runs-on: ubuntu-latest
     environment: prod-ingestion
+    needs: setup
     outputs:
       missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
     steps:
@@ -19,6 +31,7 @@ jobs:
   get_counts_prod_datahub:
     runs-on: ubuntu-latest
     environment: prod-ingestion
+    needs: setup
     outputs:
       prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
     steps:
@@ -31,6 +44,7 @@ jobs:
   get_counts_preprod_datahub:
     runs-on: ubuntu-latest
     environment: preprod-ingestion
+    needs: setup
     outputs:
       preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
     steps:
