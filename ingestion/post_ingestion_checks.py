@@ -1,7 +1,6 @@
 import argparse
 import json
 import os
-import time
 
 import datahub.emitter.mce_builder as mce_builder
 import datahub.emitter.mcp_builder as mcp_builder
@@ -219,8 +218,6 @@ FUNCTION_MAP = {
 }
 
 if __name__ == "__main__":
-    s = time.time()
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "command",

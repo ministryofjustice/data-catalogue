@@ -222,7 +222,6 @@ def test_check_is_part_of_relationships(
     assert missing_relations == expected_result
 
 
-# make some more complex nested dict inputs and expected outputs to test the _remove_empty_dicts function
 @pytest.mark.parametrize(
     "in_dict, out_dict",
     [
