@@ -61,6 +61,20 @@ def _get_table_database_mappings(manifest):
     return mappings
 
 
+def _remove_empty_dicts(d):
+    if not isinstance(d, dict):
+        return d
+    cleaned_dict = {}
+    for k, v in d.items():
+        if isinstance(v, dict):
+            nested = _remove_empty_dicts(v)
+            if nested:  # Only add non-empty dictionaries
+                cleaned_dict[k] = nested
+        elif v:  # Only add non-empty values
+            cleaned_dict[k] = v
+    return cleaned_dict
+
+
 def check_is_part_of_relationships(mappings, graph):
     """
     this checks whether datasets from cadet have the ispartof relationship
@@ -195,7 +209,7 @@ def compare_environment_counts(
                 prod_counts, preprod_counts, mismatch_threshold
             )
 
-    return missing_values, mismatched_counts
+    return _remove_empty_dicts(missing_values), _remove_empty_dicts(mismatched_counts)
 
 
 FUNCTION_MAP = {
