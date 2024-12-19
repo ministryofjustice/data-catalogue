@@ -55,6 +55,8 @@ def manifest():
 def table_database_mappings(manifest, request):
     param = getattr(request, "param", False)
     mappings = _get_table_database_mappings(manifest)
+    # allows for testing a missing relation scenario as we don;t return this in
+    # the mocked get_related_entities method
     if param:
         mappings["urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.no_relations)"] = (
             "urn:li:container:27c5c4df57bf429bf9e56e51b30003ed"

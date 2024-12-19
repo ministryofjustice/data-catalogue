@@ -5,6 +5,7 @@ import boto3
 import pytest
 
 from ingestion.post_ingestion_checks import (
+    _remove_empty_dicts,
     check_is_part_of_relationships,
     compare_environment_counts,
 )
@@ -159,6 +160,7 @@ test_parsed_query_result = {
 
 def test_compare_environment_counts():
     prod_results = copy.deepcopy(test_parsed_query_result)
+    # pop some values to simulate missing values
     test_parsed_query_result["dbt"]["domains"].pop(0)
     test_parsed_query_result["dbt"]["domains"].pop(3)
     test_parsed_query_result["dbt"]["tags"].pop(3)
@@ -166,11 +168,31 @@ def test_compare_environment_counts():
         "value": "urn:li:corpuser:alex.johnson",
         "count": 19,
     }
-    compare_environment_counts(
+    missing_values, mismatched_counts = compare_environment_counts(
         platforms=["dbt", "glue"],
         prod_results=prod_results,
         preprod_results=test_parsed_query_result,
     )
+
+    assert missing_values == {
+        "dbt": {
+            "domains": {
+                "missing_in_preprod": {
+                    "urn:li:domain:Staging",
+                    "urn:li:domain:Probation",
+                }
+            },
+            "tags": {
+                "missing_in_preprod": {"urn:li:tag:curated"},
+            },
+        }
+    }
+
+    assert mismatched_counts == {
+        "glue": {
+            "owners": {"urn:li:corpuser:alex.johnson": 0.5},
+        },
+    }
 
 
 def test_get_table_database_mappings(table_database_mappings):
@@ -198,3 +220,20 @@ def test_check_is_part_of_relationships(
         table_database_mappings, mock_datahub_graph
     )
     assert missing_relations == expected_result
+
+
+# make some more complex nested dict inputs and expected outputs to test the _remove_empty_dicts function
+@pytest.mark.parametrize(
+    "in_dict, out_dict",
+    [
+        (None, None),
+        ({}, {}),
+        ({"a": {}}, {}),
+        ({"a": {"b": {}}}, {}),
+        ({"a": {"b": {"c": {}}}}, {}),
+        ({"a": {"b": {"c": {"d": {}}}}, "e": {"f": 1}}, {"e": {"f": 1}}),
+    ],
+)
+def test_remove_empty_dicts(in_dict, out_dict):
+    cleaned_dict = _remove_empty_dicts(in_dict)
+    assert cleaned_dict == out_dict
