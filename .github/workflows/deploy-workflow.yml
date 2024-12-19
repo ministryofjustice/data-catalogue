@@ -194,9 +194,6 @@ jobs:
           --set datahub-frontend.ingress.annotations.external-dns\\.alpha\\.kubernetes\\.io/set-identifier=${EXT_DNS_ID} \
           --set acryl-datahub-actions.serviceAccount.name=${IRSA_SA} \
           --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
-          --set global.sql.datasource.host=${POSTGRES_HOST} \
-          --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
-          --set global.sql.datasource.url=${POSTGRES_URL}
 
       - name: allow CP prometheus scraping 
         shell: bash
