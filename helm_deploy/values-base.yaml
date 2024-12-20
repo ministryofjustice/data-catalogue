@@ -606,12 +606,21 @@ global:
 
   sql:
     datasource:
-      host: ""
-      # as host, minus ":port"
-      hostForpostgresqlClient: ""
+      # This is the host and the port of the database
+      host:
+        valueFrom:
+          secretRef:
+            name: rds-postgresql-instance-output
+            key: rds_instance_endpoint
+      # This is the host, minus ":port"
+      hostForpostgresqlClient:
+        secretRef: rds-postgresql-instance-output
+        secretKey: rds_instance_address
       port: "5432"
       # url is format "jdbc:postgresql://{host}/{database_name}"
-      url: ""
+      url:
+        secretRef: rds-postgresql-instance-output
+        secretKey: rds_url
       driver: "org.postgresql.Driver"
       username:
         secretRef: rds-postgresql-instance-output
