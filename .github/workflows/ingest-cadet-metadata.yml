@@ -88,16 +88,29 @@ jobs:
             echo "Ingestion output file not found. Failing the job."
             exit 1
           fi
-          FAILURE_COUNT=$(jq '.sink.report.failures | length' output.json)
-          echo "failure_count=$FAILURE_COUNT" >> $GITHUB_ENV
+          SINK_FAILURE_COUNT=$(jq '.sink.report.failures | length' output.json)
+          SOURCE_FAILURE_COUNT=$(jq '.source.report.failures | length' output.json)
+          echo "sink_failure_count=$SINK_FAILURE_COUNT" >> $GITHUB_ENV
+          echo "source_failure_count=$SOURCE_FAILURE_COUNT" >> $GITHUB_ENV
 
       - name: Notify on unexpected ingestion failures
         uses: slackapi/slack-github-action@v1.27.0
-        if: env.failure_count > 3
+        if: env.sink_failure_count > 3
         with:
           payload: |
             {
-                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion sink failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          
+      - name: Notify on unexpected ingestion failures
+        uses: slackapi/slack-github-action@v1.27.0
+        if: env.source_failure_count > 1
+        with:
+          payload: |
+            {
+                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion source failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
