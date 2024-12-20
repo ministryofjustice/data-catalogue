@@ -2,6 +2,10 @@ name: DataHub Post Ingestion Validation Checks
 
 on:
   workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   run-for-preprod:
