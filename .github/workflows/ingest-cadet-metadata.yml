@@ -83,7 +83,7 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json || true
+          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json
           if [ ! -f output.json ]; then
             echo "Ingestion output file not found. Failing the job."
             exit 1
