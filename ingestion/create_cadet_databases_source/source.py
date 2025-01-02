@@ -216,7 +216,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 entityUrn=dataset_urn,
                 aspect=DomainsClass(domains=[domain_urn]),
             )
+            create_domain_tag_mcp = MetadataChangeProposalWrapper(
+                entityType="dataset",
+                changeType=ChangeTypeClass.UPSERT,
+                entityUrn=dataset_urn,
+                aspect=GlobalTagsClass(tags=[TagAssociationClass(tag=domain_urn)]),
+            )
             table_domain_mcps.append(mcp)
+            table_domain_mcps.append(create_domain_tag_mcp)
         return table_domain_mcps
 
     def _get_domains(self, manifest) -> set[str]:
