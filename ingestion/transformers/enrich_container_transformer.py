@@ -90,12 +90,6 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
             mcps.append(
                 MetadataChangeProposalWrapper(
                     entityUrn=container_urn,
-                    aspect=DomainsClass(domains=[self.config.domain]),
-                )
-            )
-            mcps.append(
-                MetadataChangeProposalWrapper(
-                    entityUrn=container_urn,
                     aspect=current_tags,
                 )
             )
