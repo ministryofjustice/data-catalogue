@@ -218,7 +218,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             )
 
             # Create domain tag for the table
-            domain_tag = mce_builder.make_tag_urn(tag=domain_name)
+            domain_tag = mce_builder.make_tag_urn(tag=domain)
             create_domain_tag_mcp = MetadataChangeProposalWrapper(
                 entityType="dataset",
                 changeType=ChangeTypeClass.UPSERT,
