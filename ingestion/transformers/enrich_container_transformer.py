@@ -73,7 +73,8 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
         # All containers need the catalogue tag
         tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
         tag_association_to_add = TagAssociationClass(tag=tag_to_add)
-        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
+        domain_tag = TagAssociationClass(tag=mce_builder.make_tag_urn(self.config.domain))
+        current_tags = GlobalTagsClass(tags=[tag_association_to_add, domain_tag])
 
         owner_to_add = OwnerClass(
             self.config.data_custodian, self.config.ownership_type

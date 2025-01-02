@@ -12,15 +12,11 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:General"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "urn:li:corpuser:Supratik.Chowdhury"
       domain: urn:li:domain:General
-  - type: "simple_add_dataset_domain"
-    config:
-      semantics: OVERWRITE
-      domains:
-        - urn:li:domain:General
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
