@@ -150,7 +150,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 description=collection.get("description"),
                 created=None,
                 last_modified=datetime_to_ts_millis(last_modified_date),
-                tags=["dc_display_in_catalogue"],
+                tags=["dc_display_in_catalogue", domain_name],
                 owner_urn=None,
                 qualified_name=collection.get("slug"),
                 extra_properties=custom_properties,
@@ -280,7 +280,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                         tags=[
                             TagAssociationClass(
                                 tag="urn:li:tag:dc_display_in_catalogue"
-                            )
+                            ),
+                            TagAssociationClass(
+                                tag=f"urn:li:tag:{domain_name}"
+                            ),
                         ]
                     ),
                 )
