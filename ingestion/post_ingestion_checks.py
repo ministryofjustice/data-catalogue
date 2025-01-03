@@ -142,8 +142,8 @@ def counts_by_platform(env: str, platforms: list, graph: DataHubGraph):
 
         query_results[platform] = parse_count_by_platform_results(result)
 
-    print(json.dumps(query_results))
-    print(f"::set-output name={env.lower()}_results::{json.dumps(query_results)}")
+    with open(os.environ["GITHUB_OUTPUT"], "a") as output_file:
+        output_file.write(f"{env.lower()}_results={json.dumps(query_results)}\n")
 
 
 def relations_check(s3_manifest_path: str, graph: DataHubGraph):
