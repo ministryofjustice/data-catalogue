@@ -19,7 +19,6 @@ from datahub.ingestion.source.state.stateful_ingestion_base import (
 )
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
-    ContainerClass,
     DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,
@@ -74,7 +73,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             self.source_config.database_metadata_s3_uri
         )
 
-        mcps = []
+        mcps: list[MetadataChangeProposalWrapper] = []
 
         # Create all the domain entities mcps
         mcps.extend(self.create_domain_mcps(manifest))
@@ -217,6 +216,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 aspect=DomainsClass(domains=[domain_urn]),
             )
             table_domain_mcps.append(mcp)
+
         return table_domain_mcps
 
     def _get_domains(self, manifest) -> set[str]:

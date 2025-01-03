@@ -17,10 +17,11 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:People"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "***REMOVED***"
-      domain: urn:li:domain:People
+      domain: People
   - type: "simple_add_dataset_domain"
     config:
       semantics: OVERWRITE
