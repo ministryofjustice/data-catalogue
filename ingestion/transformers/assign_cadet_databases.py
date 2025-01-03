@@ -130,7 +130,6 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     )
                     database_urn = database_key.as_urn()
 
-                    mappings[dataset_urn]["database"] = database_urn
-                    mappings[dataset_urn]["domain"] = fqn[1]
+                    mappings[dataset_urn] = {"database": database_urn, "domain": fqn[1]}
 
         return mappings
