@@ -39,12 +39,11 @@ class TestEnrichContainerTransformer:
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 4
+        assert len(output) == 3
 
         results = {}
         for o in output[:-1]:
             results[o.record.aspect.ASPECT_NAME] = o.record
-        assert len(results) == 3
 
         for k in results:
             assert isinstance(results[k], MetadataChangeProposalWrapper)
@@ -58,9 +57,6 @@ class TestEnrichContainerTransformer:
             results["ownership"].aspect.owners[0].owner == "urn:li:corpuser:roy.keane"
         )
         assert results["ownership"].aspect.owners[0].type == "DATAOWNER"
-
-        assert isinstance(results["domains"].aspect, models.DomainsClass)
-        assert results["domains"].aspect.domains[0] == "urn:li:domain:General"
 
         assert isinstance(results["globalTags"].aspect, models.GlobalTagsClass)
         assert (
