@@ -168,13 +168,13 @@ def test_compare_environment_counts():
         "value": "urn:li:corpuser:alex.johnson",
         "count": 19,
     }
-    missing_values, mismatched_counts = compare_environment_counts(
+    comparison_results = compare_environment_counts(
         platforms=["dbt", "glue"],
         prod_results=prod_results,
         preprod_results=test_parsed_query_result,
     )
 
-    assert missing_values == {
+    assert comparison_results["missing_values"] == {
         "dbt": {
             "domains": {
                 "missing_in_preprod": {
@@ -188,7 +188,7 @@ def test_compare_environment_counts():
         }
     }
 
-    assert mismatched_counts == {
+    assert comparison_results["mismatched_counts"] == {
         "glue": {
             "owners": {"urn:li:corpuser:alex.johnson": 0.5},
         },

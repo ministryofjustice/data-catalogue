@@ -64,7 +64,7 @@ jobs:
     needs: run-for-preprod
     outputs:
       prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
-      missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
+      # missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
       comparison_results: ${{ steps.compare_results.outputs.comparison_results }}
     steps:
       - uses: actions/checkout@v4
