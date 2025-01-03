@@ -180,7 +180,7 @@ def compare_environment_counts(
     prod_results: dict,
     preprod_results: dict,
     mismatch_threshold: float = 0.2,
-) -> tuple[dict, dict]:
+) -> dict:
     missing_values = {}
     mismatched_counts = {}
 
@@ -211,7 +211,10 @@ def compare_environment_counts(
                 prod_counts, preprod_counts, mismatch_threshold
             )
 
-    return _remove_empty_dicts(missing_values), _remove_empty_dicts(mismatched_counts)
+    return {
+        "missing_values": _remove_empty_dicts(missing_values),
+        "mismatched_counts": _remove_empty_dicts(mismatched_counts),
+    }
 
 
 FUNCTION_MAP = {
@@ -264,8 +267,9 @@ if __name__ == "__main__":
         graph = DataHubGraph(server_config)
         FUNCTION_MAP[args.command](s3_manifest_path=args.s3_manifest_path, graph=graph)
     elif args.command == "compare":
-        FUNCTION_MAP[args.command](
+        comparison_results = FUNCTION_MAP[args.command](
             platforms=args.platforms,
             prod_results=json.loads(args.prod_results),
             preprod_results=json.loads(args.preprod_results),
         )
+        print(f"::set-output name=comparison_results::{json.dumps(comparison_results)}")
