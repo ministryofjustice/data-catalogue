@@ -266,6 +266,6 @@ if __name__ == "__main__":
     elif args.command == "compare":
         FUNCTION_MAP[args.command](
             platforms=args.platforms,
-            prod_results=args.prod_results,
-            preprod_results=args.preprod_results,
+            prod_results=json.loads(args.prod_results),
+            preprod_results=json.loads(args.preprod_results),
         )
