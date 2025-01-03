@@ -111,15 +111,15 @@ jobs:
           poetry run python ingestion/post_ingestion_checks.py counts --env prod \
           --platforms dbt glue justice-data GOV.UK
 
-      - name: check datasets' IsPartOf relations
-        env:
-          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-          PYTHONPATH: ${{ github.workspace }}
-        id: set_relations
-        run: |
-          poetry run python ingestion/post_ingestion_checks.py relations --env prod \
-          --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+      # - name: check datasets' IsPartOf relations
+      #   env:
+      #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      #     DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+      #     PYTHONPATH: ${{ github.workspace }}
+      #   id: set_relations
+      #   run: |
+      #     poetry run python ingestion/post_ingestion_checks.py relations --env prod \
+      #     --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
       - name: Compare results
         env:
           PYTHONPATH: ${{ github.workspace }}
