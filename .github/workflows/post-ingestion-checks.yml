@@ -127,7 +127,7 @@ jobs:
         run: |
           poetry run python ingestion/post_ingestion_checks.py compare \
           --platforms dbt glue justice-data GOV.UK \
-          --prod-results '${{ steps.set_prod_counts.outputs.prod_counts }}' \
+          --prod-results ${{ steps.set_prod_counts.outputs.prod_counts }} \
           --preprod-results '${{ needs.run-for-preprod.outputs.preprod_counts }}'
 
 
