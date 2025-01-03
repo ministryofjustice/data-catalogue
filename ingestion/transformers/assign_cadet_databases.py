@@ -14,6 +14,7 @@ from datahub.utilities.urns.tag_urn import TagUrn
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
+    format_domain_name,
     get_cadet_metadata_json,
     parse_database_and_table_names,
     validate_fqn,
@@ -58,7 +59,8 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         in_global_tags_aspect: GlobalTagsClass = cast(GlobalTagsClass, aspect)
         domain = self.mappings.get(entity_urn) \
                               .get("domain")
-        tags_to_add = [TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain))]
+        domain_name = format_domain_name(domain)
+        tags_to_add = [TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name))]
         if tags_to_add is not None:
             in_global_tags_aspect.tags.extend(tags_to_add)
             # Keep track of tags added so that we can create them in handle_end_of_stream
