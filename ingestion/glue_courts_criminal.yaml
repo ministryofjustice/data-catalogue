@@ -14,15 +14,11 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Courts"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "urn:li:corpuser:Gustav.Moller"
-      domain: urn:li:domain:Courts
-  - type: "simple_add_dataset_domain"
-    config:
-      semantics: OVERWRITE
-      domains:
-        - urn:li:domain:Courts
+      domain: Courts
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE

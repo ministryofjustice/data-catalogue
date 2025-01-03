@@ -133,9 +133,11 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 env="prod",
                 backcompat_env_as_instance=True,
             )
+            tags = ["dc_display_in_catalogue"]
             if collection.get("domain"):
                 domain_name = format_domain_name(collection["domain"])
                 domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+                tags.append(domain_name)
             else:
                 domain_urn = None
 
@@ -150,7 +152,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 description=collection.get("description"),
                 created=None,
                 last_modified=datetime_to_ts_millis(last_modified_date),
-                tags=["dc_display_in_catalogue"],
+                tags=tags,
                 owner_urn=None,
                 qualified_name=collection.get("slug"),
                 extra_properties=custom_properties,
@@ -230,9 +232,15 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
                 # because as is there won't always be an applicable domain (subject area)
                 # even within a colleciton
+                tags = [
+                    TagAssociationClass(
+                        tag="urn:li:tag:dc_display_in_catalogue"
+                    )
+                ]
                 if domain:
                     domain_name = format_domain_name(domain)
                     domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+                    tags.append(TagAssociationClass(tag=domain_urn))
                 else:
                     domain_urn = None
 
@@ -276,13 +284,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             mcps.append(
                 MetadataChangeProposalWrapper(
                     entityUrn=dataset_urn,
-                    aspect=GlobalTagsClass(
-                        tags=[
-                            TagAssociationClass(
-                                tag="urn:li:tag:dc_display_in_catalogue"
-                            )
-                        ]
-                    ),
+                    aspect=GlobalTagsClass(tags=tags),
                 )
             )
 

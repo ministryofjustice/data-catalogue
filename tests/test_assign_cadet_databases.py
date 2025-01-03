@@ -6,6 +6,7 @@ import datahub.metadata.schema_classes as models
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.graph.client import DatahubClientConfig
+from datahub.metadata.schema_classes import TagAssociationClass
 from utils import run_dataset_transformer_pipeline
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
@@ -28,17 +29,19 @@ class TestAssignCadetDatabasesTransformer:
 
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignCadetDatabases,
-            aspect=models.ContainerClass(container=None),
+            aspect=models.GlobalTagsClass(tags=[]),
             config={
                 "manifest_s3_uri": "s3://test_bucket/prod/run_artefacts/latest/target/manifest.json",
             },
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 2
+        assert len(output) == 4
         assert output[0] is not None
         assert output[0].record is not None
         assert isinstance(output[0].record, MetadataChangeProposalWrapper)
         assert output[0].record.aspect is not None
-        assert isinstance(output[0].record.aspect, models.ContainerClass)
-        assert output[0].record.aspect.container == expected_key.as_urn()
+        assert isinstance(output[0].record.aspect, models.GlobalTagsClass)
+        assert output[0].record.aspect.tags == [TagAssociationClass(tag=builder.make_tag_urn("Prison"))]
+        assert isinstance(output[2].record.aspect, models.ContainerClass)
+        assert output[2].record.aspect.container == expected_key.as_urn()
