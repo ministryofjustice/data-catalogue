@@ -19,7 +19,6 @@ from datahub.ingestion.source.state.stateful_ingestion_base import (
 )
 from datahub.metadata.schema_classes import (
     ChangeTypeClass,
-    ContainerClass,
     DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,

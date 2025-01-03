@@ -11,7 +11,6 @@ from datahub.ingestion.transformer.dataset_transformer import ContainerTransform
 from datahub.metadata._schema_classes import (
     OwnerClass,
     OwnershipClass,
-    DomainsClass,
     GlobalTagsClass,
     TagAssociationClass,
 )
