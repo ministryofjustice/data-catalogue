@@ -20,9 +20,83 @@ for the Datahub backend.
 - [DataHub (test)](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/data-platform-datahub-catalogue-test)
 - [DataHub (preprod)](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/data-platform-datahub-catalogue-preprod)
 
-## Managing database secrets
+## Managing database variables and secrets
+Datahub provides helm templates and appropriate variables to connect to a backend database of your choice. We currently utilise Postgres via
+Cloud Platforms RDS integration.
 
-The [k8s-rds-secrets-to-github-secrets.sh](/scripts/k8s-rds-secrets-to-github-secrets.sh) script can be used from a local device to populate this repo's environment secrets with the database secrets for the datahub environments deployed in cloud platform.
+Variables & Examples:
+- host: `"cloud-platform-xyz.abcd.eu-west-2.rds.amazonaws.com:5432"`
+- hostForpostgresqlClient: `"cloud-platform-xyz.abcd.eu-west-2.rds.amazonaws.com"`
+- port: `"5432"`
+- url: `"jdbc:postgres://cloud-platform-xyz.abcd.eu-west-2.rds.amazonaws.com:5432/my-db-name"`
+- driver: `"org.postgresql.Driver"`
+- username: `""`
+- password: `""`
+- DATAHUB_DB_NAME: `"my-db-name"`
+
+When utilising cloud platforms RDS integration, a secret store containing the connection variables is automatically created for you.
+
+```
+kubectl get secret -n data-platform-datahub-catalogue-dev rds-postgresql-instance-output -o json | jq '.data | map_values(@base64d)'
+{
+  "database_name": "my-db-name",
+  "database_password": "",
+  "database_username": "",
+  "rds_instance_address": "cloud-platform-xyz.abcd.eu-west-2.rds.amazonaws.com",
+  "rds_instance_endpoint": "cloud-platform-xyz.abcd.eu-west-2.rds.amazonaws.com:5432",
+  "rds_url": "jdbc:postgres://cloud-platform-xyz.abcd.eu-west-2.rds.amazonaws.com:5432/my-db-name"
+}
+```
+
+Unfortunately the datahub helm templates only support obtaining values from a namespace secret store for the `username`, `password` and `DATAHUB_DB_NAME` variables. Therfore it is necessary to pass in values for variables `host`, `hostForpostgresqlClient` and `url` via the workflow having first obtained them from github secrets.
+
+This [issue](https://github.com/ministryofjustice/find-moj-data/issues/1200) provides more detailed information
+
+
+Example Sql configuration in `values-base.yaml`:
+
+
+```
+sql:
+    datasource:
+      host: ""
+      hostForpostgresqlClient: ""
+      port: "5432"
+      url: ""
+      driver: "org.postgresql.Driver"
+      username:
+        secretRef: rds-postgresql-instance-output
+        secretKey: database_username
+      password:
+        secretRef: rds-postgresql-instance-output
+        secretKey: database_password
+      extraEnvs:
+        - name: "DATAHUB_DB_NAME"
+          valueFrom:
+            secretKeyRef:
+              name: rds-postgresql-instance-output
+              key: database_name
+```
+
+Values for `host`, `hostForpostgresqlClient` and `url` are populated in the workflow `deploy-workflow.yml`:
+
+```
+run: |
+          helm upgrade \
+          --install ${RELEASE_NAME} datahub/datahub \
+          --version ${CHART_VERSION} \
+          --atomic --debug --timeout 10m0s \
+          --values helm_deploy/values-base.yaml \
+          --namespace ${{ secrets.kube_namespace }} \
+          ...
+          --set global.sql.datasource.host=${POSTGRES_HOST} \
+          --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
+          --set global.sql.datasource.url=${POSTGRES_URL}
+```
+
+
+
+For convenience the [k8s-rds-secrets-to-github-secrets.sh](/scripts/k8s-rds-secrets-to-github-secrets.sh) script can be used from a local device to populate this repo's environment secrets with the database secrets for the datahub environments secret store.
 
 It can be called as
 
