@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Report datasets with missing container relationships
         run: |
-          echo "Missing IsPartOf relations: ${{ needs.run-for-prod.outputs.missing_is_part_of }}"
+          echo 'Missing IsPartOf relations: ${{ needs.run-for-prod.outputs.missing_is_part_of }}'
       - name: Report on prod vs preprod comparison results
         run: |
-          echo "Comparison results: ${{ needs.compare_results.outputs.comparison_results }}"
+          echo 'Comparison results: ${{ needs.compare_results.outputs.comparison_results }}'
