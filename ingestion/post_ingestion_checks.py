@@ -158,8 +158,8 @@ def relations_check(s3_manifest_path: str, graph: DataHubGraph):
 
 def _calculate_missing_values(prod_values: set, preprod_values: set) -> dict:
     return {
-        "missing_in_preprod": prod_values - preprod_values,
-        "missing_in_prod": preprod_values - prod_values,
+        "missing_in_preprod": list(prod_values - preprod_values),
+        "missing_in_prod": list(preprod_values - prod_values),
     }
 
 
