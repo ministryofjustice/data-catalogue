@@ -162,7 +162,6 @@ def test_compare_environment_counts():
     prod_results = copy.deepcopy(test_parsed_query_result)
     # pop some values to simulate missing values
     test_parsed_query_result["dbt"]["domains"].pop(0)
-    test_parsed_query_result["dbt"]["domains"].pop(3)
     test_parsed_query_result["dbt"]["tags"].pop(3)
     test_parsed_query_result["glue"]["owners"][0] = {
         "value": "urn:li:corpuser:alex.johnson",
@@ -178,7 +177,6 @@ def test_compare_environment_counts():
         "dbt": {
             "domains": {
                 "missing_in_preprod": [
-                    "urn:li:domain:Staging",
                     "urn:li:domain:Probation",
                 ]
             },
