@@ -232,15 +232,11 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
                 # because as is there won't always be an applicable domain (subject area)
                 # even within a colleciton
-                tags = [
-                    TagAssociationClass(
-                        tag="urn:li:tag:dc_display_in_catalogue"
-                    )
-                ]
+                tags = [TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")]
                 if domain:
                     domain_name = format_domain_name(domain)
+                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{domain_name}"))
                     domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-                    tags.append(TagAssociationClass(tag=domain_urn))
                 else:
                     domain_urn = None
 
