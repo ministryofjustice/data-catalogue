@@ -12,7 +12,7 @@ import yaml
 from avrogen.dict_wrapper import DictWrapper
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.graph.client import DataHubGraph, RelatedEntity
-from moto import mock_s3
+from moto import mock_aws
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
 
@@ -153,7 +153,7 @@ def mock_metadata_in_s3():
     """
     mocks both the manifest and database_metadata json files in s3
     """
-    with mock_s3():
+    with mock_aws():
         s3 = boto3.client("s3")
         bucket = "test_bucket"
         s3.create_bucket(
