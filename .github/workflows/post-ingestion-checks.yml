@@ -1,80 +1,138 @@
-name: Post Ingestion Checks
+name: DataHub Post Ingestion Validation Checks
+
+permissions:
+  id-token: write
+  contents: read
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Ingest metadata to prod"] # Name of the first workflow
+    types:
+      - completed
 
 jobs:
-  setup:
+  wait-for-reindex:
     runs-on: ubuntu-latest
+    steps:
+      - name: Wait for post ingestion opensearch reindex
+        run: sleep 3600  # Delay for 60 minutes (3600 seconds)
+  run-for-preprod:
+    runs-on: ubuntu-latest
+    environment: preprod-ingestion
+    needs: wait-for-reindex
     outputs:
-      python-version: "3.11"
+      preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
 
-  check_is_part_of_relationships:
-    runs-on: ubuntu-latest
-    environment: prod-ingestion
-    needs: setup
-    outputs:
-      missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
-    steps:
-      - name: check datasets' IsPartOf relations
-        id: set_relations
-        run: |
-            python ingestion/post_ingestion_checks.py relations --env PROD \
-            --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+      - run: poetry install --no-interaction --no-root
 
-  get_counts_prod_datahub:
-    runs-on: ubuntu-latest
-    environment: prod-ingestion
-    needs: setup
-    outputs:
-      prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
-    steps:
-      - name: Query prod datahub
-        id: set_prod_counts
-        run: |
-            python ingestion/post_ingestion_checks.py relations --env prod \
-            --platforms dbt glue justice-data GOV.UK
-
-  get_counts_preprod_datahub:
-    runs-on: ubuntu-latest
-    environment: preprod-ingestion
-    needs: setup
-    outputs:
-      preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
-    steps:
-      - name: Query preprod datahub
+      - name: Query preprod datahub for counts
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          PYTHONPATH: ${{ github.workspace }}
         id: set_preprod_counts
         run: |
-            python ingestion/post_ingestion_checks.py relations --env preprod \
-            --platforms dbt glue justice-data GOV.UK
+          poetry run python ingestion/post_ingestion_checks.py counts --env preprod \
+          --platforms dbt glue justice-data GOV.UK
 
-  compare_count_results:
+
+  run-for-prod:
     runs-on: ubuntu-latest
-    needs: [get_counts_prod_datahub, get_counts_preprod_datahub]
+    environment: prod-ingestion
+    needs: [wait-for-reindex, run-for-preprod]
+    outputs:
+      prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
+      missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - run: poetry install --no-interaction --no-root
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+          role-duration-seconds: 14400
+          aws-region: eu-west-1
+
+      - name: Query prod datahub for counts
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          PYTHONPATH: ${{ github.workspace }}
+        id: set_prod_counts
+        run: |
+          poetry run python ingestion/post_ingestion_checks.py counts --env prod \
+          --platforms dbt glue justice-data GOV.UK
+
+      - name: check datasets' IsPartOf relations
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          PYTHONPATH: ${{ github.workspace }}
+        id: set_relations
+        run: |
+          poetry run python ingestion/post_ingestion_checks.py relations --env prod \
+          --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+
+
+  compare_results:
+    runs-on: ubuntu-latest
     outputs:
       comparison_results: ${{ steps.compare_results.outputs.comparison_results }}
+    environment: prod-ingestion
+    needs: [wait-for-reindex, run-for-preprod, run-for-prod]
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - run: poetry install --no-interaction --no-root
       - name: Compare results
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         id: compare_results
         run: |
-          python ingestion/post_ingestion_checks.py compare \
-          --prod-counts '${{ needs.get_counts_prod_datahub.outputs.prod_counts }}' \
-          --preprod-counts '${{ needs.get_counts_preprod_datahub.outputs.preprod_counts }}'
+          poetry run python ingestion/post_ingestion_checks.py compare \
+          --platforms dbt glue justice-data GOV.UK \
+          --prod-results '${{ needs.run-for-prod.outputs.prod_counts }}' \
+          --preprod-results '${{ needs.run-for-preprod.outputs.preprod_counts }}'
 
   post_ingestion_checks_report:
     runs-on: ubuntu-latest
     environment: prod-ingestion
-    needs: [check_is_part_of_relationships, compare_count_results]
+    needs: [wait-for-reindex, run-for-prod, compare_results]
     steps:
+      - uses: actions/checkout@v4
       - name: Report datasets with missing container relationships
         run: |
-          echo "Missing IsPartOf relations: ${{ needs.check_is_part_of_relationships.outputs.missing_is_part_of }}"
+          echo 'Missing IsPartOf relations: ${{ needs.run-for-prod.outputs.missing_is_part_of }}'
       - name: Report on prod vs preprod comparison results
         run: |
-          echo "Comparison results: ${{ needs.compare_count_results.outputs.comparison_results }}"
+          echo 'Comparison results: ${{ needs.compare_results.outputs.comparison_results }}'
