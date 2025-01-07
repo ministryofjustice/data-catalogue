@@ -57,8 +57,8 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         self, entity_urn: str, aspect_name: str, aspect: Optional[Aspect]
     ) -> Optional[Aspect]:
         in_global_tags_aspect: GlobalTagsClass = cast(GlobalTagsClass, aspect)
-        domain = self.mappings.get(entity_urn) \
-                              .get("domain")
+        domain = self.mappings.get(entity_urn, {}) \
+                              .get("domain", "")
         domain_name = format_domain_name(domain)
         tags_to_add = [TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name))]
         if tags_to_add is not None:
