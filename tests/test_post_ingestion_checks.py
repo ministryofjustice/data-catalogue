@@ -177,13 +177,13 @@ def test_compare_environment_counts():
     assert comparison_results["missing_values"] == {
         "dbt": {
             "domains": {
-                "missing_in_preprod": {
+                "missing_in_preprod": [
                     "urn:li:domain:Staging",
                     "urn:li:domain:Probation",
-                }
+                ]
             },
             "tags": {
-                "missing_in_preprod": {"urn:li:tag:curated"},
+                "missing_in_preprod": ["urn:li:tag:curated"],
             },
         }
     }
