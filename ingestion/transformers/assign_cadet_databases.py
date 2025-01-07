@@ -61,11 +61,13 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                               .get("domain")
         if domain:
             domain_name = format_domain_name(domain)
-            tags_to_add = [TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name))]
-            in_global_tags_aspect.tags.extend(tags_to_add)
-            # Keep track of tags added so that we can create them in handle_end_of_stream
-            for tag in tags_to_add:
-                self.processed_tags.setdefault(tag.tag, tag)
+            existing_tags = [tag.tag for tag in in_global_tags_aspect.tags]
+            if domain_name not in existing_tags:
+                tags_to_add = [TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name))]
+                in_global_tags_aspect.tags.extend(tags_to_add)
+                # Keep track of tags added so that we can create them in handle_end_of_stream
+                for tag in tags_to_add:
+                    self.processed_tags.setdefault(tag.tag, tag)
 
         return cast(Aspect, in_global_tags_aspect)
 
