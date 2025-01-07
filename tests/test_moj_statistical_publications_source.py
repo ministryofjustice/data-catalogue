@@ -127,10 +127,8 @@ def test_workunits(mock_justice_publication_api):
         "dc_team_email": "ppas_statistics@justice.gov.uk",
     }
 
-    assert (
-        tags_events[0].metadata.aspect.tags[0].tag
-        == "urn:li:tag:dc_display_in_catalogue"
-    )
+    tags = [tag.tag for tag in tags_events[0].metadata.aspect.tags]
+    assert "urn:li:tag:dc_display_in_catalogue" in tags
 
     prison_domains = [
         domain

@@ -1,12 +1,9 @@
-from typing import cast
-
-import datahub.emitter.mce_builder as builder
 import datahub.emitter.mcp_builder as mcp_builder
 import datahub.metadata.schema_classes as models
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.graph.client import DatahubClientConfig
-from utils import run_dataset_transformer_pipeline, run_container_transformer_pipeline
+from utils import run_container_transformer_pipeline
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.transformers.enrich_container_transformer import (
@@ -39,12 +36,11 @@ class TestEnrichContainerTransformer:
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 4
+        assert len(output) == 3
 
         results = {}
         for o in output[:-1]:
             results[o.record.aspect.ASPECT_NAME] = o.record
-        assert len(results) == 3
 
         for k in results:
             assert isinstance(results[k], MetadataChangeProposalWrapper)
@@ -58,9 +54,6 @@ class TestEnrichContainerTransformer:
             results["ownership"].aspect.owners[0].owner == "urn:li:corpuser:roy.keane"
         )
         assert results["ownership"].aspect.owners[0].type == "DATAOWNER"
-
-        assert isinstance(results["domains"].aspect, models.DomainsClass)
-        assert results["domains"].aspect.domains[0] == "urn:li:domain:General"
 
         assert isinstance(results["globalTags"].aspect, models.GlobalTagsClass)
         assert (

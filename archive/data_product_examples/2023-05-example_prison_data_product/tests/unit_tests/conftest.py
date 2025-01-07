@@ -2,7 +2,7 @@ import os
 
 import boto3
 import pytest
-from moto import mock_s3
+from moto import mock_aws
 
 aws_region = "eu-west-1"
 
@@ -32,6 +32,6 @@ def tests_env_setup_and_teardown():
 
 @pytest.fixture(scope="function")
 def s3_mock_client():
-    with mock_s3():
+    with mock_aws():
         conn = boto3.client("s3", region_name=aws_region)
         yield conn
