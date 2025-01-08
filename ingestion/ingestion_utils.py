@@ -245,7 +245,7 @@ class NodeLookup(Generic[ValueType]):
 
     def set(self, database: str, table: str, value: ValueType):
         self.database_lookup[database] = value
-        self.table_lookup[(database, table)] = table
+        self.table_lookup[(database, table)] = value
 
     def __iter__(self):
         return (
