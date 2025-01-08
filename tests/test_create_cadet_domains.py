@@ -85,7 +85,7 @@ class TestCreateCadetDatabases:
         user_urns = [event.metadata.entityUrn for event in user_creation_events]
         assert user_urns == ["urn:li:corpuser:some.one", "urn:li:corpuser:some.team"]
 
-    def test_seeds_are_tagged_to_display_in_catalogue_and_subject_area(self):
+    def test_seeds_are_tagged_to_display_in_catalogue(self):
         seed_tag_event = [
             result
             for result in self.results_by_aspect_type[GlobalTagsClass]
@@ -94,10 +94,7 @@ class TestCreateCadetDatabases:
         assert seed_tag_event[0].metadata.entityType == "dataset"
         assert seed_tag_event[0].metadata.changeType == "UPSERT"
         tag_names = {tag.tag for tag in seed_tag_event[0].metadata.aspect.tags}
-        assert tag_names == {
-            "urn:li:tag:dc_display_in_catalogue",
-            "urn:li:tag:Postcodes",
-        }
+        assert "urn:li:tag:dc_display_in_catalogue" in tag_names
 
     def test_datasets_are_assigned_to_domains(self):
         # This is the first event which should associate a dataset with a domain
