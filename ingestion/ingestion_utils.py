@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from enum import StrEnum
-from typing import Dict, Tuple
+from typing import Dict, Generic, Tuple, TypeVar
 
 import boto3
 import datahub.emitter.mce_builder as builder
@@ -217,3 +217,35 @@ def make_domain_mcp(domain_name: str) -> MetadataChangeProposalWrapper:
         aspect=domain_properties,
     )
     return mcp
+
+
+ValueType = TypeVar("ValueType")
+
+
+class NodeLookup(Generic[ValueType]):
+    """
+    Container class for storing values associated with a node.
+    Values can be fetched by database and table.
+    If table is ommitted, return the value from the last added
+    node matching the database.
+    """
+
+    def __init__(self):
+        self.database_lookup = {}
+        self.table_lookup = {}
+
+    def get(self, database: str, table: str = "") -> ValueType:
+        if table:
+            return self.table_lookup[(database, table)]
+        else:
+            return self.database_lookup[database]
+
+    def set(self, database: str, table: str, value: ValueType):
+        self.database_lookup[database] = value
+        self.table_lookup[(database, table)] = table
+
+    def __iter__(self):
+        return (
+            (database, table, domain)
+            for ((database, table), domain) in self.table_lookup.items()
+        )

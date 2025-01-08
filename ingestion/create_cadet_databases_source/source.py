@@ -27,6 +27,7 @@ from datahub.metadata.schema_classes import (
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.ingestion_utils import (
+    NodeLookup,
     format_domain_name,
     get_cadet_metadata_json,
     get_tags,
@@ -79,7 +80,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         mcps.extend(self.create_domain_mcps(manifest))
 
         # Get database metadata from the manifest and database metadata dicts
-        databases_with_metadata, tables_with_domains, display_tags = (
+        databases_with_metadata, domain_lookup, display_tags = (
             self._get_databases_with_domains_and_display_tags(
                 manifest, databases_metadata
             )
@@ -92,7 +93,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         mcps.extend(self.create_display_tag_for_seed_mcps(manifest))
 
         # create assign domains to tables mcps
-        mcps.extend(self.create_table_domain_mcps(tables_with_domains.values()))
+        mcps.extend(self.create_table_domain_mcps(domain_lookup))
 
         # create the cadet databases tagged to display
         yield from self.create_database_mcps(databases_with_metadata, display_tags)
@@ -184,6 +185,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
+
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
                 name=f"{database}.{table}",
@@ -198,10 +200,10 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         return seed_domain_mcps
 
     def create_table_domain_mcps(
-        self, tables_with_domains
+        self, domain_lookup
     ) -> list[MetadataChangeProposalWrapper]:
         table_domain_mcps = []
-        for database, table, domain in tables_with_domains:
+        for database, table, domain in domain_lookup:
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
                 name=f"{database}.{table}",
@@ -232,9 +234,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
     @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest: dict, databases_metadata: dict
-    ) -> tuple[
-        set[tuple[str, tuple]], dict[tuple[str, str], tuple[str, str, str]], dict
-    ]:
+    ) -> tuple[set[tuple[str, tuple]], NodeLookup[str], dict]:
         """
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
@@ -244,7 +244,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         if any model is to be displayed
         """
         database_mappings = set()
-        table_mappings = {}
+        domain_lookup = NodeLookup()
         tag_mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
@@ -266,17 +266,13 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database_metadata_dict["domain"] = fqn[1]
                     database_metadata_tuple = tuple(database_metadata_dict.items())
                     database_mappings.add((database, database_metadata_tuple))
-                    table_mappings[(database, table)] = (
-                        database,
-                        table,
-                        database_metadata_dict["domain"],
-                    )
+                    domain_lookup.set(database, table, database_metadata_dict["domain"])
 
                     tags = get_tags(manifest["nodes"][node])
                     if tags:
                         tag_mappings[database] = tags
 
-        return database_mappings, table_mappings, tag_mappings
+        return database_mappings, domain_lookup, tag_mappings
 
     def get_report(self) -> SourceReport:
         return self.report
