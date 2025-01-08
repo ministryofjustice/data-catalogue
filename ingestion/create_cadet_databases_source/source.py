@@ -27,6 +27,9 @@ from datahub.metadata.schema_classes import (
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.ingestion_utils import (
+    ParsedDatabase,
+    ParsedManifest,
+    ParsedTable,
     format_domain_name,
     get_cadet_metadata_json,
     get_tags,
@@ -241,9 +244,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         display tags, where key is database and value is dc_display_in_catalogue
         if any model is to be displayed
         """
-        database_mappings = set()
-        table_mappings = set()
-        tag_mappings = {}
+        parsed_manifest = ParsedManifest()
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
                 # fqn = fully qualified name
@@ -261,27 +262,20 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     except KeyError:
                         logging.debug(f"{database} - has no database level metadata")
 
-                    database_metadata_dict["domain"] = fqn[1]
-                    database_metadata_tuple = tuple(database_metadata_dict.items())
-                    database_mappings.add((database, database_metadata_tuple))
-                    table_mappings.add(
-                        (database, table, database_metadata_dict["domain"])
-                    )
-
-                    database, table = parse_database_and_table_names(
-                        manifest["nodes"][node]
-                    )
-                    database_metadata_dict["domain"] = fqn[1]
-                    database_mappings.add((database, database_metadata_tuple))
-                    table_mappings.add(
-                        (database, table, database_metadata_dict["domain"])
-                    )
-
+                    domain = fqn[1]
                     tags = get_tags(manifest["nodes"][node])
-                    if tags:
-                        tag_mappings[database] = tags
+                    parsed_manifest.add_database(
+                        ParsedDatabase(database, database_metadata_dict, tags, domain)
+                    )
+                    parsed_manifest.add_table(
+                        ParsedTable(table, {}, tags, domain, database)
+                    )
 
-        return database_mappings, table_mappings, tag_mappings
+        return (
+            parsed_manifest.get_database_mapping(),
+            parsed_manifest.get_table_mapping(),
+            parsed_manifest.get_tag_mapping(),
+        )
 
     def get_report(self) -> SourceReport:
         return self.report

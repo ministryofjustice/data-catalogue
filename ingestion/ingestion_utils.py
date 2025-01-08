@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import Dict, Tuple
 
@@ -217,3 +218,51 @@ def make_domain_mcp(domain_name: str) -> MetadataChangeProposalWrapper:
         aspect=domain_properties,
     )
     return mcp
+
+
+@dataclass
+class ParsedDatabase:
+    name: str
+    metadata: dict
+    tags: list[str]
+    domain: str
+
+    def metadata_tuple(self):
+        metadata = {"domain": self.domain, **self.metadata}
+        return tuple(metadata.items())
+
+
+@dataclass
+class ParsedTable:
+    name: str
+    metadata: dict
+    tags: list[str]
+    domain: str
+    database: str
+
+
+class ParsedManifest:
+    def __init__(self):
+        self.databases = {}
+        self.tables = {}
+
+    def add_database(self, database: ParsedDatabase):
+        self.databases[database.name] = database
+
+    def add_table(self, table: ParsedTable):
+        self.tables[table.name] = table
+
+    def get_database_mapping(self) -> set[tuple[str, tuple]]:
+        return {
+            (database.name, database.metadata_tuple())
+            for database in self.databases.values()
+        }
+
+    def get_table_mapping(self) -> set[tuple[str, str, str]]:
+        return {
+            (table.database, table.name, self.databases[table.database].domain)
+            for table in self.tables.values()
+        }
+
+    def get_tag_mapping(self) -> dict[str, list[str]]:
+        return {database.name: database.tags for database in self.databases.values()}
