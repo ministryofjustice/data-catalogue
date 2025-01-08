@@ -268,15 +268,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                         (database, table, database_metadata_dict["domain"])
                     )
 
-                    database, table = parse_database_and_table_names(
-                        manifest["nodes"][node]
-                    )
-                    database_metadata_dict["domain"] = fqn[1]
-                    database_mappings.add((database, database_metadata_tuple))
-                    table_mappings.add(
-                        (database, table, database_metadata_dict["domain"])
-                    )
-
                     tags = get_tags(manifest["nodes"][node])
                     if tags:
                         tag_mappings[database] = tags
