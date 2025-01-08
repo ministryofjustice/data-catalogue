@@ -90,7 +90,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         mcps.extend(self.create_database_owner_mcps(databases_with_metadata))
 
         # create mcps to tag seed datasets with dc_display_in_catalogue
-        mcps.extend(self.create_display_tag_for_seed_mcps(manifest))
+        mcps.extend(self.create_display_tag_for_seed_mcps(manifest, domain_lookup))
 
         # create assign domains to tables mcps
         mcps.extend(self.create_table_domain_mcps(domain_lookup))
@@ -171,12 +171,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             )
 
     def create_display_tag_for_seed_mcps(
-        self, manifest
+        self, manifest, domain_lookup
     ) -> list[MetadataChangeProposalWrapper]:
         seed_domain_mcps = []
-        tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
-        tag_association_to_add = TagAssociationClass(tag=tag_to_add)
-        current_tags = GlobalTagsClass(tags=[tag_association_to_add])
 
         seed_nodes = [
             manifest["nodes"][node]
@@ -185,6 +182,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
+            domain = format_domain_name(domain_lookup.get(database, table))
+            tag_names = [domain, "dc_display_in_catalogue"]
+            tags_aspect = GlobalTagsClass(
+                tags=[
+                    TagAssociationClass(tag=mce_builder.make_tag_urn(tag_name))
+                    for tag_name in tag_names
+                ]
+            )
 
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 platform=PLATFORM,
@@ -193,7 +198,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             )
             mcp: MetadataChangeProposalWrapper = MetadataChangeProposalWrapper(
                 entityUrn=dataset_urn,
-                aspect=current_tags,
+                aspect=tags_aspect,
             )
 
             seed_domain_mcps.append(mcp)
