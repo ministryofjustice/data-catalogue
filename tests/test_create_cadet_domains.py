@@ -93,10 +93,8 @@ class TestCreateCadetDatabases:
         ]
         assert seed_tag_event[0].metadata.entityType == "dataset"
         assert seed_tag_event[0].metadata.changeType == "UPSERT"
-        assert (
-            seed_tag_event[0].metadata.aspect.tags[0].tag
-            == "urn:li:tag:dc_display_in_catalogue"
-        )
+        tag_names = {tag.tag for tag in seed_tag_event[0].metadata.aspect.tags}
+        assert "urn:li:tag:dc_display_in_catalogue" in tag_names
 
     def test_datasets_are_assigned_to_domains(self):
         # This is the first event which should associate a dataset with a domain
