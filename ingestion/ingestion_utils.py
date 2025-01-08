@@ -225,9 +225,7 @@ ValueType = TypeVar("ValueType")
 class NodeLookup(Generic[ValueType]):
     """
     Container class for storing values associated with a node.
-    Values can be fetched by database and table.
-    If table is ommitted, return the value from the last added
-    node matching the database.
+    Values can be fetched by database and table, or iterated over.
     """
 
     def __init__(self):
@@ -235,6 +233,11 @@ class NodeLookup(Generic[ValueType]):
         self.table_lookup = {}
 
     def get(self, database: str, table: str = "") -> ValueType:
+        """
+        Get the value associated with a database/table.
+        If table is ommitted, return the value from the last added
+        node matching the database.
+        """
         if table:
             return self.table_lookup[(database, table)]
         else:
