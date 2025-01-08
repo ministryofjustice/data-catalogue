@@ -92,7 +92,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         mcps.extend(self.create_display_tag_for_seed_mcps(manifest))
 
         # create assign domains to tables mcps
-        mcps.extend(self.create_table_domain_mcps(tables_with_domains))
+        mcps.extend(self.create_table_domain_mcps(tables_with_domains.values()))
 
         # create the cadet databases tagged to display
         yield from self.create_database_mcps(databases_with_metadata, display_tags)
@@ -232,7 +232,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
     @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest: dict, databases_metadata: dict
-    ) -> tuple[set[tuple[str, tuple]], set[tuple[str, str, str]], dict]:
+    ) -> tuple[
+        set[tuple[str, tuple]], dict[tuple[str, str], tuple[str, str, str]], dict
+    ]:
         """
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
@@ -242,7 +244,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         if any model is to be displayed
         """
         database_mappings = set()
-        table_mappings = set()
+        table_mappings = {}
         tag_mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
@@ -264,8 +266,10 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database_metadata_dict["domain"] = fqn[1]
                     database_metadata_tuple = tuple(database_metadata_dict.items())
                     database_mappings.add((database, database_metadata_tuple))
-                    table_mappings.add(
-                        (database, table, database_metadata_dict["domain"])
+                    table_mappings[(database, table)] = (
+                        database,
+                        table,
+                        database_metadata_dict["domain"],
                     )
 
                     tags = get_tags(manifest["nodes"][node])
