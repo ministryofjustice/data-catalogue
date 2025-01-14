@@ -1,0 +1,32 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: ["just_link$"]
+    extract_owners: False
+    extract_transforms: False
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Courts"
+        - "urn:li:tag:Prison"
+        - "urn:li:tag:Probation"
+        - "urn:li:tag:Risk"
+  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+    config:
+      data_custodian: "urn:li:corpuser:Sam.Lindsay1"
+      subject_areas:
+        - Courts
+        - Prison
+        - Probation
+        - Risk
+  - type: "simple_add_dataset_ownership"
+    config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
+      owner_urns:
+        - "urn:li:corpuser:Sam.Lindsay1"
