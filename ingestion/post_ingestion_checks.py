@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 
 import datahub.emitter.mce_builder as mce_builder
@@ -13,6 +14,11 @@ from ingestion.ingestion_utils import (
     parse_database_and_table_names,
     validate_fqn,
 )
+
+logging.basicConfig(level=logging.INFO)
+
+logging.getLogger("urllib3").setLevel(logging.INFO)
+logging.getLogger("botocore").setLevel(logging.INFO)
 
 count_by_platform_graph_query = """
 query platformCounts($input: AggregateAcrossEntitiesInput!) {
@@ -31,6 +37,7 @@ query platformCounts($input: AggregateAcrossEntitiesInput!) {
 
 
 def _get_table_database_mappings(manifest):
+    # mappings is a dictionary where the key is the dataset urn and the value is the database urn
     mappings = {}
     for node in manifest["nodes"]:
         if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
@@ -126,7 +133,7 @@ def parse_count_by_platform_results(result: dict):
     }
 
 
-def counts_by_platform(env: str, platforms: list):
+def counts_by_platform(env: str, platforms: list, graph: DataHubGraph):
     query_results = {}
     for platform in platforms:
         result = graph.execute_graphql(
@@ -135,7 +142,8 @@ def counts_by_platform(env: str, platforms: list):
 
         query_results[platform] = parse_count_by_platform_results(result)
 
-    print(f"::set-output name={env.lower()}_results::{json.dumps(query_results)}")
+    with open(os.environ["GITHUB_OUTPUT"], "a") as output_file:
+        output_file.write(f"{env.lower()}_results={json.dumps(query_results)}\n")
 
 
 def relations_check(s3_manifest_path: str, graph: DataHubGraph):
@@ -150,8 +158,8 @@ def relations_check(s3_manifest_path: str, graph: DataHubGraph):
 
 def _calculate_missing_values(prod_values: set, preprod_values: set) -> dict:
     return {
-        "missing_in_preprod": prod_values - preprod_values,
-        "missing_in_prod": preprod_values - prod_values,
+        "missing_in_preprod": list(prod_values - preprod_values),
+        "missing_in_prod": list(preprod_values - prod_values),
     }
 
 
@@ -173,7 +181,7 @@ def compare_environment_counts(
     prod_results: dict,
     preprod_results: dict,
     mismatch_threshold: float = 0.2,
-) -> tuple[dict, dict]:
+) -> dict:
     missing_values = {}
     mismatched_counts = {}
 
@@ -204,7 +212,10 @@ def compare_environment_counts(
                 prod_counts, preprod_counts, mismatch_threshold
             )
 
-    return _remove_empty_dicts(missing_values), _remove_empty_dicts(mismatched_counts)
+    return {
+        "missing_values": _remove_empty_dicts(missing_values),
+        "mismatched_counts": _remove_empty_dicts(mismatched_counts),
+    }
 
 
 FUNCTION_MAP = {
@@ -220,7 +231,7 @@ if __name__ == "__main__":
         choices=FUNCTION_MAP.keys(),
         help="indicates which check to run",
     )
-    parser.add_argument("--env", required=True, help="Environment being queried")
+    parser.add_argument("--env", required=False, help="Environment being queried")
     parser.add_argument(
         "--platforms",
         nargs="+",
@@ -243,16 +254,23 @@ if __name__ == "__main__":
         help="results from preprod count query",
     )
     args = parser.parse_args()
-    server_config = DatahubClientConfig(
-        server=os.environ["DATAHUB_GMS_URL"], token=os.environ["DATAHUB_GMS_TOKEN"]
-    )
-    graph = DataHubGraph(server_config)
+
     if args.command == "counts":
-        FUNCTION_MAP[args.command](env=args.env, platforms=args.platforms)
-    elif args.command == "relations":
-        FUNCTION_MAP[args.command](s3_manifest_path=args.s3_manifest_path)
-    elif args.command == "compare":
-        FUNCTION_MAP[args.command](
-            prod_results=args.prod_results,
-            preprod_results=args.preprod_results,
+        server_config = DatahubClientConfig(
+            server=os.environ["DATAHUB_GMS_URL"], token=os.environ["DATAHUB_GMS_TOKEN"]
         )
+        graph = DataHubGraph(server_config)
+        FUNCTION_MAP[args.command](env=args.env, platforms=args.platforms, graph=graph)
+    elif args.command == "relations":
+        server_config = DatahubClientConfig(
+            server=os.environ["DATAHUB_GMS_URL"], token=os.environ["DATAHUB_GMS_TOKEN"]
+        )
+        graph = DataHubGraph(server_config)
+        FUNCTION_MAP[args.command](s3_manifest_path=args.s3_manifest_path, graph=graph)
+    elif args.command == "compare":
+        comparison_results = FUNCTION_MAP[args.command](
+            platforms=args.platforms,
+            prod_results=json.loads(args.prod_results),
+            preprod_results=json.loads(args.preprod_results),
+        )
+        print(f"::set-output name=comparison_results::{json.dumps(comparison_results)}")

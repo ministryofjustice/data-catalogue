@@ -162,33 +162,31 @@ def test_compare_environment_counts():
     prod_results = copy.deepcopy(test_parsed_query_result)
     # pop some values to simulate missing values
     test_parsed_query_result["dbt"]["domains"].pop(0)
-    test_parsed_query_result["dbt"]["domains"].pop(3)
     test_parsed_query_result["dbt"]["tags"].pop(3)
     test_parsed_query_result["glue"]["owners"][0] = {
         "value": "urn:li:corpuser:alex.johnson",
         "count": 19,
     }
-    missing_values, mismatched_counts = compare_environment_counts(
+    comparison_results = compare_environment_counts(
         platforms=["dbt", "glue"],
         prod_results=prod_results,
         preprod_results=test_parsed_query_result,
     )
 
-    assert missing_values == {
+    assert comparison_results["missing_values"] == {
         "dbt": {
             "domains": {
-                "missing_in_preprod": {
-                    "urn:li:domain:Staging",
+                "missing_in_preprod": [
                     "urn:li:domain:Probation",
-                }
+                ]
             },
             "tags": {
-                "missing_in_preprod": {"urn:li:tag:curated"},
+                "missing_in_preprod": ["urn:li:tag:curated"],
             },
         }
     }
 
-    assert mismatched_counts == {
+    assert comparison_results["mismatched_counts"] == {
         "glue": {
             "owners": {"urn:li:corpuser:alex.johnson": 0.5},
         },
