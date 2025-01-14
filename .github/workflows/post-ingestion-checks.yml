@@ -92,7 +92,7 @@ jobs:
         id: set_relations
         run: |
           poetry run python ingestion/post_ingestion_checks.py relations --env prod \
-          --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/latest/target/manifest.json"
+          --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/manifest.json"
 
 
   compare_results:
