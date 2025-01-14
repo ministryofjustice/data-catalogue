@@ -19,7 +19,8 @@ transformers:
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "urn:li:corpuser:James.Baker2"
-      domain: Courts
+      subject_areas:
+        - Courts
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE

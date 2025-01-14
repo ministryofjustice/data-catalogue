@@ -16,7 +16,8 @@ transformers:
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "urn:li:corpuser:Supratik.Chowdhury"
-      domain: General
+      subject_areas:
+        - General
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE

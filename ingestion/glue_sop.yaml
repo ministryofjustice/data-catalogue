@@ -21,7 +21,8 @@ transformers:
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "urn:li:corpuser:holly.furniss"
-      domain: People
+      subject_areas:
+        - People
   - type: "simple_add_dataset_domain"
     config:
       semantics: OVERWRITE

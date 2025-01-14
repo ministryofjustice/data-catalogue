@@ -18,7 +18,8 @@ transformers:
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "urn:li:corpuser:Gustav.Moller"
-      domain: Courts
+      subject_areas:
+        - Courts
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
