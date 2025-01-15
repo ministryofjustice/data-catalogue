@@ -88,17 +88,17 @@ jobs:
           envsubst < ingestion/glue_courts_family.yaml > ingestion/processed/glue_courts_family.yaml
           envsubst < ingestion/glue_just_link.yaml > ingestion/processed/glue_just_link.yaml
 
-      - name: datahub glue ingestion
+      - name: datahub glue ingestion using config with owners
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
           time poetry run datahub ingest -c ingestion/processed/glue_sop.yaml
-          time poetry run datahub ingest -c ingestion/glue_contracts.yaml
-          time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
-          time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
-          time poetry run datahub ingest -c ingestion/glue_just_link.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_contracts.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_courts_criminal.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_courts_family.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_just_link.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
