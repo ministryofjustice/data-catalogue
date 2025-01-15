@@ -185,6 +185,7 @@ jobs:
           --version ${CHART_VERSION} \
           --atomic --debug --timeout 10m0s \
           --values helm_deploy/values-base.yaml \
+          --values helm_deploy/${{inputs.env}}/values-base.yaml \
           --namespace ${{ secrets.kube_namespace }} \
           --set datahub-frontend.fullnameOverride=${RELEASE_NAME}-${FRONTEND_FULLNAME} \
           --set datahub-frontend.oidcAuthentication.azureTenantId=${{ vars.TENANT_ID }} \
