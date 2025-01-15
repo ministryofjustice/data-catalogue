@@ -37,6 +37,11 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
+      CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
+      COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
+      COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
+      JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
   ingest-moj-publications-prod:
     uses: ./.github/workflows/ingest-moj-publications.yml
     with:
