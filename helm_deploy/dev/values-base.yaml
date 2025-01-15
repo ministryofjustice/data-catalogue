@@ -1,0 +1,6 @@
+datahub-gms:
+  extraEnvs:
+    # Override elasticsearch.bulkProcessor.requestsLimit
+    # (default: 500)
+    - name: ELASTICSEARCH_BULKPROCESSOR_REQUESTSLIMIT
+      value: "250"
