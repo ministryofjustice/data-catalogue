@@ -1,4 +1,4 @@
-name: "Ingest DBT metadata from Create a Derived Table's AP AWS account"
+name: "Ingest DBT metadata from Create a Derived Table"
 
 permissions:
   id-token: write
