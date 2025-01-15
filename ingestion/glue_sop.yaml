@@ -20,7 +20,7 @@ transformers:
         - "urn:li:tag:People"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
-      data_custodian: "urn:li:corpuser:holly.furniss"
+      data_custodian: "${SOP_TECHNICAL_CONTACT}"
       subject_areas:
         - People
   - type: "simple_add_dataset_domain"
@@ -33,4 +33,4 @@ transformers:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
-        - "urn:li:corpuser:holly.furniss"
+        - "${SOP_TECHNICAL_CONTACT}"

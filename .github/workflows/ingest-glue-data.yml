@@ -68,17 +68,35 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
+      - name: Install envsubst
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext-base
+
+      - name: Inject owners to glue ingestion config
+        env:
+          SOP_TECHNICAL_CONTACT: "urn:li:corpuser:holly.furniss"
+        run: |
+          # Create processed directory if it doesn't exist
+          mkdir -p ingestion/processed
+
+          # Process the config file
+          envsubst ingestion/glue_sop.yaml ingestion/processed/glue_sop.yaml
+
+          # Optional: Validate the processed YAML
+          cat ingestion/processed/config.yaml
+
       - name: datahub glue ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/glue_sop.yaml
-          time poetry run datahub ingest -c ingestion/glue_contracts.yaml
-          time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
-          time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
-          time poetry run datahub ingest -c ingestion/glue_just_link.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_sop.yaml
+          # time poetry run datahub ingest -c ingestion/glue_contracts.yaml
+          # time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
+          # time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
+          # time poetry run datahub ingest -c ingestion/glue_just_link.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
