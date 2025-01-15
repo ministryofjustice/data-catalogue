@@ -18,7 +18,7 @@ transformers:
         - "urn:li:tag:Risk"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
-      data_custodian: "urn:li:corpuser:Sam.Lindsay1"
+      data_custodian: "${JUST_LINK_TECHNICAL_CONTACT}"
       subject_areas:
         - Courts
         - Prison
@@ -29,4 +29,4 @@ transformers:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
-        - "urn:li:corpuser:Sam.Lindsay1"
+        - "${JUST_LINK_TECHNICAL_CONTACT}"

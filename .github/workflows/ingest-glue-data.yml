@@ -76,10 +76,17 @@ jobs:
       - name: Inject owners to glue ingestion config
         env:
           SOP_TECHNICAL_CONTACT: "urn:li:corpuser:holly.furniss"
+          CONTRACTS_TECHNICAL_CONTACT: "urn:li:corpuser:Supratik.Chowdhury"
+          COURTS_CRIMINAL_TECHNICAL_CONTACT: "urn:li:corpuser:Gustav.Moller"
+          COURTS_FAMILY_TECHNICAL_CONTACT: "urn:li:corpuser:James.Baker2"
+          JUST_LINK_TECHNICAL_CONTACT: "urn:li:corpuser:Sam.Lindsay1"
         run: |
           mkdir -p ingestion/processed
-          envsubst ingestion/glue_sop.yaml ingestion/processed/glue_sop.yaml
-          cat ingestion/processed/config.yaml
+          envsubst < ingestion/glue_sop.yaml > ingestion/processed/glue_sop.yaml
+          envsubst < ingestion/glue_contracts.yaml > ingestion/processed/glue_contracts.yaml
+          envsubst < ingestion/glue_courts_criminal.yaml > ingestion/processed/glue_courts_criminal.yaml
+          envsubst < ingestion/glue_courts_family.yaml > ingestion/processed/glue_courts_family.yaml
+          envsubst < ingestion/glue_just_link.yaml > ingestion/processed/glue_just_link.yaml
 
       - name: datahub glue ingestion
         env:
@@ -88,10 +95,10 @@ jobs:
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
           time poetry run datahub ingest -c ingestion/processed/glue_sop.yaml
-          # time poetry run datahub ingest -c ingestion/glue_contracts.yaml
-          # time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
-          # time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
-          # time poetry run datahub ingest -c ingestion/glue_just_link.yaml
+          time poetry run datahub ingest -c ingestion/glue_contracts.yaml
+          time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
+          time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
+          time poetry run datahub ingest -c ingestion/glue_just_link.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0

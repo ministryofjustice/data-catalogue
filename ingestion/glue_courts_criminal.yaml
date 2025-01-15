@@ -17,7 +17,7 @@ transformers:
         - "urn:li:tag:Courts"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
-      data_custodian: "urn:li:corpuser:Gustav.Moller"
+      data_custodian: "${COURTS_CRIMINAL_TECHNICAL_CONTACT}"
       subject_areas:
         - Courts
   - type: "simple_add_dataset_ownership"
@@ -25,4 +25,4 @@ transformers:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
-        - "urn:li:corpuser:Gustav.Moller"
+        - "${COURTS_CRIMINAL_TECHNICAL_CONTACT}"
