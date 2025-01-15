@@ -26,6 +26,16 @@ on:
       SLACK_ALERT_WEBHOOK:
         description: "Webhook for posting alerts to the team"
         required: true
+      SOP_TECHNICAL_CONTACT:
+        required: true
+      CONTRACTS_TECHNICAL_CONTACT:
+        required: true
+      COURTS_CRIMINAL_TECHNICAL_CONTACT:
+        required: true
+      COURTS_FAMILY_TECHNICAL_CONTACT:
+        required: true
+      JUST_LINK_TECHNICAL_CONTACT:
+        required: true
 
 jobs:
   datahub-ingest-glue-data:
@@ -68,16 +78,37 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: datahub glue ingestion
+      - name: Install envsubst
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext-base
+
+      - name: Inject owners to glue ingestion config
+        env:
+          SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
+          CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
+          COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
+          COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
+          JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
+        run: |
+          mkdir -p ingestion/processed
+          envsubst < ingestion/glue_sop.yaml > ingestion/processed/glue_sop.yaml
+          envsubst < ingestion/glue_contracts.yaml > ingestion/processed/glue_contracts.yaml
+          envsubst < ingestion/glue_courts_criminal.yaml > ingestion/processed/glue_courts_criminal.yaml
+          envsubst < ingestion/glue_courts_family.yaml > ingestion/processed/glue_courts_family.yaml
+          envsubst < ingestion/glue_just_link.yaml > ingestion/processed/glue_just_link.yaml
+
+      - name: datahub glue ingestion using config with owners
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/glue_sop.yaml
-          time poetry run datahub ingest -c ingestion/glue_contracts.yaml
-          time poetry run datahub ingest -c ingestion/glue_courts_criminal.yaml
-          time poetry run datahub ingest -c ingestion/glue_courts_family.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_sop.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_contracts.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_courts_criminal.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_courts_family.yaml
+          time poetry run datahub ingest -c ingestion/processed/glue_just_link.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
