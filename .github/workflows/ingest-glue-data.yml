@@ -77,13 +77,8 @@ jobs:
         env:
           SOP_TECHNICAL_CONTACT: "urn:li:corpuser:holly.furniss"
         run: |
-          # Create processed directory if it doesn't exist
           mkdir -p ingestion/processed
-
-          # Process the config file
           envsubst ingestion/glue_sop.yaml ingestion/processed/glue_sop.yaml
-
-          # Optional: Validate the processed YAML
           cat ingestion/processed/config.yaml
 
       - name: datahub glue ingestion
