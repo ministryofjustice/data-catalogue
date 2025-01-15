@@ -16,6 +16,10 @@ on:
         description: "Environment to use for secrets"
         required: true
         type: string
+      CADET_INGESTION_RECIPE_PATH:
+        description: "Path to the ingestion recipe"
+        required: true
+        type: string
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -83,7 +87,7 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json || true
+          time poetry run datahub ingest -c ${{ inputs.CADET_INGESTION_RECIPE_PATH }} --report-to output.json || true
           if [ ! -f output.json ]; then
             echo "Ingestion output file not found. Failing the job."
             exit 1
