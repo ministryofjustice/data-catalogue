@@ -31,7 +31,7 @@ class TestEnrichContainerTransformer:
             aspect=models.ContainerClass(container=expected_key.database),
             config={
                 "data_custodian": "urn:li:corpuser:roy.keane",
-                "domain": "urn:li:domain:General",
+                "subject_areas": ["General"],
             },
             pipeline_context=pipeline_context,
         )

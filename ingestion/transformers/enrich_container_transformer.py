@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 class EnrichContainerTransformerConfig(ConfigModel):
     data_custodian: str
-    domain: str
+    subject_areas: list[str]
     ownership_type: str = DATAOWNER
 
 
@@ -63,7 +63,7 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
     ) -> List[Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]]:
 
         logging.debug("Generating Ownership for containers")
-        logging.debug(f"{self.config.domain=}, {self.config.data_custodian=}")
+        logging.debug(f"{self.config.subject_areas=}, {self.config.data_custodian=}")
 
         mcps: List[
             Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]
@@ -72,8 +72,11 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
         # All containers need the catalogue tag
         tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
         tag_association_to_add = TagAssociationClass(tag=tag_to_add)
-        domain_tag = TagAssociationClass(tag=mce_builder.make_tag_urn(self.config.domain))
-        current_tags = GlobalTagsClass(tags=[tag_association_to_add, domain_tag])
+        subject_area_tags = [
+            TagAssociationClass(tag=mce_builder.make_tag_urn(subject_area))
+            for subject_area in self.config.subject_areas
+        ]
+        current_tags = GlobalTagsClass(tags=[tag_association_to_add, *subject_area_tags])
 
         owner_to_add = OwnerClass(
             self.config.data_custodian, self.config.ownership_type
