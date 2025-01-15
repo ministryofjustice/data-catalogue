@@ -26,6 +26,16 @@ on:
       SLACK_ALERT_WEBHOOK:
         description: "Webhook for posting alerts to the team"
         required: true
+      SOP_TECHNICAL_CONTACT:
+        required: true
+      CONTRACTS_TECHNICAL_CONTACT:
+        required: true
+      COURTS_CRIMINAL_TECHNICAL_CONTACT:
+        required: true
+      COURTS_FAMILY_TECHNICAL_CONTACT:
+        required: true
+      JUST_LINK_TECHNICAL_CONTACT:
+        required: true
 
 jobs:
   datahub-ingest-glue-data:
@@ -75,11 +85,11 @@ jobs:
 
       - name: Inject owners to glue ingestion config
         env:
-          SOP_TECHNICAL_CONTACT: "urn:li:corpuser:holly.furniss"
-          CONTRACTS_TECHNICAL_CONTACT: "urn:li:corpuser:Supratik.Chowdhury"
-          COURTS_CRIMINAL_TECHNICAL_CONTACT: "urn:li:corpuser:Gustav.Moller"
-          COURTS_FAMILY_TECHNICAL_CONTACT: "urn:li:corpuser:James.Baker2"
-          JUST_LINK_TECHNICAL_CONTACT: "urn:li:corpuser:Sam.Lindsay1"
+          SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
+          CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
+          COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
+          COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
+          JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
         run: |
           mkdir -p ingestion/processed
           envsubst < ingestion/glue_sop.yaml > ingestion/processed/glue_sop.yaml
