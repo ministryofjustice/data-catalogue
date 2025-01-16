@@ -17,6 +17,7 @@ jobs:
     with:
       ECR_REGION: eu-west-1
       ENVIRONMENT: prod-ingestion
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
