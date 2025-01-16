@@ -16,6 +16,14 @@ on:
         description: "Environment to use for secrets"
         required: true
         type: string
+      CADET_INGESTION_RECIPE_PATH:
+        description: "Path to the ingestion recipe"
+        required: true
+        type: string
+      BASE_CADET_INGESTION:
+        description: "Whether to run the base cadet ingestion prep steps"
+        type: boolean
+        default: true
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -67,13 +75,15 @@ jobs:
       - run: poetry install --no-interaction
 
       - name: create cadet domains
+        if: ${{ inputs.BASE_CADET_INGESTION }}
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
-      
+
       - name: run cadet_run_results.py
+        if: ${{ inputs.BASE_CADET_INGESTION }}
         run: poetry run python ingestion/cadet_run_results.py
 
       - name: push metadata to datahub
@@ -83,7 +93,7 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/cadet.yaml --report-to output.json || true
+          time poetry run datahub ingest -c ${{ inputs.CADET_INGESTION_RECIPE_PATH }} --report-to output.json || true
           if [ ! -f output.json ]; then
             echo "Ingestion output file not found. Failing the job."
             exit 1
@@ -103,7 +113,7 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-          
+
       - name: Notify on unexpected ingestion failures
         uses: slackapi/slack-github-action@v1.27.0
         if: env.source_failure_count > 1
