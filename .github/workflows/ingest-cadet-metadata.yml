@@ -20,6 +20,10 @@ on:
         description: "Path to the ingestion recipe"
         required: true
         type: string
+      BASE_CADET_INGESTION:
+        description: "Whether to run the base cadet ingestion prep steps"
+        type: boolean
+        default: true
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -70,15 +74,17 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      # - name: create cadet domains
-      #   env:
-      #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      #     DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-      #     DATAHUB_TELEMETRY_ENABLED: false
-      #   run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
+      - name: create cadet domains
+        if: ${{ inputs.BASE_CADET_INGESTION }}
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
 
-      # - name: run cadet_run_results.py
-      #   run: poetry run python ingestion/cadet_run_results.py
+      - name: run cadet_run_results.py
+        if: ${{ inputs.BASE_CADET_INGESTION }}
+        run: poetry run python ingestion/cadet_run_results.py
 
       - name: push metadata to datahub
         id: push_datahub
