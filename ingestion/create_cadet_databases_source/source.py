@@ -115,8 +115,8 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         database_owner_mcps = []
         for _, db_meta_tuple in databases_with_metadata:
             db_meta_dict = dict(db_meta_tuple)
-            if not db_meta_dict.get("dc_owner", "") == "":
-                mcp = make_user_mcp(db_meta_dict["dc_owner"])
+            if not db_meta_dict.get("dc_data_custodian", "") == "":
+                mcp = make_user_mcp(db_meta_dict["dc_data_custodian"])
                 database_owner_mcps.append(mcp)
 
         return database_owner_mcps
@@ -142,9 +142,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             tags = display_tags.get(database_name, ["dc_cadet"])
             tags.append(domain_name)
 
-            if not db_meta_dict.get("dc_owner", "") == "":
+            if not db_meta_dict.get("", "") == "":
                 owner_urn = mce_builder.make_user_urn(
-                    db_meta_dict.pop("dc_owner").split("@")[0]
+                    db_meta_dict.pop("dc_data_custodian").split("@")[0]
                 )
             else:
                 owner_urn = None
