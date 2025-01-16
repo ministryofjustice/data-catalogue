@@ -21,6 +21,16 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-em-cadet-test:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: test
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
+      BASE_CADET_INGESTION: false
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
   ingest-justice-data-test:
     uses: ./.github/workflows/ingest-justice-data.yml
     with:

@@ -4,26 +4,25 @@ on:
   # schedule:
   #   - cron: "0 9,14 * * *" # 9am, 2pm UTC
   workflow_dispatch:
-  pull_request:
 
 jobs:
-  # ingest-ownership-types-dev:
-  #   uses: ./.github/workflows/ingest-ownership-types.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  # ingest-cadet-dev:
-  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: dev
-  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-ownership-types-dev:
+    uses: ./.github/workflows/ingest-ownership-types.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-cadet-dev:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: dev
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   ingest-em-cadet-dev:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
@@ -35,26 +34,26 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  # ingest-justice-data-dev:
-  #   uses: ./.github/workflows/ingest-justice-data.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  # ingest-glue-data-dev:
-  #   uses: ./.github/workflows/ingest-glue-data.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  # ingest-moj-publications-dev:
-  #   uses: ./.github/workflows/ingest-moj-publications.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-justice-data-dev:
+    uses: ./.github/workflows/ingest-justice-data.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-glue-data-dev:
+    uses: ./.github/workflows/ingest-glue-data.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-moj-publications-dev:
+    uses: ./.github/workflows/ingest-moj-publications.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
