@@ -2,7 +2,8 @@
 
 This Go program implements a simple web crawler that traverses links on a given domain up to a specified depth. It tracks visited links, identifies broken links, and provides a report of broken or inaccessible links at the end of the crawl.
 
-**Note:** This program was built for a local instance of the `find-moj-data` app with disabled authentication.
+**Note:** This program was built for a local instance of the `find-moj-data` app with disabled authentication. To disable authentication
+set the variable `AZURE_AUTH_ENABLED=false` on your local `.env` file.
 
 ## Features
 
