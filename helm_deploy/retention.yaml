@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "retention-policy"
+data:
+retention.yaml: |-
+  - entity: "*"
+    aspect: "dataProcessInstanceInput"
+    config:
+      retention:
+        version:
+          maxVersions: 1
+        time:
+          maxAgeInSeconds: 2592000 # 30 days
+  - entity: "*"
+    aspect: "dataProcessInstanceKey"
+    config:
+      retention:
+        version:
+          maxVersions: 1
+        time:
+          maxAgeInSeconds: 2592000 # 30 days
+  - entity: "*"
+    aspect: "dataProcessInstanceOutput"
+    config:
+      retention:
+        version:
+          maxVersions: 1
+        time:
+          maxAgeInSeconds: 2592000 # 30 days
+  - entity: "*"
+    aspect: "dataProcessInstanceProperties"
+    config:
+      retention:
+        version:
+          maxVersions: 1
+        time:
+          maxAgeInSeconds: 2592000 # 30 days
+  - entity: "*"
+    aspect: "dataProcessInstanceRelationships"
+    config:
+      retention:
+        version:
+          maxVersions: 1
+        time:
+          maxAgeInSeconds: 2592000 # 30 days
+  - entity: "*"
+    aspect: "status"
+    config:
+      retention:
+        version:
+          maxVersions: 1
+        time:
+          maxAgeInSeconds: 2592000 # 30 days

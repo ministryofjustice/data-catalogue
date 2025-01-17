@@ -4,3 +4,10 @@ datahub-gms:
     # (default: 500)
     - name: ELASTICSEARCH_BULKPROCESSOR_REQUESTSLIMIT
       value: "250"
+  extraVolumeMounts:
+    - name: retention-policy
+      mountPath: /etc/datahub/plugins/retention
+  extraVolumes:
+    - name: retention-policy
+      configMap:
+        name: retention-policy
