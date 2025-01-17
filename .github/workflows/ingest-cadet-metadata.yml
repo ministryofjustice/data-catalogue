@@ -78,14 +78,13 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: Install envsubst and inject S3 location to cadet databases
+      - name: Inject S3 location to cadet databases
         env:
           S3_TARGET_LOCATION: ${{ vars.S3_TARGET_LOCATION }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gettext-base
           mkdir -p ingestion/processed
           envsubst < ingestion/create_cadet_databases.yaml > ingestion/processed/create_cadet_databases.yaml
+          cat ingestion/processed/create_cadet_databases.yaml
 
       - name: Create cadet domains and databases
         env:
