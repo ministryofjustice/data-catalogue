@@ -88,7 +88,6 @@ jobs:
           envsubst < ingestion/create_cadet_databases.yaml > ingestion/processed/create_cadet_databases.yaml
 
       - name: Create cadet domains and databases
-        if: ${{ inputs.BASE_CADET_INGESTION }}
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
