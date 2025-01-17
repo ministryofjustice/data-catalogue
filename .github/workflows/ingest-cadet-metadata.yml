@@ -84,7 +84,6 @@ jobs:
         run: |
           mkdir -p ingestion/processed
           envsubst < ingestion/create_cadet_databases.yaml > ingestion/processed/create_cadet_databases.yaml
-          cat ingestion/processed/create_cadet_databases.yaml
 
       - name: Create cadet domains and databases
         env:
