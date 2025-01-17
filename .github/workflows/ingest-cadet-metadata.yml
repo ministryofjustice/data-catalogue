@@ -24,6 +24,10 @@ on:
         description: "Whether to run the base cadet ingestion prep steps"
         type: boolean
         default: true
+      S3_TARGET_LOCATION:
+        description: "S3 location to target for cadet manifest"
+        type: string
+        required: true
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -74,15 +78,24 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: create cadet domains
+      - name: Install envsubst and inject S3 location to cadet databases
+        env:
+          S3_TARGET_LOCATION: ${{ vars.S3_TARGET_LOCATION }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext-base
+          mkdir -p ingestion/processed
+          envsubst < ingestion/create_cadet_databases.yaml > ingestion/processed/create_cadet_databases.yaml
+
+      - name: Create cadet domains and databases
         if: ${{ inputs.BASE_CADET_INGESTION }}
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: time poetry run datahub ingest -c ingestion/create_cadet_databases.yaml
+        run: time poetry run datahub ingest -c ingestion/processed/create_cadet_databases.yaml
 
-      - name: run cadet_run_results.py
+      - name: Collate run results paths from cadet runs
         if: ${{ inputs.BASE_CADET_INGESTION }}
         run: poetry run python ingestion/cadet_run_results.py
 
