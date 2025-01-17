@@ -157,6 +157,22 @@ jobs:
           envsubst < helm_deploy/secrets.yaml |
           kubectl -n ${KUBE_NAMESPACE} apply -f -
 
+      - name: create retention config map
+        if: ${{ inputs.env == 'dev' }}
+        shell: bash
+        id: create-retention-configmap
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+          RETENTION_POLICY: "retention-policy"
+          RETENTION_POLICY_FILE: "retention.yaml"
+        run: |
+            kubectl create configmap ${RETENTION_POLICY} \
+            --from-file="helm_deploy/${RETENTION_POLICY_FILE}" \
+            --dry-run \
+            --output yaml |
+              kubectl apply -f- \
+              --namespace=${KUBE_NAMESPACE}
+
       - name: Populate limit_whitelist values
         shell: bash
         env:
