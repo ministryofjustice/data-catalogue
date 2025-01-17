@@ -80,7 +80,7 @@ jobs:
 
       - name: Inject S3 location to cadet databases
         env:
-          S3_TARGET_LOCATION: ${{ vars.S3_TARGET_LOCATION }}
+          S3_TARGET_LOCATION: ${{ inputs.S3_TARGET_LOCATION }}
         run: |
           mkdir -p ingestion/processed
           envsubst < ingestion/create_cadet_databases.yaml > ingestion/processed/create_cadet_databases.yaml
