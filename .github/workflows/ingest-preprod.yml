@@ -19,6 +19,7 @@ jobs:
       ECR_REGION: eu-west-1
       ENVIRONMENT: preprod-ingestion
       CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
@@ -29,6 +30,7 @@ jobs:
       ECR_REGION: eu-west-1
       ENVIRONMENT: preprod-ingestion
       CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
+      S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
       BASE_CADET_INGESTION: false
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
