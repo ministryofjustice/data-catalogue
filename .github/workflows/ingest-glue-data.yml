@@ -78,11 +78,6 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: Install envsubst
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gettext-base
-
       - name: Inject owners to glue ingestion config
         env:
           SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
@@ -92,11 +87,9 @@ jobs:
           JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
         run: |
           mkdir -p ingestion/processed
-          envsubst < ingestion/glue_sop.yaml > ingestion/processed/glue_sop.yaml
-          envsubst < ingestion/glue_contracts.yaml > ingestion/processed/glue_contracts.yaml
-          envsubst < ingestion/glue_courts_criminal.yaml > ingestion/processed/glue_courts_criminal.yaml
-          envsubst < ingestion/glue_courts_family.yaml > ingestion/processed/glue_courts_family.yaml
-          envsubst < ingestion/glue_just_link.yaml > ingestion/processed/glue_just_link.yaml
+          for config in sop contracts courts_criminal courts_family just_link; do
+            envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
+          done
 
       - name: datahub glue ingestion using config with owners
         env:
@@ -104,11 +97,9 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/processed/glue_sop.yaml
-          time poetry run datahub ingest -c ingestion/processed/glue_contracts.yaml
-          time poetry run datahub ingest -c ingestion/processed/glue_courts_criminal.yaml
-          time poetry run datahub ingest -c ingestion/processed/glue_courts_family.yaml
-          time poetry run datahub ingest -c ingestion/processed/glue_just_link.yaml
+          for ingestion in ingestion/processed/glue_*.yaml; do
+            time poetry run datahub ingest -c "$ingestion"
+          done
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
