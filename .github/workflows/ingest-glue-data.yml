@@ -36,6 +36,8 @@ on:
         required: true
       JUST_LINK_TECHNICAL_CONTACT:
         required: true
+      FINES_TECHNICAL_CONTACT:
+        required: true
 
 jobs:
   datahub-ingest-glue-data:
@@ -85,9 +87,10 @@ jobs:
           COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
           COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
           JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
+          FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
         run: |
           mkdir -p ingestion/processed
-          for config in sop contracts courts_criminal courts_family just_link; do
+          for config in contracts courts_criminal courts_family fines just_link sop; do
             envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
           done
 
