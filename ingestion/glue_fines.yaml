@@ -1,0 +1,43 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: ["fines_enforcement_v2$", "fines_enforcement_redacted_v2$"]
+    extract_owners: False
+    extract_transforms: False
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Courts"
+  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+    config:
+      data_custodian: "${FINES_TECHNICAL_CONTACT}"
+      subject_areas:
+        - Courts
+      properties:
+        dc_slack_channel_name: "#criminal-courts-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/CH935DZGS
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Monthly
+        audience: Internal
+  - type: "simple_add_dataset_ownership"
+    config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
+      owner_urns:
+        - "${FINES_TECHNICAL_CONTACT}"
+  - type: "simple_add_dataset_properties"
+    config:
+      semantics: OVERWRITE # OVERWRITE is default behaviour
+      properties:
+        dc_slack_channel_name: "#criminal-courts-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/CH935DZGS
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Monthly
+        audience: Internal

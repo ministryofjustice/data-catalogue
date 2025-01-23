@@ -9,9 +9,10 @@ from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_transformer import ContainerTransformer
 from datahub.metadata._schema_classes import (
+    ContainerPropertiesClass,
+    GlobalTagsClass,
     OwnerClass,
     OwnershipClass,
-    GlobalTagsClass,
     TagAssociationClass,
 )
 from datahub.metadata.schema_classes import MetadataChangeProposalClass
@@ -28,6 +29,7 @@ class EnrichContainerTransformerConfig(ConfigModel):
     data_custodian: str
     subject_areas: list[str]
     ownership_type: str = DATAOWNER
+    properties: dict[str, str] = {}
 
 
 class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
@@ -76,7 +78,9 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
             TagAssociationClass(tag=mce_builder.make_tag_urn(subject_area))
             for subject_area in self.config.subject_areas
         ]
-        current_tags = GlobalTagsClass(tags=[tag_association_to_add, *subject_area_tags])
+        current_tags = GlobalTagsClass(
+            tags=[tag_association_to_add, *subject_area_tags]
+        )
 
         owner_to_add = OwnerClass(
             self.config.data_custodian, self.config.ownership_type
@@ -95,4 +99,24 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
                     aspect=current_tags,
                 )
             )
+
+            if self.config.properties:
+                mcps.append(self.properties_mcp(container_urn))
+
         return mcps
+
+    def properties_mcp(self, container_urn):
+        if not self.ctx.graph:
+            raise Exception("Graph not available")
+
+        current_properties = self.ctx.graph.get_aspect(
+            entity_urn=container_urn, aspect_type=ContainerPropertiesClass
+        )
+        if not current_properties:
+            raise Exception("Unable to query current properties")
+
+        current_properties.customProperties.update(self.config.properties)
+        return MetadataChangeProposalWrapper(
+            entityUrn=container_urn,
+            aspect=current_properties,
+        )

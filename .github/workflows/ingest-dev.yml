@@ -57,6 +57,7 @@ jobs:
       COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
       COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
       JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
+      FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
   ingest-moj-publications-dev:
     uses: ./.github/workflows/ingest-moj-publications.yml
     with:

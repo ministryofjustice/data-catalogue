@@ -1,8 +1,11 @@
+from unittest.mock import MagicMock
+
 import datahub.emitter.mcp_builder as mcp_builder
 import datahub.metadata.schema_classes as models
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.graph.client import DatahubClientConfig
+from datahub.metadata._schema_classes import ContainerPropertiesClass
 from utils import run_container_transformer_pipeline
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
@@ -17,7 +20,11 @@ class TestEnrichContainerTransformer:
         pipeline_context: PipelineContext = PipelineContext(
             run_id="test_simple_add_dataset_domain"
         )
-        pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
+        graph = mock_datahub_graph(DatahubClientConfig)
+        graph.get_aspect = MagicMock(
+            return_value=ContainerPropertiesClass(name="foo", customProperties=None)
+        )
+        pipeline_context.graph = graph
         expected_key = mcp_builder.DatabaseKey(
             database="prison_database",
             platform=PLATFORM,
@@ -32,22 +39,22 @@ class TestEnrichContainerTransformer:
             config={
                 "data_custodian": "urn:li:corpuser:roy.keane",
                 "subject_areas": ["General"],
+                "properties": {"audience": "Internal"},
             },
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 3
+        assert len(output) == 4
 
         results = {}
         for o in output[:-1]:
             results[o.record.aspect.ASPECT_NAME] = o.record
 
-        for k in results:
-            assert isinstance(results[k], MetadataChangeProposalWrapper)
-            assert results[k].entityType == "container"
-            assert results[k].changeType == "UPSERT"
-            assert results[k].entityUrn == "urn:li:container:abc"
-            assert results[k].aspectName == k
+        for v in results.values():
+            assert isinstance(v, MetadataChangeProposalWrapper)
+            assert v.entityType == "container"
+            assert v.changeType == "UPSERT"
+            assert v.entityUrn == "urn:li:container:abc"
 
         assert isinstance(results["ownership"].aspect, models.OwnershipClass)
         assert (
@@ -60,3 +67,9 @@ class TestEnrichContainerTransformer:
             results["globalTags"].aspect.tags[0].tag
             == "urn:li:tag:dc_display_in_catalogue"
         )
+
+        assert results["containerProperties"]
+
+        assert results["containerProperties"].aspect.customProperties == {
+            "audience": "Internal"
+        }
