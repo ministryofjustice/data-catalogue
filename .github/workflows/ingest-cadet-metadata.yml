@@ -115,11 +115,11 @@ jobs:
 
       - name: Notify on unexpected ingestion failures
         uses: slackapi/slack-github-action@v1.27.0
-        if: env.sink_failure_count > 3
+        if: env.sink_failure_count > 9
         with:
           payload: |
             {
-                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion sink failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion sink failure count is {{env.sink_failure_count}} which is above the threshold of 9 on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
