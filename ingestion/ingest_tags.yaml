@@ -1,0 +1,4 @@
+source:
+  type: "file"
+  config:
+    filename: "./ingestion/tags/subject_areas.json"
