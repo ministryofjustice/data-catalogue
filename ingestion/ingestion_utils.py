@@ -22,6 +22,26 @@ from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
+# This is so we can quickly tag entities with subject areas to test, before
+# adding the tags at source. Domains relate to those used in CaDeT.
+# bold and general do not map to any subject area and will need to be handled
+# when/if we make the changes at source
+domains_to_subject_areas = {
+    "bold": None,
+    "civil": "Courts and tribunals",
+    "courts": "Courts and tribunals",
+    "electronic monitoring": "Prisons and probation",
+    "finance": "Corporate operations",
+    "general": None,
+    "interventions": "Prisons and probation",
+    "opg": "Office of the Public Guardian",
+    "people": "Corporate operations",
+    "prison": "Prisons and probation",
+    "probation": "Prisons and probation",
+    "property": "Corporate operations",
+    "risk": "Prisons and probation",
+}
+
 
 class FindMojDataEntityTypes(StrEnum):
     """
