@@ -6,7 +6,7 @@ on:
 
 jobs:
   ingest-ownership-types-prod:
-    uses: ./.github/workflows/ingest-ownership-types.yml
+    uses: ./.github/workflows/ingest-yaml.yml
     with:
       ENVIRONMENT: prod-ingestion
     secrets:

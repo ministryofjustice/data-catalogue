@@ -1,4 +1,4 @@
-name: "Ingest metadata from ownership types public api"
+name: "Ingest metadata from yaml"
 
 permissions:
   id-token: write
@@ -59,6 +59,13 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: time poetry run datahub ingest -c ingestion/create_custom_ownership_types.yaml
+
+      - name: tags ingestion
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: time poetry run datahub ingest -c ingestion/ingest_tags.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v2.0.0
