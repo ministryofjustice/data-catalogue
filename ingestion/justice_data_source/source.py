@@ -42,7 +42,7 @@ from datahub.metadata.schema_classes import (
 )
 from datahub.utilities.time import datetime_to_ts_millis
 
-from ingestion.ingestion_utils import list_datahub_domains
+from ingestion.ingestion_utils import list_datahub_domains, domains_to_subject_areas
 from ingestion.utils import report_generator_time
 
 from .api_client import JusticeDataAPIClient
@@ -179,7 +179,14 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         )
 
         # add tag so entity displays in find-moj-data
-        tags = ["dc_display_in_catalogue", chart_data["domain"]]
+        # temporiliy add both old domain tag and new subject area tag
+        tags = [
+            "dc_display_in_catalogue",
+            chart_data["domain"],
+        ]
+        if domains_to_subject_areas.get(chart_data["domain"].lower()):
+            tags.append(domains_to_subject_areas.get(chart_data["domain"].lower()))
+
         tag_aspect = self._make_tags_aspect(tags)
 
         # wipe all owners (this can be removed if/when we reintroduce owners to Justice Data charts)
