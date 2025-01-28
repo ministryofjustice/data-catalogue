@@ -2,12 +2,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Bold",
+        "urn": "urn:li:tag:Corporate operations",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Bold",
-              "description": "Lorem ipsum"
+              "name": "Corporate operations",
+              "description": "Employees, property and finance"
             }
           }
         ]
@@ -17,12 +17,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Civil",
+        "urn": "urn:li:tag:Crime and policing",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Civil",
-              "description": "Lorem ipsum"
+              "name": "Crime and policing",
+              "description": "Law enforcement, criminal offences and reoffending"
             }
           }
         ]
@@ -32,12 +32,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Courts",
+        "urn": "urn:li:tag:Courts and tribunals",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Courts",
-              "description": "Lorem ipsum"
+              "name": "Courts and tribunals",
+              "description": "HM Courts and Tribunal Service, legal cases, sentencing"
             }
           }
         ]
@@ -47,12 +47,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Electronic monitoring",
+        "urn": "urn:li:tag:Legal aid",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Electronic monitoring",
-              "description": "Lorem ipsum"
+              "name": "Legal aid",
+              "description": "Legal aid and the Civil Legal Advice service"
             }
           }
         ]
@@ -62,12 +62,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Finance",
+        "urn": "urn:li:tag:Office of the Public Guardian",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Finance",
-              "description": "Lorem ipsum"
+              "name": "Office of the Public Guardian",
+              "description": "Lasting power of attorney and supervision orders"
             }
           }
         ]
@@ -77,12 +77,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:General",
+        "urn": "urn:li:tag:Prisons and probation",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "General",
-              "description": "Lorem ipsum"
+              "name": "Prisons and probation",
+              "description": "HM Prison and Probation Service, electronic monitoring, rehabilitation, offence risk"
             }
           }
         ]
@@ -92,102 +92,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Interventions",
+        "urn": "urn:li:tag:Reference data",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Interventions",
-              "description": "Lorem ipsum"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "proposedSnapshot": {
-      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:OPG",
-        "aspects": [
-          {
-            "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "OPG",
-              "description": "Lorem ipsum"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "proposedSnapshot": {
-      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:People",
-        "aspects": [
-          {
-            "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "People",
-              "description": "Lorem ipsum"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "proposedSnapshot": {
-      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Prison",
-        "aspects": [
-          {
-            "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Prison",
-              "description": "Lorem ipsum"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "proposedSnapshot": {
-      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Probation",
-        "aspects": [
-          {
-            "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Probation",
-              "description": "Lorem ipsum"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "proposedSnapshot": {
-      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Property",
-        "aspects": [
-          {
-            "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Property",
-              "description": "Lorem ipsum"
-            }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "proposedSnapshot": {
-      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Risk",
-        "aspects": [
-          {
-            "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Risk",
-              "description": "Lorem ipsum"
+              "name": "Reference data",
+              "description": "Data to define or standardise other data"
             }
           }
         ]
