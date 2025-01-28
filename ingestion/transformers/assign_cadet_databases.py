@@ -9,7 +9,12 @@ from datahub.emitter.mce_builder import Aspect
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
-from datahub.metadata.schema_classes import ContainerClass, MetadataChangeProposalClass, GlobalTagsClass, TagAssociationClass
+from datahub.metadata.schema_classes import (
+    ContainerClass,
+    MetadataChangeProposalClass,
+    GlobalTagsClass,
+    TagAssociationClass,
+)
 from datahub.utilities.urns.tag_urn import TagUrn
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
@@ -20,6 +25,7 @@ from ingestion.ingestion_utils import (
     validate_fqn,
 )
 from ingestion.utils import report_time
+from ingestion.ingestion_utils import domains_to_subject_areas
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -57,13 +63,21 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         self, entity_urn: str, aspect_name: str, aspect: Optional[Aspect]
     ) -> Optional[Aspect]:
         in_global_tags_aspect: GlobalTagsClass = cast(GlobalTagsClass, aspect)
-        domain = self.mappings.get(entity_urn, {}) \
-                              .get("domain")
+        domain = self.mappings.get(entity_urn, {}).get("domain")
         if domain:
             domain_name = format_domain_name(domain)
             existing_tags = [tag.tag for tag in in_global_tags_aspect.tags]
             if domain_name not in existing_tags:
-                tags_to_add = [TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name))]
+                subject_area = domains_to_subject_areas.get(domain_name.lower())
+                tags_to_add = [
+                    TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name)),
+                ]
+                if subject_area:
+                    tags_to_add.append(
+                        TagAssociationClass(
+                            tag=mce_builder.make_tag_urn(tag=subject_area)
+                        )
+                    )
                 in_global_tags_aspect.tags.extend(tags_to_add)
                 # Keep track of tags added so that we can create them in handle_end_of_stream
                 for tag in tags_to_add:

@@ -18,6 +18,7 @@ from datahub.metadata._schema_classes import (
 from datahub.metadata.schema_classes import MetadataChangeProposalClass
 
 from ingestion.utils import report_time
+from ingestion.ingestion_utils import domains_to_subject_areas
 
 URN_CONTAINER_PREFIX = "urn:li:container:"
 DATAOWNER = "DATAOWNER"
@@ -74,8 +75,12 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
         # All containers need the catalogue tag
         tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
         tag_association_to_add = TagAssociationClass(tag=tag_to_add)
-        subject_area_tags = [
-            TagAssociationClass(tag=mce_builder.make_tag_urn(subject_area))
+        domain_and_subject_area_tags = [
+            TagAssociationClass(
+                tag=mce_builder.make_tag_urn(
+                    domains_to_subject_areas.get(subject_area.lower(), "")
+                )
+            )
             for subject_area in self.config.subject_areas
         ]
         current_tags = GlobalTagsClass(
