@@ -7,7 +7,7 @@ on:
 
 jobs:
   ingest-ownership-types-preprod:
-    uses: ./.github/workflows/ingest-ownership-types.yml
+    uses: ./.github/workflows/ingest-yaml.yml
     with:
       ENVIRONMENT: preprod-ingestion
     secrets:
