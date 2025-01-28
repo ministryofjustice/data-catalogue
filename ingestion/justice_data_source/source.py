@@ -184,8 +184,8 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
             "dc_display_in_catalogue",
             chart_data["domain"],
         ]
-        if domains_to_subject_areas.get(chart_data["domain"].lower()):
-            tags.append(domains_to_subject_areas.get(chart_data["domain"].lower()))
+        if subject_area := domains_to_subject_areas.get(chart_data["domain"].lower()):
+            tags.append(subject_area)
 
         tag_aspect = self._make_tags_aspect(tags)
 
