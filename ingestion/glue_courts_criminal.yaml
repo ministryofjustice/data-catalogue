@@ -14,12 +14,14 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Courts and tribunals"
         - "urn:li:tag:Courts"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${COURTS_CRIMINAL_TECHNICAL_CONTACT}"
       subject_areas:
         - Courts
+        - Courts and tribunals
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE

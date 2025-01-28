@@ -16,6 +16,8 @@ transformers:
         - "urn:li:tag:Prison"
         - "urn:li:tag:Probation"
         - "urn:li:tag:Risk"
+        - "urn:li:tag:Courts and tribunals"
+        - "urn:li:tag:Prisons and probation"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${JUST_LINK_TECHNICAL_CONTACT}"
@@ -24,6 +26,8 @@ transformers:
         - Prison
         - Probation
         - Risk
+        - Courts and tribunals
+        - Prisons and probation
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
