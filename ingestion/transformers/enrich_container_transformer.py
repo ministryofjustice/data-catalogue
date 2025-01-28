@@ -76,11 +76,7 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
         tag_to_add = mce_builder.make_tag_urn("dc_display_in_catalogue")
         tag_association_to_add = TagAssociationClass(tag=tag_to_add)
         subject_area_tags = [
-            TagAssociationClass(
-                tag=mce_builder.make_tag_urn(
-                    domains_to_subject_areas.get(subject_area.lower(), "")
-                )
-            )
+            TagAssociationClass(tag=mce_builder.make_tag_urn(subject_area))
             for subject_area in self.config.subject_areas
         ]
         current_tags = GlobalTagsClass(
