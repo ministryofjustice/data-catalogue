@@ -173,7 +173,7 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
             customProperties={
                 "refresh_period": refresh_period or "",
                 "dc_access_requirements": self.config.access_requirements,
-                "audience": "Published",
+                "classification": "Official",
                 "dc_team_email": chart_data["owner_email"],
             },
         )
