@@ -141,6 +141,9 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             else:
                 domain_urn = None
 
+            if collection.get("subject_area"):
+                tags.append(collection["subject_area"])
+
             collection_name = collection.get("title", "")
             logging.info(f"Creating container for {collection_name=}")
             yield from mcp_builder.gen_containers(
@@ -248,6 +251,15 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                             aspect=DomainsClass(domains=[domain_urn]),
                         )
                     )
+
+                subject_area = self._id_to_domain_contact_mapping.get(
+                    parent_collection_ids[0], {}
+                ).get("subject_area")
+
+                # add subject area tag if given
+                if subject_area:
+                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{subject_area}"))
+
             else:
                 custom_properties["dc_team_email"] = self.client.default_contact_email
 
