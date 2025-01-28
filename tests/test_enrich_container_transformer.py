@@ -39,7 +39,7 @@ class TestEnrichContainerTransformer:
             config={
                 "data_custodian": "urn:li:corpuser:roy.keane",
                 "subject_areas": ["General"],
-                "properties": {"audience": "Internal"},
+                "properties": {"classification": "Official-Sensitive"},
             },
             pipeline_context=pipeline_context,
         )
@@ -71,5 +71,5 @@ class TestEnrichContainerTransformer:
         assert results["containerProperties"]
 
         assert results["containerProperties"].aspect.customProperties == {
-            "audience": "Internal"
+            "classification": "Official-Sensitive"
         }
