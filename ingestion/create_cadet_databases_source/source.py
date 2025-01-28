@@ -35,6 +35,7 @@ from ingestion.ingestion_utils import (
     make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
+    domains_to_subject_areas,
 )
 from ingestion.utils import report_generator_time, report_time
 
@@ -141,6 +142,8 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             domain_urn = mce_builder.make_domain_urn(domain=domain_name)
             tags = display_tags.get(database_name, ["dc_cadet"])
             tags.append(domain_name)
+            if domains_to_subject_areas.get(domain_name.lower()):
+                tags.append(domains_to_subject_areas[domain_name.lower()])
 
             if not db_meta_dict.get("", "") == "":
                 owner_urn = mce_builder.make_user_urn(
@@ -183,7 +186,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
             domain = format_domain_name(domain_lookup.get(database, table))
-            tag_names = [domain, "dc_display_in_catalogue"]
+            tag_names = [
+                domain,
+                "Reference data",
+                "dc_display_in_catalogue",
+            ]
+            if domains_to_subject_areas.get(domain.lower()):
+                tag_names.append(domains_to_subject_areas.get(domain.lower()))
+
             tags_aspect = GlobalTagsClass(
                 tags=[
                     TagAssociationClass(tag=mce_builder.make_tag_urn(tag_name))
