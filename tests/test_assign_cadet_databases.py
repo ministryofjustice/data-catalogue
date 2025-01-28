@@ -36,7 +36,7 @@ class TestAssignCadetDatabasesTransformer:
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 4
+        assert len(output) == 5
         assert output[0] is not None
         assert output[0].record is not None
         assert isinstance(output[0].record, MetadataChangeProposalWrapper)
@@ -46,5 +46,5 @@ class TestAssignCadetDatabasesTransformer:
             TagAssociationClass(tag=builder.make_tag_urn("Prison")),
             TagAssociationClass(tag=builder.make_tag_urn("Prisons and probation")),
         ]
-        assert isinstance(output[2].record.aspect, models.ContainerClass)
-        assert output[2].record.aspect.container == expected_key.as_urn()
+        assert isinstance(output[3].record.aspect, models.ContainerClass)
+        assert output[3].record.aspect.container == expected_key.as_urn()
