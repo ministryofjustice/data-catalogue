@@ -42,6 +42,9 @@ class TestAssignCadetDatabasesTransformer:
         assert isinstance(output[0].record, MetadataChangeProposalWrapper)
         assert output[0].record.aspect is not None
         assert isinstance(output[0].record.aspect, models.GlobalTagsClass)
-        assert output[0].record.aspect.tags == [TagAssociationClass(tag=builder.make_tag_urn("Prison"))]
+        assert output[0].record.aspect.tags == [
+            TagAssociationClass(tag=builder.make_tag_urn("Prison")),
+            TagAssociationClass(tag=builder.make_tag_urn("Prisons and probation")),
+        ]
         assert isinstance(output[2].record.aspect, models.ContainerClass)
         assert output[2].record.aspect.container == expected_key.as_urn()
