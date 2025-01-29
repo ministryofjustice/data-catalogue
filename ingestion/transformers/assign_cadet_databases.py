@@ -62,15 +62,13 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
     def transform_aspect(
         self, entity_urn: str, aspect_name: str, aspect: Optional[Aspect]
     ) -> Optional[Aspect]:
+        if aspect is None:
+            return None
         in_global_tags_aspect: GlobalTagsClass = cast(GlobalTagsClass, aspect)
         domain = self.mappings.get(entity_urn, {}).get("domain")
         if domain:
             domain_name = format_domain_name(domain)
-            existing_tags = (
-                [tag.tag for tag in in_global_tags_aspect.tags]
-                if in_global_tags_aspect
-                else []
-            )
+            existing_tags = [tag.tag for tag in in_global_tags_aspect.tags]
             if domain_name not in existing_tags:
                 subject_area = domains_to_subject_areas.get(domain_name.lower())
                 tags_to_add = [
