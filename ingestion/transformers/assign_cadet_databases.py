@@ -112,7 +112,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                 logging.warning(f"No container mapping for {dataset_urn=}")
                 continue
 
-            logging.info(f"Assigning {dataset_urn=} to {container_urn=}")
+            print(f"Assigning {dataset_urn=} to {container_urn=}")
             mcps.append(
                 MetadataChangeProposalWrapper(
                     entityUrn=f"{dataset_urn}",
