@@ -11,10 +11,13 @@ from utils import run_dataset_transformer_pipeline
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.transformers.assign_cadet_databases import AssignCadetDatabases
+import os
 
 
 class TestAssignCadetDatabasesTransformer:
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
+        os.environ["CADET_INSTANCE"] = "cadet"
+
         pipeline_context: PipelineContext = PipelineContext(
             run_id="test_simple_add_dataset_domain"
         )
