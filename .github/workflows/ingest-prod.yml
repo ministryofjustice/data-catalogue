@@ -31,6 +31,7 @@ jobs:
       CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
       S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
       BASE_CADET_INGESTION: false
+      CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
