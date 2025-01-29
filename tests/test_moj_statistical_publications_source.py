@@ -123,7 +123,7 @@ def test_workunits(mock_justice_publication_api):
         "env": "prod",
         "database": "Electronic Monitoring Statistics Publication",
         "dc_access_requirements": "",
-        "classification": "Official",
+        "security_classification": "Official",
         "dc_team_email": "ppas_statistics@justice.gov.uk",
     }
 
@@ -144,6 +144,6 @@ def test_workunits(mock_justice_publication_api):
         == "urn:li:dataset:(urn:li:dataPlatform:GOV.UK,ministry-of-justice-publications.proven-reoffending-statistics-july-2022-to-september-2022,PROD)-datasetProperties"
     ][0].metadata.aspect.customProperties == {
         "dc_access_requirements": "",
-        "classification": "Official",
+        "security_classification": "Official",
         "dc_team_email": "CAJS@justice.gov.uk",
     }

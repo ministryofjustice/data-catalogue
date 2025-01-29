@@ -41,7 +41,7 @@ from ingestion.utils import report_generator_time, report_time
 logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
-    "classification": "Official-Sensitive",
+    "security_classification": "Official-Sensitive",
 }
 
 
