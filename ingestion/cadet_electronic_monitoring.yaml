@@ -53,3 +53,7 @@ transformers:
     config:
       properties:
         audience: Internal
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:Prisons and probation"
