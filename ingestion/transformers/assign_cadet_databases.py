@@ -81,6 +81,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         ] = []
 
         logging.debug("Generating tags")
+        logging.debug(f"mappings: {self.mappings}")
 
         for tag_association in self.processed_tags.values():
             tag_urn = TagUrn.from_string(tag_association.tag)
