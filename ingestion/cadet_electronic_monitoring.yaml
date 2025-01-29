@@ -6,7 +6,10 @@ source:
       aws_region: eu-west-1
     manifest_path: "s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target/manifest.json"
     catalog_path: "s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target/catalog.json"
-    run_results_paths: ["s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target/run_results.json"]
+    run_results_paths:
+      [
+        "s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target/run_results.json",
+      ]
     # if platform_instance changes it needs to also change in config.py
     platform_instance: cadet_electronic_monitoring
     target_platform: athena
@@ -53,6 +56,7 @@ transformers:
     config:
       properties:
         audience: Internal
+        security_classification: Official-Sensitive
   - type: "simple_add_dataset_tags"
     config:
       tag_urns:

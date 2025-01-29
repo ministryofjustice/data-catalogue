@@ -6,7 +6,10 @@ source:
       aws_region: eu-west-1
     manifest_path: "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/manifest.json"
     catalog_path: "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/catalog.json"
-    run_results_paths: ["s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/run_results.json"]
+    run_results_paths:
+      [
+        "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/run_results.json",
+      ]
     # if platform_instance changes it needs to also change in config.py
     platform_instance: cadet
     target_platform: athena
@@ -31,7 +34,6 @@ source:
         # These tables cause a `java.lang.NullPointerException` and are staging tables anyway
         - ".*avature_stg\\.stg_people_fields_pivoted_wide.*"
         - ".*avature_stg\\.stg_job_fields_pivoted_wide.*"
-
 
         # This table has a huge number of columns, which breaks things.
         - "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data"
@@ -71,4 +73,4 @@ transformers:
   - type: "simple_add_dataset_properties"
     config:
       properties:
-        audience: Internal
+        security_classification: Official-Sensitive
