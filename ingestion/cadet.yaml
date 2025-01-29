@@ -10,7 +10,7 @@ source:
       [
         "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/run_results.json",
       ]
-    # if platform_instance changes it needs to also change in config.py
+    # if platform_instance changes it needs to also change in config.py via the CADET_INSTANCE variable
     platform_instance: cadet
     target_platform: athena
     target_platform_instance: athena_cadet

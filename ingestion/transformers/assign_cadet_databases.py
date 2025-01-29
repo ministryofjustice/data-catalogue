@@ -93,7 +93,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
 
         logging.debug("Assigning datasets to databases")
         for dataset_urn in self.entity_map.keys():
-            container_urn = self.mappings.get(dataset_urn).get("database")
+            container_urn = self.mappings.get(dataset_urn, {}).get("database")
             if not container_urn:
                 logging.warning(f"No container mapping for {dataset_urn=}")
                 continue
