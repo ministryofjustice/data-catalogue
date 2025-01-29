@@ -95,6 +95,7 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
+          CADET_INSTANCE: ${{ inputs.CADET_INSTANCE }}
         run: time poetry run datahub ingest -c ingestion/processed/create_cadet_databases.yaml
 
       - name: Collate run results paths from cadet runs
