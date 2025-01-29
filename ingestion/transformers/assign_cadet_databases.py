@@ -66,7 +66,11 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         domain = self.mappings.get(entity_urn, {}).get("domain")
         if domain:
             domain_name = format_domain_name(domain)
-            existing_tags = [tag.tag for tag in in_global_tags_aspect.tags]
+            existing_tags = (
+                [tag.tag for tag in in_global_tags_aspect.tags]
+                if in_global_tags_aspect
+                else []
+            )
             if domain_name not in existing_tags:
                 subject_area = domains_to_subject_areas.get(domain_name.lower())
                 tags_to_add = [
