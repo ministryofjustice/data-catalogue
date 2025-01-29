@@ -55,7 +55,6 @@ transformers:
   - type: "simple_add_dataset_properties"
     config:
       properties:
-        audience: Internal
         security_classification: Official-Sensitive
   - type: "simple_add_dataset_tags"
     config:
