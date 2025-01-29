@@ -57,3 +57,4 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:Prisons and probation"
+        - "urn:li:tag:Electronic monitoring"
