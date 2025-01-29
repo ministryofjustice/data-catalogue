@@ -175,3 +175,7 @@ def mock_metadata_in_s3():
                 )
 
         yield
+
+
+def pytest_generate_tests(metafunc):
+    os.environ['CADET_INSTANCE'] = "cadet"
