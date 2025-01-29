@@ -6,5 +6,6 @@ PLATFORM = "dbt"
 # minus the .awscatalog bit
 INSTANCE = os.getenv("CADET_INSTANCE")
 if not INSTANCE:
-    logging.error("CADET_INSTANCE not set in github workflows")
+    logging.warning("CADET_INSTANCE not set in github workflows, defaulting to 'cadet.awsdatacatalog'")
+    INSTANCE = "cadet.awsdatacatalog"
 ENV = "PROD"
