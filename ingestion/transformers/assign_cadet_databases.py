@@ -96,7 +96,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
             Union[MetadataChangeProposalWrapper, MetadataChangeProposalClass]
         ] = []
 
-        logging.debug("Generating tags")
+        print("Generating tags")
 
         for tag_association in self.processed_tags.values():
             tag_urn = TagUrn.from_string(tag_association.tag)
@@ -107,8 +107,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                 )
             )
 
-        logging.debug("Assigning datasets to databases")
-        print(f"{self.entity_map.keys()=}")
+        print("Assigning datasets to databases")
         for dataset_urn in self.entity_map.keys():
             container_urn = self.mappings.get(dataset_urn, {}).get("database")
             if not container_urn:
