@@ -42,7 +42,7 @@ from ingestion.utils import report_generator_time, report_time
 logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
-    "audience": "Internal",
+    "security_classification": "Official-Sensitive",
 }
 
 

@@ -68,7 +68,7 @@ yaml_data = {
         },
         {
             "type": "simple_add_dataset_properties",
-            "config": {"properties": {"audience": "Internal"}},
+            "config": {"properties": {"security_classification": "Official-Sensitive"}},
         },
     ],
 }
