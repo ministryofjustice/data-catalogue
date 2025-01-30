@@ -31,7 +31,7 @@ on:
       CADET_INSTANCE:
         description: "Instance name for AssignDatabase transformer mappings to be built"
         type: string
-        required: true
+        required: false
         default: "cadet.awsdatacatalog"
     secrets:
       DATAHUB_GMS_TOKEN:
