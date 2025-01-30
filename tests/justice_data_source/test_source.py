@@ -63,7 +63,7 @@ def test_chart(source_with_mock_justice_data_api):
     assert first_chart_domain.domains[0] == "urn:li:domain:General"
 
     assert chartinfo.customProperties == {
-        "security_classification": "Official",
+        "security_classification": "Official - For public release",
         "dc_access_requirements": "",
         "refresh_period": "Quarterly",
         "dc_team_email": "not.me@justice.gov.uk",

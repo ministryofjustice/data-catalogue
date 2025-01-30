@@ -115,7 +115,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         sub_types: list[str] = [FindMojDataEntityTypes.PUBLICATION_COLLECTION]
         custom_properties: dict = {
             "dc_access_requirements": self.config.access_requirements,
-            "security_classification": "Official",
+            "security_classification": "Official - For public release",
         }
         for collection in collections_metadata:
             last_modified_date = datetime.datetime.fromisoformat(
@@ -173,7 +173,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         mcps = []
         custom_properties: dict = {
             "dc_access_requirements": self.config.access_requirements,
-            "security_classification": "Official",
+            "security_classification": "Official - For public release",
         }
         sub_types: list[str] = [FindMojDataEntityTypes.PUBLICATION_DATASET]
         for publication in all_publications_metadata:
