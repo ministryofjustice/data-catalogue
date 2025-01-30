@@ -1,18 +1,16 @@
 accredited-programmes-annual-bulletin:
   subject_area: Prisons and probation
-  contact_email: statistics@justice.gov.uk  # This is really old and likely unsupported
+  contact_email: statistics@justice.gov.uk
   domain: Interventions
 ad-hoc-justice-statistics:
-  # subject_area: General # doesn;t fit to any subject area
+  # subject_area: doesn't fit to any, could be multiple when we implement it
   contact_email: statistics@justice.gov.uk
   domain: General
 alcohol-and-drug-misuse-and-treatment-statistics:
   subject_area: Prisons and probation
-  # contact_email:
   domain: Interventions
 antisocial-behaviour:
   subject_area: Crime and policing
-  # contact_email:
   domain: General
 civil-justice-statistics:
   subject_area: Courts and tribunals
@@ -24,14 +22,12 @@ civil-justice-statistics-quarterly:
   domain: Courts
 compendium-of-re-offending:
   subject_area: Crime and policing
-  # contact_email:
   domain: General
 # coroners-and-burials-statistics:
 #   subject_area: null  # unsure where this would fit, could make General?
 #   contact_email:
 court-statistics-quarterly:
   subject_area: Courts and tribunals
-  # contact_email:
   domain: Courts
 crime-statistics:
   subject_area: Crime and policing
@@ -63,43 +59,35 @@ family-court-statistics-quarterly:
   domain: Courts
 gender-recognition-certificate-statistics:
   subject_area: Courts and tribunals
-  # contact_email:
   domain: Courts
 government-foi-statistics:
   subject_area: Corporate operations
   contact_email: foistatistics@cabinetoffice.gov.uk
   domain: General
-# Publication mappings to domains and to contact emails
 hate-crime-statistics:
   subject_area: Crime and policing
   contact_email: crimeandpolicestats@homeoffice.gov.uk
   domain: General
 hm-prison-and-probation-service-covid-19-statistics-monthly:
   subject_area: Prisons and probation
-  # contact_email:
   domain: Probation
 hmpps-annual-offender-equalities-report:
   subject_area: Prisons and probation
   contact_email: sueper_stats@justice.gov.uk
-  # domain: Probation
 hmpps-annual-staff-equalities-report:
   subject_area: Prisons and probation
   contact_email: robert.hartley@justice.gov.uk
-  # domain: Probation
 hmpps-covid-19-management-information-weekly:
   subject_area: Prisons and probation
-  # contact_email:
-  # domain: Probation
 judicial-and-court-statistics:
   subject_area: Courts and tribunals
-  # contact_email:
   domain: Courts
 judicial-diversity-statistics:
   subject_area: Courts and tribunals
   contact_email: judicial.statistics@justice.gov.uk
   domain: Courts
 justice-data-lab-pilot-statistics:
-  # subject_area: General
+  # subject_area: doesn't fit to any, could be multiple when we implement it
   contact_email: justice.datalab@justice.gov.uk
   domain: General
 knife-possession-sentencing-quarterly:
@@ -112,11 +100,9 @@ legal-aid-statistics:
   domain: General
 legal-aid-statistics-data-files:
   subject_area: Legal aid
-  # contact_email:
   domain: General
 local-adult-reoffending:
   subject_area: Crime and policing
-  # contact_email:
   domain: General
 mortgage-and-landlord-possession-statistics:
   subject_area: Courts and tribunals
@@ -125,49 +111,38 @@ mortgage-and-landlord-possession-statistics:
 multi-agency-public-protection-arrangements-mappa-annual-reports:
   subject_area: Prisons and probation
   contact_email: mappa@justice.gov.uk
-  # domain: Probation
 national-offender-management-service-workforce-statistics:
   subject_area: Prisons and probation
   contact_email: robert.hartley@justice.gov.uk
-  # domain: Probation
 new-criminal-offences-statistics:
   subject_area: Crime and policing
-  # contact_email:
   domain: General
 offender-management-statistics-quarterly:
   subject_area: Prisons and probation
   contact_email: OMSQ-SiC-publications@justice.gov.uk
-  # domain: 
 payment-by-results-statistics:
   subject_area: Prisons and probation
-  # contact_email:
   domain: Probation
 prison-and-probation-trusts-performance-statistics:
   subject_area: Prisons and probation
   contact_email: SUEPer_Stats@justice.gov.uk
-  # domain: 
 prison-population-statistics:
   subject_area: Prisons and probation
-  # contact_email:
   domain: Prison
 prisons-and-probation-statistics:
   subject_area: Prisons and probation
-  # contact_email:
-  # domain: 
 probation-service-workforce-quarterly-reports:
   subject_area: Prisons and probation
-  # contact_email:
   domain: Probation
 proven-reoffending-statistics:
   subject_area: Crime and policing
   contact_email: reoffendingstatistics@justice.gov.uk
-  # domain: 
 race-and-the-criminal-justice-system:
   subject_area: Crime and policing
   contact_email: CJS_Statistics@justice.gov.uk
   domain: General
 restricted-patients-statistics-england-and-wales:
-  # subject_area: null  # not sure for this
+  # subject_area: not sure for this
   contact_email: MHCSMailbox@justice.gov.uk
   domain: General
 safety-in-custody-statistics:
@@ -176,19 +151,15 @@ safety-in-custody-statistics:
   domain: Prison
 statistics-on-privacy-injunctions:
   subject_area: Courts and tribunals
-  # contact_email:
   domain: Courts
 statistics-on-public-disorder-of-6-9-august-2011:
   subject_area: Crime and policing
-  # contact_email:
   domain: General
 statistics-on-the-use-of-language-services-in-courts-and-tribunals:
   subject_area: Courts and tribunals
-  # contact_email:
   domain: Courts
 topical-criminal-justice-publications:
   subject_area: Crime and policing
-  # contact_email:
   domain: General
 tribunals-statistics:
   subject_area: Courts and tribunals
