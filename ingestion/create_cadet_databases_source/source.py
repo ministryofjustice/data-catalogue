@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+import os
 from typing import Iterable, List, Optional
 
 import datahub.emitter.mce_builder as mce_builder
@@ -38,12 +39,20 @@ from ingestion.ingestion_utils import (
     domains_to_subject_areas,
 )
 from ingestion.utils import report_generator_time, report_time
+import yaml
 
 logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
     "security_classification": "Official-Sensitive",
 }
+
+
+subject_areas_filepath = os.path.join(
+    os.path.dirname(__file__), "..", "tags", "subject_areas_template.yaml"
+)
+with open(subject_areas_filepath, "r") as file:
+    top_level_subject_areas = yaml.safe_load(file)
 
 
 @config_class(CreateCadetDatabasesConfig)
@@ -284,6 +293,10 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     domain_lookup.set(database, table, database_metadata_dict["domain"])
 
                     tags = get_tags(manifest["nodes"][node])
+                    tags.extend(database_metadata_dict.get("tags", []))
+                    if not any(tag in top_level_subject_areas for tag in tags):
+                        logging.warning(f"No top level tags found in database metadata file for {database}")
+
                     if tags:
                         tag_mappings[database] = tags
 
