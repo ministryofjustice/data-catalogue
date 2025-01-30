@@ -60,7 +60,6 @@ def run_dataset_transformer_pipeline(
             )
         )
     else:
-        assert aspect
         dataset = make_generic_dataset_mcp(
             aspect=aspect, aspect_name=transformer.aspect_name()
         )

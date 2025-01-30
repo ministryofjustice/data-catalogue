@@ -18,6 +18,7 @@ from datahub.metadata._schema_classes import (
 from datahub.metadata.schema_classes import MetadataChangeProposalClass
 
 from ingestion.utils import report_time
+from ingestion.ingestion_utils import domains_to_subject_areas
 
 URN_CONTAINER_PREFIX = "urn:li:container:"
 DATAOWNER = "DATAOWNER"

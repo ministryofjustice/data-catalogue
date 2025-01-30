@@ -38,7 +38,7 @@ class TestEnrichContainerTransformer:
             aspect=models.ContainerClass(container=expected_key.database),
             config={
                 "data_custodian": "urn:li:corpuser:roy.keane",
-                "subject_areas": ["General"],
+                "subject_areas": ["Prison"],
                 "properties": {"security_classification": "Official-Sensitive"},
             },
             pipeline_context=pipeline_context,

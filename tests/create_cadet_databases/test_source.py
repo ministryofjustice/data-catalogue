@@ -47,14 +47,17 @@ def test_tags(mock_datahub_graph):
 
     assert set(courts_data_tags) == {
         "urn:li:tag:Courts",
+        "urn:li:tag:Courts and tribunals",
         "urn:li:tag:dc_display_in_catalogue",
     }
     assert set(probation_database_tags) == {
         "urn:li:tag:Probation",
+        "urn:li:tag:Prisons and probation",
         "urn:li:tag:dc_display_in_catalogue",
     }
     assert set(prison_database_tags) == {
         "urn:li:tag:Prison",
+        "urn:li:tag:Prisons and probation",
         "urn:li:tag:dc_display_in_catalogue",
     }
     assert set(ref_database_tags) == {

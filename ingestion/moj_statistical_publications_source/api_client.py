@@ -92,6 +92,9 @@ class MojPublicationsAPIClient:
             collection["domain"] = self._id_to_domain_contact_mapping.get(
                 collection["slug"], {}
             ).get("domain")
+            collection["subject_area"] = self._id_to_domain_contact_mapping.get(
+                collection["slug"], {}
+            ).get("subject_area")
 
             collection["last_updated"] = content_response.get("public_updated_at")
             collection["contact_email"] = self._id_to_domain_contact_mapping.get(
