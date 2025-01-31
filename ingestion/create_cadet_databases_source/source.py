@@ -290,8 +290,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
                     database_metadata_dict["domain"] = fqn[1]
                     database_tags = database_metadata_dict.get("tags", [])
-                    # Tags are a list which is unhashable for the tuple so it needs to be removed
+                    # A copy is needed to avoid changing the original dict, whish is reused
                     database_metadata_dict_copy = database_metadata_dict.copy()
+                    # Tags are a list which is unhashable for the tuple so it needs to be removed
                     if "tags" in database_metadata_dict_copy:
                         database_metadata_dict_copy.pop("tags")
                     database_metadata_tuple = tuple(database_metadata_dict_copy.items())
