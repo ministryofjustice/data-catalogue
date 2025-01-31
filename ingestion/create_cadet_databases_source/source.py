@@ -288,7 +288,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                         logging.debug(f"{database} - has no database level metadata")
 
                     database_metadata_dict["domain"] = fqn[1]
-                    # Tags are a list which is unhashable for the tuple
+                    # Tags are a list which is unhashable for the tuple so it needs to be removed
                     database_tags = database_metadata_dict.pop("tags", [])
                     database_metadata_tuple = tuple(database_metadata_dict.items())
                     database_mappings.add((database, database_metadata_tuple))
@@ -296,7 +296,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
                     tags = get_tags(manifest["nodes"][node])
                     if database_tags:
-                        tags.extend(database_metadata_dict.get("tags", []))
+                        tags.extend(database_tags)
                     if not any(tag in top_level_subject_areas for tag in tags):
                         logging.warning(f"No top level tags found in database metadata file for {database}")
 
