@@ -96,7 +96,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 manifest, databases_metadata
             )
         )
-        logging.warning(f"{databases_metadata}")
 
         # create mcps for database owner corpusers
         mcps.extend(self.create_database_owner_mcps(databases_with_metadata))
@@ -290,10 +289,11 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                         logging.debug(f"{database} - has no database level metadata")
 
                     database_metadata_dict["domain"] = fqn[1]
-                    # Tags are a list which is unhashable for the tuple so it needs to be removed
-                    database_tags = database_metadata_dict.pop("tags", [])
+                    database_tags = database_metadata_dict.get("tags", [])
                     logging.warning(f"Tags for {database} are {database_tags}")
-                    database_metadata_tuple = tuple(database_metadata_dict.items())
+                    # Tags are a list which is unhashable for the tuple so it needs to be removed
+                    database_metadata_without_tags = database_metadata_dict.copy().pop("tags")
+                    database_metadata_tuple = tuple(database_metadata_without_tags.items())
                     database_mappings.add((database, database_metadata_tuple))
                     domain_lookup.set(database, table, database_metadata_dict["domain"])
 
