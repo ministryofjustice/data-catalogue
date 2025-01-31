@@ -166,7 +166,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             else:
                 database_description = None
 
-            logging.info(f"Creating container {database_name=} with {domain_name=}")
+            logging.info(f"Creating container {database_name=} with {domain_name=} with {tags=}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
                 name=database_name,
