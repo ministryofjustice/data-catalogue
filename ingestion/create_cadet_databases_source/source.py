@@ -96,6 +96,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 manifest, databases_metadata
             )
         )
+        logging.warning(f"{databases_metadata}")
 
         # create mcps for database owner corpusers
         mcps.extend(self.create_database_owner_mcps(databases_with_metadata))
