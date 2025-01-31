@@ -52,7 +52,8 @@ subject_areas_filepath = os.path.join(
     os.path.dirname(__file__), "..", "tags", "subject_areas_template.yaml"
 )
 with open(subject_areas_filepath, "r") as file:
-    top_level_subject_areas = yaml.safe_load(file)
+    subject_areas_yaml = yaml.safe_load(file)
+    top_level_subject_areas = [item["name"] for item in subject_areas_yaml]
 
 
 @config_class(CreateCadetDatabasesConfig)
@@ -166,7 +167,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             else:
                 database_description = None
 
-            logging.info(f"Creating container {database_name=} with {domain_name=} with {tags=}")
+            logging.info(f"Creating container {database_name=} with {domain_name=}")
             yield from mcp_builder.gen_containers(
                 container_key=database_container_key,
                 name=database_name,
