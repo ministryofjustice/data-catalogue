@@ -292,8 +292,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database_tags = database_metadata_dict.get("tags", [])
                     logging.warning(f"Tags for {database} are {database_tags}")
                     # Tags are a list which is unhashable for the tuple so it needs to be removed
-                    database_metadata_without_tags = database_metadata_dict.copy().pop("tags")
-                    database_metadata_tuple = tuple(database_metadata_without_tags.items())
+                    database_metadata_dict_copy = database_metadata_dict.copy()
+                    database_metadata_dict_copy.pop("tags")
+                    database_metadata_tuple = tuple(database_metadata_dict_copy.items())
                     database_mappings.add((database, database_metadata_tuple))
                     domain_lookup.set(database, table, database_metadata_dict["domain"])
 
