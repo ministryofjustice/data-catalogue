@@ -35,6 +35,7 @@ from ingestion.ingestion_utils import (
     make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
+    get_subject_areas,
     domains_to_subject_areas,
 )
 from ingestion.utils import report_generator_time, report_time
@@ -249,18 +250,22 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
     @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest: dict, databases_metadata: dict
-    ) -> tuple[set[tuple[str, tuple]], NodeLookup[str], dict]:
+    ) -> tuple[set[tuple[str, tuple[str, str]]], NodeLookup[str], dict[str, list[str]]]:
         """
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
 
-        returns a set of databases with associated metadata and a dict for
-        display tags, where key is database and value is dc_display_in_catalogue
-        if any model is to be displayed
+        Returns:
+            - database_mappings: a set of databases with associated metadata
+            - domain_lookup: a domain lookup for tables and databases
+            - tag_mappings: a dict for display tags, where key is database and
+            value is the desired tags, including dc_display_in_catalogue if
+            any model is to be displayed.
         """
         database_mappings = set()
         domain_lookup = NodeLookup()
         tag_mappings = {}
+        top_level_subject_areas = get_subject_areas()
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
                 # fqn = fully qualified name
@@ -274,16 +279,24 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     try:
                         database_metadata_dict = databases_metadata["databases"][
                             database
-                        ]
+                        ].copy()
                     except KeyError:
                         logging.debug(f"{database} - has no database level metadata")
 
                     database_metadata_dict["domain"] = fqn[1]
+                    database_tags = database_metadata_dict.get("tags", [])
+                    if "tags" in database_metadata_dict:
+                        database_metadata_dict.pop("tags")
                     database_metadata_tuple = tuple(database_metadata_dict.items())
                     database_mappings.add((database, database_metadata_tuple))
                     domain_lookup.set(database, table, database_metadata_dict["domain"])
 
                     tags = get_tags(manifest["nodes"][node])
+                    if database_tags:
+                        tags.extend(database_tags)
+                    if not any(tag in top_level_subject_areas for tag in tags):
+                        logging.warning(f"No top level tags found in database metadata file for {database}")
+
                     if tags:
                         tag_mappings[database] = tags
 
