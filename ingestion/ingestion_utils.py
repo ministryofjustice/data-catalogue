@@ -16,6 +16,7 @@ from datahub.metadata.schema_classes import (
     CorpUserInfoClass,
     DomainPropertiesClass,
 )
+import yaml
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
@@ -272,3 +273,17 @@ class NodeLookup(Generic[ValueType]):
             (database, table, domain)
             for ((database, table), domain) in self.table_lookup.items()
         )
+
+
+def get_subject_areas():
+    """
+    Returns a list of subject areas from the subject_areas_template.yaml file
+    """
+    subject_areas_filepath = os.path.join(
+        os.path.dirname(__file__), "tags", "subject_areas_template.yaml"
+    )
+    with open(subject_areas_filepath, "r") as file:
+        subject_areas_yaml = yaml.safe_load(file)
+        top_level_subject_areas = [item["name"] for item in subject_areas_yaml]
+
+    return top_level_subject_areas

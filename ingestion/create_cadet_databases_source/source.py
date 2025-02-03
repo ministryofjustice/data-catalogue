@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-import os
 from typing import Iterable, List, Optional
 
 import datahub.emitter.mce_builder as mce_builder
@@ -36,24 +35,16 @@ from ingestion.ingestion_utils import (
     make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
+    get_subject_areas,
     domains_to_subject_areas,
 )
 from ingestion.utils import report_generator_time, report_time
-import yaml
 
 logging.basicConfig(level=logging.DEBUG)
 
 properties_to_add = {
     "security_classification": "Official-Sensitive",
 }
-
-
-subject_areas_filepath = os.path.join(
-    os.path.dirname(__file__), "..", "tags", "subject_areas_template.yaml"
-)
-with open(subject_areas_filepath, "r") as file:
-    subject_areas_yaml = yaml.safe_load(file)
-    top_level_subject_areas = [item["name"] for item in subject_areas_yaml]
 
 
 @config_class(CreateCadetDatabasesConfig)
@@ -259,18 +250,22 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
     @report_time
     def _get_databases_with_domains_and_display_tags(
         self, manifest: dict, databases_metadata: dict
-    ) -> tuple[set[tuple[str, tuple]], NodeLookup[str], dict]:
+    ) -> tuple[set[tuple[str, tuple[str, str]]], NodeLookup[str], dict[str, list[str]]]:
         """
         These mappings will only work with tables named {database}__{table}
         like create a derived table.
 
-        returns a set of databases with associated metadata and a dict for
-        display tags, where key is database and value is dc_display_in_catalogue
-        if any model is to be displayed
+        Returns:
+            - database_mappings: a set of databases with associated metadata
+            - domain_lookup: a domain lookup for tables and databases
+            - tag_mappings: a dict for display tags, where key is database and
+            value is the desired tags, including dc_display_in_catalogue if
+            any model is to be displayed.
         """
         database_mappings = set()
         domain_lookup = NodeLookup()
         tag_mappings = {}
+        top_level_subject_areas = get_subject_areas()
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:
                 # fqn = fully qualified name
@@ -284,18 +279,15 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     try:
                         database_metadata_dict = databases_metadata["databases"][
                             database
-                        ]
+                        ].copy()
                     except KeyError:
                         logging.debug(f"{database} - has no database level metadata")
 
                     database_metadata_dict["domain"] = fqn[1]
                     database_tags = database_metadata_dict.get("tags", [])
-                    # A copy is needed to avoid changing the original dict, whish is reused
-                    database_metadata_dict_copy = database_metadata_dict.copy()
-                    # Tags are a list which is unhashable for the tuple so it needs to be removed
-                    if "tags" in database_metadata_dict_copy:
-                        database_metadata_dict_copy.pop("tags")
-                    database_metadata_tuple = tuple(database_metadata_dict_copy.items())
+                    if "tags" in database_metadata_dict:
+                        database_metadata_dict.pop("tags")
+                    database_metadata_tuple = tuple(database_metadata_dict.items())
                     database_mappings.add((database, database_metadata_tuple))
                     domain_lookup.set(database, table, database_metadata_dict["domain"])
 
