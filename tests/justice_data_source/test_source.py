@@ -32,7 +32,7 @@ def source_with_mock_justice_data_api(default_owner_email):
                 base_url="https://data.justice.gov.uk/api",
                 default_owner_email=default_owner_email,
             ),
-            validate_domains=False,
+            validate_subject_areas=False,
         )
 
 
@@ -58,9 +58,6 @@ def test_chart(source_with_mock_justice_data_api):
         chartinfo.description
         == '<p class="govuk-body">Applications determination granted.</p>'
     )
-
-    first_chart_domain = chart_aspects["domains"][0]
-    assert first_chart_domain.domains[0] == "urn:li:domain:General"
 
     assert chartinfo.customProperties == {
         "security_classification": "Official - For public release",

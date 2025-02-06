@@ -32,17 +32,15 @@ from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import (
 )
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.schema_classes import (
-    ChangeTypeClass,
     ChartInfoClass,
     DashboardInfoClass,
-    DomainsClass,
     GlobalTagsClass,
     OwnershipClass,
     TagAssociationClass,
 )
 from datahub.utilities.time import datetime_to_ts_millis
 
-from ingestion.ingestion_utils import list_datahub_domains, domains_to_subject_areas
+from ingestion.ingestion_utils import get_subject_areas
 from ingestion.utils import report_generator_time
 
 from .api_client import JusticeDataAPIClient
@@ -63,7 +61,7 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         self,
         ctx: PipelineContext,
         config: JusticeDataAPIConfig,
-        validate_domains: bool = True,
+        validate_subject_areas: bool = True,
     ):
         super().__init__(config, ctx)
 
@@ -72,8 +70,8 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         self.report = StaleEntityRemovalSourceReport()
         self.fp: Optional[BufferedReader] = None
         self.client = JusticeDataAPIClient(config.base_url, config.default_owner_email)
-        if validate_domains:
-            self.client.validate_domains(list_datahub_domains())
+        if validate_subject_areas:
+            self.client.validate_subject_areas(get_subject_areas())
         self.platform_name = "justice-data"
         self.web_url = self.config.base_url.removesuffix("/api").removesuffix("/api/")
 
@@ -103,14 +101,6 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
                 self.report.report_workunit(wu)
                 yield wu
 
-        # adds domains to each chart created previously (if chart has a domain)
-        for chart_data in all_chart_data:
-            if chart_data.get("domain"):
-                mcp = self._assign_chart_to_domain(chart_data)
-                wu = MetadataWorkUnit("single_mcp", mcp=mcp)
-                self.report.report_workunit(wu)
-                yield wu
-
         # make the dashboard itself
         chart_urns = [
             builder.make_chart_urn(self.platform_name, chart_data["id"])
@@ -133,7 +123,7 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
 
         dashboard_info = DashboardInfoClass(
             title="Justice Data",
-            description="A public facing service containing data visualisations across multiple MoJ domains. Official statistical publications are the source data for everything contained within this dashboard.",
+            description="A public facing service containing data visualisations across multiple MoJ subject areas. Official statistical publications are the source data for everything contained within this dashboard.",
             lastModified=ChangeAuditStamps(),  # TODO: add timestamps here
             externalUrl="https://data.justice.gov.uk/",
             charts=chart_urns,
@@ -178,16 +168,7 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
             },
         )
 
-        # add tag so entity displays in find-moj-data
-        # temporiliy add both old domain tag and new subject area tag
-        tags = [
-            "dc_display_in_catalogue",
-            chart_data["domain"],
-        ]
-        if subject_area := domains_to_subject_areas.get(chart_data["domain"].lower()):
-            tags.append(subject_area)
-
-        tag_aspect = self._make_tags_aspect(tags)
+        tag_aspect = self._make_tags_aspect(chart_data["subject_areas"])
 
         # wipe all owners (this can be removed if/when we reintroduce owners to Justice Data charts)
         owners = OwnershipClass(owners=[])
@@ -200,25 +181,9 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
             )
         ]
 
-    def _assign_chart_to_domain(self, chart_data) -> MetadataChangeProposalWrapper:
-        """
-        because domain cannot be added via a MetadataChangeEvent we need to use
-        MetadataChangeProposal
-        """
-        domain_urn = builder.make_domain_urn(domain=chart_data["domain"])
-        chart_urn = builder.make_chart_urn(self.platform_name, chart_data["id"])
-
-        mcp = MetadataChangeProposalWrapper(
-            entityType="chart",
-            changeType=ChangeTypeClass.UPSERT,
-            entityUrn=chart_urn,
-            aspect=DomainsClass(domains=[domain_urn]),
-        )
-        return mcp
-
-    def _make_tags_aspect(
-        self, tag_names: list[str] = ["dc_display_in_catalogue"]
-    ) -> GlobalTagsClass:
+    def _make_tags_aspect(self, tag_names: list[str] = []) -> GlobalTagsClass:
+        if "dc_display_in_catalogue" not in tag_names:
+            tag_names.append("dc_display_in_catalogue")
         tag_urns = [builder.make_tag_urn(tag=tag_name) for tag_name in tag_names]
         tag_assocations = [TagAssociationClass(tag_urn) for tag_urn in tag_urns]
         tags = GlobalTagsClass(tags=tag_assocations)

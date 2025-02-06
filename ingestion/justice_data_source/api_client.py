@@ -1,10 +1,8 @@
 import logging
 from datetime import datetime
-
 import requests
 
-from ..ingestion_utils import format_domain_name
-from .config import ID_TO_DOMAIN_MAPPING
+from .config import ID_TO_SUBJECT_AREAS_MAPPING
 
 
 class JusticeDataAPIClient:
@@ -15,7 +13,7 @@ class JusticeDataAPIClient:
             pub["id"]: pub for pub in self.list_publications()
         }
         self.default_owner_email = default_owner_email
-        self._id_to_domain_mapping = ID_TO_DOMAIN_MAPPING
+        self._id_to_subject_areas_mapping = ID_TO_SUBJECT_AREAS_MAPPING
 
     def list_publications(self) -> dict:
         """
@@ -43,14 +41,14 @@ class JusticeDataAPIClient:
                 logging.info(f"{id=} has no permalink and will be skipped.")
                 continue
 
-            if self._id_to_domain_mapping.get(id):
-                domain = format_domain_name(self._id_to_domain_mapping.get(id, ""))
-            elif current.get("domain"):
-                domain = current["domain"]
+            if self._id_to_subject_areas_mapping.get(id):
+                subject_areas = self._id_to_subject_areas_mapping.get(id, "")
+            elif current.get("subject_areas"):
+                subject_areas = current["subject_areas"]
             else:
-                domain = "General"
+                subject_areas = ["General"]
 
-            current["domain"] = domain
+            current["subject_areas"] = subject_areas
             breadcrumb = current.get("breadcrumb", []).copy()
             breadcrumb.append(current["name"])
 
@@ -70,7 +68,7 @@ class JusticeDataAPIClient:
             if current["children"] and current["children"] != [None]:
                 for child in current["children"]:
                     child["breadcrumb"] = breadcrumb
-                    child["domain"] = domain
+                    child["subject_areas"] = subject_areas
 
                 to_process.extend(current["children"])
             else:
@@ -108,10 +106,11 @@ class JusticeDataAPIClient:
 
         return current_publish_date, refresh_period, owner_email
 
-    def validate_domains(self, datahub_domains) -> bool:
-        for domain in set(self._id_to_domain_mapping.values()):
-            if domain.lower() not in set(datahub_domains):
+    def validate_subject_areas(self, top_level_subject_areas: list[str]) -> bool:
+        for subject_areas in self._id_to_subject_areas_mapping.values():
+            # This will check if any of the subject areas are in the top level subject areas
+            if not any(set(top_level_subject_areas).intersection(set(subject_areas))):
                 raise ValueError(
-                    f"Domain - {domain} does not exist in datahub - please review domain mappings in config.py"
+                    f"Subject areas {subject_areas} are not in the top level subject areas {top_level_subject_areas}"
                 )
         return True
