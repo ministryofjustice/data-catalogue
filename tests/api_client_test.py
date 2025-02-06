@@ -126,6 +126,16 @@ def test_list_all_domain_assignment(client):
                 assert result["subject_areas"] == ["Prison incidents"]
 
 
+def test_missing_top_level_subject_area(client):
+    with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data.yaml"):
+        client._id_to_subject_areas_mapping = {
+            "prisons": ["Fake"],
+            "probation": ["AlsoFake"],
+        }
+        with pytest.raises(ValueError):
+            client.validate_subject_areas(["Prison"])
+
+
 def test_get_publication_metadata(client, default_owner_email):
     # ons missing data
     ids = [

@@ -106,8 +106,8 @@ class JusticeDataAPIClient:
 
         return current_publish_date, refresh_period, owner_email
 
-    def validate_subject_areas(self, top_level_subject_areas) -> bool:
-        for subject_areas in set(self._id_to_subject_areas_mapping.values()):
+    def validate_subject_areas(self, top_level_subject_areas: list[str]) -> bool:
+        for subject_areas in self._id_to_subject_areas_mapping.values():
             # This will check if any of the subject areas are in the top level subject areas
             if not any(set(top_level_subject_areas).intersection(set(subject_areas))):
                 raise ValueError(
