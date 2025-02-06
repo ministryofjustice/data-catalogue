@@ -113,17 +113,27 @@ ids_with_prison_domain = [
 
 def test_list_all_domain_assignment(client):
     with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data.yaml"):
-        client._id_to_domain_mapping = {
-            "prisons": "prison",
-            "incidents-at-height": "prison incidents",
+        client._id_to_subject_areas_mapping = {
+            "prisons": ["Prison"],
+            "incidents-at-height": ["Prison incidents"],
         }
         results = client.list_all(exclude_id_list=["justice-in-numbers"])
 
         for result in results:
             if result["id"] in ids_with_prison_domain:
-                assert result["domain"] == "Prison"
+                assert result["subject_areas"] == ["Prison"]
             elif result["id"] == "incidents-at-height":
-                assert result["domain"] == "Prison incidents"
+                assert result["subject_areas"] == ["Prison incidents"]
+
+
+def test_missing_top_level_subject_area(client):
+    with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data.yaml"):
+        client._id_to_subject_areas_mapping = {
+            "prisons": ["Fake"],
+            "probation": ["AlsoFake"],
+        }
+        with pytest.raises(ValueError):
+            client.validate_subject_areas(["Prison"])
 
 
 def test_get_publication_metadata(client, default_owner_email):
@@ -169,16 +179,16 @@ def test_get_publication_metadata(client, default_owner_email):
         ),
     ],
 )
-def test_validate_domains(
+def validate_subject_areas(
     id_to_domain_mapping, datahub_domain_list, expect_error, client
 ):
 
     client._id_to_domain_mapping = id_to_domain_mapping
     if expect_error:
         with pytest.raises(Exception):
-            client.validate_domains(datahub_domain_list)
+            client.validate_subject_areas(datahub_domain_list)
     else:
-        assert client.validate_domains(datahub_domain_list)
+        assert client.validate_subject_areas(datahub_domain_list)
 
 
 def test_list_publications(client):
