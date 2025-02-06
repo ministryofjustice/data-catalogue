@@ -9,20 +9,20 @@ from datahub.ingestion.source.state.stateful_ingestion_base import (
 )
 from pydantic import Field
 
-# These map the api ids to domains as set by create_cadet_database_source.py
-# and all children of these ids will inherit their parent's domain
-# format {api_id: domain}
-ID_TO_DOMAIN_MAPPING = {
-    "prisons": "prison",
-    "probation": "probation",
-    "courts": "courts",
-    "electronic-monitoring": "electronic monitoring",
-    "electronic-monitoring-performance": "electronic monitoring",
-    "bass": "probation",
-    "cjs-crime": "general",
-    "cjs-reoffending": "general",
-    "cjs-sentence-types": "courts",
-    "cjs-entrants": "courts",
+# These map the api ids to subject areas as set by create_cadet_database_source.py
+# and all children of these ids will inherit their parent's subject areas
+# format {api_id: subject areas}
+ID_TO_SUBJECT_AREAS_MAPPING = {
+    "prisons": ["Prisons and probation", "Prisons"],
+    "probation": ["Prisons and probation", "Probation"],
+    "courts": ["Courts and tribunals", "Courts"],
+    "electronic-monitoring": ["Prisons and probation", "Electronic monitoring"],
+    "electronic-monitoring-performance": ["Prisons and probation", "Electronic monitoring"],
+    "bass": ["Prisons and probation", "Probation"],
+    "cjs-crime": ["Crime and policing"],
+    "cjs-reoffending": ["Crime and policing"],
+    "cjs-sentence-types": ["Courts and tribunals", "Courts"],
+    "cjs-entrants": ["Courts and tribunals", "Courts"],
 }
 
 
