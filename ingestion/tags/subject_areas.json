@@ -103,5 +103,134 @@
         ]
       }
     }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Property",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Property",
+              "description": "MoJ property and estates"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Finance",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Finance",
+              "description": "MoJ finance and procurement"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Employees",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Employees",
+              "description": "SOP, HR, and staff"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Reoffending",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Reoffending"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Criminal courts",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Criminal courts"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Civil courts",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Civil courts"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Prisons",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Prisons"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Probation",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Probation"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Electronic monitoring",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Electronic monitoring"
+            }
+          }
+        ]
+      }
+    }
   }
 ]
