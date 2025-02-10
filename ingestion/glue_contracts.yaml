@@ -19,8 +19,6 @@ transformers:
       subject_areas:
         - Corporate operations
       properties:
-        dc_slack_channel_name: "#contracts-databases"
-        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01GZ6ZQZ3U
         dc_where_to_access_dataset: AnalyticalPlatform
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
         refresh_period: Daily
