@@ -134,15 +134,15 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 backcompat_env_as_instance=True,
             )
             tags = ["dc_display_in_catalogue"]
-            if collection.get("domain"):
-                domain_name = format_domain_name(collection["domain"])
-                domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-                tags.append(domain_name)
-            else:
-                domain_urn = None
+            # if collection.get("domain"):
+            #     domain_name = format_domain_name(collection["domain"])
+            #     domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+            #     tags.append(domain_name)
+            # else:
+            #     domain_urn = None
 
-            if collection.get("subject_area"):
-                tags.append(collection["subject_area"])
+            if collection.get("subject_areas"):
+                tags.extend(collection["subject_areas"])
 
             collection_name = collection.get("title", "")
             logging.info(f"Creating container for {collection_name=}")
@@ -150,7 +150,6 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 container_key=container_key,
                 name=collection_name,
                 sub_types=sub_types,
-                domain_urn=domain_urn,
                 external_url=urljoin(self.client.base_url, collection.get("link")),
                 description=collection.get("description"),
                 created=None,
@@ -252,13 +251,16 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                         )
                     )
 
-                subject_area = self._id_to_domain_contact_mapping.get(
+                subject_areas = self._id_to_domain_contact_mapping.get(
                     parent_collection_ids[0], {}
-                ).get("subject_area")
+                ).get("subject_areas")
 
-                # add subject area tag if given
-                if subject_area:
-                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{subject_area}"))
+                # add subject area tags if given
+                if subject_areas:
+                    tags.extend(
+                        TagAssociationClass(tag=f"urn:li:tag:{subject_area}")
+                        for subject_area in subject_areas
+                    )
 
             else:
                 custom_properties["dc_team_email"] = self.client.default_contact_email

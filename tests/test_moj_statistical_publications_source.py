@@ -130,13 +130,6 @@ def test_workunits(mock_justice_publication_api):
     tags = [tag.tag for tag in tags_events[0].metadata.aspect.tags]
     assert "urn:li:tag:dc_display_in_catalogue" in tags
 
-    prison_domains = [
-        domain
-        for domain in domains_events
-        if "urn:li:domain:Prison" in domain.metadata.aspect.domains
-    ]
-    assert len(prison_domains) == 52
-
     assert [
         d
         for d in dataset_events
