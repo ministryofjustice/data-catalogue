@@ -194,6 +194,20 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Family courts",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Family courts"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
         "urn": "urn:li:tag:Prisons",
         "aspects": [
           {
@@ -227,6 +241,20 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Electronic monitoring"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Risk",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Risk"
             }
           }
         ]
