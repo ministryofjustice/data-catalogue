@@ -18,17 +18,13 @@ transformers:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Corporate operations"
+        - "urn:li:tag:Employees"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${SOP_TECHNICAL_CONTACT}"
       subject_areas:
-        - People
+        - Employees
         - Corporate operations
-  - type: "simple_add_dataset_domain"
-    config:
-      semantics: OVERWRITE
-      domains:
-        - urn:li:domain:People
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
