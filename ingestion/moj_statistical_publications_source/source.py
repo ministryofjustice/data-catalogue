@@ -257,7 +257,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
                 # add subject area tags if given
                 if subject_areas:
-                    tags.append(
+                    tags.extend(
                         TagAssociationClass(tag=f"urn:li:tag:{subject_area}")
                         for subject_area in subject_areas
                     )
