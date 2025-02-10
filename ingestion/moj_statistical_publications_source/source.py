@@ -255,9 +255,12 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                     parent_collection_ids[0], {}
                 ).get("subject_areas")
 
-                # add subject area tag if given
+                # add subject area tags if given
                 if subject_areas:
-                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{subject_areas}"))
+                    tags.append(
+                        TagAssociationClass(tag=f"urn:li:tag:{subject_area}")
+                        for subject_area in subject_areas
+                    )
 
             else:
                 custom_properties["dc_team_email"] = self.client.default_contact_email
