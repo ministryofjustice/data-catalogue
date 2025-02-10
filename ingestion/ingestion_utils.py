@@ -277,10 +277,10 @@ class NodeLookup(Generic[ValueType]):
 
 def get_subject_areas():
     """
-    Returns a list of subject areas from the subject_areas_template.yaml file
+    Returns a list of top level subject areas from the subject_areas_template.yaml file
     """
     subject_areas_filepath = os.path.join(
-        os.path.dirname(__file__), "tags", "subject_areas_template.yaml"
+        os.path.dirname(__file__), "tags", "top_level_subject_areas_template.yaml"
     )
     with open(subject_areas_filepath, "r") as file:
         subject_areas_yaml = yaml.safe_load(file)
