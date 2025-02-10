@@ -12,7 +12,7 @@ transformers:
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
-        - "urn:li:tag:Courts"
+        - "urn:li:tag:Criminal courts"
         - "urn:li:tag:Prison"
         - "urn:li:tag:Probation"
         - "urn:li:tag:Risk"
@@ -22,7 +22,7 @@ transformers:
     config:
       data_custodian: "${JUST_LINK_TECHNICAL_CONTACT}"
       subject_areas:
-        - Courts
+        - Criminal courts
         - Prison
         - Probation
         - Risk

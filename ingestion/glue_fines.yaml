@@ -13,12 +13,12 @@ transformers:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Courts and tribunals"
-        - "urn:li:tag:Courts"
+        - "urn:li:tag:Criminal courts"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${FINES_TECHNICAL_CONTACT}"
       subject_areas:
-        - Courts
+        - Criminal courts
         - Courts and tribunals
       properties:
         dc_slack_channel_name: "#criminal-courts-databases"
