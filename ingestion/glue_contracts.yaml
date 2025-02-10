@@ -18,13 +18,19 @@ transformers:
       data_custodian: "${CONTRACTS_TECHNICAL_CONTACT}"
       subject_areas:
         - Corporate operations
+      properties:
+        dc_slack_channel_name: "#contracts-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01GZ6ZQZ3U
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Daily
+        security_classification: Official-Sensitive
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
         - "${CONTRACTS_TECHNICAL_CONTACT}"
-transformers:
   - type: "simple_add_dataset_properties"
     config:
       semantics: OVERWRITE # OVERWRITE is default behaviour
