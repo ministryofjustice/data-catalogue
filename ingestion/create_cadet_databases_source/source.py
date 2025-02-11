@@ -90,9 +90,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         # create mcps to tag seed datasets with dc_display_in_catalogue
         mcps.extend(self.create_display_tag_for_seed_mcps(manifest, domain_lookup))
 
-        # create assign domains to tables mcps
-        mcps.extend(self.create_table_domain_mcps(domain_lookup))
-
         # create the cadet databases tagged to display
         yield from self.create_database_mcps(databases_with_metadata, display_tags)
 
@@ -130,7 +127,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             db_meta_dict = dict(database_metadata)
             db_meta_dict.update(properties_to_add)
             domain_name = format_domain_name(db_meta_dict["domain"])
-            domain_urn = mce_builder.make_domain_urn(domain=domain_name)
             tags = display_tags.get(database_name, ["dc_cadet"])
             tags.append(domain_name)
             if domains_to_subject_areas.get(domain_name.lower()):
@@ -153,7 +149,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 container_key=database_container_key,
                 name=database_name,
                 sub_types=sub_types,
-                domain_urn=domain_urn,
                 external_url=None,
                 description=database_description,
                 created=None,
@@ -204,28 +199,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
             seed_domain_mcps.append(mcp)
         return seed_domain_mcps
-
-    def create_table_domain_mcps(
-        self, domain_lookup
-    ) -> list[MetadataChangeProposalWrapper]:
-        table_domain_mcps = []
-        for database, table, domain in domain_lookup:
-            dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
-                platform=PLATFORM,
-                name=f"{database}.{table}",
-                platform_instance=INSTANCE,
-            )
-            domain_name = format_domain_name(domain)
-            domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-            mcp = MetadataChangeProposalWrapper(
-                entityType="dataset",
-                changeType=ChangeTypeClass.UPSERT,
-                entityUrn=dataset_urn,
-                aspect=DomainsClass(domains=[domain_urn]),
-            )
-            table_domain_mcps.append(mcp)
-
-        return table_domain_mcps
 
     def _get_domains(self, manifest) -> set[str]:
         """Only models are arranged by domain in CaDeT.

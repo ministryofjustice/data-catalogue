@@ -61,19 +61,6 @@ class TestCreateCadetDatabases:
             DatasetContainerSubTypes.DATABASE
             in sub_types_events[0].metadata.aspect.typeNames
         )
-        assert (
-            container_events[0].metadata.entityUrn
-            == domains_events[0].metadata.entityUrn
-        )
-        expected_domain = (
-            container_events[0]
-            .metadata.aspect.customProperties.get("database")
-            .split("_")[0]
-        )
-        assert (
-            builder.make_domain_urn(format_domain_name(expected_domain))
-            in domains_events[0].metadata.aspect.domains
-        )
 
         user_urns = [event.metadata.entityUrn for event in user_creation_events]
         assert user_urns == ["urn:li:corpuser:some.one", "urn:li:corpuser:some.team"]
@@ -88,14 +75,3 @@ class TestCreateCadetDatabases:
         assert seed_tag_event[0].metadata.changeType == "UPSERT"
         tag_names = {tag.tag for tag in seed_tag_event[0].metadata.aspect.tags}
         assert "urn:li:tag:dc_display_in_catalogue" in tag_names
-
-    def test_datasets_are_assigned_to_domains(self):
-        # This is the first event which should associate a dataset with a domain
-        dataset_with_domains = [
-            result
-            for result in self.results_by_aspect_type[DomainsClass]
-            if result.metadata.entityType == "dataset"
-        ]
-        assert dataset_with_domains[0].metadata.entityType == "dataset"
-        assert dataset_with_domains[0].metadata.changeType == "UPSERT"
-        assert dataset_with_domains[0].metadata.aspect.ASPECT_NAME == "domains"
