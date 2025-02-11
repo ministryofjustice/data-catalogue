@@ -8,6 +8,7 @@ from typing import Dict, Generic, Tuple, TypeVar
 import boto3
 import datahub.emitter.mce_builder as builder
 import datahub.emitter.mce_builder as mce_builder
+import yaml
 from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
@@ -16,7 +17,6 @@ from datahub.metadata.schema_classes import (
     CorpUserInfoClass,
     DomainPropertiesClass,
 )
-import yaml
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
@@ -226,18 +226,6 @@ def make_user_mcp(email: str) -> MetadataChangeProposalWrapper:
     )
 
     return user_mcp
-
-
-def make_domain_mcp(domain_name: str) -> MetadataChangeProposalWrapper:
-    domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-    domain_properties = DomainPropertiesClass(name=domain_name)
-    mcp = MetadataChangeProposalWrapper(
-        entityType="domain",
-        changeType=ChangeTypeClass.UPSERT,
-        entityUrn=domain_urn,
-        aspect=domain_properties,
-    )
-    return mcp
 
 
 ValueType = TypeVar("ValueType")

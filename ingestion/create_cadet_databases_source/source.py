@@ -28,15 +28,14 @@ from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.ingestion_utils import (
     NodeLookup,
+    domains_to_subject_areas,
     format_domain_name,
     get_cadet_metadata_json,
+    get_subject_areas,
     get_tags,
-    make_domain_mcp,
     make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
-    get_subject_areas,
-    domains_to_subject_areas,
 )
 from ingestion.utils import report_generator_time, report_time
 
@@ -78,9 +77,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
         mcps: list[MetadataChangeProposalWrapper] = []
 
-        # Create all the domain entities mcps
-        mcps.extend(self.create_domain_mcps(manifest))
-
         # Get database metadata from the manifest and database metadata dicts
         databases_with_metadata, domain_lookup, display_tags = (
             self._get_databases_with_domains_and_display_tags(
@@ -104,12 +100,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             wu = MetadataWorkUnit("single_mcp", mcp=mcp)
             logging.info(f"creating {wu.metadata.aspect} for {wu.metadata.entityUrn}")
             yield wu
-
-    def create_domain_mcps(self, manifest) -> list[MetadataChangeProposalWrapper]:
-        domain_mcps = [
-            make_domain_mcp(domain_name) for domain_name in self._get_domains(manifest)
-        ]
-        return domain_mcps
 
     def create_database_owner_mcps(
         self, databases_with_metadata: set
@@ -295,7 +285,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     if database_tags:
                         tags.extend(database_tags)
                     if not any(tag in top_level_subject_areas for tag in tags):
-                        logging.warning(f"No top level tags found in database metadata file for {database}")
+                        logging.warning(
+                            f"No top level tags found in database metadata file for {database}"
+                        )
 
                     if tags:
                         tag_mappings[database] = tags

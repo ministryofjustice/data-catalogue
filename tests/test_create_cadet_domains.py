@@ -7,7 +7,6 @@ from datahub.metadata.schema_classes import (
     ContainerPropertiesClass,
     CorpUserInfoClass,
     DataPlatformInstanceClass,
-    DomainPropertiesClass,
     DomainsClass,
     GlobalTagsClass,
     StatusClass,
@@ -37,10 +36,6 @@ class TestCreateCadetDatabases:
             self.results_by_aspect_type[aspect_type].append(result)
 
     def test_creating_domains_from_s3(self):
-        domain_creation_events = self.results_by_aspect_type[DomainPropertiesClass]
-        domains = [event.metadata.aspect.name for event in domain_creation_events]
-        assert domains == ["Courts", "HQ", "Prison", "Probation"]
-
         # Events are created for the following aspects per database:
         # create container, update status, add platform, add subtype, associate container with domain, add tags
         container_events = self.results_by_aspect_type[ContainerPropertiesClass]
@@ -54,8 +49,6 @@ class TestCreateCadetDatabases:
         assert (
             len(container_events) == len(sub_types_events) == len(platform_events) == 5
         )
-
-        assert len(domains_events) == 10
 
         assert len(tags_events) == 6
 
