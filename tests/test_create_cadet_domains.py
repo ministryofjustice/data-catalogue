@@ -7,7 +7,6 @@ from datahub.metadata.schema_classes import (
     ContainerPropertiesClass,
     CorpUserInfoClass,
     DataPlatformInstanceClass,
-    DomainsClass,
     GlobalTagsClass,
     StatusClass,
     SubTypesClass,
@@ -42,7 +41,6 @@ class TestCreateCadetDatabases:
         status_events = self.results_by_aspect_type[StatusClass]
         platform_events = self.results_by_aspect_type[DataPlatformInstanceClass]
         sub_types_events = self.results_by_aspect_type[SubTypesClass]
-        domains_events = self.results_by_aspect_type[DomainsClass]
         tags_events = self.results_by_aspect_type[GlobalTagsClass]
         user_creation_events = self.results_by_aspect_type[CorpUserInfoClass]
 

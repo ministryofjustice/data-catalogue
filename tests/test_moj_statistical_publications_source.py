@@ -8,7 +8,6 @@ from datahub.metadata.schema_classes import (
     ContainerPropertiesClass,
     DataPlatformInstanceClass,
     DatasetPropertiesClass,
-    DomainsClass,
     GlobalTagsClass,
     StatusClass,
     SubTypesClass,
@@ -99,7 +98,6 @@ def test_workunits(mock_justice_publication_api):
     dataset_events = workunits_by_aspect_type[DatasetPropertiesClass]
     platform_events = workunits_by_aspect_type[DataPlatformInstanceClass]
     sub_types_events = workunits_by_aspect_type[SubTypesClass]
-    domains_events = workunits_by_aspect_type[DomainsClass]
     tags_events = workunits_by_aspect_type[GlobalTagsClass]
 
     # We expect 51 containers

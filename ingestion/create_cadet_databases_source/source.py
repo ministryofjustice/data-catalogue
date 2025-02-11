@@ -17,12 +17,7 @@ from datahub.ingestion.source.state.stale_entity_removal_handler import (
 from datahub.ingestion.source.state.stateful_ingestion_base import (
     StatefulIngestionSourceBase,
 )
-from datahub.metadata.schema_classes import (
-    ChangeTypeClass,
-    DomainsClass,
-    GlobalTagsClass,
-    TagAssociationClass,
-)
+from datahub.metadata.schema_classes import GlobalTagsClass, TagAssociationClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
