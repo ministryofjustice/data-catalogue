@@ -1,76 +1,57 @@
 accredited-programmes-annual-bulletin:
   subject_areas: ["Prisons and probation"]
   contact_email: statistics@justice.gov.uk
-  domain: Interventions
 ad-hoc-justice-statistics:
   # subject_areas: doesn't fit to any, could be multiple when we implement it
   contact_email: statistics@justice.gov.uk
-  domain: General
 alcohol-and-drug-misuse-and-treatment-statistics:
   subject_areas: ["Prisons and probation"]
-  domain: Interventions
 antisocial-behaviour:
   subject_areas: ["Crime and policing"]
-  domain: General
 civil-justice-statistics:
   subject_areas: ["Courts and tribunals", "Civil courts"]
   contact_email: CAJS@justice.gov.uk
-  domain: Courts
 civil-justice-statistics-quarterly:
   subject_areas: ["Courts and tribunals", "Civil courts"]
   contact_email: CAJS@justice.gov.uk
-  domain: Courts
 compendium-of-re-offending:
   subject_areas: ["Crime and policing"]
-  domain: General
 # coroners-and-burials-statistics:
 #   subject_areas: null  # unsure where this would fit, could make General?
 #   contact_email:
 court-statistics-quarterly:
   subject_areas: ["Courts and tribunals"]
-  domain: Courts
 crime-statistics:
   subject_areas: ["Crime and policing"]
   contact_email: CrimeandPoliceStats@homeoffice.gov.uk
-  domain: General
 criminal-court-statistics:
   subject_areas: ["Courts and tribunals", "Criminal courts"]
   contact_email: criminal_court_sta@justice.gov.uk
-  domain: Courts
 criminal-justice-statistics:
   subject_areas: ["Crime and policing"]
   contact_email: CJS_Statistics@justice.gov.uk
-  domain: General
 criminal-justice-statistics-quarterly:
   subject_areas: ["Crime and policing"]
   contact_email: CJS_Statistics@justice.gov.uk
-  domain: General
 death-of-offenders-in-the-community:
   subject_areas: ["Prisons and probation"]
   contact_email: probation-statistics-enquiries@justice.gov.uk
-  domain: Probation
 electronic-monitoring-publication:
   subject_areas: ["Prisons and probation", "Electronic monitoring"]
   contact_email: ppas_statistics@justice.gov.uk
-  domain: Electronic monitoring
 family-court-statistics-quarterly:
   subject_areas: ["Courts and tribunals", "Family courts"]
   contact_email: familycourt.statistics@justice.gov.uk
-  domain: Courts
 gender-recognition-certificate-statistics:
   subject_areas: ["Courts and tribunals"]
-  domain: Courts
 government-foi-statistics:
   subject_areas: ["Corporate operations"]
   contact_email: foistatistics@cabinetoffice.gov.uk
-  domain: General
 hate-crime-statistics:
   subject_areas: ["Crime and policing"]
   contact_email: crimeandpolicestats@homeoffice.gov.uk
-  domain: General
 hm-prison-and-probation-service-covid-19-statistics-monthly:
   subject_areas: ["Prisons and probation"]
-  domain: Probation
 hmpps-annual-offender-equalities-report:
   subject_areas: ["Prisons and probation"]
   contact_email: sueper_stats@justice.gov.uk
@@ -81,33 +62,25 @@ hmpps-covid-19-management-information-weekly:
   subject_areas: ["Prisons and probation"]
 judicial-and-court-statistics:
   subject_areas: ["Courts and tribunals"]
-  domain: Courts
 judicial-diversity-statistics:
   subject_areas: ["Courts and tribunals"]
   contact_email: judicial.statistics@justice.gov.uk
-  domain: Courts
 justice-data-lab-pilot-statistics:
   # subject_areas: doesn't fit to any, could be multiple when we implement it
   contact_email: justice.datalab@justice.gov.uk
-  domain: General
 knife-possession-sentencing-quarterly:
   subject_areas: ["Courts and tribunals"]
   contact_email: MOJPNCteam@justice.gov.uk
-  domain: Courts
 legal-aid-statistics:
   subject_areas: ["Legal aid"]
   contact_email: statistics@justice.gov.uk
-  domain: General
 legal-aid-statistics-data-files:
   subject_areas: ["Legal aid"]
-  domain: General
 local-adult-reoffending:
   subject_areas: ["Crime and policing"]
-  domain: General
 mortgage-and-landlord-possession-statistics:
   subject_areas: ["Courts and tribunals"]
   contact_email: CAJS@justice.gov.uk
-  domain: Courts
 multi-agency-public-protection-arrangements-mappa-annual-reports:
   subject_areas: ["Prisons and probation"]
   contact_email: mappa@justice.gov.uk
@@ -116,60 +89,46 @@ national-offender-management-service-workforce-statistics:
   contact_email: robert.hartley@justice.gov.uk
 new-criminal-offences-statistics:
   subject_areas: ["Crime and policing"]
-  domain: General
 offender-management-statistics-quarterly:
   subject_areas: ["Prisons and probation"]
   contact_email: OMSQ-SiC-publications@justice.gov.uk
 payment-by-results-statistics:
   subject_areas: ["Prisons and probation"]
-  domain: Probation
 prison-and-probation-trusts-performance-statistics:
   subject_areas: ["Prisons and probation"]
   contact_email: SUEPer_Stats@justice.gov.uk
 prison-population-statistics:
   subject_areas: ["Prisons and probation"]
-  domain: Prison
 prisons-and-probation-statistics:
   subject_areas: ["Prisons and probation"]
 probation-service-workforce-quarterly-reports:
   subject_areas: ["Prisons and probation"]
-  domain: Probation
 proven-reoffending-statistics:
   subject_areas: ["Crime and policing"]
   contact_email: reoffendingstatistics@justice.gov.uk
 race-and-the-criminal-justice-system:
   subject_areas: ["Crime and policing"]
   contact_email: CJS_Statistics@justice.gov.uk
-  domain: General
 restricted-patients-statistics-england-and-wales:
   # subject_areas: not sure for this
   contact_email: MHCSMailbox@justice.gov.uk
-  domain: General
 safety-in-custody-statistics:
   subject_areas: ["Prisons and probation"]
   contact_email: OMSQ-SiC-publications@justice.gov.uk
-  domain: Prison
 statistics-on-privacy-injunctions:
   subject_areas: ["Courts and tribunals"]
-  domain: Courts
 statistics-on-public-disorder-of-6-9-august-2011:
   subject_areas: ["Crime and policing"]
-  domain: General
 statistics-on-the-use-of-language-services-in-courts-and-tribunals:
   subject_areas: ["Courts and tribunals"]
-  domain: Courts
 topical-criminal-justice-publications:
   subject_areas: ["Crime and policing"]
-  domain: General
 tribunals-statistics:
   subject_areas: ["Courts and tribunals"]
   contact_email: CAJS@justice.gov.uk
-  domain: Courts
 women-and-the-criminal-justice-system:
   subject_areas: ["Crime and policing"]
   contact_email: CJS_Statistics@justice.gov.uk
-  domain: General
 youth-justice-statistics:
   subject_areas: ["Crime and policing"]
   contact_email: statistics@yjb.gov.uk
-  domain: General

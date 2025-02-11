@@ -34,7 +34,7 @@ from datahub.metadata.schema_classes import (
 )
 from datahub.utilities.time import datetime_to_ts_millis
 
-from ingestion.ingestion_utils import FindMojDataEntityTypes, format_domain_name
+from ingestion.ingestion_utils import FindMojDataEntityTypes
 
 from .api_client import MojPublicationsAPIClient
 from .config import MojPublicationsAPIConfig
@@ -221,16 +221,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                         aspect=ContainerClass(container=parent_collection_urn),
                     )
                 )
-                domain = self._id_to_domain_contact_mapping.get(
-                    parent_collection_ids[0], {}
-                ).get("domain")
 
                 # because as is there won't always be an applicable domain (subject area)
                 # even within a colleciton
                 tags = [TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")]
-                if domain:
-                    domain_name = format_domain_name(domain)
-                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{domain_name}"))
 
                 subject_areas = self._id_to_domain_contact_mapping.get(
                     parent_collection_ids[0], {}

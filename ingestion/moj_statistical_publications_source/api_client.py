@@ -89,9 +89,6 @@ class MojPublicationsAPIClient:
             )
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
-            collection["domain"] = self._id_to_domain_contact_mapping.get(
-                collection["slug"], {}
-            ).get("domain")
             collection["subject_areas"] = self._id_to_domain_contact_mapping.get(
                 collection["slug"], {}
             ).get("subject_areas")
