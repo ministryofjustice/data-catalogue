@@ -28,7 +28,6 @@ from datahub.metadata.schema_classes import (
     ContainerClass,
     DataPlatformInstanceClass,
     DatasetPropertiesClass,
-    DomainsClass,
     GlobalTagsClass,
     SubTypesClass,
     TagAssociationClass,
@@ -134,12 +133,6 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 backcompat_env_as_instance=True,
             )
             tags = ["dc_display_in_catalogue"]
-            # if collection.get("domain"):
-            #     domain_name = format_domain_name(collection["domain"])
-            #     domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-            #     tags.append(domain_name)
-            # else:
-            #     domain_urn = None
 
             if collection.get("subject_areas"):
                 tags.extend(collection["subject_areas"])
@@ -238,18 +231,6 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 if domain:
                     domain_name = format_domain_name(domain)
                     tags.append(TagAssociationClass(tag=f"urn:li:tag:{domain_name}"))
-                    domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-                else:
-                    domain_urn = None
-
-                # add domain - we only add a domain for publications within a collection
-                if domain_urn:
-                    mcps.append(
-                        MetadataChangeProposalWrapper(
-                            entityUrn=dataset_urn,
-                            aspect=DomainsClass(domains=[domain_urn]),
-                        )
-                    )
 
                 subject_areas = self._id_to_domain_contact_mapping.get(
                     parent_collection_ids[0], {}
