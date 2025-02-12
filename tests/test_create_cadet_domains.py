@@ -41,13 +41,16 @@ class TestCreateCadetDatabases:
             sub_types_events = aspects["subTypes"]
             tags_events = aspects["globalTags"]
 
-        assert (
-            len(container_events) == len(sub_types_events) == len(platform_events) == 5
-        )
+            assert (
+                len(container_events)
+                == len(status_events)
+                == len(sub_types_events)
+                == len(platform_events)
+                == len(tags_events)
+                == 1
+            )
 
-        assert len(tags_events) == 6
-
-        assert container_events[0].metadata.aspect.customProperties.get("database")
+            assert container_events[0].customProperties.get("database")
 
             assert (platform_events[0].platform) == builder.make_data_platform_urn(
                 platform="dbt"
