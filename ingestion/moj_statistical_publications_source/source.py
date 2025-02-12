@@ -154,10 +154,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         self, all_publications_metadata: List[Dict]
     ) -> list[MetadataChangeProposalWrapper]:
         """
-        creates the aspects for dataset properties, tags, domain, and container, for
+        creates the aspects for dataset properties, tags, and container, for
         all individual publcations as a dataset and returns as a list of mcps
 
-        All publications will not have a container or domain (if not in a collection)
+        All publications will not have a container or subject area (if not in a collection)
         """
         mcps = []
         custom_properties: dict = {
@@ -178,7 +178,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             )
 
             # if publication is in a collection it's special and gets some more metadata we've collected in
-            # a mapping yaml. Namely a domain and team contact email where available
+            # a mapping yaml. Namely a subject area and team contact email where available
             if publication.get("document_collections"):
 
                 # publications can belong to multiple collections - opting to keep it more simple and register
@@ -219,8 +219,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                     )
                 )
 
-                # because as is there won't always be an applicable domain (subject area)
-                # even within a colleciton
+                # there won't always be an applicable subject area, even within a collection
                 tags = [TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")]
 
                 subject_areas = self._id_to_domain_contact_mapping.get(

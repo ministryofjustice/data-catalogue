@@ -3,10 +3,9 @@ import logging
 import os
 import re
 from enum import StrEnum
-from typing import Dict, Generic, Tuple, TypeVar
+from typing import Dict, Generic, TypeVar
 
 import boto3
-import datahub.emitter.mce_builder as builder
 import datahub.emitter.mce_builder as mce_builder
 import yaml
 from botocore.exceptions import ClientError, NoCredentialsError
