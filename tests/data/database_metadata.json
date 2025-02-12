@@ -6,7 +6,11 @@
             "dc_slack_channel_name": "#ask-me",
             "dc_slack_channel_url": "https://slack.com/1233",
             "dc_readable_name": "Prison database",
-            "dc_access_requirements": "https://user-guidance.justice.gov.uk"
+            "dc_access_requirements": "https://user-guidance.justice.gov.uk",
+            "tags": [
+                "prison",
+                "secure"
+            ]
         },
         "probation_database": {
             "description": "test db for probation",

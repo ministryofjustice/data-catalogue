@@ -56,6 +56,8 @@ def test_tags(mock_datahub_graph):
     assert set(prison_database_tags) == {
         "urn:li:tag:Prisons and probation",
         "urn:li:tag:dc_display_in_catalogue",
+        "urn:li:tag:prison",
+        "urn:li:tag:secure",
     }
     assert set(ref_database_tags) == {
         "urn:li:tag:dc_display_in_catalogue",
