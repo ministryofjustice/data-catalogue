@@ -54,7 +54,6 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         self,
         ctx: PipelineContext,
         config: MojPublicationsAPIConfig,
-        validate_domains: bool = True,
     ) -> None:
         super().__init__(config, ctx)
 
@@ -65,8 +64,6 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         self.client = MojPublicationsAPIClient(
             config.base_url, config.default_contact_email, config.params
         )
-        if validate_domains:
-            self.client.validate_domains()
         self._id_to_domain_contact_mapping = self.client._id_to_domain_contact_mapping
         self.platform_name = "GOV.UK"
         self.platform_instance = "ministry-of-justice-publications"

@@ -68,7 +68,6 @@ def mock_justice_publication_api(default_contact_email, publication_mappings):
                     ],
                 ),
             ),
-            validate_domains=False,
         )
         # these are likely to change so we need to mock them
         with patch.object(

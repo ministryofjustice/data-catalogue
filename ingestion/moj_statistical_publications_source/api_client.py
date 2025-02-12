@@ -98,21 +98,3 @@ class MojPublicationsAPIClient:
                 collection["slug"], {}
             ).get("contact_email", self.default_contact_email)
         return unique_collections
-
-    def validate_domains(self) -> bool:
-        domains = [
-            val.get("domain")
-            for val in self._id_to_domain_contact_mapping.values()
-            if val is not None
-        ]
-        domains = [domain for domain in domains if domain is not None]
-        datahub_domains = list_datahub_domains()
-        for domain in set(domains):
-            if domain.lower() not in datahub_domains:
-                raise ValueError(
-                    f"""
-                    Domain - {domain}, doesn't exist in datahub.
-                    Review domain mappings in publication_collection_mappings.yaml
-                    """
-                )
-        return True
