@@ -15,9 +15,7 @@ from ingestion.transformers.assign_cadet_databases import AssignCadetDatabases
 
 class TestAssignCadetDatabasesTransformer:
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
-        pipeline_context: PipelineContext = PipelineContext(
-            run_id="test_simple_add_dataset_domain"
-        )
+        pipeline_context: PipelineContext = PipelineContext(run_id="abc")
         pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
         expected_key = mcp_builder.DatabaseKey(
             database="prison_database",
@@ -50,9 +48,7 @@ class TestAssignCadetDatabasesTransformer:
         assert output[3].record.aspect.container == expected_key.as_urn()
 
     def test_pattern_add_dataset_domain_match_aspect_none(self, mock_datahub_graph):
-        pipeline_context: PipelineContext = PipelineContext(
-            run_id="test_simple_add_dataset_domain"
-        )
+        pipeline_context: PipelineContext = PipelineContext(run_id="abc")
         pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
         expected_key = mcp_builder.DatabaseKey(
             database="prison_database",
