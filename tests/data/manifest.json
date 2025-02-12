@@ -9,6 +9,19 @@
                 "prison_database__table1"
             ],
             "tags": [
+                "weekly"
+            ],
+            "resource_type": "model"
+        },
+        "model.test_derived_tables.prison2": {
+            "schema": "prison_database",
+            "fqn": [
+                "model",
+                "prison",
+                "offence",
+                "prison_database__table2"
+            ],
+            "tags": [
                 "weekly",
                 "dc_display_in_catalogue"
             ],

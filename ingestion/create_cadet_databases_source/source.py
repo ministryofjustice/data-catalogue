@@ -123,7 +123,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             domain_name = db_meta_dict["domain"]
             tags = display_tags.get(database_name, ["dc_cadet"])
             if domains_to_subject_areas.get(domain_name.lower()):
-                tags.append(domains_to_subject_areas[domain_name.lower()])
+                tags.update([domains_to_subject_areas[domain_name.lower()]])
 
             if not db_meta_dict.get("", "") == "":
                 owner_urn = mce_builder.make_user_urn(
@@ -238,14 +238,17 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
                     tags = get_tags(manifest["nodes"][node])
                     if database_tags:
-                        tags.extend(database_tags)
+                        tags.update(database_tags)
                     if not any(tag in top_level_subject_areas for tag in tags):
                         logging.warning(
                             f"No top level tags found in database metadata file for {database}"
                         )
 
                     if tags:
-                        tag_mappings[database] = tags
+                        if tag_mappings.get(database):
+                            tag_mappings[database].update(tags)
+                        else:
+                            tag_mappings[database] = tags
 
         return database_mappings, domain_lookup, tag_mappings
 
