@@ -49,13 +49,6 @@ class TestAssignCadetDatabasesTransformer:
     def test_pattern_add_dataset_domain_match_aspect_none(self, mock_datahub_graph):
         pipeline_context: PipelineContext = PipelineContext(run_id="abc")
         pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
-        expected_key = mcp_builder.DatabaseKey(
-            database="prison_database",
-            platform=PLATFORM,
-            instance=INSTANCE,
-            env=ENV,
-            backcompat_env_as_instance=True,
-        )
 
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignCadetDatabases,
