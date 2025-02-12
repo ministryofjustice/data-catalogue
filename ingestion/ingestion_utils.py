@@ -136,43 +136,6 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     return node_database_name, node_table_name
 
 
-def list_datahub_domains() -> list[str]:
-    """
-    Returns a list of domains as exists in datahub
-    """
-    server_config = DatahubClientConfig(
-        server=os.environ["DATAHUB_GMS_URL"], token=os.environ["DATAHUB_GMS_TOKEN"]
-    )
-
-    graph = DataHubGraph(server_config)
-
-    list_domains_query = """
-        {listDomains(
-            input: {start: 0, count: 50}
-        ) {
-        domains{
-            urn
-            properties{
-                name
-            }
-            entities(
-            input:{query:"*",start:0,count: 0}
-            ){
-                total
-            }
-        }
-        }
-        }
-        """
-    results = graph.execute_graphql(list_domains_query)
-
-    domains_list = [
-        domain["properties"]["name"].lower()
-        for domain in results["listDomains"]["domains"]
-    ]
-    return domains_list
-
-
 def get_tags(dbt_manifest_node: dict) -> list[str]:
     """Resolve the tags to assign to nodes in datahub."""
     tags = []

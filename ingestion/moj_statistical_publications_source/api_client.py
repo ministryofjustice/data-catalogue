@@ -5,8 +5,6 @@ from typing import Any
 
 import requests
 
-from ingestion.ingestion_utils import list_datahub_domains
-
 from .config import ID_TO_DOMAIN_CONTACT_MAPPINGS, MojPublicationsAPIParams
 
 
