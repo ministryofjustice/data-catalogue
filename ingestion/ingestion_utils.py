@@ -12,11 +12,7 @@ import yaml
 from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
-from datahub.metadata.schema_classes import (
-    ChangeTypeClass,
-    CorpUserInfoClass,
-    DomainPropertiesClass,
-)
+from datahub.metadata.schema_classes import ChangeTypeClass, CorpUserInfoClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
@@ -104,26 +100,6 @@ def validate_fqn(fqn: list[str]) -> bool:
     if not match:
         logging.warning(f"{table_name=} does not match database__table format")
         return False
-
-
-def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
-    """
-    eg 'database__table' is converted to a regex string to detect it's urn
-    like 'urn:li:dataset:\\(urn:li:dataPlatform:dbt,cadet\\.awsdatacatalog\\.database\\.table,PROD\\)'
-    """
-    domain = format_domain_name(node_info.get("fqn", [])[1])
-
-    database_name, table_name = parse_database_and_table_names(node_info)
-
-    urn = builder.make_dataset_urn_with_platform_instance(
-        platform=PLATFORM,
-        platform_instance=INSTANCE,
-        env=ENV,
-        name=f"{database_name}.{table_name}",
-    )
-    escaped_urn_for_regex = re.escape(urn)
-
-    return domain, escaped_urn_for_regex
 
 
 BIG_OLD_ACRONYMS = set(("OPG", "HMPPS", "HMCTS", "LAA", "CICA", "HQ"))
