@@ -14,7 +14,6 @@ from datahub.metadata.schema_classes import (
 
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.create_cadet_databases_source.source import CreateCadetDatabases
-from ingestion.ingestion_utils import format_domain_name
 
 
 class TestCreateCadetDatabases:

@@ -24,7 +24,6 @@ from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesC
 from ingestion.ingestion_utils import (
     NodeLookup,
     domains_to_subject_areas,
-    format_domain_name,
     get_cadet_metadata_json,
     get_subject_areas,
     get_tags,
@@ -121,9 +120,8 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             )
             db_meta_dict = dict(database_metadata)
             db_meta_dict.update(properties_to_add)
-            domain_name = format_domain_name(db_meta_dict["domain"])
+            domain_name = db_meta_dict["domain"]
             tags = display_tags.get(database_name, ["dc_cadet"])
-            tags.append(domain_name)
             if domains_to_subject_areas.get(domain_name.lower()):
                 tags.append(domains_to_subject_areas[domain_name.lower()])
 
@@ -166,9 +164,8 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
-            domain = format_domain_name(domain_lookup.get(database, table))
+            domain = domain_lookup.get(database, table)
             tag_names = [
-                domain,
                 "Reference data",
                 "dc_display_in_catalogue",
             ]
@@ -194,16 +191,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
             seed_domain_mcps.append(mcp)
         return seed_domain_mcps
-
-    def _get_domains(self, manifest) -> set[str]:
-        """Only models are arranged by domain in CaDeT.
-        Seeds should only be associated with a domain if it appears in models.
-        """
-        return set(
-            format_domain_name(manifest["nodes"][node]["fqn"][1])
-            for node in manifest["nodes"]
-            if manifest["nodes"][node]["resource_type"] == "model"
-        )
 
     @report_time
     def _get_databases_with_domains_and_display_tags(

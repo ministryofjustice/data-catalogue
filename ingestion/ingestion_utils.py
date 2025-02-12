@@ -11,10 +11,8 @@ import datahub.emitter.mce_builder as mce_builder
 import yaml
 from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
-from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
 from datahub.metadata.schema_classes import ChangeTypeClass, CorpUserInfoClass
 
-from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
@@ -100,24 +98,6 @@ def validate_fqn(fqn: list[str]) -> bool:
     if not match:
         logging.warning(f"{table_name=} does not match database__table format")
         return False
-
-
-BIG_OLD_ACRONYMS = set(("OPG", "HMPPS", "HMCTS", "LAA", "CICA", "HQ"))
-
-
-def format_domain_name(domain_name: str) -> str:
-    """
-    Format domain names from the manifest into a human readable format, e.g.
-    courts -> Courts
-    opg -> OPG
-    hmpps -> HMPPS
-    electronic_monitoring -> Electronic monitoring
-    """
-    acronym = domain_name.upper()
-    if acronym in BIG_OLD_ACRONYMS:
-        return acronym
-
-    return domain_name.capitalize().replace("_", " ")
 
 
 def parse_database_and_table_names(node: dict) -> tuple[str, str]:
