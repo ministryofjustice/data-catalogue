@@ -5,7 +5,7 @@ from typing import Any
 
 import requests
 
-from .config import ID_TO_DOMAIN_CONTACT_MAPPINGS, MojPublicationsAPIParams
+from .config import ID_TO_METADATA_MAPPINGS, MojPublicationsAPIParams
 
 
 class MojPublicationsAPIClient:
@@ -14,7 +14,7 @@ class MojPublicationsAPIClient:
         self.base_url = base_url
         self.params: MojPublicationsAPIParams = params
         self.default_contact_email = default_contact_email
-        self._id_to_domain_contact_mapping = ID_TO_DOMAIN_CONTACT_MAPPINGS
+        self._id_to_metadata_mapping = ID_TO_METADATA_MAPPINGS
 
     def list_all_publications_metadata(self):
         params_dict = dict(self.params)
@@ -87,12 +87,12 @@ class MojPublicationsAPIClient:
             )
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
-            collection["subject_areas"] = self._id_to_domain_contact_mapping.get(
+            collection["subject_areas"] = self._id_to_metadata_mapping.get(
                 collection["slug"], {}
             ).get("subject_areas")
 
             collection["last_updated"] = content_response.get("public_updated_at")
-            collection["contact_email"] = self._id_to_domain_contact_mapping.get(
+            collection["contact_email"] = self._id_to_metadata_mapping.get(
                 collection["slug"], {}
             ).get("contact_email", self.default_contact_email)
         return unique_collections

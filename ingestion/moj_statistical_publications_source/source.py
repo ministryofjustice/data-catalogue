@@ -64,7 +64,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         self.client = MojPublicationsAPIClient(
             config.base_url, config.default_contact_email, config.params
         )
-        self._id_to_domain_contact_mapping = self.client._id_to_domain_contact_mapping
+        self._id_to_metadata_mapping = self.client._id_to_metadata_mapping
         self.platform_name = "GOV.UK"
         self.platform_instance = "ministry-of-justice-publications"
         self.access_requirements = config.access_requirements
@@ -205,7 +205,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 parent_collection_urn = mce_builder.make_container_urn(container_key)
                 custom_properties.update(
                     {
-                        "dc_team_email": self._id_to_domain_contact_mapping.get(
+                        "dc_team_email": self._id_to_metadata_mapping.get(
                             parent_collection_ids[0], {}
                         ).get("contact_email", self.client.default_contact_email)
                     }
@@ -222,7 +222,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 # there won't always be an applicable subject area, even within a collection
                 tags = [TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")]
 
-                subject_areas = self._id_to_domain_contact_mapping.get(
+                subject_areas = self._id_to_metadata_mapping.get(
                     parent_collection_ids[0], {}
                 ).get("subject_areas")
 

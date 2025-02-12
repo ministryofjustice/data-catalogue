@@ -72,7 +72,7 @@ def mock_justice_publication_api(default_contact_email, publication_mappings):
         # these are likely to change so we need to mock them
         with patch.object(
             source,
-            "_id_to_domain_contact_mapping",
+            "_id_to_metadata_mapping",
             new=publication_mappings,
         ):
             results = list(source.get_workunits())
