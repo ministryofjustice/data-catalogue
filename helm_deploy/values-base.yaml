@@ -588,7 +588,7 @@ global:
                   - filter:
                       prefix:
                         urn:
-                          value: 'urn:li:container:'
+                          value: "urn:li:container:"
                     weight: 3.0
                   - filter:
                       term:
