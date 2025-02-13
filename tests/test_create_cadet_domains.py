@@ -1,9 +1,7 @@
-from collections import defaultdict
-
 import datahub.emitter.mce_builder as builder
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
-from utils import group_metadata
+from utils import WorkunitInspector
 
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.create_cadet_databases_source.source import CreateCadetDatabases
@@ -18,7 +16,7 @@ class TestCreateCadetDatabases:
                 database_metadata_s3_uri="s3://test_bucket/prod/run_artefacts/latest/target/database_metadata.json",
             ),
         )
-        self.results = group_metadata(source.get_workunits())
+        self.results = WorkunitInspector(source.get_workunits())
 
     def test_creating_domains_from_s3(self):
         urns = [
@@ -30,45 +28,32 @@ class TestCreateCadetDatabases:
         ]
 
         for urn in urns:
-            assert urn in self.results
-            aspects = self.results[urn]
+            entity = self.results.entity(urn)
+            assert entity
 
-            # Events are created for the following aspects per database:
-            # create container, update status, add platform, add subtype, associate container with domain, add tags
-            container_events = aspects["containerProperties"]
-            status_events = aspects["status"]
-            platform_events = aspects["dataPlatformInstance"]
-            sub_types_events = aspects["subTypes"]
-            tags_events = aspects["globalTags"]
+            assert entity.aspect("containerProperties")
+            assert entity.aspect("status")
+            assert entity.aspect("dataPlatformInstance")
+            assert entity.aspect("subTypes")
+            assert entity.aspect("globalTags")
+
+            assert entity.aspect("containerProperties").customProperties.get("database")
 
             assert (
-                len(container_events)
-                == len(status_events)
-                == len(sub_types_events)
-                == len(platform_events)
-                == len(tags_events)
-                == 1
+                entity.aspect("dataPlatformInstance").platform
+            ) == builder.make_data_platform_urn(platform="dbt")
+            assert (
+                DatasetContainerSubTypes.DATABASE in entity.aspect("subTypes").typeNames
             )
 
-            assert container_events[0].customProperties.get("database")
-
-            assert (platform_events[0].platform) == builder.make_data_platform_urn(
-                platform="dbt"
-            )
-            assert DatasetContainerSubTypes.DATABASE in sub_types_events[0].typeNames
-
-        assert self.results.get("urn:li:corpuser:some.one", {}).get("corpUserInfo")
-        assert self.results.get("urn:li:corpuser:some.team", {}).get("corpUserInfo")
+        assert self.results.entity("urn:li:corpuser:some.one").aspect("corpUserInfo")
+        assert self.results.entity("urn:li:corpuser:some.team").aspect("corpUserInfo")
 
     def test_seeds_are_tagged_to_display_in_catalogue_and_subject_area(self):
-        tag_names = [
-            tag.tag
-            for tagAspect in self.results[
-                "urn:li:container:1e7a7a180ed4f1215bff62f4ce93993e"
-            ]["globalTags"]
-            for tag in tagAspect.tags
-        ]
-        assert set(tag_names) == {
+        entity = self.results.entity(
+            "urn:li:container:1e7a7a180ed4f1215bff62f4ce93993e"
+        )
+        assert set(entity.tag_names) == {
             "urn:li:tag:dc_display_in_catalogue",
             "urn:li:tag:Courts and tribunals",
         }

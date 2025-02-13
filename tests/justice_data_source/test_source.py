@@ -2,7 +2,7 @@ import pytest
 import vcr
 from datahub.ingestion.api.common import PipelineContext
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
-from utils import extract_tag_names, group_metadata
+from utils import WorkunitInspector
 
 from ingestion.justice_data_source.config import JusticeDataAPIConfig
 from ingestion.justice_data_source.source import JusticeDataAPISource
@@ -41,14 +41,14 @@ def test_workunits_created(source_with_mock_justice_data_api):
 
 
 def test_chart(source_with_mock_justice_data_api):
-    metadata = group_metadata(source_with_mock_justice_data_api.get_workunits())
+    metadata = WorkunitInspector(source_with_mock_justice_data_api.get_workunits())
 
-    chart_aspects = metadata[
+    chart_aspects = metadata.entity(
         "urn:li:chart:(justice-data,legal-aid-ecf-applicationsgranted)"
-    ]
+    )
     assert chart_aspects
 
-    chartinfo = chart_aspects["chartInfo"][0]
+    chartinfo = chart_aspects.aspect("chartInfo")
     assert (
         chartinfo.chartUrl
         == "https://data.justice.gov.uk/legalaid/legal-aid-ecf/legal-aid-ecf-applicationsgranted"
@@ -68,23 +68,21 @@ def test_chart(source_with_mock_justice_data_api):
 
 
 def test_tags(source_with_mock_justice_data_api):
-    metadata = group_metadata(source_with_mock_justice_data_api.get_workunits())
+    metadata = WorkunitInspector(source_with_mock_justice_data_api.get_workunits())
 
-    tags = extract_tag_names(
-        metadata["urn:li:chart:(justice-data,legal-aid-ecf-applicationsgranted)"][
-            "globalTags"
-        ]
-    )
+    tags = metadata.entity(
+        "urn:li:chart:(justice-data,legal-aid-ecf-applicationsgranted)"
+    ).tag_names
 
     assert set(tags) == {"urn:li:tag:dc_display_in_catalogue", "urn:li:tag:General"}
 
 
 def test_dashboard(source_with_mock_justice_data_api):
-    metadata = group_metadata(source_with_mock_justice_data_api.get_workunits())
-    dashboard = metadata["urn:li:dashboard:(justice-data,Justice Data)"]
+    metadata = WorkunitInspector(source_with_mock_justice_data_api.get_workunits())
+    dashboard = metadata.entity("urn:li:dashboard:(justice-data,Justice Data)")
     assert dashboard
 
     # make all chart urns list
-    chart_urns = [urn for urn in metadata.keys() if urn.startswith("urn:li:chart:")]
+    chart_urns = [chart.urn for chart in metadata.charts]
 
-    assert dashboard["dashboardInfo"][0].charts == chart_urns
+    assert dashboard.aspect("dashboardInfo").charts == chart_urns
