@@ -3,10 +3,10 @@ name: Deploy dev
 on:
   pull_request:
     paths:
-      - 'helm_deploy/**'
-      - '.github/workflows/**deploy**'
-      - '!helm_deploy/**test**'
-      - '!.github/workflows/**test**'
+      - "helm_deploy/**"
+      - ".github/workflows/**deploy**"
+      - "!helm_deploy/**test**"
+      - "!.github/workflows/**test**"
   workflow_dispatch:
 
 jobs:
@@ -30,3 +30,5 @@ jobs:
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       limit_whitelist: ${{ secrets.LIMIT_WHITELIST }}
+      slack_bot_token: ${{secrets.DATAHUB_ACTIONS_SLACK_BOT_TOKEN}}
+      slack_signing_secret: ${{secrets.DATAHUB_ACTIONS_SLACK_SIGNING_SECRET}}

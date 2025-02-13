@@ -1,0 +1,23 @@
+name: "glossary_edit_notification"
+
+source:
+  type: "kafka"
+  config:
+    connection:
+      bootstrap: ${KAFKA_BOOTSTRAP_SERVER}
+      schema_registry_url: ${SCHEMA_REGISTRY_URL}
+
+filter:
+  event_type: "MetadataChangeLog_v1"
+  event:
+    entityType: "glossaryTerm"
+
+action:
+  type: slack
+  config:
+    # Action-specific configs (map)
+    base_url: ${DATAHUB_ACTIONS_SLACK_DATAHUB_BASE_URL}
+    bot_token: ${DATAHUB_ACTIONS_SLACK_BOT_TOKEN}
+    signing_secret: ${DATAHUB_ACTIONS_SLACK_SIGNING_SECRET}
+    default_channel: ${DATAHUB_ACTIONS_SLACK_CHANNEL}
+    suppress_system_activity: ${DATAHUB_ACTIONS_SLACK_SUPPRESS_SYSTEM_ACTIVITY:-false}
