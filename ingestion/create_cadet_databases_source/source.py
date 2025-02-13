@@ -121,9 +121,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             db_meta_dict = dict(database_metadata)
             db_meta_dict.update(properties_to_add)
             domain_name = db_meta_dict["domain"]
-            tags = display_tags.get(database_name, ["dc_cadet"])
+            tags = set(display_tags.get(database_name, ["dc_cadet"]))
             if domains_to_subject_areas.get(domain_name.lower()):
-                tags.update([domains_to_subject_areas[domain_name.lower()]])
+                tags.add(domains_to_subject_areas[domain_name.lower()])
 
             if not db_meta_dict.get("", "") == "":
                 owner_urn = mce_builder.make_user_urn(
