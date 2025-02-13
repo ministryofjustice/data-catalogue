@@ -618,9 +618,7 @@ global:
       # url is format "jdbc:postgresql://{host}/{database_name}"
       url: ""
       driver: "org.postgresql.Driver"
-      username:
-        secretRef: rds-postgresql-instance-output
-        secretKey: database_username
+      username: "testfake"
       password:
         secretRef: rds-postgresql-instance-output
         secretKey: database_password
