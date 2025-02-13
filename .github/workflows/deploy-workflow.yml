@@ -211,7 +211,6 @@ jobs:
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
           --set global.sql.datasource.url=${POSTGRES_URL} \
           --set global.sql.datasource.username=${POSTGRES_USERNAME} \
-          --set global.sql.datasource.password=${POSTGRES_PASSWORD} \
           --set global.sql.datasource.extraEnvs[0].value=${POSTGRES_DB_NAME}
 
       - name: allow CP prometheus scraping 
