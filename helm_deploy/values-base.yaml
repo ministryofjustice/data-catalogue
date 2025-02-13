@@ -619,9 +619,7 @@ global:
       url: ""
       driver: "org.postgresql.Driver"
       username: ""
-      password:
-        secretRef: rds-postgresql-instance-output
-        secretKey: database_password
+      password: ""
       extraEnvs:
         - name: "DATAHUB_DB_NAME"
           valueFrom:

@@ -40,6 +40,9 @@ on:
       postgres_username:
         description: "username for the metadata database"
         required: true
+      postgres_password:
+        description: "password for the metadata database"
+        required: true
       opensearch_proxy_host:
         description: "domain address to reach opensearch"
         required: true
@@ -179,6 +182,7 @@ jobs:
           POSTGRES_HOST: ${{ secrets.postgres_host }}
           POSTGRES_URL: ${{ secrets.postgres_url }}
           POSTGRES_USERNAME: ${{ secrets.postgres_username }}
+          POSTGRES_PASSWORD: ${{ secrets.postgres_password }}
           RELEASE_NAME: datahub
           FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
         # if many env-specific variables need setting, add --values files after 'base'
@@ -203,6 +207,7 @@ jobs:
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
           --set global.sql.datasource.url=${POSTGRES_URL}
           --set global.sql.datasource.username=${POSTGRES_USERNAME}
+          --set global.sql.datasource.password=${POSTGRES_PASSWORD}
 
       - name: allow CP prometheus scraping 
         shell: bash
