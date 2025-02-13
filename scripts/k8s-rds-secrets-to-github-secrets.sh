@@ -53,6 +53,7 @@ RDS_SECRET_YAML=$(kubectl -n "$KUBE_NAMESPACE" get secret $RDS_SECRET_NAME -o ya
 RDS_INSTANCE_ADDRESS=$(echo "$RDS_SECRET_YAML" | grep 'rds_instance_address:' | awk '{print $2}' | base64 -d)
 RDS_INSTANCE_ENDPOINT=$(echo "$RDS_SECRET_YAML" | grep 'rds_instance_endpoint:' | awk '{print $2}' | base64 -d)
 DATABASE_USERNAME=$(echo "$RDS_SECRET_YAML" | grep 'database_username:' | awk '{print $2}' | base64 -d)
+DATABASE_PASSWORD=$(echo "$RDS_SECRET_YAML" | grep 'database_password:' | awk '{print $2}' | base64 -d)
 DB_NAME=$(echo "$RDS_SECRET_YAML" | grep 'database_name:' | awk '{print $2}' | base64 -d)
 RDS_URL="jdbc:postgresql://${RDS_INSTANCE_ENDPOINT}/${DB_NAME}"
 
@@ -68,6 +69,7 @@ if [[ $DRY_RUN == true ]]; then
   echo "- POSTGRES_HOST=$RDS_INSTANCE_ENDPOINT"
   echo "- POSTGRES_URL=$RDS_URL"
   echo "- POSTGRES_USERNAME=$DATABASE_USERNAME"
+  echo "- POSTGRES_PASSWORD=$DATABASE_PASSWORD"
   echo "- OPENSEARCH_PROXY_HOST=$OS_PROXY_URL"
 else
   # Set GitHub secrets (assuming you have GitHub CLI installed and configured)
@@ -85,6 +87,10 @@ else
     --repo $GITHUB_REPO 
   gh secret set POSTGRES_USERNAME \
     --body $DATABASE_USERNAME \
+    --env $GITHUB_ENV_NAME \
+    --repo $GITHUB_REPO
+  gh secret set POSTGRES_PASSWORD \
+    --body $DATABASE_PASSWORD \
     --env $GITHUB_ENV_NAME \
     --repo $GITHUB_REPO
   gh secret set OPENSEARCH_PROXY_HOST \
