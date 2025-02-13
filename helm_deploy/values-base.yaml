@@ -726,9 +726,8 @@ global:
       url: ""
       driver: "org.postgresql.Driver"
       username:
-        "testfakeuser"
-        # secretRef: rds-postgresql-instance-output
-        # secretKey: database_username
+        secretRef: rds-postgresql-instance-output
+        secretKey: database_username
       password:
         secretRef: rds-postgresql-instance-output
         secretKey: database_password
