@@ -3,22 +3,15 @@ import logging
 import os
 import re
 from enum import StrEnum
-from typing import Dict, Generic, Tuple, TypeVar
+from typing import Dict, Generic, TypeVar
 
 import boto3
-import datahub.emitter.mce_builder as builder
 import datahub.emitter.mce_builder as mce_builder
+import yaml
 from botocore.exceptions import ClientError, NoCredentialsError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
-from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
-from datahub.metadata.schema_classes import (
-    ChangeTypeClass,
-    CorpUserInfoClass,
-    DomainPropertiesClass,
-)
-import yaml
+from datahub.metadata.schema_classes import ChangeTypeClass, CorpUserInfoClass
 
-from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
@@ -106,44 +99,6 @@ def validate_fqn(fqn: list[str]) -> bool:
         return False
 
 
-def convert_cadet_manifest_table_to_datahub(node_info: dict) -> Tuple[str, str]:
-    """
-    eg 'database__table' is converted to a regex string to detect it's urn
-    like 'urn:li:dataset:\\(urn:li:dataPlatform:dbt,cadet\\.awsdatacatalog\\.database\\.table,PROD\\)'
-    """
-    domain = format_domain_name(node_info.get("fqn", [])[1])
-
-    database_name, table_name = parse_database_and_table_names(node_info)
-
-    urn = builder.make_dataset_urn_with_platform_instance(
-        platform=PLATFORM,
-        platform_instance=INSTANCE,
-        env=ENV,
-        name=f"{database_name}.{table_name}",
-    )
-    escaped_urn_for_regex = re.escape(urn)
-
-    return domain, escaped_urn_for_regex
-
-
-BIG_OLD_ACRONYMS = set(("OPG", "HMPPS", "HMCTS", "LAA", "CICA", "HQ"))
-
-
-def format_domain_name(domain_name: str) -> str:
-    """
-    Format domain names from the manifest into a human readable format, e.g.
-    courts -> Courts
-    opg -> OPG
-    hmpps -> HMPPS
-    electronic_monitoring -> Electronic monitoring
-    """
-    acronym = domain_name.upper()
-    if acronym in BIG_OLD_ACRONYMS:
-        return acronym
-
-    return domain_name.capitalize().replace("_", " ")
-
-
 def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     """
     takes a node from the dbt manifest and returns the athena database
@@ -160,44 +115,7 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     return node_database_name, node_table_name
 
 
-def list_datahub_domains() -> list[str]:
-    """
-    Returns a list of domains as exists in datahub
-    """
-    server_config = DatahubClientConfig(
-        server=os.environ["DATAHUB_GMS_URL"], token=os.environ["DATAHUB_GMS_TOKEN"]
-    )
-
-    graph = DataHubGraph(server_config)
-
-    list_domains_query = """
-        {listDomains(
-            input: {start: 0, count: 50}
-        ) {
-        domains{
-            urn
-            properties{
-                name
-            }
-            entities(
-            input:{query:"*",start:0,count: 0}
-            ){
-                total
-            }
-        }
-        }
-        }
-        """
-    results = graph.execute_graphql(list_domains_query)
-
-    domains_list = [
-        domain["properties"]["name"].lower()
-        for domain in results["listDomains"]["domains"]
-    ]
-    return domains_list
-
-
-def get_tags(dbt_manifest_node: dict) -> list[str]:
+def get_tags(dbt_manifest_node: dict) -> set[str]:
     """Resolve the tags to assign to nodes in datahub."""
     tags = []
     if "dc_display_in_catalogue" in dbt_manifest_node["tags"]:
@@ -205,7 +123,7 @@ def get_tags(dbt_manifest_node: dict) -> list[str]:
     if dbt_manifest_node["resource_type"] == "seed":
         tags.append("dc_display_in_catalogue")
 
-    return tags
+    return set(tags)
 
 
 def make_user_mcp(email: str) -> MetadataChangeProposalWrapper:
@@ -226,18 +144,6 @@ def make_user_mcp(email: str) -> MetadataChangeProposalWrapper:
     )
 
     return user_mcp
-
-
-def make_domain_mcp(domain_name: str) -> MetadataChangeProposalWrapper:
-    domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-    domain_properties = DomainPropertiesClass(name=domain_name)
-    mcp = MetadataChangeProposalWrapper(
-        entityType="domain",
-        changeType=ChangeTypeClass.UPSERT,
-        entityUrn=domain_urn,
-        aspect=domain_properties,
-    )
-    return mcp
 
 
 ValueType = TypeVar("ValueType")

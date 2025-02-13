@@ -15,9 +15,7 @@ from ingestion.transformers.assign_cadet_databases import AssignCadetDatabases
 
 class TestAssignCadetDatabasesTransformer:
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
-        pipeline_context: PipelineContext = PipelineContext(
-            run_id="test_simple_add_dataset_domain"
-        )
+        pipeline_context: PipelineContext = PipelineContext(run_id="abc")
         pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
         expected_key = mcp_builder.DatabaseKey(
             database="prison_database",
@@ -36,31 +34,21 @@ class TestAssignCadetDatabasesTransformer:
             pipeline_context=pipeline_context,
         )
 
-        assert len(output) == 5
+        assert len(output) == 4
         assert output[0] is not None
         assert output[0].record is not None
         assert isinstance(output[0].record, MetadataChangeProposalWrapper)
         assert output[0].record.aspect is not None
         assert isinstance(output[0].record.aspect, models.GlobalTagsClass)
         assert output[0].record.aspect.tags == [
-            TagAssociationClass(tag=builder.make_tag_urn("Prison")),
             TagAssociationClass(tag=builder.make_tag_urn("Prisons and probation")),
         ]
-        assert isinstance(output[3].record.aspect, models.ContainerClass)
-        assert output[3].record.aspect.container == expected_key.as_urn()
+        assert isinstance(output[2].record.aspect, models.ContainerClass)
+        assert output[2].record.aspect.container == expected_key.as_urn()
 
     def test_pattern_add_dataset_domain_match_aspect_none(self, mock_datahub_graph):
-        pipeline_context: PipelineContext = PipelineContext(
-            run_id="test_simple_add_dataset_domain"
-        )
+        pipeline_context: PipelineContext = PipelineContext(run_id="abc")
         pipeline_context.graph = mock_datahub_graph(DatahubClientConfig)
-        expected_key = mcp_builder.DatabaseKey(
-            database="prison_database",
-            platform=PLATFORM,
-            instance=INSTANCE,
-            env=ENV,
-            backcompat_env_as_instance=True,
-        )
 
         output = run_dataset_transformer_pipeline(
             transformer_type=AssignCadetDatabases,

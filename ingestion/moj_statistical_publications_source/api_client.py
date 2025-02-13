@@ -5,9 +5,7 @@ from typing import Any
 
 import requests
 
-from ingestion.ingestion_utils import list_datahub_domains
-
-from .config import ID_TO_DOMAIN_CONTACT_MAPPINGS, MojPublicationsAPIParams
+from .config import ID_TO_METADATA_MAPPINGS, MojPublicationsAPIParams
 
 
 class MojPublicationsAPIClient:
@@ -16,7 +14,7 @@ class MojPublicationsAPIClient:
         self.base_url = base_url
         self.params: MojPublicationsAPIParams = params
         self.default_contact_email = default_contact_email
-        self._id_to_domain_contact_mapping = ID_TO_DOMAIN_CONTACT_MAPPINGS
+        self._id_to_metadata_mapping = ID_TO_METADATA_MAPPINGS
 
     def list_all_publications_metadata(self):
         params_dict = dict(self.params)
@@ -89,33 +87,12 @@ class MojPublicationsAPIClient:
             )
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
-            collection["domain"] = self._id_to_domain_contact_mapping.get(
-                collection["slug"], {}
-            ).get("domain")
-            collection["subject_areas"] = self._id_to_domain_contact_mapping.get(
+            collection["subject_areas"] = self._id_to_metadata_mapping.get(
                 collection["slug"], {}
             ).get("subject_areas")
 
             collection["last_updated"] = content_response.get("public_updated_at")
-            collection["contact_email"] = self._id_to_domain_contact_mapping.get(
+            collection["contact_email"] = self._id_to_metadata_mapping.get(
                 collection["slug"], {}
             ).get("contact_email", self.default_contact_email)
         return unique_collections
-
-    def validate_domains(self) -> bool:
-        domains = [
-            val.get("domain")
-            for val in self._id_to_domain_contact_mapping.values()
-            if val is not None
-        ]
-        domains = [domain for domain in domains if domain is not None]
-        datahub_domains = list_datahub_domains()
-        for domain in set(domains):
-            if domain.lower() not in datahub_domains:
-                raise ValueError(
-                    f"""
-                    Domain - {domain}, doesn't exist in datahub.
-                    Review domain mappings in publication_collection_mappings.yaml
-                    """
-                )
-        return True

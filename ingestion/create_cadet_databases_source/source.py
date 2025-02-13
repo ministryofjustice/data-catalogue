@@ -17,26 +17,19 @@ from datahub.ingestion.source.state.stale_entity_removal_handler import (
 from datahub.ingestion.source.state.stateful_ingestion_base import (
     StatefulIngestionSourceBase,
 )
-from datahub.metadata.schema_classes import (
-    ChangeTypeClass,
-    DomainsClass,
-    GlobalTagsClass,
-    TagAssociationClass,
-)
+from datahub.metadata.schema_classes import GlobalTagsClass, TagAssociationClass
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.create_cadet_databases_source.config import CreateCadetDatabasesConfig
 from ingestion.ingestion_utils import (
     NodeLookup,
-    format_domain_name,
+    domains_to_subject_areas,
     get_cadet_metadata_json,
+    get_subject_areas,
     get_tags,
-    make_domain_mcp,
     make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
-    get_subject_areas,
-    domains_to_subject_areas,
 )
 from ingestion.utils import report_generator_time, report_time
 
@@ -78,9 +71,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
         mcps: list[MetadataChangeProposalWrapper] = []
 
-        # Create all the domain entities mcps
-        mcps.extend(self.create_domain_mcps(manifest))
-
         # Get database metadata from the manifest and database metadata dicts
         databases_with_metadata, domain_lookup, display_tags = (
             self._get_databases_with_domains_and_display_tags(
@@ -94,9 +84,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         # create mcps to tag seed datasets with dc_display_in_catalogue
         mcps.extend(self.create_display_tag_for_seed_mcps(manifest, domain_lookup))
 
-        # create assign domains to tables mcps
-        mcps.extend(self.create_table_domain_mcps(domain_lookup))
-
         # create the cadet databases tagged to display
         yield from self.create_database_mcps(databases_with_metadata, display_tags)
 
@@ -104,12 +91,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             wu = MetadataWorkUnit("single_mcp", mcp=mcp)
             logging.info(f"creating {wu.metadata.aspect} for {wu.metadata.entityUrn}")
             yield wu
-
-    def create_domain_mcps(self, manifest) -> list[MetadataChangeProposalWrapper]:
-        domain_mcps = [
-            make_domain_mcp(domain_name) for domain_name in self._get_domains(manifest)
-        ]
-        return domain_mcps
 
     def create_database_owner_mcps(
         self, databases_with_metadata: set
@@ -139,12 +120,10 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             )
             db_meta_dict = dict(database_metadata)
             db_meta_dict.update(properties_to_add)
-            domain_name = format_domain_name(db_meta_dict["domain"])
-            domain_urn = mce_builder.make_domain_urn(domain=domain_name)
+            domain_name = db_meta_dict["domain"]
             tags = display_tags.get(database_name, ["dc_cadet"])
-            tags.append(domain_name)
             if domains_to_subject_areas.get(domain_name.lower()):
-                tags.append(domains_to_subject_areas[domain_name.lower()])
+                tags.update([domains_to_subject_areas[domain_name.lower()]])
 
             if not db_meta_dict.get("", "") == "":
                 owner_urn = mce_builder.make_user_urn(
@@ -163,7 +142,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                 container_key=database_container_key,
                 name=database_name,
                 sub_types=sub_types,
-                domain_urn=domain_urn,
                 external_url=None,
                 description=database_description,
                 created=None,
@@ -186,9 +164,8 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
-            domain = format_domain_name(domain_lookup.get(database, table))
+            domain = domain_lookup.get(database, table)
             tag_names = [
-                domain,
                 "Reference data",
                 "dc_display_in_catalogue",
             ]
@@ -214,38 +191,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
             seed_domain_mcps.append(mcp)
         return seed_domain_mcps
-
-    def create_table_domain_mcps(
-        self, domain_lookup
-    ) -> list[MetadataChangeProposalWrapper]:
-        table_domain_mcps = []
-        for database, table, domain in domain_lookup:
-            dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
-                platform=PLATFORM,
-                name=f"{database}.{table}",
-                platform_instance=INSTANCE,
-            )
-            domain_name = format_domain_name(domain)
-            domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-            mcp = MetadataChangeProposalWrapper(
-                entityType="dataset",
-                changeType=ChangeTypeClass.UPSERT,
-                entityUrn=dataset_urn,
-                aspect=DomainsClass(domains=[domain_urn]),
-            )
-            table_domain_mcps.append(mcp)
-
-        return table_domain_mcps
-
-    def _get_domains(self, manifest) -> set[str]:
-        """Only models are arranged by domain in CaDeT.
-        Seeds should only be associated with a domain if it appears in models.
-        """
-        return set(
-            format_domain_name(manifest["nodes"][node]["fqn"][1])
-            for node in manifest["nodes"]
-            if manifest["nodes"][node]["resource_type"] == "model"
-        )
 
     @report_time
     def _get_databases_with_domains_and_display_tags(
@@ -293,12 +238,17 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
                     tags = get_tags(manifest["nodes"][node])
                     if database_tags:
-                        tags.extend(database_tags)
+                        tags.update(database_tags)
                     if not any(tag in top_level_subject_areas for tag in tags):
-                        logging.warning(f"No top level tags found in database metadata file for {database}")
+                        logging.warning(
+                            f"No top level tags found in database metadata file for {database}"
+                        )
 
                     if tags:
-                        tag_mappings[database] = tags
+                        if tag_mappings.get(database):
+                            tag_mappings[database].update(tags)
+                        else:
+                            tag_mappings[database] = tags
 
         return database_mappings, domain_lookup, tag_mappings
 

@@ -13,7 +13,7 @@ with open(
     "ingestion/moj_statistical_publications_source/publication_collection_mappings.yaml",
     "r",
 ) as f:
-    ID_TO_DOMAIN_CONTACT_MAPPINGS = yaml.safe_load(f)
+    ID_TO_METADATA_MAPPINGS = yaml.safe_load(f)
 
 
 class MojPublicationsAPIParams(BaseModel):

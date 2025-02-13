@@ -195,7 +195,7 @@ def test_compare_environment_counts():
 
 def test_get_table_database_mappings(table_database_mappings):
     assert table_database_mappings == {
-        "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.prison_database.table1,PROD)": "urn:li:container:b17e173b8950dee2415a3119fb7c9d12",
+        "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.prison_database.table2,PROD)": "urn:li:container:b17e173b8950dee2415a3119fb7c9d12",
         "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.probation_database.table1,PROD)": "urn:li:container:ea9744b8004d93b716687bab12438c90",
         "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.courts_data.table1,PROD)": "urn:li:container:1e7a7a180ed4f1215bff62f4ce93993e",
         "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.hq_database.table1,PROD)": "urn:li:container:48e5e41ce461da41f0333b67a322fb99",

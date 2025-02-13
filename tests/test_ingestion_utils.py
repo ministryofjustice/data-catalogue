@@ -2,21 +2,7 @@ import json
 
 import pytest
 
-from ingestion.ingestion_utils import format_domain_name, parse_database_and_table_names
-
-
-@pytest.mark.parametrize(
-    "original,expected",
-    [
-        ("foo", "Foo"),
-        ("electronic_monitoring", "Electronic monitoring"),
-        ("opg", "OPG"),
-        ("aBcDe", "Abcde"),
-    ],
-)
-def test_format_domain_name(original, expected):
-    assert format_domain_name(original) == expected
-
+from ingestion.ingestion_utils import parse_database_and_table_names
 
 with open("tests/data/manifest.json") as f:
     test_manifest = json.load(f)
