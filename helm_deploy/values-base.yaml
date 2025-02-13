@@ -725,18 +725,13 @@ global:
       # url is format "jdbc:postgresql://{host}/{database_name}"
       url: ""
       driver: "org.postgresql.Driver"
-      username:
-        secretRef: rds-postgresql-instance-output
-        secretKey: database_username
+      username: ""
       password:
         secretRef: rds-postgresql-instance-output
         secretKey: database_password
       extraEnvs:
         - name: "DATAHUB_DB_NAME"
-          valueFrom:
-            secretKeyRef:
-              name: rds-postgresql-instance-output
-              key: database_name
+          value: ""
 
   datahub:
     version: v0.15.0.1

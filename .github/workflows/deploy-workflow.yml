@@ -37,6 +37,15 @@ on:
       postgres_url:
         description: "URI including the scheme designator (prefix) and database name"
         required: true
+      postgres_username:
+        description: "username for the metadata database"
+        required: true
+      postgres_password:
+        description: "password for the metadata database"
+        required: true
+      postgres_db_name:
+        description: "name of the metadata database"
+        required: true
       opensearch_proxy_host:
         description: "domain address to reach opensearch"
         required: true
@@ -175,6 +184,9 @@ jobs:
           POSTGRES_CLIENT_HOST: ${{ secrets.postgres_client_host }}
           POSTGRES_HOST: ${{ secrets.postgres_host }}
           POSTGRES_URL: ${{ secrets.postgres_url }}
+          POSTGRES_USERNAME: ${{ secrets.postgres_username }}
+          POSTGRES_PASSWORD: ${{ secrets.postgres_password }}
+          POSTGRES_DB_NAME: ${{ secrets.postgres_db_name }}
           RELEASE_NAME: datahub
           FRONTEND_FULLNAME: datahub-frontend-${{ inputs.env }}
         # if many env-specific variables need setting, add --values files after 'base'
@@ -197,7 +209,9 @@ jobs:
           --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
           --set global.sql.datasource.host=${POSTGRES_HOST} \
           --set global.sql.datasource.hostForpostgresqlClient=${POSTGRES_CLIENT_HOST} \
-          --set global.sql.datasource.url=${POSTGRES_URL}
+          --set global.sql.datasource.url=${POSTGRES_URL} \
+          --set global.sql.datasource.username=${POSTGRES_USERNAME} \
+          --set global.sql.datasource.extraEnvs[0].value=${POSTGRES_DB_NAME}
 
       - name: allow CP prometheus scraping 
         shell: bash

@@ -24,6 +24,9 @@ jobs:
       postgres_host: ${{ secrets.POSTGRES_HOST}}
       postgres_client_host: ${{ secrets.POSTGRES_CLIENT_HOST }}
       postgres_url: ${{ secrets.POSTGRES_URL }}
+      postgres_username: ${{ secrets.POSTGRES_USERNAME }}
+      postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+      postgres_db_name: ${{ secrets.POSTGRES_DB_NAME }}
       opensearch_proxy_host: ${{ secrets.OPENSEARCH_PROXY_HOST }}
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       limit_whitelist: ${{ secrets.LIMIT_WHITELIST }}
