@@ -1,0 +1,25 @@
+name: "glossary_edit_notification"
+
+source:
+  type: "kafka"
+  config:
+    connection:
+      bootstrap: ${KAFKA_BOOTSTRAP_SERVER:-localhost:9092}
+      schema_registry_url: ${SCHEMA_REGISTRY_URL:-http://localhost:8081}
+
+filter:
+  event_type: "EntityChangeEvent_v1"
+  event:
+    category: "GLOSSARY_TERM"
+    operation: ["ADD", "REMOVE", "MODIFY"]
+    modifier: "urn:li:tag:pii"
+
+action:
+  type: slack
+  config:
+    # Action-specific configs (map)
+    base_url: ${DATAHUB_ACTIONS_SLACK_DATAHUB_BASE_URL:-https://datahub-catalogue-dev.apps.live.cloud-platform.service.justice.gov.uk}
+    bot_token: ${DATAHUB_ACTIONS_SLACK_BOT_TOKEN}
+    signing_secret: ${DATAHUB_ACTIONS_SLACK_SIGNING_SECRET}
+    default_channel: ${DATAHUB_ACTIONS_SLACK_CHANNEL}
+    suppress_system_activity: ${DATAHUB_ACTIONS_SLACK_SUPPRESS_SYSTEM_ACTIVITY:-true}
