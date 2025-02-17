@@ -188,13 +188,16 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
                 # We'd need to explore a different approach to include multiple collection association
 
-                # There are 133 in mulitple collections at time of writing, about 10%
-                parent_collection_titles = [
-                    dc["title"] for dc in publication["document_collections"]
-                ]
-                parent_collection_ids = [
-                    dc["slug"] for dc in publication["document_collections"]
-                ]
+                # There are 133 in multiple collections at time of writing, about 10%
+                parent_collection_ids, parent_collection_titles = [], []
+                for document_collection in publication["document_collections"]:
+                    if "title" not in document_collection:
+                        logging.warning(
+                            f"Collection {document_collection} does not have a title and will be skipped"
+                        )
+                        continue
+                    parent_collection_ids.append(document_collection.get("slug"))
+                    parent_collection_titles.append(document_collection.get("title"))
 
                 container_key = mcp_builder.DatabaseKey(
                     database=parent_collection_titles[0],
