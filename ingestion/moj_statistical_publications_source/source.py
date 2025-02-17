@@ -95,7 +95,9 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         # create publication collections entities DatasetContainerSubTypes.FOLDER
         yield from self._create_publication_collections_containers(collections_metadata)
 
-        mcps = self._make_publication_dataset_mcps(all_publications_metadata)
+        mcps = self._make_publication_dataset_mcps(
+            all_publications_metadata, self.config.collections_to_exclude
+        )
         for mcp in mcps:
             logging.info(f"creating {mcp.aspectName} for {mcp.entityUrn}")
             wu = MetadataWorkUnit(f"{mcp.entityUrn}-{mcp.aspectName}", mcp=mcp)
@@ -153,7 +155,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             )
 
     def _make_publication_dataset_mcps(
-        self, all_publications_metadata: List[Dict]
+        self, all_publications_metadata: List[Dict], collections_to_exclude: List[str]
     ) -> list[MetadataChangeProposalWrapper]:
         """
         creates the aspects for dataset properties, tags, and container, for
@@ -189,15 +191,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 # We'd need to explore a different approach to include multiple collection association
 
                 # There are 133 in multiple collections at time of writing, about 10%
-                parent_collection_ids, parent_collection_titles = [], []
-                for document_collection in publication["document_collections"]:
-                    if "title" not in document_collection:
-                        logging.warning(
-                            f"Collection {document_collection} does not have a title and will be skipped"
-                        )
-                        continue
-                    parent_collection_ids.append(document_collection.get("slug"))
-                    parent_collection_titles.append(document_collection.get("title"))
+                parent_collection_ids = [dc.get("slug") for dc in publication["document_collections"]]
+                if any(slug in collections_to_exclude for slug in parent_collection_ids):
+                    continue
+                parent_collection_titles = [dc.get("title") for dc in publication["document_collections"]]
 
                 container_key = mcp_builder.DatabaseKey(
                     database=parent_collection_titles[0],
