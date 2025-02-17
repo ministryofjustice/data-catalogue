@@ -5,7 +5,8 @@ source:
     base_url: "https://gov.uk/api"
     default_contact_email: statistics.enquiries@justice.gsi.gov.uk
     collections_to_exclude: [
-      "offender-management-statistics-quarterly--3"
+      "offender-management-statistics-quarterly--3",
+      "national-offender-management-service-workforce-statistics",
     ]
     access_requirements: You are free to re-use the data internally or externally without requesting permission.
     params:
