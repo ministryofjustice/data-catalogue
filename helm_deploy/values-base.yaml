@@ -292,7 +292,8 @@ datahubUpgrade:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "-2"
     helm.sh/hook-delete-policy: before-hook-creation
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
@@ -366,7 +367,8 @@ datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
     # tag:
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
@@ -376,7 +378,6 @@ datahubSystemUpdate:
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
-    # runAsUser: 1000
   annotations:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-4"
@@ -763,7 +764,7 @@ global:
       port: "8080"
       nodePort: "30001"
     # Used for scheduled tasks
-    timezone: "UTC"
+    timezone: "Europe/London"
 
     frontend:
       validateSignUpEmail: true
