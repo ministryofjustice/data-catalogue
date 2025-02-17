@@ -114,8 +114,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             "security_classification": "Official - For public release",
         }
         for collection in collections_metadata:
-            last_modified_date = datetime.datetime.fromisoformat(
-                collection.get("last_updated", "")
+            last_modified_date = collection.get("last_updated")
+            last_modified_datetime_in_ms = (
+                datetime_to_ts_millis(datetime.datetime.fromisoformat(last_modified_date))
+                if last_modified_date else None
             )
 
             custom_properties["dc_team_email"] = collection.get(
@@ -143,7 +145,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 external_url=urljoin(self.client.base_url, collection.get("link")),
                 description=collection.get("description"),
                 created=None,
-                last_modified=datetime_to_ts_millis(last_modified_date),
+                last_modified=last_modified_datetime_in_ms,
                 tags=tags,
                 owner_urn=None,
                 qualified_name=collection.get("slug"),
