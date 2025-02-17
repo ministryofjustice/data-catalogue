@@ -9,10 +9,17 @@ source:
     ]
     access_requirements: You are free to re-use the data internally or externally without requesting permission.
     params:
-      filter_organisations: [ministry-of-justice]
+      filter_organisations: [
+        "ministry-of-justice",
+        "hm-prison-and-probation-service",
+        "probation-service",
+        "hm-prison-service",
+        "crime-justice-and-law",
+      ]
       filter_content_store_document_type: [
           "national_statistics",
-          "official_statistics"
+          "official_statistics",
+          "transparency"
       ]
     stateful_ingestion:
       enabled: true
