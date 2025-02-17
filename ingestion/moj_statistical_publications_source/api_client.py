@@ -82,8 +82,12 @@ class MojPublicationsAPIClient:
         for collection in unique_collections:
             # descriptions and last updated dates need to be fetched from the content API
             # for each collection
+            link = collection.get("link")
+            if not link:
+                logging.error(f"{collection=} does not have a link")
+                continue
             content_api_url = os.path.join(
-                self.base_url, f"content/{collection['link']}"
+                self.base_url, f"content/{link}"
             )
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
