@@ -87,7 +87,7 @@ class MojPublicationsAPIClient:
                 logging.warning(f"{collection=} does not have a link and will be skipped")
                 continue
             content_api_url = os.path.join(
-                self.base_url, "content", link
+                self.base_url, f"content/{link}"
             )
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
