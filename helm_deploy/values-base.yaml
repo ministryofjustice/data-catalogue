@@ -7,7 +7,7 @@ datahub-gms:
     - name: "BUSINESS_ATTRIBUTE_ENTITY_ENABLED"
       value: "true"
   securityContext:
-    runAsUser: 100
+    runAsUser: 1000
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
@@ -71,12 +71,12 @@ datahub-frontend:
       cpu: 100m
       memory: 512Mi
   podSecurityContext:
-    fsGroup: 101
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-    runAsUser: 100
+    runAsUser: 1000
     runAsNonRoot: true
     capabilities:
       drop: ["ALL"]
@@ -131,7 +131,7 @@ acryl-datahub-actions:
   serviceAccount:
     name: ""
   podSecurityContext:
-    fsGroup: 103
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
