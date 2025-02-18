@@ -95,7 +95,9 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         # create publication collections entities DatasetContainerSubTypes.FOLDER
         yield from self._create_publication_collections_containers(collections_metadata)
 
-        mcps = self._make_publication_dataset_mcps(all_publications_metadata)
+        mcps = self._make_publication_dataset_mcps(
+            all_publications_metadata, self.config.collections_to_exclude
+        )
         for mcp in mcps:
             logging.info(f"creating {mcp.aspectName} for {mcp.entityUrn}")
             wu = MetadataWorkUnit(f"{mcp.entityUrn}-{mcp.aspectName}", mcp=mcp)
@@ -114,8 +116,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             "security_classification": "Official - For public release",
         }
         for collection in collections_metadata:
-            last_modified_date = datetime.datetime.fromisoformat(
-                collection.get("last_updated", "")
+            last_modified_date = collection.get("last_updated")
+            last_modified_datetime_in_ms = (
+                datetime_to_ts_millis(datetime.datetime.fromisoformat(last_modified_date))
+                if last_modified_date else None
             )
 
             custom_properties["dc_team_email"] = collection.get(
@@ -143,7 +147,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 external_url=urljoin(self.client.base_url, collection.get("link")),
                 description=collection.get("description"),
                 created=None,
-                last_modified=datetime_to_ts_millis(last_modified_date),
+                last_modified=last_modified_datetime_in_ms,
                 tags=tags,
                 owner_urn=None,
                 qualified_name=collection.get("slug"),
@@ -151,7 +155,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             )
 
     def _make_publication_dataset_mcps(
-        self, all_publications_metadata: List[Dict]
+        self, all_publications_metadata: List[Dict], collections_to_exclude: List[str]
     ) -> list[MetadataChangeProposalWrapper]:
         """
         creates the aspects for dataset properties, tags, and container, for
@@ -186,13 +190,11 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
                 # We'd need to explore a different approach to include multiple collection association
 
-                # There are 133 in mulitple collections at time of writing, about 10%
-                parent_collection_titles = [
-                    dc["title"] for dc in publication["document_collections"]
-                ]
-                parent_collection_ids = [
-                    dc["slug"] for dc in publication["document_collections"]
-                ]
+                # There are 133 in multiple collections at time of writing, about 10%
+                parent_collection_ids = [dc.get("slug") for dc in publication["document_collections"]]
+                if any(slug in collections_to_exclude for slug in parent_collection_ids):
+                    continue
+                parent_collection_titles = [dc.get("title") for dc in publication["document_collections"]]
 
                 container_key = mcp_builder.DatabaseKey(
                     database=parent_collection_titles[0],
