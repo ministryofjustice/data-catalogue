@@ -125,6 +125,8 @@ datahub-frontend:
 
 acryl-datahub-actions:
   enabled: true
+  debug:
+    enabled: true
   image:
     repository: acryldata/datahub-actions
     tag: "v0.1.1"
@@ -143,6 +145,8 @@ acryl-datahub-actions:
           key: signing_secret
     - name: DATAHUB_ACTIONS_SLACK_CHANNEL
       value: C06UQ5HSR25
+    - name: DATAHUB_ACTIONS_SLACK_ENABLED
+      value: "false"
   extraVolumes:
     - name: config-volume
       configMap:
