@@ -13,16 +13,27 @@ transformers:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Corporate operations"
-        - "urn:li:tag:General"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${CONTRACTS_TECHNICAL_CONTACT}"
       subject_areas:
-        - General
         - Corporate operations
+      properties:
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Daily
+        security_classification: Official-Sensitive
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
         - "${CONTRACTS_TECHNICAL_CONTACT}"
+  - type: "simple_add_dataset_properties"
+    config:
+      semantics: OVERWRITE # OVERWRITE is default behaviour
+      properties:
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Daily
+        security_classification: Official-Sensitive

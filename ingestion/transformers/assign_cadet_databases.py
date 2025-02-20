@@ -11,21 +11,20 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_transformer import DatasetTransformer
 from datahub.metadata.schema_classes import (
     ContainerClass,
-    MetadataChangeProposalClass,
     GlobalTagsClass,
+    MetadataChangeProposalClass,
     TagAssociationClass,
 )
 from datahub.utilities.urns.tag_urn import TagUrn
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
-    format_domain_name,
+    domains_to_subject_areas,
     get_cadet_metadata_json,
     parse_database_and_table_names,
     validate_fqn,
 )
 from ingestion.utils import report_time
-from ingestion.ingestion_utils import domains_to_subject_areas
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -67,19 +66,12 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         in_global_tags_aspect: GlobalTagsClass = cast(GlobalTagsClass, aspect)
         domain = self.mappings.get(entity_urn, {}).get("domain")
         if domain:
-            domain_name = format_domain_name(domain)
+            subject_area = domains_to_subject_areas.get(domain.lower())
             existing_tags = [tag.tag for tag in in_global_tags_aspect.tags]
-            if domain_name not in existing_tags:
-                subject_area = domains_to_subject_areas.get(domain_name.lower())
+            if subject_area and subject_area not in existing_tags:
                 tags_to_add = [
-                    TagAssociationClass(tag=mce_builder.make_tag_urn(tag=domain_name)),
+                    TagAssociationClass(tag=mce_builder.make_tag_urn(tag=subject_area)),
                 ]
-                if subject_area:
-                    tags_to_add.append(
-                        TagAssociationClass(
-                            tag=mce_builder.make_tag_urn(tag=subject_area)
-                        )
-                    )
                 in_global_tags_aspect.tags.extend(tags_to_add)
                 # Keep track of tags added so that we can create them in handle_end_of_stream
                 for tag in tags_to_add:
@@ -125,7 +117,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         return mcps
 
     @report_time
-    def _get_table_database_mappings(self, manifest) -> Dict[str, str]:
+    def _get_table_database_mappings(self, manifest) -> Dict[str, Dict[str, str]]:
         mappings = {}
         for node in manifest["nodes"]:
             if manifest["nodes"][node]["resource_type"] in ["model", "seed"]:

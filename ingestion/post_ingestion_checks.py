@@ -108,7 +108,7 @@ def create_query_input(platform: str) -> dict:
     return {
         "input": {
             "types": [],
-            "facets": ["_entityType", "tags", "domains", "owners"],
+            "facets": ["_entityType", "tags", "owners"],
             "orFilters": [
                 {
                     "and": [

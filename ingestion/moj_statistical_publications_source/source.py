@@ -28,14 +28,13 @@ from datahub.metadata.schema_classes import (
     ContainerClass,
     DataPlatformInstanceClass,
     DatasetPropertiesClass,
-    DomainsClass,
     GlobalTagsClass,
     SubTypesClass,
     TagAssociationClass,
 )
 from datahub.utilities.time import datetime_to_ts_millis
 
-from ingestion.ingestion_utils import FindMojDataEntityTypes, format_domain_name
+from ingestion.ingestion_utils import FindMojDataEntityTypes
 
 from .api_client import MojPublicationsAPIClient
 from .config import MojPublicationsAPIConfig
@@ -55,7 +54,6 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         self,
         ctx: PipelineContext,
         config: MojPublicationsAPIConfig,
-        validate_domains: bool = True,
     ) -> None:
         super().__init__(config, ctx)
 
@@ -66,9 +64,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         self.client = MojPublicationsAPIClient(
             config.base_url, config.default_contact_email, config.params
         )
-        if validate_domains:
-            self.client.validate_domains()
-        self._id_to_domain_contact_mapping = self.client._id_to_domain_contact_mapping
+        self._id_to_metadata_mapping = self.client._id_to_metadata_mapping
         self.platform_name = "GOV.UK"
         self.platform_instance = "ministry-of-justice-publications"
         self.access_requirements = config.access_requirements
@@ -99,7 +95,9 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         # create publication collections entities DatasetContainerSubTypes.FOLDER
         yield from self._create_publication_collections_containers(collections_metadata)
 
-        mcps = self._make_publication_dataset_mcps(all_publications_metadata)
+        mcps = self._make_publication_dataset_mcps(
+            all_publications_metadata, self.config.collections_to_exclude
+        )
         for mcp in mcps:
             logging.info(f"creating {mcp.aspectName} for {mcp.entityUrn}")
             wu = MetadataWorkUnit(f"{mcp.entityUrn}-{mcp.aspectName}", mcp=mcp)
@@ -118,8 +116,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             "security_classification": "Official - For public release",
         }
         for collection in collections_metadata:
-            last_modified_date = datetime.datetime.fromisoformat(
-                collection.get("last_updated", "")
+            last_modified_date = collection.get("last_updated")
+            last_modified_datetime_in_ms = (
+                datetime_to_ts_millis(datetime.datetime.fromisoformat(last_modified_date))
+                if last_modified_date else None
             )
 
             custom_properties["dc_team_email"] = collection.get(
@@ -134,15 +134,9 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 backcompat_env_as_instance=True,
             )
             tags = ["dc_display_in_catalogue"]
-            if collection.get("domain"):
-                domain_name = format_domain_name(collection["domain"])
-                domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-                tags.append(domain_name)
-            else:
-                domain_urn = None
 
-            if collection.get("subject_area"):
-                tags.append(collection["subject_area"])
+            if collection.get("subject_areas"):
+                tags.extend(collection["subject_areas"])
 
             collection_name = collection.get("title", "")
             logging.info(f"Creating container for {collection_name=}")
@@ -150,11 +144,10 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 container_key=container_key,
                 name=collection_name,
                 sub_types=sub_types,
-                domain_urn=domain_urn,
                 external_url=urljoin(self.client.base_url, collection.get("link")),
                 description=collection.get("description"),
                 created=None,
-                last_modified=datetime_to_ts_millis(last_modified_date),
+                last_modified=last_modified_datetime_in_ms,
                 tags=tags,
                 owner_urn=None,
                 qualified_name=collection.get("slug"),
@@ -162,13 +155,13 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             )
 
     def _make_publication_dataset_mcps(
-        self, all_publications_metadata: List[Dict]
+        self, all_publications_metadata: List[Dict], collections_to_exclude: List[str]
     ) -> list[MetadataChangeProposalWrapper]:
         """
-        creates the aspects for dataset properties, tags, domain, and container, for
+        creates the aspects for dataset properties, tags, and container, for
         all individual publcations as a dataset and returns as a list of mcps
 
-        All publications will not have a container or domain (if not in a collection)
+        All publications will not have a container or subject area (if not in a collection)
         """
         mcps = []
         custom_properties: dict = {
@@ -189,7 +182,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
             )
 
             # if publication is in a collection it's special and gets some more metadata we've collected in
-            # a mapping yaml. Namely a domain and team contact email where available
+            # a mapping yaml. Namely a subject area and team contact email where available
             if publication.get("document_collections"):
 
                 # publications can belong to multiple collections - opting to keep it more simple and register
@@ -197,13 +190,11 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
 
                 # We'd need to explore a different approach to include multiple collection association
 
-                # There are 133 in mulitple collections at time of writing, about 10%
-                parent_collection_titles = [
-                    dc["title"] for dc in publication["document_collections"]
-                ]
-                parent_collection_ids = [
-                    dc["slug"] for dc in publication["document_collections"]
-                ]
+                # There are 133 in multiple collections at time of writing, about 10%
+                parent_collection_ids = [dc.get("slug") for dc in publication["document_collections"]]
+                if any(slug in collections_to_exclude for slug in parent_collection_ids):
+                    continue
+                parent_collection_titles = [dc.get("title") for dc in publication["document_collections"]]
 
                 container_key = mcp_builder.DatabaseKey(
                     database=parent_collection_titles[0],
@@ -216,7 +207,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 parent_collection_urn = mce_builder.make_container_urn(container_key)
                 custom_properties.update(
                     {
-                        "dc_team_email": self._id_to_domain_contact_mapping.get(
+                        "dc_team_email": self._id_to_metadata_mapping.get(
                             parent_collection_ids[0], {}
                         ).get("contact_email", self.client.default_contact_email)
                     }
@@ -229,36 +220,20 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                         aspect=ContainerClass(container=parent_collection_urn),
                     )
                 )
-                domain = self._id_to_domain_contact_mapping.get(
-                    parent_collection_ids[0], {}
-                ).get("domain")
 
-                # because as is there won't always be an applicable domain (subject area)
-                # even within a colleciton
+                # there won't always be an applicable subject area, even within a collection
                 tags = [TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")]
-                if domain:
-                    domain_name = format_domain_name(domain)
-                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{domain_name}"))
-                    domain_urn = mce_builder.make_domain_urn(domain=domain_name)
-                else:
-                    domain_urn = None
 
-                # add domain - we only add a domain for publications within a collection
-                if domain_urn:
-                    mcps.append(
-                        MetadataChangeProposalWrapper(
-                            entityUrn=dataset_urn,
-                            aspect=DomainsClass(domains=[domain_urn]),
-                        )
-                    )
-
-                subject_area = self._id_to_domain_contact_mapping.get(
+                subject_areas = self._id_to_metadata_mapping.get(
                     parent_collection_ids[0], {}
-                ).get("subject_area")
+                ).get("subject_areas")
 
-                # add subject area tag if given
-                if subject_area:
-                    tags.append(TagAssociationClass(tag=f"urn:li:tag:{subject_area}"))
+                # add subject area tags if given
+                if subject_areas:
+                    tags.extend(
+                        TagAssociationClass(tag=f"urn:li:tag:{subject_area}")
+                        for subject_area in subject_areas
+                    )
 
             else:
                 custom_properties["dc_team_email"] = self.client.default_contact_email

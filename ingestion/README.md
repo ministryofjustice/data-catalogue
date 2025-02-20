@@ -29,7 +29,7 @@ This custom code is required because the dbt manifest file, used to ingest the m
 
 In the simplest terms this ingestion infers parent databases for the entities within the manifest and creates the container entities of subtype databases within datahub.
 
-It also assigns all cadet tables to domains in datahub.
+It also tags all cadet tables with subject areas in datahub.
 
 The recipe file for this component can be found [here](create_cadet_databases.yaml)
 
@@ -69,7 +69,7 @@ For these data we use Datahub's native [Glue ingestion source](https://datahubpr
 
 ### Glue databases and tables
 
-We define a recipe file for glue databases in an area, they'll be prefixed `glue_`, eg. [glue_sop.yaml](glue_sop.yaml). The recipe may contain several databases but they will have common metadata properties set, such as data custodian and domain.
+We define a recipe file for glue databases in an area, they'll be prefixed `glue_`, eg. [glue_sop.yaml](glue_sop.yaml). The recipe may contain several databases but they will have common metadata properties set, such as data custodian and subject area.
 
 ### Glue transformers
 
@@ -77,9 +77,8 @@ We have defined a transformer to add some additional metadata properties to the 
 
 Transformers used are:
 
-- [enrich_container_transformer](transformers/enrich_container_transformer.py) - Custom transformer. Adds an owner, domain, and tag for a provided container.
+- [enrich_container_transformer](transformers/enrich_container_transformer.py) - Custom transformer. Adds an owner and tags for a provided container.
 - simple_add_dataset_tags - Datahub provided transformer. Adds the `dc_display_in_catalogue` tag to all ingested entities.
-- simple_add_dataset_domain - Datahub provided transformer. Adds the given domain to all ingested entities.
 - simple_add_dataset_ownership - Datahub provided transformer. Adds the given owner to all ingested entities.
 
 ### Glue ingestion workflow
@@ -112,7 +111,7 @@ We have developed a [custom ingestion source for GOV.UK publications](moj_statis
 
 It loads all entities into a custom platform called `GOV.UK`
 
-This ingestion also has a mapping yaml file which maps publication collections to domains and team contact emails. Publication datasets inherit the domain and contact details from their parent collection.
+This ingestion also has a mapping yaml file which maps publication collections to subject areas and team contact emails. Publication datasets inherit the subject areas and contact details from their parent collection.
 
 [see the recipe](ingestion/moj_publications.yaml) for this ingestion.
 
@@ -129,7 +128,7 @@ We have developed some checks to run post ingestion to monitor whether there hav
 The initial development essentially checks three things:
 
 1. Whether any create a derived table datasets are missing an `IsPartOf` container relationship
-2. Whether any owner, domain, or tag values are in prod but not preprod or in preprod but not prod (grouped by platform)
-3. Whether the count of any entity type, owner, domain, or tag has a difference >20% comparing prod and preprod (grouped by platform)
+2. Whether any owner or tag values are in prod but not preprod or in preprod but not prod (grouped by platform)
+3. Whether the count of any entity type, owner or tag has a difference >20% comparing prod and preprod (grouped by platform)
 
 These checks are run using the github actions workflow [post-ingestion-checks.yml](../.github/workflows/post-ingestion-checks.yml), with the code for the checks in [post_ingestion_checks.py](post_ingestion_checks.py).

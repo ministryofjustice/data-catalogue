@@ -16,18 +16,20 @@ from datahub.metadata.schema_classes import (
 
 dir = Path(__file__).parent
 
+input_yamls = ["top_level_subject_areas_template.yaml", "subject_areas_template.yaml"]
 output = []
 
-with open(dir / "subject_areas_template.yaml") as file:
-    for tag in yaml.safe_load(file):
-        name = tag["name"]
-        properties = TagPropertiesClass(name=name, description=tag["description"])
-        urn = f"urn:li:tag:{name}"
-        output.append(
-            MetadataChangeEventClass(
-                proposedSnapshot=TagSnapshotClass(urn=urn, aspects=[properties])
-            ).to_obj()
-        )
+for input_yaml in input_yamls:
+    with open(dir / input_yaml) as file:
+        for tag in yaml.safe_load(file):
+            name = tag["name"]
+            properties = TagPropertiesClass(name=name, description=tag.get("description"))
+            urn = f"urn:li:tag:{name}"
+            output.append(
+                MetadataChangeEventClass(
+                    proposedSnapshot=TagSnapshotClass(urn=urn, aspects=[properties])
+                ).to_obj()
+            )
 
 with open(dir / "subject_areas.json", "w") as file:
     json.dump(output, file, indent=2)

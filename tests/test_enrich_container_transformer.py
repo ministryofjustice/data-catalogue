@@ -17,9 +17,7 @@ from ingestion.transformers.enrich_container_transformer import (
 class TestEnrichContainerTransformer:
     def test_pattern_add_dataset_domain_match(self, mock_datahub_graph):
 
-        pipeline_context: PipelineContext = PipelineContext(
-            run_id="test_simple_add_dataset_domain"
-        )
+        pipeline_context: PipelineContext = PipelineContext(run_id="abc")
         graph = mock_datahub_graph(DatahubClientConfig)
         graph.get_aspect = MagicMock(
             return_value=ContainerPropertiesClass(name="foo", customProperties=None)

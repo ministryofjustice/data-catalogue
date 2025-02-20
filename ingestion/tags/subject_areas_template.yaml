@@ -1,14 +1,14 @@
-- name: "Corporate operations"
-  description: "Employees, property and finance"
-- name: "Crime and policing"
-  description: "Law enforcement, criminal offences and reoffending"
-- name: "Courts and tribunals"
-  description: "HM Courts and Tribunal Service, legal cases, sentencing"
-- name: "Legal aid"
-  description: "Legal aid and the Civil Legal Advice service"
-- name: "Office of the Public Guardian"
-  description: "Lasting power of attorney and supervision orders"
-- name: "Prisons and probation"
-  description: "HM Prison and Probation Service, electronic monitoring, rehabilitation, offence risk"
-- name: "Reference data"
-  description: "Data to define or standardise other data"
+- name: Property
+  description: MoJ property and estates
+- name: Finance
+  description: MoJ finance and procurement
+- name: Employees
+  description: SOP, HR, and staff
+- name: Reoffending
+- name: Criminal courts
+- name: Civil courts
+- name: Family courts
+- name: Prisons
+- name: Probation
+- name: Electronic monitoring
+- name: Risk

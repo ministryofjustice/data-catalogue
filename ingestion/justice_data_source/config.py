@@ -15,14 +15,14 @@ from pydantic import Field
 ID_TO_SUBJECT_AREAS_MAPPING = {
     "prisons": ["Prisons and probation", "Prisons"],
     "probation": ["Prisons and probation", "Probation"],
-    "courts": ["Courts and tribunals", "Courts"],
+    "courts": ["Courts and tribunals"],
     "electronic-monitoring": ["Prisons and probation", "Electronic monitoring"],
     "electronic-monitoring-performance": ["Prisons and probation", "Electronic monitoring"],
     "bass": ["Prisons and probation", "Probation"],
     "cjs-crime": ["Crime and policing"],
     "cjs-reoffending": ["Crime and policing"],
-    "cjs-sentence-types": ["Courts and tribunals", "Courts"],
-    "cjs-entrants": ["Courts and tribunals", "Courts"],
+    "cjs-sentence-types": ["Courts and tribunals", "Criminal courts"],
+    "cjs-entrants": ["Courts and tribunals", "Criminal courts"],
 }
 
 
