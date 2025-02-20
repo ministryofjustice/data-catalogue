@@ -4,11 +4,11 @@ source:
   config:
     aws_connection:
       aws_region: eu-west-1
-    manifest_path: "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/manifest.json"
-    catalog_path: "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/catalog.json"
+    manifest_path: "s3://dpr-structured-historical-preproduction/data/preprod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/manifest.json"
+    catalog_path: "s3://dpr-structured-historical-preproduction/data/preprod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/catalog.json"
     run_results_paths:
       [
-        "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-prod-digital-prisons-reporting-docs/latest/target/run_results.json",
+        "s3://dpr-structured-historical-preproduction/data/preprod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/run_results.json",
       ]
     # if platform_instance changes it needs to also change in config.py via the CADET_INSTANCE variable
     platform_instance: cadet_digital_prison_reporting
@@ -51,7 +51,7 @@ source:
 transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
     config:
-      manifest_s3_uri: "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-prod-digital-prisons-reporting-docs/latest/target/manifest.json"
+      manifest_s3_uri: "s3://dpr-structured-historical-preproduction/data/preprod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/manifest.json"
   - type: "simple_add_dataset_properties"
     config:
       properties:
