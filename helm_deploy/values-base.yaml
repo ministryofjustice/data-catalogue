@@ -147,7 +147,7 @@ acryl-datahub-actions:
     - name: DATAHUB_ACTIONS_SLACK_CHANNEL
       value: C06UQ5HSR25
     - name: DATAHUB_ACTIONS_SLACK_ENABLED
-      value: "false"
+      value: "true"
   extraVolumes:
     - name: config-volume
       configMap:
