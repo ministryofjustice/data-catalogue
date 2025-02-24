@@ -10,7 +10,7 @@ python = "^3.11"
 pytest = "^8.3.4"
 boto3 = "^1.34.162"
 datahub = "^0.999.1"
-moto = "^5.0.28"
+moto = "^5.1.0"
 acryl-datahub = {version = "0.14.1", extras = ["dbt"]}
 pandas = "^2.2.3"
 semantic-version = "^2.10.0"
