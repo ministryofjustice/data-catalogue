@@ -1,0 +1,19 @@
+pipeline_name: hmpps-remand-and-sentencing-dev
+source:
+  type: postgres
+  config:
+    # Coordinates
+    host_port: "${HOST_PORT}"
+    database: "${DATABASE}"
+
+    # Credentials
+    username: "${USER}"
+    password: "${PASSWORD}"
+
+    # Optional: SSL configuration.
+    # options:
+    #   connect_args:
+    #     sslcert: "<<path to sslcert>>"
+    #     sslkey: "<<path to sslkey>>"
+    #     sslrootcert: "<<path to verification ca chain>>"
+    #     sslmode: "verify-full"
