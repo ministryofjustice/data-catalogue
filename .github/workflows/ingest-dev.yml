@@ -3,66 +3,78 @@ name: Ingest metadata to dev
 on:
   # schedule:
   #   - cron: "0 9,14 * * *" # 9am, 2pm UTC
-  workflow_dispatch:
+  # workflow_dispatch:
+  pull_request:
 
 jobs:
-  ingest-ownership-types-dev:
-    uses: ./.github/workflows/ingest-yaml.yml
+  # ingest-ownership-types-dev:
+  #   uses: ./.github/workflows/ingest-yaml.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-cadet-dev:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+  #     S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-em-cadet-dev:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
+  #     S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
+  #     BASE_CADET_INGESTION: false
+  #     CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-justice-data-dev:
+  #   uses: ./.github/workflows/ingest-justice-data.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-glue-data-dev:
+  #   uses: ./.github/workflows/ingest-glue-data.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  #     SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
+  #     CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
+  #     COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
+  #     COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
+  #     JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
+  #     FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
+  # ingest-moj-publications-dev:
+  #   uses: ./.github/workflows/ingest-moj-publications.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-postgres:
+    uses: ./.github/workflows/ingest-postgres.yml
     with:
       ENVIRONMENT: dev
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-cadet-dev:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-em-cadet-dev:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
-      S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
-      BASE_CADET_INGESTION: false
-      CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-justice-data-dev:
-    uses: ./.github/workflows/ingest-justice-data.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-glue-data-dev:
-    uses: ./.github/workflows/ingest-glue-data.yml
-    with:
-      ENVIRONMENT: dev
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-      SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
-      CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
-      COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
-      COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
-      JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
-      FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
-  ingest-moj-publications-dev:
-    uses: ./.github/workflows/ingest-moj-publications.yml
-    with:
-      ENVIRONMENT: dev
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      HOST_PORT: ${{ secrets.DEV_HOST_PORT_REMAND_AND_SENTENCING }}
+      DATABASE: ${{ secrets.DEV_DATABASE_REMAND_AND_SENTENCING }}
+      USER: ${{ secrets.DEV_USER_REMAND_AND_SENTENCING }}
+      PASSWORD: ${{ secrets.DEV_PASSWORD_REMAND_AND_SENTENCING }}
