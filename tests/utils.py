@@ -97,27 +97,72 @@ def run_container_transformer_pipeline(
     return outputs
 
 
-def group_metadata(
-    workunits,
-) -> dict[str, dict[str, list[_Aspect]]]:
+class EntityInspector:
     """
-    Parse the result into a nested structure, indexed first by URN, then by aspect
+    Helper class for testing generated entity metadata
     """
-    metadata_by_urn = {}
-    for wu in workunits:
-        urn = wu.get_urn()
-        if isinstance(wu.metadata, MetadataChangeProposalWrapper):
-            aspect = wu.metadata.aspect
-            aspect_name = wu.metadata.aspectName
-            aspects_by_name = metadata_by_urn.setdefault(urn, {})
-            aspects_by_name.setdefault(aspect_name, []).append(aspect)
-        elif isinstance(wu.metadata, MetadataChangeEventClass):
-            for aspect in wu.metadata.proposedSnapshot.aspects:
-                aspect_name = aspect.get_aspect_name()
-                aspects_by_name = metadata_by_urn.setdefault(urn, {})
-                aspects_by_name.setdefault(aspect_name, []).append(aspect)
 
-    return metadata_by_urn
+    def __init__(self, urn):
+        self.urn = urn
+        self.aspects = {}
+
+    def __bool__(self):
+        # This object is truthy if it has aspects, otherwise falsey
+        return bool(self.aspects)
+
+    def add_aspect(self, aspect):
+        self.aspects.setdefault(aspect.get_aspect_name(), []).append(aspect)
+
+    def aspect(self, aspect):
+        aspect = self.aspects.get(aspect, [])
+        assert len(aspect) == 1
+        return aspect[0]
+
+    @property
+    def tag_names(self):
+        return [
+            tag.tag
+            for tagAspect in self.aspects.get("globalTags", [])
+            for tag in tagAspect.tags
+        ]
+
+
+class WorkunitInspector:
+    """
+    Helper class for testing generated workunits
+    """
+
+    def __init__(self, workunits):
+        self.workunits = workunits
+
+        metadata_by_urn = {}
+        for wu in workunits:
+            urn = wu.get_urn()
+            if isinstance(wu.metadata, MetadataChangeProposalWrapper):
+                aspect = wu.metadata.aspect
+                entity_assertions = metadata_by_urn.setdefault(
+                    urn, EntityInspector(urn)
+                )
+                entity_assertions.add_aspect(aspect)
+            elif isinstance(wu.metadata, MetadataChangeEventClass):
+                for aspect in wu.metadata.proposedSnapshot.aspects:
+                    entity_assertions = metadata_by_urn.setdefault(
+                        urn, EntityInspector(urn)
+                    )
+                    entity_assertions.add_aspect(aspect)
+
+        self._metadata_by_urn = metadata_by_urn
+
+    def entity(self, urn) -> EntityInspector:
+        return self._metadata_by_urn.get(urn, EntityInspector(urn))
+
+    @property
+    def charts(self):
+        return [
+            entity
+            for urn, entity in self._metadata_by_urn.items()
+            if urn.startswith("urn:li:chart:")
+        ]
 
 
 def extract_tag_names(global_tags_list):
