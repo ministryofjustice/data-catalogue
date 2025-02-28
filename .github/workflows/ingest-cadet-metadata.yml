@@ -61,8 +61,10 @@ jobs:
           role-duration-seconds: 14400
           aws-region: ${{ inputs.ECR_REGION }}
 
-      - name: Check cadet manifest exists
-        run: aws s3 ls ${{ inputs.S3_TARGET_LOCATION }}/manifest.json
+      - name: Check cadet manifest and catalog exist
+        run: |
+          aws s3 ls ${{ inputs.S3_TARGET_LOCATION }}/manifest.json
+          aws s3 ls ${{ inputs.S3_TARGET_LOCATION }}/catalog.json
 
       - name: cache poetry install
         uses: actions/cache@v4
