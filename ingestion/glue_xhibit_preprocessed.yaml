@@ -3,7 +3,7 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: ["common_platform_dev_sdp_v3$"]
+      allow: ["xhibit_preprocessed$"]
     extract_owners: False
     extract_transforms: False
 
