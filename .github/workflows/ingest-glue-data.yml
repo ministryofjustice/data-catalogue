@@ -38,6 +38,8 @@ on:
         required: true
       FINES_TECHNICAL_CONTACT:
         required: true
+      PLACEHOLDER_TECHNICAL_CONTACT:
+        required: true
 
 jobs:
   datahub-ingest-glue-data:
@@ -88,6 +90,7 @@ jobs:
           COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
           JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
           FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
+          PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
         run: |
           mkdir -p ingestion/processed
           for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform; do
