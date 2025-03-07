@@ -38,6 +38,8 @@ on:
         required: true
       FINES_TECHNICAL_CONTACT:
         required: true
+      PLACEHOLDER_TECHNICAL_CONTACT:
+        required: true
 
 jobs:
   datahub-ingest-glue-data:
