@@ -52,11 +52,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.local
-          key: poetry-1.7.1-0
+          key: poetry-2.1.1-0
 
       - uses: snok/install-poetry@v1
         with:
-          version: 1.7.1
+          version: 2.1.1
           virtualenvs-create: true
           virtualenvs-in-project: true
 
@@ -78,7 +78,7 @@ jobs:
           USER: ${{ secrets.USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          sudo apt-get install -y gettext
+          apt-get update && apt-get install -y gettext
           mkdir -p ingestion/processed
           envsubst < ingestion/postgres.yaml > ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
 
