@@ -79,7 +79,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           mkdir -p ingestion/processed
-          envsubst < ingestion/postgres_hmpps_remand_and_sentencing.yaml > ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
+          envsubst < ingestion/postgres.yaml > ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
 
       - name: datahub postgres ingestion
         env:
