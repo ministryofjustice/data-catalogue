@@ -1,0 +1,17 @@
+name: testing out postgres ingestion
+
+on:
+  pull_request:
+
+jobs:
+  ingest-postgres:
+    uses: ./.github/workflows/ingest-postgres.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      HOST_PORT: ${{ secrets.DEV_HOST_PORT_REMAND_AND_SENTENCING }}
+      DATABASE: ${{ secrets.DEV_DATABASE_REMAND_AND_SENTENCING }}
+      USER: ${{ secrets.DEV_USER_REMAND_AND_SENTENCING }}
+      PASSWORD: ${{ secrets.DEV_PASSWORD_REMAND_AND_SENTENCING }}
