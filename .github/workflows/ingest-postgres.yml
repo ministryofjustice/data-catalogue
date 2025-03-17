@@ -78,7 +78,6 @@ jobs:
           USER: ${{ secrets.USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          apt-get update && apt-get install -y gettext
           mkdir -p ingestion/processed
           envsubst < ingestion/postgres.yaml > ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
 
