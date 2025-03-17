@@ -1,0 +1,20 @@
+---
+name: Ingest data from AP Postgres
+
+on:
+    pull_request:
+
+permissions: {}
+
+jobs:
+    test:
+    name: Test
+    runs-on: [self-hosted, analytical-platform]
+    permissions:
+        contents: read
+    steps:
+        - name: Checkout
+        id: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+            persist-credentials: false
