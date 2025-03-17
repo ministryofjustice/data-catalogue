@@ -17,9 +17,6 @@ on:
         required: true
         type: string
     secrets:
-      ROLE_TO_ASSUME:
-        description: "Postgres AWS IAM role to assume"
-        required: true
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
         required: true
@@ -50,12 +47,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-          role-duration-seconds: 14400
-          aws-region: ${{ inputs.ECR_REGION }}
 
       - name: cache poetry install
         uses: actions/cache@v4
