@@ -1,4 +1,4 @@
-name: "Ingest metadata from AP glue catalogue"
+name: "Ingest metadata from AP postgres"
 
 permissions:
   id-token: write
@@ -37,7 +37,7 @@ on:
         required: true
 
 jobs:
-  datahub-ingest-glue-data:
+  datahub-ingest-postgres-data:
     environment: ${{ inputs.ENVIRONMENT }}
     timeout-minutes: 120
     runs-on: [self-hosted, analytical-platform]
@@ -71,7 +71,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: Inject credentials to glue ingestion config
+      - name: Inject credentials to postgres ingestion config
         env:
           HOST_PORT: ${{ secrets.HOST_PORT }}
           DATABASE: ${{ secrets.DATABASE }}
@@ -81,7 +81,7 @@ jobs:
           mkdir -p ingestion/processed
           envsubst < ingestion/postgres_hmpps_remand_and_sentencing.yaml > ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
 
-      - name: datahub glue ingestion using config with credentials
+      - name: datahub postgres ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
@@ -95,7 +95,7 @@ jobs:
         with:
           payload: |
             {
-                "text": ":warning: Glue ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": ":warning: Postgres ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
