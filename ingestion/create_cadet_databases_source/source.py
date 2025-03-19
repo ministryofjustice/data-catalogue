@@ -166,6 +166,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             database, table = parse_database_and_table_names(node)
             domain = domain_lookup.get(database, table)
             tag_names = [
+                "Miscellaneous",
                 "Reference data",
                 "dc_display_in_catalogue",
             ]
