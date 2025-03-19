@@ -16,6 +16,10 @@ on:
         description: "Environment to use for secrets"
         required: true
         type: string
+      INGESTION_NAME:
+        description: "Name of the ingestion recipe"
+        required: true
+        type: string
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -73,6 +77,7 @@ jobs:
 
       - name: Inject credentials to postgres ingestion config
         env:
+          INGESTION_NAME: ${{ inputs.INGESTION_NAME }}
           HOST_PORT: ${{ secrets.HOST_PORT }}
           DATABASE: ${{ secrets.DATABASE }}
           USER: ${{ secrets.USER }}

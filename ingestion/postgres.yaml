@@ -1,4 +1,4 @@
-pipeline_name: hmpps-remand-and-sentencing-dev
+pipeline_name: "${INGESTION_NAME}"
 source:
   type: postgres
   config:
