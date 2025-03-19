@@ -67,20 +67,6 @@ jobs:
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ping-postgres:
-    environment: dev
-    timeout-minutes: 120
-    runs-on: [self-hosted, analytical-platform]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: ping postgres
-        run: |
-          ping -c 5 ${{ secrets.POSTGRES_HOST_REMAND_AND_SENTENCING }}
   ingest-postgres:
     uses: ./.github/workflows/ingest-postgres.yml
     with:

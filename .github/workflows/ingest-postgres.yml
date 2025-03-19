@@ -84,7 +84,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           mkdir -p ingestion/processed
-          envsubst < ingestion/postgres.yaml > ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
+          envsubst < ingestion/postgres.yaml > ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
 
       - name: datahub postgres ingestion
         env:
@@ -92,7 +92,7 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          time poetry run datahub ingest -c ingestion/processed/postgres_hmpps_remand_and_sentencing.yaml
+          time poetry run datahub ingest -c ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
@@ -100,7 +100,7 @@ jobs:
         with:
           payload: |
             {
-                "text": ":warning: Postgres ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": ":warning: Postgres ingestion ${{ inputs.INGESTION_NAME }} failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
