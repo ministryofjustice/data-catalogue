@@ -39,6 +39,9 @@ on:
       PASSWORD:
         description: "Password for the database"
         required: true
+      PLACEHOLDER_TECHNICAL_CONTACT:
+        description: "Technical contact for the dataset"
+        required: true
 
 jobs:
   datahub-ingest-postgres-data:
@@ -82,6 +85,7 @@ jobs:
           DATABASE: ${{ secrets.DATABASE }}
           USER: ${{ secrets.USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
         run: |
           mkdir -p ingestion/processed
           envsubst < ingestion/postgres.yaml > ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml

@@ -10,14 +10,6 @@ source:
     username: "${USER}"
     password: "${PASSWORD}"
 
-    # Optional: SSL configuration.
-    # options:
-    #   connect_args:
-    #     sslcert: "<<path to sslcert>>"
-    #     sslkey: "<<path to sslkey>>"
-    #     sslrootcert: "<<path to verification ca chain>>"
-    #     sslmode: "verify-full"
-
 transformers:
   - type: "simple_add_dataset_tags"
     config:
