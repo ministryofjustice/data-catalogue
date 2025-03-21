@@ -17,3 +17,10 @@ source:
     #     sslkey: "<<path to sslkey>>"
     #     sslrootcert: "<<path to verification ca chain>>"
     #     sslmode: "verify-full"
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Prisons and probation"
