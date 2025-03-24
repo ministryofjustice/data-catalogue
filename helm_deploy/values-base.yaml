@@ -29,6 +29,10 @@ datahub-gms:
     initialDelaySeconds: 120
     periodSeconds: 30
     failureThreshold: 8
+  theme_v2:
+    enabled: true
+    default: false
+    toggeable: true
   service:
     type: ClusterIP
   serviceMonitor:
@@ -759,7 +763,7 @@ global:
           value: ""
 
   datahub:
-    version: v0.15.0.1
+    version: v1.0.0
     gms:
       port: "8080"
       nodePort: "30001"
@@ -776,7 +780,7 @@ global:
       port: "9091"
       nodePort: "30002"
 
-    appVersion: "1.0"
+    appVersion: "1.0.0"
     systemUpdate:
       ## The following options control settings for datahub-upgrade job which will
       ## managed ES indices and other update related work
@@ -792,7 +796,7 @@ global:
 
     managed_ingestion:
       enabled: true
-      defaultCliVersion: "0.15.0.1"
+      defaultCliVersion: "1.0.0"
 
     metadata_service_authentication:
       enabled: true
@@ -860,3 +864,12 @@ global:
         #  initialIntervalMs: 100
         #  multiplier: 10
         #  maxIntervalMs: 30000
+
+    ## v0.15.0+
+    entityVersioning:
+      enabled: false
+
+    ## Enables a fast path for processing events sourced from the UI, updates indices synchronously for requests originating from GraphQL
+    preProcessHooksUIEnabled: true
+    ## Reprocess UI events at MAE Consumer, normally if preprocess is enabled this is not required.
+    reProcessUIEventHooks: false
