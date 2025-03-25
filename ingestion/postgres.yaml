@@ -65,4 +65,3 @@ transformers:
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
         refresh_period: Daily
         security_classification: Official-Sensitive
-  - type: "ContainerPropertiesTransformer"
