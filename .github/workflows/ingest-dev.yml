@@ -7,13 +7,13 @@ on:
   pull_request:
 
 jobs:
-  # ingest-ownership-types-dev:
-  #   uses: ./.github/workflows/ingest-yaml.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-ownership-types-dev:
+    uses: ./.github/workflows/ingest-yaml.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   # ingest-cadet-dev:
   #   uses: ./.github/workflows/ingest-cadet-metadata.yml
   #   with:
@@ -68,7 +68,7 @@ jobs:
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-postgres:
+  ingest-postgres-cdrs:
     uses: ./.github/workflows/ingest-postgres.yml
     with:
       ENVIRONMENT: dev
