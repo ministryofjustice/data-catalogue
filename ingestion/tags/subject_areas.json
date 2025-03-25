@@ -260,5 +260,19 @@
         ]
       }
     }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Person Sentence Calculations",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Person Sentence Calculations"
+            }
+          }
+        ]
+      }
+    }
   }
 ]
