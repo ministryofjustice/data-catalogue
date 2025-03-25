@@ -1,0 +1,136 @@
+---
+name: 🗄️ Add Glue Database to Data Catalogue
+description: Request to add a Glue database to the data catalogue
+title: "🗄️ Add [DATABASE NAME] to data catalogue"
+labels: ["glue-database", "new-dataset"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Database Details
+        Please provide information about the Glue database you want to add to the data catalogue.
+  
+  - type: input
+    id: database-name
+    attributes:
+      label: Database Name
+      description: The name of the Glue database you want to add
+    validations:
+      required: true
+  
+  - type: textarea
+    id: database-description
+    attributes:
+      label: Database Description
+      description: Brief description of what the database contains and its business purpose
+      placeholder: "This database contains..."
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## Contact Information
+        Please provide contact details for the team responsible for this data.
+  
+  - type: input
+    id: slack-channel-name
+    attributes:
+      label: Data Contact Point - Slack Channel Name
+      placeholder: "#your-team-channel"
+    validations:
+      required: false
+  
+  - type: input
+    id: slack-channel-url
+    attributes:
+      label: Data Contact Point - Slack Channel URL
+      placeholder: "https://moj.enterprise.slack.com/archives/C123456789"
+    validations:
+      required: false
+  
+  - type: input
+    id: teams-channel-name
+    attributes:
+      label: Data Contact Point - Teams Channel Name
+      placeholder: "Your Team Channel"
+    validations:
+      required: false
+  
+  - type: input
+    id: teams-channel-url
+    attributes:
+      label: Data Contact Point - Teams Channel URL
+      placeholder: "https://teams.microsoft.com/l/channel/..."
+    validations:
+      required: false
+  
+  - type: input
+    id: team-email
+    attributes:
+      label: Data Contact Point - Team Email Address
+      placeholder: "team@justice.gov.uk"
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## Access Information
+        Details about how to access this data
+  
+  - type: input
+    id: access-location
+    attributes:
+      label: Where to access the dataset
+      description: Where users can access this data
+      placeholder: "Analytical Platform, AWS Console, etc."
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: refresh-period
+    attributes:
+      label: Refresh Period
+      description: How often is this data refreshed?
+      options:
+        - Daily
+        - Weekly
+        - Monthly
+        - Quarterly
+        - Annually
+        - Ad-hoc
+        - Other (please specify in Additional Information)
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: public-release
+    attributes:
+      label: Is the data for public release?
+      options:
+        - Yes
+        - No
+        - Conditional (please explain in Additional Information)
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## Classification
+        Please classify your data according to the subject areas.
+
+        1. Choose ONE subject area from the list at https://github.com/ministryofjustice/data-catalogue/blob/main/ingestion/tags/top_level_subject_areas_template.yaml
+        1. Choose 0 or more secondary subject areas from the list at https://github.com/ministryofjustice/data-catalogue/blob/main/ingestion/tags/subject_areas_template.yaml
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any other useful information, sample queries, known issues, or limitations
+      placeholder: "Additional details about this database..."
+    validations:
+      required: false
+---

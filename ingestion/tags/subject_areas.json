@@ -7,7 +7,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Corporate operations",
-              "description": "Employees, property and finance"
+              "description": "Data about MoJ employees, property and finance. For example: staff absences, cost centre analyses, equipment records."
             }
           }
         ]
@@ -22,7 +22,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Crime and policing",
-              "description": "Law enforcement, criminal offences and reoffending"
+              "description": "Data about law enforcement work and prosecution. For example: investigation outcomes, recorded offences, police referrals to CPS."
             }
           }
         ]
@@ -37,7 +37,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Courts and tribunals",
-              "description": "HM Courts and Tribunal Service, legal cases, sentencing"
+              "description": "Data about HM Courts and Tribunal Service cases including criminal, civil and family. For example: case completion lengths, judgements, defendant information."
             }
           }
         ]
@@ -67,7 +67,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Office of the Public Guardian",
-              "description": "Lasting power of attorney and supervision orders"
+              "description": "Data about OPG cases, including lasting power of attorney appointments and supervision orders."
             }
           }
         ]
@@ -82,7 +82,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Prisons and probation",
-              "description": "HM Prison and Probation Service, electronic monitoring, rehabilitation, offence risk"
+              "description": "Data about HM Prison and Probation Service. For example: offender information, prison population monitoring, risk assessments."
             }
           }
         ]
@@ -92,12 +92,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Reference data",
+        "urn": "urn:li:tag:Miscellaneous",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Reference data",
-              "description": "Data to define or standardise other data"
+              "name": "Miscellaneous",
+              "description": "Includes reference data, lookup tables and assets outside other subject areas."
             }
           }
         ]
