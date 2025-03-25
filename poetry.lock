@@ -17,9 +17,10 @@ files = [
 aiohttp = "<4"
 avro = ">=1.11.3,<1.13"
 avro-gen3 = "0.7.16"
-boto3 = {version = "*", optional = true, markers = "extra == \"dbt\""}
-botocore = {version = "!=1.23.0", optional = true, markers = "extra == \"dbt\""}
+boto3 = {version = "*", optional = true, markers = "extra == \"dbt\" or extra == \"glue\""}
+botocore = {version = "!=1.23.0", optional = true, markers = "extra == \"dbt\" or extra == \"glue\""}
 cached_property = "*"
+cachetools = {version = "*", optional = true, markers = "extra == \"glue\""}
 click = ">=7.1.2"
 click-default-group = "*"
 click-spinner = "*"
@@ -38,7 +39,7 @@ progressbar2 = "*"
 psutil = ">=5.8.0"
 pydantic = [
     {version = ">=1.10.0,<1.10.3 || >1.10.3"},
-    {version = ">=1.10.0,<1.10.3 || >1.10.3,<2", optional = true, markers = "extra == \"dbt\""},
+    {version = ">=1.10.0,<1.10.3 || >1.10.3,<2", optional = true, markers = "extra == \"dbt\" or extra == \"glue\""},
 ]
 python-dateutil = ">=2.8.0"
 PyYAML = "*"
@@ -396,6 +397,19 @@ markers = "python_version == \"3.11\" or python_version >= \"3.12\""
 files = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
     {file = "cached_property-1.5.2-py2.py3-none-any.whl", hash = "sha256:df4f613cf7ad9a588cc381aaf4a512d26265ecebd5eb9e1ba12f1319eb85a6a0"},
+]
+
+[[package]]
+name = "cachetools"
+version = "5.5.2"
+description = "Extensible memoizing collections and decorators"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+markers = "python_version == \"3.11\" or python_version >= \"3.12\""
+files = [
+    {file = "cachetools-5.5.2-py3-none-any.whl", hash = "sha256:d26a22bcc62eb95c3beabd9f1ee5e820d3d2704fe2967cbe350e20c8ffcd3f0a"},
+    {file = "cachetools-5.5.2.tar.gz", hash = "sha256:1a661caa9175d26759571b2e19580f9d6393969e5dfca11fdb1f947a23e640d4"},
 ]
 
 [[package]]
@@ -2829,4 +2843,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "7485206306f98ab85da2e1e44854679a05c2febff6765fc69ade8cd15366417f"
+content-hash = "7ce44a2691cb5a69c2041306d2d2269b1da2a63ca53233b679c73b78d0d21abe"
