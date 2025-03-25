@@ -76,7 +76,8 @@ class MojPublicationsAPIClient:
         unique_collections = [
             dict(collection)
             for collection in unique_collections
-            if dict(collection).get("slug") not in collections_to_exclude
+            if dict(collection).get("link")
+            and dict(collection).get("slug") not in collections_to_exclude
         ]
 
         for collection in unique_collections:
@@ -84,11 +85,11 @@ class MojPublicationsAPIClient:
             # for each collection
             link = collection.get("link")
             if not link:
-                logging.warning(f"{collection=} does not have a link and will be skipped")
+                logging.warning(
+                    f"{collection=} does not have a link and will be skipped"
+                )
                 continue
-            content_api_url = os.path.join(
-                self.base_url, f"content/{link}"
-            )
+            content_api_url = os.path.join(self.base_url, f"content/{link}")
             content_response = self.session.get(content_api_url).json()
             collection["description"] = content_response.get("description")
             collection["subject_areas"] = self._id_to_metadata_mapping.get(
