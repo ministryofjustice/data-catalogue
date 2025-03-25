@@ -46,8 +46,8 @@ transformers:
         - Prisons and probation
         - Prisons
         - Person Sentence Calculations
+      description: "This is the Postgres connection to the Calculate Release Dates database. The Calculate Release Dates Service is used to calculate various sentence release dates based on adjustment, sentence, offence and prisoner data."
       properties:
-        description: "This contains app data from the backend of the HMPPS Calculate Release Dates service."
         dc_readable_name: "calculate_release_dates"
         dc_slack_channel_name: "#calculate_release_dates_public_channel"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K

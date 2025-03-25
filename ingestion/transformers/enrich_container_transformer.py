@@ -29,6 +29,7 @@ class EnrichContainerTransformerConfig(ConfigModel):
     data_custodian: str
     subject_areas: list[str]
     ownership_type: str = DATAOWNER
+    description: str = ""
     properties: dict[str, str] = {}
 
 
@@ -113,6 +114,9 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
         )
         if not current_properties:
             raise Exception("Unable to query current properties")
+
+        if self.config.description:
+            current_properties.description = self.config.description
 
         current_properties.customProperties.update(self.config.properties)
         return MetadataChangeProposalWrapper(
