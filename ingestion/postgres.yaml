@@ -12,7 +12,7 @@ source:
 
     table_pattern:
       deny:
-        - "approved_dates_submission"
+        - ".*approved_dates_submission$"
         - "approved_dates_submission_approved_dates"
         - "bank_holiday_cache"
         - "calculation_request_manual_reason"
