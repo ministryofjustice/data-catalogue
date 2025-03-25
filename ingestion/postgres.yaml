@@ -47,6 +47,8 @@ transformers:
         - Prisons
         - Person Sentence Calculations
       properties:
+        description: "This contains app data from the backend of the HMPPS Calculate Release Dates service."
+        dc_readable_name: "calculate_release_dates"
         dc_slack_channel_name: "#calculate_release_dates_public_channel"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
         dc_where_to_access_dataset: AnalyticalPlatform
@@ -63,3 +65,4 @@ transformers:
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
         refresh_period: Daily
         security_classification: Official-Sensitive
+  - type: "ContainerPropertiesTransformer"
