@@ -19,7 +19,7 @@ datahub-gms:
     limits:
       memory: 2Gi
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 1Gi
   livenessProbe:
     initialDelaySeconds: 60
