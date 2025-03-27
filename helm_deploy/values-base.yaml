@@ -382,9 +382,9 @@ datahubSystemUpdate:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
   annotations:
-    # helm.sh/hook: pre-install,pre-upgrade
-    # helm.sh/hook-weight: "-4"
-    # helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-4"
+    helm.sh/hook-delete-policy: before-hook-creation
   # Split the system update into 2 jobs, one that is blocking the rest of
   # the deployment and the other which is non-blocking. Once the blocking
   # steps are completed, the non-blocking job runs while the rest of the
