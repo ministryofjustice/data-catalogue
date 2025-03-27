@@ -7,7 +7,7 @@ datahub-gms:
     - name: "BUSINESS_ATTRIBUTE_ENTITY_ENABLED"
       value: "true"
   securityContext:
-    runAsUser: 100
+    runAsUser: 1000
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
@@ -19,7 +19,7 @@ datahub-gms:
     limits:
       memory: 2Gi
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 1Gi
   livenessProbe:
     initialDelaySeconds: 60
@@ -29,6 +29,10 @@ datahub-gms:
     initialDelaySeconds: 120
     periodSeconds: 30
     failureThreshold: 8
+  theme_v2:
+    enabled: true
+    default: false
+    toggeable: true
   service:
     type: ClusterIP
   serviceMonitor:
@@ -71,12 +75,12 @@ datahub-frontend:
       cpu: 100m
       memory: 512Mi
   podSecurityContext:
-    fsGroup: 101
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-    runAsUser: 100
+    runAsUser: 1000
     runAsNonRoot: true
     capabilities:
       drop: ["ALL"]
@@ -125,27 +129,22 @@ datahub-frontend:
 
 acryl-datahub-actions:
   enabled: true
+  image:
+    repository: acryldata/datahub-actions
+    tag: "v0.1.1"
   serviceAccount:
     name: ""
   podSecurityContext:
-    fsGroup: 103
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-    runAsUser: 102
+    runAsUser: 1000
     runAsNonRoot: true
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
-  image:
-    repository: acryldata/datahub-actions
-    tag: v0.0.15
-  # mount the k8s secret as a volume in the container, each key name is mounted as a
-  # file on the mount path /etc/datahub/ingestion-secret-files
-  # ingestionSecretFiles:
-  #   name: ${K8S_SECRET_NAME}
-  #   defaultMode: "0444"
   resources:
     limits:
       cpu: 1000m
@@ -164,11 +163,30 @@ elasticsearchSetupJob:
   serviceAccount: ""
   image:
     repository: acryldata/datahub-elasticsearch-setup
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 300m
+      memory: 256Mi
+  extraInitContainers: []
+  podSecurityContext:
+    fsGroup: 1000
   extraEnvs:
     - name: USE_AWS_ELASTICSEARCH
       value: "true"
     - name: OPENSEARCH_USE_AWS_IAM_AUTH
       value: "true"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: before-hook-creation
+  podAnnotations: {}
+  # Add extra sidecar containers to job pod
+  extraSidecars: []
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
@@ -195,7 +213,7 @@ kafkaSetupJob:
       memory: 768Mi
   extraInitContainers: []
   podSecurityContext:
-    fsGroup: 101
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
@@ -205,7 +223,6 @@ kafkaSetupJob:
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
-
   annotations:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-5"
@@ -220,8 +237,6 @@ postgresqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-postgres-setup
-    # tag: "v0.11.0" # defaults to .global.datahub.version
-    tag: v0.14.0.2 # Workaround for no tag existing in v0.14.1 release
   resources:
     limits:
       cpu: 500m
@@ -263,18 +278,24 @@ datahubUpgrade:
   batchSize: 1000
   batchDelayMs: 100
   noCodeDataMigration:
+    enabled: false
+    image:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      command:
+      args: []
     sqlDbType: "POSTGRES"
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "-2"
     helm.sh/hook-delete-policy: before-hook-creation
   podSecurityContext:
-    fsGroup: 101
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-    runAsUser: 100
+    runAsUser: 1000
     runAsNonRoot: true
     capabilities:
       drop: ["ALL"]
@@ -292,6 +313,32 @@ datahubUpgrade:
     concurrencyPolicy: Allow
     extraSidecars: []
   restoreIndices:
+    image:
+      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
+      # to run
+      command:
+      # Overrides the entire set of upgrade job arguments, for if you want to specify exactly whi
+      args: []
+    # Alternative for overriding specific args instead of changing the entire set and overriding defaults
+    args:
+      # Restore only rows with less than a certain epoch millisecond timestamp
+      lePitEpochMs:
+      # Restore only rows with greater than a certain epoch millisecond timestamp
+      gePitEpochMs:
+      # Used in conjunction with urnBasedPagination, resume from a particular urn
+      lastUrn:
+      # Used in conjunction with urnBasedPagination and lastUrn, resume from a particular urn for a particular aspect to avoid reprocessing certain aspects
+      lastAspect:
+      # Uses a key based paging strategy when scrolling through SQL rows instead of offset. Often faster for large sets of data
+      urnBasedPagination:
+      # Only restore for certain aspects, comma separated list
+      aspectNames:
+      # A SQL "like" statement that matches against the urn column
+      urnLike:
+      # Used with default paging, start from a specified offset
+      startingOffset:
+      # Specifies number of threads for processing pages of rows to restore
+      numThreads:
     resources:
       limits:
         cpu: 500m
@@ -299,6 +346,8 @@ datahubUpgrade:
       requests:
         cpu: 300m
         memory: 256Mi
+    # Schedule of CronJob when enabled
+    schedule: "0 0 * * 0"
     concurrencyPolicy: Allow
     extraSidecars: []
     extraEnvs:
@@ -314,48 +363,72 @@ datahubUpgrade:
 datahubSystemUpdate:
   image:
     repository: acryldata/datahub-upgrade
-    # tag:
-  annotations:
-    helm.sh/hook: pre-install,pre-upgrade
-    helm.sh/hook-weight: "-4"
-    helm.sh/hook-delete-policy: before-hook-creation
-  # Split the system update into 2 jobs, one that is blocking the rest of
-  # the deployment and the other which is non-blocking. Once the blocking
-  # steps are completed, the non-blocking job runs while the rest of the
-  # system is starting.
-  nonblocking:
-    enabled: false
-    # When mode = 'nonblocking' the nonblocking job should not include the above helm.sh/hook annotations
-    annotations:
-      # This is what defines this resource as a hook. Without this line, the
-      # job is considered part of the release.
-      helm.sh/hook: post-install,post-upgrade
-      helm.sh/hook-delete-policy: before-hook-creation
-    image:
-      args:
-      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
-      # to run
-      # command: customCommand
-      # args: []
   podSecurityContext:
-    fsGroup: 101
+    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-    runAsUser: 100
+    runAsUser: 1000
     runAsNonRoot: true
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
+  nonblocking:
+    enabled: true
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
+  # Depends on v0.14.2 or greater
+  bootstrapMCPs:
+    default:
+      value_configs:
+        - "datahub.bootstrapMCPs.default.ingestion.version"
+        - "datahub.bootstrapMCPs.default.schedule.timezone"
+    datahubGC:
+      # For information about this recipe https://datahubproject.io/docs/0.14.0/generated/ingestion/sources/datahubgc/#install-the-plugin
+      # Generate values.schedule.interval with a jitter window using a generated config
+      dailyCronWindow:
+        startHour: 18
+        endHour: 21
+      # dynamic overrides, the output to each function is deepMerged with values
+      values_generated_configs:
+        - "datahub.systemUpdate.datahubGC.dailyCronWindow"
+      # Environment variable containing the json value for the template mcp
+      values_env: DATAHUB_GC_BOOTSTRAP_VALUES
+      revision_env: DATAHUB_GC_BOOTSTRAP_REVISION
+      # Base values for the template mcp
+      values:
+        ingestion:
+          name: datahub-gc
+          # # override global.datahub.managed_ingestion.defaultCliVersion
+          # version: "0.14.1.7rc2"
+        # schedule:
+        # # override global.datahub.timezone
+        # timezone: "UTC"
+        # # override dailyCronWindow
+        # interval: "0 1 * * *"
+        cleanup_expired_tokens: "false"
+        truncate_indices: "true"
+        truncate_indices_retention_days: 30
+        dataprocess_cleanup:
+          retention_days: 30
+          delete_empty_data_jobs: "true"
+          delete_empty_data_flows: "true"
+          hard_delete_entities: "false"
+          keep_last_n: 10
+        soft_deleted_entities_cleanup:
+          retention_days: 30
   resources:
     limits:
       cpu: 800m
-      memory: 512Mi
+      memory: 2Gi
     requests:
       cpu: 500m
-      memory: 256Mi
+      memory: 1Gi
   extraSidecars: []
   extraInitContainers: []
 
@@ -364,12 +437,34 @@ global:
   graph_service_impl: elasticsearch
   datahub_analytics_enabled: true
   datahub_standalone_consumers_enabled: false
+  imageRegistry: "docker.io"
 
   elasticsearch:
     #  The host is the core of the proxy url (minus "https://" prefix and ":port" suffix)
     host: ""
     port: "8080"
     useSSL: "false"
+
+    metadataChangeLog:
+      hooks:
+        siblings:
+          enabled: true
+          consumerGroupSuffix: ""
+        updateIndices:
+          enabled: true
+          consumerGroupSuffix: ""
+        ingestionScheduler:
+          enabled: true
+          consumerGroupSuffix: ""
+        incidents:
+          enabled: true
+          consumerGroupSuffix: ""
+        entityChangeEvents:
+          enabled: true
+          consumerGroupSuffix: ""
+        forms:
+          enabled: true
+          consumerGroupSuffix: ""
 
     ## The following section controls when and how reindexing of elasticsearch indices are performed
     index:
@@ -467,7 +562,7 @@ global:
                   - filter:
                       prefix:
                         urn:
-                          value: 'urn:li:container:'
+                          value: "urn:li:container:"
                     weight: 3.0
                   - filter:
                       term:
@@ -576,23 +671,19 @@ global:
       metadata_change_log_timeseries_topic_name: "MetadataChangeLog_Timeseries_v1"
       platform_event_topic_name: "PlatformEvent_v1"
       datahub_upgrade_history_topic_name: "DataHubUpgradeHistory_v1"
-    maxMessageBytes: "5242880" # 5MB
-    producer:
-      compressionType: none
-      maxRequestSize: "5242880" # 5MB
-    consumer:
-      maxPartitionFetchBytes: "5242880" # 5MB
-    ## For AWS MSK set this to a number larger than 1
-    # partitions: 3
-    # replicationFactor: 3
-    schemaregistry:
-      # GMS Implementation - `url` configured based on component context
-      type: INTERNAL
-      # Glue Implementation - `url` not applicable
-      # type: AWS_GLUE
-      # glue:
-      #   region: us-east-1
-      #   registry: datahub
+    consumer_groups:
+      datahub_upgrade_history_kafka_consumer_group_id: {}
+      #   gms: "<<release-name>>-duhe-consumer-job-client-gms"
+      #   mae-consumer: "<<release-name>>-duhe-consumer-job-client-mcl"
+      #   mce-consumer: "<<release-name>>-duhe-consumer-job-client-mcp"
+      datahub_actions_ingestion_executor_consumer_group_id: "ingestion_executor"
+      datahub_actions_slack_consumer_group_id: "datahub_slack_action"
+      datahub_actions_teams_consumer_group_id: "datahub_teams_action"
+      datahub_usage_event_kafka_consumer_group_id: "datahub-usage-event-consumer-job-client"
+      metadata_change_log_kafka_consumer_group_id: "generic-mae-consumer-job-client"
+      platform_event_kafka_consumer_group_id: "generic-platform-event-job-client"
+      metadata_change_event_kafka_consumer_group_id: "mce-consumer-job-client"
+      metadata_change_proposal_kafka_consumer_group_id: "generic-mce-consumer-job-client"
     metadataChangeLog:
       hooks:
         siblings:
@@ -613,6 +704,24 @@ global:
         forms:
           enabled: true
           consumerGroupSuffix: ""
+    maxMessageBytes: "5242880" # 5MB
+    producer:
+      compressionType: none
+      maxRequestSize: "5242880" # 5MB
+    consumer:
+      maxPartitionFetchBytes: "5242880" # 5MB
+      stopContainerOnDeserializationError: true
+    ## For AWS MSK set this to a number larger than 1
+    # partitions: 3
+    # replicationFactor: 3
+    schemaregistry:
+      # GMS Implementation - `url` configured based on component context
+      type: INTERNAL
+      # Glue Implementation - `url` not applicable
+      # type: AWS_GLUE
+      # glue:
+      #   region: us-east-1
+      #   registry: datahub
 
   sql:
     datasource:
@@ -632,10 +741,13 @@ global:
           value: ""
 
   datahub:
-    version: v0.14.1
+    version: v1.0.0
     gms:
       port: "8080"
       nodePort: "30001"
+
+    # Used for scheduled tasks
+    timezone: "Europe/London"
 
     frontend:
       validateSignUpEmail: true
@@ -647,7 +759,7 @@ global:
       port: "9091"
       nodePort: "30002"
 
-    appVersion: "1.0"
+    appVersion: "1.0.0"
     systemUpdate:
       ## The following options control settings for datahub-upgrade job which will
       ## managed ES indices and other update related work
@@ -663,7 +775,7 @@ global:
 
     managed_ingestion:
       enabled: true
-      defaultCliVersion: "0.14.0"
+      defaultCliVersion: "1.0.0"
 
     metadata_service_authentication:
       enabled: true
@@ -687,7 +799,11 @@ global:
     alwaysEmitChangeLog: false
 
     ## Enables diff mode for graph writes, uses a different code path that produces a diff from previous to next to write relationships instead of wholesale deleting edges and reading
-    enableGraphDiffMode: true
+    enableGraphDiffMode:
+      true
+
+      ## Enable stricter URN validation logic
+    strictUrnValidation: false
 
     ## Values specific to the unified search and browse feature.
     search_and_browse:
@@ -696,10 +812,20 @@ global:
       # If on, run the backfill upgrade job that generates default browse paths for relevant entities
       backfill_browse_v2: true
 
+    ## v0.15.0+
+    metadataChangeProposal:
+      consumer:
+        batch:
+          enabled: false
+
     ## v0.13.4+
     mcp:
       throttle:
         # updateIntervalMs: 60000
+        mceConsumer: # v0.14.2+
+          enabled: false
+        apiRequests: # v0.14.2+
+          enabled: false
         ## Versioned MCL topic
         versioned:
           ## Whether to throttle MCP processing based on MCL backlog
@@ -718,3 +844,12 @@ global:
         #  initialIntervalMs: 100
         #  multiplier: 10
         #  maxIntervalMs: 30000
+
+    ## v0.15.0+
+    entityVersioning:
+      enabled: false
+
+    ## Enables a fast path for processing events sourced from the UI, updates indices synchronously for requests originating from GraphQL
+    preProcessHooksUIEnabled: true
+    ## Reprocess UI events at MAE Consumer, normally if preprocess is enabled this is not required.
+    reProcessUIEventHooks: false
