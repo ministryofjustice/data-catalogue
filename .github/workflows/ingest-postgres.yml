@@ -1,0 +1,110 @@
+name: "Ingest metadata from AP postgres"
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      ECR_REGION:
+        description: "AWS ECR region to connect to"
+        required: false
+        type: string
+        default: eu-west-1
+      ENVIRONMENT:
+        description: "Environment to use for secrets"
+        required: true
+        type: string
+      INGESTION_NAME:
+        description: "Name of the ingestion recipe"
+        required: true
+        type: string
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API Key for datahub GMS"
+        required: true
+      SLACK_ALERT_WEBHOOK:
+        description: "Webhook for posting alerts to the team"
+        required: true
+      HOST_PORT:
+        description: "Host and port for the database"
+        required: true
+      DATABASE:
+        description: "Database name"
+        required: true
+      USER:
+        description: "Username for the database"
+        required: true
+      PASSWORD:
+        description: "Password for the database"
+        required: true
+      PLACEHOLDER_TECHNICAL_CONTACT:
+        description: "Technical contact for the dataset"
+        required: true
+
+jobs:
+  datahub-ingest-postgres-data:
+    environment: ${{ inputs.ENVIRONMENT }}
+    timeout-minutes: 120
+    runs-on: [self-hosted, analytical-platform]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: cache poetry install
+        uses: actions/cache@v4
+        with:
+          path: ~/.local
+          key: poetry-1.7.1-0
+
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+      - run: poetry install --no-interaction --no-root
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - run: poetry install --no-interaction
+
+      - name: Inject credentials to postgres ingestion config
+        env:
+          INGESTION_NAME: ${{ inputs.INGESTION_NAME }}
+          HOST_PORT: ${{ secrets.HOST_PORT }}
+          DATABASE: ${{ secrets.DATABASE }}
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
+        run: |
+          mkdir -p ingestion/processed
+          envsubst < ingestion/postgres_${{ inputs.INGESTION_NAME }}.yaml > ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
+
+      - name: datahub postgres ingestion
+        env:
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_TELEMETRY_ENABLED: false
+        run: |
+          time poetry run datahub ingest -c ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
+
+      - name: Notify on failure
+        uses: slackapi/slack-github-action@v1.27.0
+        if: failure()
+        with:
+          payload: |
+            {
+                "text": ":warning: Postgres ingestion ${{ inputs.INGESTION_NAME }} failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
