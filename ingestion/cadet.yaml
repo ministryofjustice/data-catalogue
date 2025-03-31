@@ -68,7 +68,7 @@ source:
 sink:
   type: "datahub-rest"
   config:
-    max_per_batch: 500
+    max_per_batch: 100
     # # The DataHub GMS URL
     # gms_server: "${{ secrets.DATAHUB_GMS_URL }}"
     # # The DataHub GMS token
