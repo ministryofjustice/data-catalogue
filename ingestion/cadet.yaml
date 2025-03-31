@@ -65,6 +65,20 @@ source:
           owner_type: user
           owner_category: DATAOWNER
           #owner_category: urn:li:ownershipType:data_custodian   # uncomment when we update to CLI 0.14.1.6 or later
+sink:
+  type: "datahub-rest"
+  config:
+    max_per_batch: 500
+    # # The DataHub GMS URL
+    # gms_server: "${{ secrets.DATAHUB_GMS_URL }}"
+    # # The DataHub GMS token
+    # gms_token: "${{ secrets.DATAHUB_GMS_TOKEN }}"
+    # # The DataHub GMS token
+    # telemetry_enabled: false
+    # # The DataHub GMS token
+    # telemetry_report_to: "cadet"
+    # # The DataHub GMS token
+    # telemetry_report_format: "json"
 
 transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
