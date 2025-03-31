@@ -5,7 +5,7 @@
 - name: "Courts and tribunals"
   description: "Data about HM Courts and Tribunal Service cases including criminal, civil and family. For example: case completion lengths, judgements, defendant information."
 - name: "Legal aid"
-  description: "Legal aid and the Civil Legal Advice service"
+  description: "Data about legal aid activity and the Civil Legal Advice service."
 - name: "Office of the Public Guardian"
   description: "Data about OPG cases, including lasting power of attorney appointments and supervision orders."
 - name: "Prisons and probation"
