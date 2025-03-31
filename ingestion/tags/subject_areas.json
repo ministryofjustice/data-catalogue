@@ -52,7 +52,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Legal aid",
-              "description": "Legal aid and the Civil Legal Advice service"
+              "description": "Data about legal aid activity and the Civil Legal Advice service."
             }
           }
         ]
