@@ -68,6 +68,7 @@ source:
 sink:
   type: "datahub-rest"
   config:
+    server: "$DATAHUB_GMS_URL"
     max_per_batch: "100"
 
 transformers:
