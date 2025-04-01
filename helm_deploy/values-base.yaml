@@ -550,7 +550,7 @@ global:
             # Attempt to rank active incidents at the top followed by enrichment factors
             - queryRegex: "[*]|"
               simpleQuery: false
-              prefixMatchQuery: false
+              prefixMatchQuery: true
               exactMatchQuery: false
               functionScore:
                 functions:
