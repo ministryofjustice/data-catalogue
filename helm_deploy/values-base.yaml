@@ -652,9 +652,10 @@ global:
                           value: true
                     weight: 0.25
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
+                      term:
+                        prefix:
+                          urn:
+                            value: "urn:li:container:"
                     weight: 3.0
                 score_mode: multiply
                 boost_mode: multiply
