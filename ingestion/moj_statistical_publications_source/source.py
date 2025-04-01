@@ -236,6 +236,7 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                     )
 
             else:
+                tags = [TagAssociationClass(tag="urn:li:tag:dc_display_in_catalogue")]
                 custom_properties["dc_team_email"] = self.client.default_contact_email
 
             # add dataset properties

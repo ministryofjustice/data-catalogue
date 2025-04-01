@@ -1,4 +1,4 @@
-name: "Ingest metadata from AP glue catalogue"
+name: "Ingest metadata from AP postgres"
 
 permissions:
   id-token: write
@@ -8,7 +8,7 @@ on:
   workflow_call:
     inputs:
       ECR_REGION:
-        description: "ecr region to connect to"
+        description: "AWS ECR region to connect to"
         required: false
         type: string
         default: eu-west-1
@@ -16,48 +16,44 @@ on:
         description: "Environment to use for secrets"
         required: true
         type: string
+      INGESTION_NAME:
+        description: "Name of the ingestion recipe"
+        required: true
+        type: string
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
         required: true
-      GLUE_ROLE_TO_ASSUME:
-        description: "AWS role to assume, which can access AP glue"
-        required: true
       SLACK_ALERT_WEBHOOK:
         description: "Webhook for posting alerts to the team"
         required: true
-      SOP_TECHNICAL_CONTACT:
+      HOST_PORT:
+        description: "Host and port for the database"
         required: true
-      CONTRACTS_TECHNICAL_CONTACT:
+      DATABASE:
+        description: "Database name"
         required: true
-      COURTS_CRIMINAL_TECHNICAL_CONTACT:
+      USER:
+        description: "Username for the database"
         required: true
-      COURTS_FAMILY_TECHNICAL_CONTACT:
-        required: true
-      JUST_LINK_TECHNICAL_CONTACT:
-        required: true
-      FINES_TECHNICAL_CONTACT:
+      PASSWORD:
+        description: "Password for the database"
         required: true
       PLACEHOLDER_TECHNICAL_CONTACT:
+        description: "Technical contact for the dataset"
         required: true
 
 jobs:
-  datahub-ingest-glue-data:
+  datahub-ingest-postgres-data:
     environment: ${{ inputs.ENVIRONMENT }}
     timeout-minutes: 120
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, analytical-platform]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
-          role-duration-seconds: 3600
-          aws-region: ${{ inputs.ECR_REGION }}
 
       - name: cache poetry install
         uses: actions/cache@v4
@@ -82,30 +78,25 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
 
-      - name: Inject owners to glue ingestion config
+      - name: Inject credentials to postgres ingestion config
         env:
-          SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
-          CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
-          COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
-          COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
-          JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
-          FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
+          INGESTION_NAME: ${{ inputs.INGESTION_NAME }}
+          HOST_PORT: ${{ secrets.HOST_PORT }}
+          DATABASE: ${{ secrets.DATABASE }}
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
           PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
         run: |
           mkdir -p ingestion/processed
-          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform; do
-            envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
-          done
+          envsubst < ingestion/postgres_${{ inputs.INGESTION_NAME }}.yaml > ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
 
-      - name: datahub glue ingestion using config with owners
+      - name: datahub postgres ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
-          for ingestion in ingestion/processed/glue_*.yaml; do
-            time poetry run datahub ingest -c "$ingestion"
-          done
+          time poetry run datahub ingest -c ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v1.27.0
@@ -113,7 +104,7 @@ jobs:
         with:
           payload: |
             {
-                "text": ":warning: Glue ingestion failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                "text": ":warning: Postgres ingestion ${{ inputs.INGESTION_NAME }} failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}

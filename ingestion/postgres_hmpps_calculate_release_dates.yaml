@@ -1,0 +1,67 @@
+pipeline_name: "${INGESTION_NAME}"
+source:
+  type: postgres
+  config:
+    # Coordinates
+    host_port: "${HOST_PORT}"
+    database: "${DATABASE}"
+
+    # Credentials
+    username: "${USER}"
+    password: "${PASSWORD}"
+
+    table_pattern:
+      deny:
+        - ".*approved_dates_submission$"
+        - ".*approved_dates_submission_approved_dates$"
+        - ".*bank_holiday_cache$"
+        - ".*calculation_request_manual_reason$"
+        - ".*calculation_request_sentence_user_input$"
+        - ".*comparison$"
+        - ".*comparison_person$"
+        - ".*comparison_person_discrepancy$"
+        - ".*comparison_person_discrepancy_cause$"
+        - ".*comparison_person_discrepancy_impact$"
+        - ".*comparison_person_discrepancy_priority$"
+        - ".*comparison_status$"
+        - ".*flyway_schema_history$"
+        - ".*genuine_override$"
+        - ".*pg_stat_statements$"
+        - ".*pg_stat_statements_info$"
+        - ".*restore_status$"
+        - ".*tranche_outcome$"
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Prisons and probation"
+        - "urn:li:tag:Prisons"
+        - "urn:li:tag:Person Sentence Calculations"
+  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+    config:
+      data_custodian: "${PLACEHOLDER_TECHNICAL_CONTACT}"
+      subject_areas:
+        - Prisons and probation
+        - Prisons
+        - Person Sentence Calculations
+      description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform. The Calculate Release Dates Service is used to calculate various sentence release dates based on adjustment, sentence, offence and prisoner data."
+      properties:
+        dc_readable_name: "calculate_release_dates"
+        dc_slack_channel_name: "#calculate_release_dates_public_channel"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
+        dc_where_to_access_dataset: Please contact the team
+        dc_access_requirements: ""
+        refresh_period: Daily
+        security_classification: Official-Sensitive
+  - type: "simple_add_dataset_properties"
+    config:
+      semantics: OVERWRITE # OVERWRITE is default behaviour
+      properties:
+        dc_slack_channel_name: "#calculate_release_dates_public_channel"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
+        dc_where_to_access_dataset: Please contact the team
+        dc_access_requirements: ""
+        refresh_period: Daily
+        security_classification: Official-Sensitive
