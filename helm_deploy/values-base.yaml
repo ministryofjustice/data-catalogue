@@ -561,12 +561,6 @@ global:
                     weight: 2.0
                   - filter:
                       term:
-                        prefix:
-                          urn:
-                            value: "urn:li:container:"
-                    weight: 3.0
-                  - filter:
-                      term:
                         hasDescription:
                           value: true
                     weight: 1.25
