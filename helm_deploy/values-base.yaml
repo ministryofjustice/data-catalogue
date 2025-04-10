@@ -643,6 +643,11 @@ global:
                 functions:
                   - filter:
                       term:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 3.0
+                  - filter:
+                      term:
                         deprecated:
                           value: true
                     weight: 0.25
