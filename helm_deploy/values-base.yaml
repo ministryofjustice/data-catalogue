@@ -636,7 +636,7 @@ global:
 
             # default
             - queryRegex: .*
-              simpleQuery: false
+              simpleQuery: true
               prefixMatchQuery: true
               exactMatchQuery: true
               functionScore:
