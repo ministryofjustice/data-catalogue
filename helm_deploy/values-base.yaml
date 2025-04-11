@@ -642,7 +642,7 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      term:
+                      prefix:
                         urn:
                           value: "urn:li:container:"
                     weight: 3.0
