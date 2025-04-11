@@ -643,7 +643,7 @@ global:
                 functions:
                   - filter:
                       term:
-                        urn.keyword: "urn:li:container:"
+                        urn.keyword: "urn:li:container:b61afadd9c1701f65ca0123101b20ccb"
                     weight: 3.0
                   - filter:
                       term:
