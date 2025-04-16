@@ -549,9 +549,9 @@ global:
             # Select */explore all
             # Attempt to rank active incidents at the top followed by enrichment factors
             - queryRegex: "force"
-              simpleQuery: false
+              simpleQuery: true
               prefixMatchQuery: true
-              exactMatchQuery: false
+              exactMatchQuery: true
               functionScore:
                 functions:
                   - filter:
