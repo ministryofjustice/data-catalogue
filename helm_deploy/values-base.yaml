@@ -548,16 +548,22 @@ global:
           queryConfigurations:
             # Select */explore all
             # Attempt to rank active incidents at the top followed by enrichment factors
-            - queryRegex: "[*]|"
+            - queryRegex: "force"
               simpleQuery: false
-              prefixMatchQuery: false
+              prefixMatchQuery: true
               exactMatchQuery: false
               functionScore:
                 functions:
                   - filter:
                       term:
                         urn.keyword: "urn:li:container:"
-                    weight: 3.0
+
+            - queryRegex: "[*]|"
+              simpleQuery: false
+              prefixMatchQuery: false
+              exactMatchQuery: false
+              functionScore:
+                functions:
                   - filter:
                       term:
                         hasActiveIncidents:
