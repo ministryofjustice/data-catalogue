@@ -557,6 +557,9 @@ global:
                   - filter:
                       term:
                         urn.keyword: "urn:li:container:"
+                    weight: 2.0
+                score_mode: multiply
+                boost_mode: multiply
 
             - queryRegex: "[*]|"
               simpleQuery: false
