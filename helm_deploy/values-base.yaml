@@ -548,104 +548,104 @@ global:
           queryConfigurations:
             # Select */explore all
             # Attempt to rank active incidents at the top followed by enrichment factors
-            - queryRegex: "force"
-              simpleQuery: true
-              prefixMatchQuery: true
-              exactMatchQuery: true
-              functionScore:
-                functions:
-                  - filter:
-                      term:
-                        urn.keyword: "urn:li:container:"
-                    weight: 2.0
-                score_mode: multiply
-                boost_mode: multiply
+            # - queryRegex: ^force$
+            #   simpleQuery: true
+            #   prefixMatchQuery: true
+            #   exactMatchQuery: true
+            #   functionScore:
+            #     functions:
+            #       - filter:
+            #           term:
+            #             urn: "urn:li:container:*"
+            #         weight: 3.0
+            #     score_mode: multiply
+            #     boost_mode: multiply
 
-            - queryRegex: "[*]|"
-              simpleQuery: false
-              prefixMatchQuery: false
-              exactMatchQuery: false
-              functionScore:
-                functions:
-                  - filter:
-                      term:
-                        hasActiveIncidents:
-                          value: true
-                    weight: 2.0
-                  - filter:
-                      term:
-                        hasDescription:
-                          value: true
-                    weight: 1.25
-                  - filter:
-                      term:
-                        hasOwners:
-                          value: true
-                    weight: 1.25
-                  - filter:
-                      term:
-                        hasDomain:
-                          value: true
-                    weight: 1.1
-                  - filter:
-                      term:
-                        hasGlossaryTerms:
-                          value: true
-                    weight: 1.1
-                  - filter:
-                      term:
-                        hasTags:
-                          value: true
-                    weight: 1.1
-                  - filter:
-                      term:
-                        hasRowCount:
-                          value: true
-                    weight: 1.05
-                  - filter:
-                      term:
-                        hasColumnCount:
-                          value: true
-                    weight: 1.05
-                  - filter:
-                      term:
-                        deprecated:
-                          value: true
-                    weight: 0.25
-                score_mode: multiply
-                boost_mode: replace
+            # - queryRegex: "[*]|"
+            #   simpleQuery: false
+            #   prefixMatchQuery: false
+            #   exactMatchQuery: false
+            #   functionScore:
+            #     functions:
+            #       - filter:
+            #           term:
+            #             hasActiveIncidents:
+            #               value: true
+            #         weight: 2.0
+            #       - filter:
+            #           term:
+            #             hasDescription:
+            #               value: true
+            #         weight: 1.25
+            #       - filter:
+            #           term:
+            #             hasOwners:
+            #               value: true
+            #         weight: 1.25
+            #       - filter:
+            #           term:
+            #             hasDomain:
+            #               value: true
+            #         weight: 1.1
+            #       - filter:
+            #           term:
+            #             hasGlossaryTerms:
+            #               value: true
+            #         weight: 1.1
+            #       - filter:
+            #           term:
+            #             hasTags:
+            #               value: true
+            #         weight: 1.1
+            #       - filter:
+            #           term:
+            #             hasRowCount:
+            #               value: true
+            #         weight: 1.05
+            #       - filter:
+            #           term:
+            #             hasColumnCount:
+            #               value: true
+            #         weight: 1.05
+            #       - filter:
+            #           term:
+            #             deprecated:
+            #               value: true
+            #         weight: 0.25
+            #     score_mode: multiply
+            #     boost_mode: replace
 
-            # Is a single term with `_`, `.`, or `-`
-            - queryRegex: >-
-                ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
-              simpleQuery: false
-              prefixMatchQuery: true
-              exactMatchQuery: true
-              functionScore:
-                functions:
-                  - filter:
-                      term:
-                        deprecated:
-                          value: true
-                    weight: 0.25
-                score_mode: multiply
-                boost_mode: multiply
+            # # Is a single term with `_`, `.`, or `-`
+            # - queryRegex: >-
+            #     ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
+            #   simpleQuery: false
+            #   prefixMatchQuery: true
+            #   exactMatchQuery: true
+            #   functionScore:
+            #     functions:
+            #       - filter:
+            #           term:
+            #             deprecated:
+            #               value: true
+            #         weight: 0.25
+            #     score_mode: multiply
+            #     boost_mode: multiply
 
-            # Quoted search strings
-            - queryRegex: >-
-                ^["'].+["']$
-              simpleQuery: false
-              prefixMatchQuery: true
-              exactMatchQuery: true
-              functionScore:
-                functions:
-                  - filter:
-                      term:
-                        deprecated:
-                          value: true
-                    weight: 0.25
-                score_mode: multiply
-                boost_mode: multiply
+            # # Quoted search strings
+            # - queryRegex: >-
+            #     ^["'].+["']$
+            #   simpleQuery: false
+            #   prefixMatchQuery: true
+            #   exactMatchQuery: true
+            #   functionScore:
+            #     functions:
+            #       - filter:
+            #           term:
+            #             deprecated:
+            #               value: true
+            #         weight: 0.25
+            #     score_mode: multiply
+            #     boost_mode: multiply
 
             # default
             - queryRegex: .*
@@ -654,6 +654,11 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 3.0
                   - filter:
                       term:
                         deprecated:
