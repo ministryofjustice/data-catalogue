@@ -67,10 +67,14 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
         domain = self.mappings.get(entity_urn, {}).get("domain")
         if domain:
             subject_area = domains_to_subject_areas.get(domain.lower())
+            subject_area_tag_urn = (
+                mce_builder.make_tag_urn(tag=subject_area) if subject_area else None
+            )
             existing_tags = [tag.tag for tag in in_global_tags_aspect.tags]
-            if subject_area and subject_area not in existing_tags:
+            # Check if the tag already exists
+            if subject_area_tag_urn and subject_area_tag_urn not in existing_tags:
                 tags_to_add = [
-                    TagAssociationClass(tag=mce_builder.make_tag_urn(tag=subject_area)),
+                    TagAssociationClass(tag=subject_area_tag_urn),
                 ]
                 in_global_tags_aspect.tags.extend(tags_to_add)
                 # Keep track of tags added so that we can create them in handle_end_of_stream
