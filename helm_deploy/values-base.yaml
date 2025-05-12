@@ -405,13 +405,11 @@ datahubSystemUpdate:
       values:
         ingestion:
           name: datahub-gc
-          # # override global.datahub.managed_ingestion.defaultCliVersion
-          # version: "0.14.1.7rc2"
         # schedule:
         # # override global.datahub.timezone
         # timezone: "UTC"
-        # # override dailyCronWindow
-        # interval: "0 1 * * *"
+        # override dailyCronWindow
+        interval: "0 19 * * *"
         cleanup_expired_tokens: true
         truncate_indices: true
         truncate_indices_retention_days: 30
