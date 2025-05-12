@@ -412,16 +412,29 @@ datahubSystemUpdate:
         # timezone: "UTC"
         # # override dailyCronWindow
         # interval: "0 1 * * *"
-        cleanup_expired_tokens: "false"
-        truncate_indices: "true"
+        cleanup_expired_tokens: true
+        truncate_indices: true
         truncate_indices_retention_days: 30
         dataprocess_cleanup:
+          enabled: true
           retention_days: 30
-          delete_empty_data_jobs: "true"
-          delete_empty_data_flows: "true"
-          hard_delete_entities: "false"
+          delete_empty_data_jobs: true
+          delete_empty_data_flows: true
+          hard_delete_entities: false
           keep_last_n: 10
+          batch_size: 500
+          max_workers: 10
+          delay: 0.25
+        execution_request_cleanup:
+          enabled: true
+          keep_history_min_count: 10
+          keep_history_max_count: 1000
+          keep_history_max_days: 30
+          batch_read_size: 100
+          runtime_limit_seconds: 3600
+          max_read_errors: 10
         soft_deleted_entities_cleanup:
+          enabled: true
           retention_days: 30
   resources:
     limits:
