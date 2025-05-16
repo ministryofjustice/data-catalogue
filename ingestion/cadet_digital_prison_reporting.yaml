@@ -68,3 +68,8 @@ transformers:
       tag_urns:
         - "urn:li:tag:Prisons and probation"
         - "urn:li:tag:Digital prison reporting"
+  # - type: "simple_add_dataset_domain"
+  #   config:
+  #     replace_existing: true # false is default behaviour
+  #     domains:
+  #       - urn:li:domain:Prison
