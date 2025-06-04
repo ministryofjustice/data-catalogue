@@ -63,13 +63,19 @@ transformers:
     config:
       properties:
         security_classification: Official-Sensitive
-  - type: "simple_add_dataset_tags"
+  - type: "pattern_add_dataset_tags"
     config:
-      tag_urns:
-        - "urn:li:tag:Prisons and probation"
-        - "urn:li:tag:Digital prison reporting"
-  - type: "simple_add_dataset_domain"
+      semantics: OVERWRITE
+      tag_pattern:
+        rules:
+          'urn:li:dataset:\(urn:li:dataPlatform:dbt,cadet_digital_prison_reporting\.awsdatacatalog\.curated_prisons_history.*':
+            ["urn:li:tag:Prison"]
+  - type: "pattern_add_dataset_domain"
     config:
-      replace_existing: true # false is default behaviour
-      domains:
-        - urn:li:domain:Prison
+      replace_existing: true
+      is_container: true # false is default behaviour
+      semantics: OVERWRITE
+      domain_pattern:
+        rules:
+          'urn:li:dataset:\(urn:li:dataPlatform:dbt,cadet_digital_prison_reporting\.awsdatacatalog\.curated_prisons_history*':
+            ["Prison"]
