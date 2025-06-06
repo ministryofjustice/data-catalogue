@@ -1,0 +1,74 @@
+pipeline_name: ap_cadet_digital_prison_reporting
+source:
+  type: dbt
+  config:
+    aws_connection:
+      aws_region: eu-west-1
+    manifest_path: "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/manifest.json"
+    catalog_path: "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/catalog.json"
+    run_results_paths:
+      [
+        "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/run_results.json",
+      ]
+    # if platform_instance changes it needs to also change in config.py via the CADET_INSTANCE variable
+    platform_instance: cadet_digital_prison_reporting
+    target_platform: athena
+    target_platform_instance: athena_cadet
+    infer_dbt_schemas: true
+
+    # Tags, terms and owners from CaDeT should override what's already in the catalogue
+    write_semantics: OVERRIDE
+
+    entities_enabled:
+      test_results: "YES"
+      seeds: "YES"
+      snapshots: "NO"
+      models: "YES"
+      sources: "YES"
+      test_definitions: "YES"
+    stateful_ingestion:
+      enabled: true
+      remove_stale_metadata: true
+
+    # SQLglot sometimes raises RecursionError with valid SQL.
+    # See https://github.com/ministryofjustice/find-moj-data/issues/477
+    # Until this is fixed, we should avoid features that depend on
+    # formatting SQL from `node.compiled_code`.
+    include_compiled_code: false
+    include_column_lineage: false
+
+    strip_user_ids_from_email: false
+    tag_prefix: ""
+    meta_mapping:
+      dc_data_custodian:
+        match: ".*"
+        operation: "add_owner"
+        config:
+          owner_type: user
+          owner_category: DATAOWNER
+          #owner_category: urn:li:ownershipType:data_custodian   # uncomment when we update to CLI 0.14.1.6 or later
+sink:
+  type: "datahub-rest"
+  config:
+    server: "${DATAHUB_GMS_URL}"
+    token: "${DATAHUB_GMS_TOKEN}"
+    max_per_batch: "50"
+    retry_max_times: 3
+
+transformers:
+  - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
+    config:
+      manifest_s3_uri: "s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target/manifest.json"
+  - type: "simple_add_dataset_properties"
+    config:
+      properties:
+        security_classification: Official-Sensitive
+  - type: "pattern_add_dataset_domain"
+    config:
+      replace_existing: true
+      is_container: true # false is default behaviour
+      semantics: OVERWRITE
+      domain_pattern:
+        rules:
+          'urn:li:dataset:\(urn:li:dataPlatform:dbt,cadet_digital_prison_reporting\.awsdatacatalog\.curated_prisons_history*':
+            ["Prison"]
