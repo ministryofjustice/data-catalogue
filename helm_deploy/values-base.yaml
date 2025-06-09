@@ -571,13 +571,7 @@ global:
               prefixMatchQuery: false
               exactMatchQuery: false
               functionScore:
-                # functions:
-                #   - filter:
-                #       term:
-                #         prefix:
-                #           urn:
-                #             value: "urn:li:container:"
-                #     weight: 3.0
+                functions:
                   - filter:
                       term:
                         hasActiveIncidents:
@@ -665,6 +659,11 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1.5
                   - filter:
                       term:
                         deprecated:
