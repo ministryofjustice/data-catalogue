@@ -40,6 +40,27 @@ datahub-gms:
 
 datahub-frontend:
   enabled: true
+  replicaCount: 1
+  hpa:
+    # If enabled, Horizontal Pod Autoscaler (HPA) will automatically scale the number of replicas based on CPU and memory utilization thresholds.
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 3
+    behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policies:
+          - type: Pods
+            value: 1
+            periodSeconds: 180
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policies:
+          - type: Pods
+            value: 1
+            periodSeconds: 60
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
   fullnameOverride: ""
   image:
     repository: acryldata/datahub-frontend-react
@@ -65,6 +86,7 @@ datahub-frontend:
       value: "true"
   service:
     type: ClusterIP
+    extraLabels: {}
   serviceMonitor:
     create: true
   lifecycle: {}
@@ -134,7 +156,7 @@ acryl-datahub-actions:
   enabled: true
   image:
     repository: acryldata/datahub-actions
-    tag: "v0.1.1"
+    tag: "v0.2.0"
   serviceAccount:
     name: ""
   podSecurityContext:
@@ -280,14 +302,6 @@ datahubUpgrade:
     # tag: "v0.11.0"  # defaults to .global.datahub.version
   batchSize: 1000
   batchDelayMs: 100
-  noCodeDataMigration:
-    enabled: false
-    image:
-      # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
-      # to run
-      command:
-      args: []
-    sqlDbType: "POSTGRES"
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-weight: "-2"
@@ -305,16 +319,6 @@ datahubUpgrade:
       add: ["NET_BIND_SERVICE"]
   podAnnotations: {}
   extraSidecars: []
-  cleanupJob:
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-      requests:
-        cpu: 300m
-        memory: 256Mi
-    concurrencyPolicy: Allow
-    extraSidecars: []
   restoreIndices:
     image:
       # Add custom command / arguments to this job.  Useful if you need a custom startup or shutdown script
@@ -568,53 +572,53 @@ global:
               exactMatchQuery: false
               functionScore:
                 functions:
-                  - filter:
-                      term:
-                        hasActiveIncidents:
-                          value: true
-                    weight: 2.0
-                  - filter:
-                      term:
-                        hasDescription:
-                          value: true
-                    weight: 1.25
-                  - filter:
-                      term:
-                        hasOwners:
-                          value: true
-                    weight: 1.25
-                  - filter:
-                      term:
-                        hasDomain:
-                          value: true
-                    weight: 1.1
-                  - filter:
-                      term:
-                        hasGlossaryTerms:
-                          value: true
-                    weight: 1.1
-                  - filter:
-                      term:
-                        hasTags:
-                          value: true
-                    weight: 1.1
-                  - filter:
-                      term:
-                        hasRowCount:
-                          value: true
-                    weight: 1.05
-                  - filter:
-                      term:
-                        hasColumnCount:
-                          value: true
-                    weight: 1.05
+                  # - filter:
+                  #     term:
+                  #       hasActiveIncidents:
+                  #         value: true
+                  #   weight: 2.0
+                  # - filter:
+                  #     term:
+                  #       hasDescription:
+                  #         value: true
+                  #   weight: 1.25
+                  # - filter:
+                  #     term:
+                  #       hasOwners:
+                  #         value: true
+                  #   weight: 1.25
+                  # - filter:
+                  #     term:
+                  #       hasDomain:
+                  #         value: true
+                  #   weight: 1.1
+                  # - filter:
+                  #     term:
+                  #       hasGlossaryTerms:
+                  #         value: true
+                  #   weight: 1.1
+                  # - filter:
+                  #     term:
+                  #       hasTags:
+                  #         value: true
+                  #   weight: 1.1
+                  # - filter:
+                  #     term:
+                  #       hasRowCount:
+                  #         value: true
+                  #   weight: 1.05
+                  # - filter:
+                  #     term:
+                  #       hasColumnCount:
+                  #         value: true
+                  #   weight: 1.05
                   - filter:
                       term:
                         deprecated:
                           value: true
-                    weight: 0.25
+                    weight: 0.5
                 score_mode: multiply
-                boost_mode: replace
+                boost_mode: multiply
 
             # Is a single term with `_`, `.`, or `-`
             - queryRegex: >-
@@ -628,7 +632,7 @@ global:
                       term:
                         deprecated:
                           value: true
-                    weight: 0.25
+                    weight: 0.5
                 score_mode: multiply
                 boost_mode: multiply
 
@@ -644,7 +648,7 @@ global:
                       term:
                         deprecated:
                           value: true
-                    weight: 0.25
+                    weight: 0.5
                 score_mode: multiply
                 boost_mode: multiply
 
@@ -659,7 +663,7 @@ global:
                       term:
                         deprecated:
                           value: true
-                    weight: 0.25
+                    weight: 0.5
                 score_mode: multiply
                 boost_mode: multiply
   kafka:
@@ -685,6 +689,7 @@ global:
       #   gms: "<<release-name>>-duhe-consumer-job-client-gms"
       #   mae-consumer: "<<release-name>>-duhe-consumer-job-client-mcl"
       #   mce-consumer: "<<release-name>>-duhe-consumer-job-client-mcp"
+      datahub_actions_doc_propagation_consumer_group_id: "datahub_doc_propagation_action"
       datahub_actions_ingestion_executor_consumer_group_id: "ingestion_executor"
       datahub_actions_slack_consumer_group_id: "datahub_slack_action"
       datahub_actions_teams_consumer_group_id: "datahub_teams_action"
@@ -750,7 +755,7 @@ global:
           value: ""
 
   datahub:
-    version: v1.0.0
+    version: v1.1.0
     gms:
       port: "8080"
       nodePort: "30001"
