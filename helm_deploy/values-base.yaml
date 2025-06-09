@@ -572,46 +572,52 @@ global:
               exactMatchQuery: false
               functionScore:
                 functions:
-                  # - filter:
-                  #     term:
-                  #       hasActiveIncidents:
-                  #         value: true
-                  #   weight: 2.0
-                  # - filter:
-                  #     term:
-                  #       hasDescription:
-                  #         value: true
-                  #   weight: 1.25
-                  # - filter:
-                  #     term:
-                  #       hasOwners:
-                  #         value: true
-                  #   weight: 1.25
-                  # - filter:
-                  #     term:
-                  #       hasDomain:
-                  #         value: true
-                  #   weight: 1.1
-                  # - filter:
-                  #     term:
-                  #       hasGlossaryTerms:
-                  #         value: true
-                  #   weight: 1.1
-                  # - filter:
-                  #     term:
-                  #       hasTags:
-                  #         value: true
-                  #   weight: 1.1
-                  # - filter:
-                  #     term:
-                  #       hasRowCount:
-                  #         value: true
-                  #   weight: 1.05
-                  # - filter:
-                  #     term:
-                  #       hasColumnCount:
-                  #         value: true
-                  #   weight: 1.05
+                  - filter:
+                      term:
+                        prefix:
+                          urn:
+                            value: "urn:li:container:"
+                    weight: 3.0
+                  - filter:
+                      term:
+                        hasActiveIncidents:
+                          value: true
+                    weight: 2.0
+                  - filter:
+                      term:
+                        hasDescription:
+                          value: true
+                    weight: 1.25
+                  - filter:
+                      term:
+                        hasOwners:
+                          value: true
+                    weight: 1.25
+                  - filter:
+                      term:
+                        hasDomain:
+                          value: true
+                    weight: 1.1
+                  - filter:
+                      term:
+                        hasGlossaryTerms:
+                          value: true
+                    weight: 1.1
+                  - filter:
+                      term:
+                        hasTags:
+                          value: true
+                    weight: 1.1
+                  - filter:
+                      term:
+                        hasRowCount:
+                          value: true
+                    weight: 1.05
+                  - filter:
+                      term:
+                        hasColumnCount:
+                          value: true
+                    weight: 1.05
                   - filter:
                       term:
                         deprecated:
