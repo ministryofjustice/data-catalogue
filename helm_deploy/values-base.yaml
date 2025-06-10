@@ -129,6 +129,7 @@ datahub-frontend:
         SecRule REQUEST_URI "@contains performance_kpis_intermediate" "id:1007,phase:2,t:none,nolog,pass,ctl:ruleRemoveById=933150"
         SecRule ARGS:json.urn "@contains performance_kpis_intermediate" "id:1008,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=933150"
         SecRule ARGS:json.urn "@contains nomis_internet" "id:1009,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=933150"
+        Secrule REQUEST_COOKIE:REDIRECT_URL "@contains mkdir" "id:1010,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=933150"
         SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
         SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
     tls:
