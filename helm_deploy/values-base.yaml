@@ -664,7 +664,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 1.5
+                    weight: 1000
                   - filter:
                       term:
                         deprecated:
