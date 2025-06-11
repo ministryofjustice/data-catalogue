@@ -660,11 +660,11 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
-                  - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
-                    weight: 5.0
+                  # - filter:
+                  #     prefix:
+                  #       urn:
+                  #         value: "urn:li:container:"
+                  #   weight: 5.0
                   - filter:
                       term:
                         deprecated:
