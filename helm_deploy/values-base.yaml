@@ -662,9 +662,9 @@ global:
                 functions:
                   - filter:
                       prefix:
-                        urn:
+                        entity.urn:
                           value: "urn:li:container:"
-                    weight: 1000
+                    weight: 5.0
                   - filter:
                       term:
                         deprecated:
