@@ -662,7 +662,7 @@ global:
                 functions:
                   - filter:
                       prefix:
-                        entity.urn:
+                        urn:
                           value: "urn:li:container:"
                     weight: 5.0
                   - filter:
