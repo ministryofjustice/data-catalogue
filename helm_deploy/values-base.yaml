@@ -663,13 +663,13 @@ global:
                   - filter:
                       terms:
                         tags.keyword:
-                          - urn:li:tag:Employees
+                          - urn:li:tag:employees
                     weight: 3.0
-                  # - filter:
-                  #     prefix:
-                  #       urn:
-                  #         value: "urn:li:container:"
-                  #   weight: 5.0
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 5.0
                   - filter:
                       term:
                         deprecated:
