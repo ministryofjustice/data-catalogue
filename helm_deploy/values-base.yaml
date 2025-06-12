@@ -660,6 +660,11 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
+                  - filter:
+                      terms:
+                        tags.keyword:
+                          - urn:li:tag:Employees
+                    weight: 3.0
                   # - filter:
                   #     prefix:
                   #       urn:
