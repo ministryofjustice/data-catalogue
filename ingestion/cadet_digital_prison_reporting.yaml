@@ -52,7 +52,7 @@ sink:
   config:
     server: "${DATAHUB_GMS_URL}"
     token: "${DATAHUB_GMS_TOKEN}"
-    max_per_batch: "50"
+    max_threads: 5
     retry_max_times: 3
 
 transformers:
