@@ -54,6 +54,7 @@ sink:
     token: "${DATAHUB_GMS_TOKEN}"
     max_threads: 5
     retry_max_times: 3
+    max_per_batch: "50"
 
 transformers:
   - type: "ingestion.transformers.assign_cadet_databases.AssignCadetDatabases"
