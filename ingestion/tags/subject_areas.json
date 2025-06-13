@@ -288,5 +288,20 @@
         ]
       }
     }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Digital prison reporting",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Digital prison reporting",
+              "description": "Data about digital prison reporting, including the use of technology to manage and report on prison activities."
+            }
+          }
+        ]
+      }
+    }
   }
 ]
