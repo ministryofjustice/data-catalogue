@@ -661,11 +661,6 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      terms:
-                        tags.keyword:
-                          - urn:li:tag:employees
-                    weight: 3.0
-                  - filter:
                       prefix:
                         urn:
                           value: "urn:li:container:"
