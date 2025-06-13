@@ -13,7 +13,7 @@ transformers:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Criminal courts"
-        - "urn:li:tag:Prisons"
+        - "urn:li:tag:Prison"
         - "urn:li:tag:Probation"
         - "urn:li:tag:Risk"
         - "urn:li:tag:Courts and tribunals"
@@ -23,7 +23,7 @@ transformers:
       data_custodian: "${JUST_LINK_TECHNICAL_CONTACT}"
       subject_areas:
         - Criminal courts
-        - Prisons
+        - Prison
         - Probation
         - Risk
         - Courts and tribunals
