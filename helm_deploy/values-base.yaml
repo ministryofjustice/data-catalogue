@@ -665,11 +665,11 @@ global:
                         urn:
                           value: "urn:li:container:"
                     weight: 5.0
-                  - filter:
-                      term:
-                        deprecated:
-                          value: true
-                    weight: 0.5
+                  # - filter:
+                  #     term:
+                  #       deprecated:
+                  #         value: true
+                  #   weight: 0.5
                 score_mode: multiply
                 boost_mode: multiply
   kafka:
