@@ -208,11 +208,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Prisons",
+        "urn": "urn:li:tag:Prison",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Prisons"
+              "name": "Prison",
+              "description": "Data about HM Prison Service. For example: offender information, prison population monitoring, risk assessments."
             }
           }
         ]
@@ -283,6 +284,21 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Person Sentence Calculations"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Digital prison reporting",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Digital prison reporting",
+              "description": "Data about digital prison reporting, including the use of technology to manage and report on prison activities."
             }
           }
         ]
