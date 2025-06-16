@@ -208,11 +208,12 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Prisons",
+        "urn": "urn:li:tag:Prison",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Prisons"
+              "name": "Prison",
+              "description": "Data about HM Prison Service. For example: offender information, prison population monitoring, risk assessments."
             }
           }
         ]
