@@ -89,9 +89,10 @@ jobs:
       - name: Send advisories to Slack
         id: send_to_slack
         if: ${{ steps.filter_advisories.outputs.num_filtered_advisories != '0' }}
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         with:
-          channel-id: 'C071VNHPUHZ'
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload-file-path: "./filtered_advisories.json"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.VULN_CHECK_SLACK_BOT_TOKEN }}

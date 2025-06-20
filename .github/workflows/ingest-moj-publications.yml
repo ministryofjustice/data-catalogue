@@ -65,21 +65,14 @@ jobs:
         run: time poetry run datahub ingest -c ingestion/moj_publications.yaml
 
       - name: Notify on failure
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: job.status == 'failure'
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
             {
-                "text": ":warning: Unable to ingest MoJ publications metadata on ${{inputs.ENVIRONMENT}}!",
-                "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action run result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                }
-                ]
+                "text": ":warning: ALERT: MOJ Publications ingestion produced no output on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
             }
 
         env:
