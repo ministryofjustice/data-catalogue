@@ -135,8 +135,6 @@ jobs:
             {
               "text": ":warning: ALERT: DataHub CaDeT metadata ingestion sink failure count is {{env.sink_failure_count}} which is above the threshold of 9 on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
 
       - name: Notify on unexpected ingestion failures
         uses: slackapi/slack-github-action@v2.1.0
@@ -148,8 +146,6 @@ jobs:
             {
               "text": ":warning: ALERT: DataHub CaDeT metadata ingestion source failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
 
       - name: Notify on ingestion not producing output.json or an unhandled failure
         uses: slackapi/slack-github-action@v2.1.0
@@ -161,5 +157,3 @@ jobs:
             {
               "text": ":warning: ALERT: DataHub CaDeT metadata ingestion produced no output on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}

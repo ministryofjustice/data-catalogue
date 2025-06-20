@@ -111,5 +111,3 @@ jobs:
             {
                 "text": ":warning: Postgres ingestion ${{ inputs.INGESTION_NAME }} failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
