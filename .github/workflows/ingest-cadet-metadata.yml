@@ -126,7 +126,7 @@ jobs:
           echo "source_failure_count=$SOURCE_FAILURE_COUNT" >> $GITHUB_ENV
 
       - name: Notify on unexpected ingestion failures
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: env.sink_failure_count > 9
         with:
           payload: |
@@ -135,7 +135,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
 
       - name: Notify on unexpected ingestion failures
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: env.source_failure_count > 1
         with:
           payload: |
@@ -144,7 +144,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
 
       - name: Notify on ingestion not producing output.json or an unhandled failure
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: failure()
         with:
           payload: |
