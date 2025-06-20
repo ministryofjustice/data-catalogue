@@ -126,34 +126,34 @@ jobs:
           echo "source_failure_count=$SOURCE_FAILURE_COUNT" >> $GITHUB_ENV
 
       - name: Notify on unexpected ingestion failures
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: env.sink_failure_count > 9
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
             {
-                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion sink failure count is {{env.sink_failure_count}} which is above the threshold of 9 on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": ":warning: ALERT: DataHub CaDeT metadata ingestion sink failure count is {{env.sink_failure_count}} which is above the threshold of 9 on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
 
       - name: Notify on unexpected ingestion failures
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: env.source_failure_count > 1
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
             {
-                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion source failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": ":warning: ALERT: DataHub CaDeT metadata ingestion source failure above threshold on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
 
       - name: Notify on ingestion not producing output.json or an unhandled failure
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: failure()
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
             {
-                "text": ":warning: ALERT: DataHub CaDeT metadata ingestion produced no output on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": ":warning: ALERT: DataHub CaDeT metadata ingestion produced no output on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
