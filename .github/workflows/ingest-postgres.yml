@@ -102,12 +102,12 @@ jobs:
           time poetry run datahub ingest -c ingestion/processed/postgres_${{ inputs.INGESTION_NAME }}.yaml
 
       - name: Notify on failure
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         if: failure()
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
             {
                 "text": ":warning: Postgres ingestion ${{ inputs.INGESTION_NAME }} failure on ${{inputs.ENVIRONMENT}} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
