@@ -36,7 +36,7 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-dpr-cadet-dev:
+  ingest-dpr-cadet-prod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
       ECR_REGION: eu-west-1
