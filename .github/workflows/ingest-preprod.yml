@@ -37,11 +37,11 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-dpr-cadet-dev:
+  ingest-dpr-cadet-preprod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
       ECR_REGION: eu-west-1
-      ENVIRONMENT: depreprod-ingestion
+      ENVIRONMENT: preprod-ingestion
       CADET_INGESTION_RECIPE_PATH: ingestion/cadet_digital_prison_reporting.yaml
       S3_TARGET_LOCATION: s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target
       BASE_CADET_INGESTION: false
