@@ -37,14 +37,14 @@ transformers:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Prisons and probation"
-        - "urn:li:tag:Prisons"
+        - "urn:li:tag:Prison"
         - "urn:li:tag:Person Sentence Calculations"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${PLACEHOLDER_TECHNICAL_CONTACT}"
       subject_areas:
         - Prisons and probation
-        - Prisons
+        - Prison
         - Person Sentence Calculations
       description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform. The Calculate Release Dates Service is used to calculate various sentence release dates based on adjustment, sentence, offence and prisoner data."
       properties:
