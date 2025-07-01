@@ -759,7 +759,7 @@ wheels = [
 [[package]]
 name = "data-catalogue-ingestion"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "acryl-datahub", extra = ["dbt", "glue", "postgres"] },
     { name = "boto3" },
