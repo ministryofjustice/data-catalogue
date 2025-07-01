@@ -52,9 +52,13 @@ jobs:
     steps:
       - run: echo "ENVIRONMENT=${{inputs.ENVIRONMENT}}; URL=${{vars.DATAHUB_GMS_URL}}"
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Install UV & Python
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
+          version: "0.7.17"
+      - name: Install Project Dependencies
+        run: uv sync --locked 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
@@ -65,29 +69,6 @@ jobs:
         run: |
           aws s3 ls ${{ inputs.S3_TARGET_LOCATION }}/manifest.json
           aws s3 ls ${{ inputs.S3_TARGET_LOCATION }}/catalog.json
-
-      - name: cache poetry install
-        uses: actions/cache@v4
-        with:
-          path: ~/.local
-          key: poetry-1.7.1-0
-
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: cache deps
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: pydeps-${{ hashFiles('**/poetry.lock') }}
-      - run: poetry install --no-interaction --no-root
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-      - run: poetry install --no-interaction
-
       - name: Inject S3 location to cadet databases
         env:
           S3_TARGET_LOCATION: ${{ inputs.S3_TARGET_LOCATION }}
@@ -101,11 +82,11 @@ jobs:
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
           CADET_INSTANCE: ${{ inputs.CADET_INSTANCE }}
-        run: time poetry run datahub ingest -c ingestion/processed/create_cadet_databases.yaml
+        run: time uv run datahub ingest -c ingestion/processed/create_cadet_databases.yaml
 
       - name: Collate run results paths from cadet runs
         if: ${{ inputs.BASE_CADET_INGESTION }}
-        run: poetry run python ingestion/cadet_run_results.py
+        run: uv run python ingestion/cadet_run_results.py
 
       - name: push metadata to datahub
         id: push_datahub
@@ -115,7 +96,7 @@ jobs:
           DATAHUB_TELEMETRY_ENABLED: false
           CADET_INSTANCE: ${{ inputs.CADET_INSTANCE }}
         run: |
-          time poetry run datahub ingest -c ${{ inputs.CADET_INGESTION_RECIPE_PATH }} --report-to output.json || true
+          time uv run datahub ingest -c ${{ inputs.CADET_INGESTION_RECIPE_PATH }} --report-to output.json || true
           if [ ! -f output.json ]; then
             echo "Ingestion output file not found. Failing the job."
             exit 1
