@@ -30,7 +30,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.7.17"
+          version: ${{ vars.UV_VERSION }}
       
       - name: Install Project Dependencies
         run: uv sync --locked
@@ -60,7 +60,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.7.17"
+          version: ${{ vars.UV_VERSION }}
       
       - name: Install Project Dependencies
         run: uv sync --locked
@@ -105,7 +105,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.7.17"
+          version: ${{ vars.UV_VERSION }}
       
       - name: Install Project Dependencies
         run: uv sync --locked
