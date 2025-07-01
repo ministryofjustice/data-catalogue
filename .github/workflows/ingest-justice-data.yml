@@ -31,38 +31,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Install UV & Python
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
-
-      - name: cache poetry install
-        uses: actions/cache@v4
-        with:
-          path: ~/.local
-          key: poetry-1.7.1-0
-
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: cache deps
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: pydeps-${{ hashFiles('**/poetry.lock') }}
-      - run: poetry install --no-interaction --no-root
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-      - run: poetry install --no-interaction
+          version: "0.7.17"
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
 
       - name: justice data datahub ingestion
         env:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: time poetry run datahub ingest -c ingestion/justice_data_ingest.yaml
+        run: time uv run datahub ingest -c ingestion/justice_data_ingest.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v2.1.0
