@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install UV & Python
+      - name: Install UV
         id: setup-uv
         uses: astral-sh/setup-uv@v6
         with:
