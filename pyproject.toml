@@ -3,7 +3,7 @@ name = "data-catalogue-ingestion"
 version = "0.1.0"
 description = "Ingestion environment for data catalogue data sources"
 authors = [{ name = "Murdo Moyse", email = "murdo.moyse@digital.justice.gov.uk" }]
-requires-python = "~=3.11"
+requires-python = "~=3.11.13"
 readme = "README.md"
 dependencies = [
     "pytest>=8.3.5,<9",
