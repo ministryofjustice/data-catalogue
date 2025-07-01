@@ -48,39 +48,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      
+      - name: Install UV & Python
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
+          version: "0.7.17"
           python-version: "3.11"
+      
+      - name: Install Project Dependencies
+        run: uv sync
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
           role-duration-seconds: 3600
           aws-region: ${{ inputs.ECR_REGION }}
-
-      - name: cache poetry install
-        uses: actions/cache@v4
-        with:
-          path: ~/.local
-          key: poetry-1.7.1-0
-
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: cache deps
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: pydeps-${{ hashFiles('**/poetry.lock') }}
-
-      - run: poetry install --no-interaction --no-root
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-      - run: poetry install --no-interaction
 
       - name: Inject owners to glue ingestion config
         env:
@@ -104,7 +87,7 @@ jobs:
           DATAHUB_TELEMETRY_ENABLED: false
         run: |
           for ingestion in ingestion/processed/glue_*.yaml; do
-            time poetry run datahub ingest -c "$ingestion"
+            time uv run datahub ingest -c "$ingestion"
           done
 
       - name: Notify on failure
