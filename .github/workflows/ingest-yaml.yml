@@ -27,11 +27,13 @@ jobs:
     steps:
       - run: echo "ENVIRONMENT=${{inputs.ENVIRONMENT}}; URL=${{vars.DATAHUB_GMS_URL}}"
       - uses: actions/checkout@v4
+      
       - name: Install UV
         id: setup-uv
         uses: astral-sh/setup-uv@v6
         with:
           version: "0.7.17"
+          python-version: ${{ vars.PYTHON_VERSION }}
       
       - name: Install Project Dependencies
         run: uv sync --locked
