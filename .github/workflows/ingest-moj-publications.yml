@@ -46,7 +46,7 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
-        run: time poetry run datahub ingest -c ingestion/moj_publications.yaml
+        run: time uv run datahub ingest -c ingestion/moj_publications.yaml
 
       - name: Notify on failure
         uses: slackapi/slack-github-action@v2.1.0
