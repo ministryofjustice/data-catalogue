@@ -26,16 +26,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.11'
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - run: poetry install --no-interaction --no-root
+          version: "0.7.17"
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
 
       - name: Query preprod datahub for counts
         env:
@@ -44,7 +42,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         id: set_preprod_counts
         run: |
-          poetry run python ingestion/post_ingestion_checks.py counts --env preprod \
+          uv run python ingestion/post_ingestion_checks.py counts --env preprod \
           --platforms dbt glue justice-data GOV.UK
 
 
