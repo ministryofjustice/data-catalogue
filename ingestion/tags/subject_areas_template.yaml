@@ -9,7 +9,7 @@
 - name: Civil courts
 - name: Family courts
 - name: Prison
-  description: "Data about HM Prison and Probation Service. For example: offender information, prison population monitoring, risk assessments."
+  description: "Data about HM Prison Service. For example: offender information, prison population monitoring, risk assessments."
 - name: Probation
 - name: Electronic monitoring
 - name: Risk
