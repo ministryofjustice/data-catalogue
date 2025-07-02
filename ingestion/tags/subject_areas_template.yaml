@@ -8,9 +8,12 @@
 - name: Criminal courts
 - name: Civil courts
 - name: Family courts
-- name: Prisons
+- name: Prison
+  description: "Data about HM Prison Service. For example: offender information, prison population monitoring, risk assessments."
 - name: Probation
 - name: Electronic monitoring
 - name: Risk
 - name: Reference data
-- name: Person Sentence Calculations
+- name: Person sentence calculations
+- name: Digital prison reporting
+  description: "Data about digital prison reporting, including the use of technology to manage and report on prison activities."
