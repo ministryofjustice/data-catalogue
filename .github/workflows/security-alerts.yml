@@ -41,39 +41,15 @@ jobs:
           echo "current_version=${CURRENT_VERSION}" >> "${GITHUB_OUTPUT}"
           echo "${CURRENT_VERSION}"
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
-
-      - name: Load cached Poetry installation
-        id: cached-poetry
-        uses: actions/cache@v4
-        with:
-          path: ~/.local
-          key: poetry-1.7.1-0
-
-      - name: Install Poetry
-        if: steps.cached-poetry.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: pydeps-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
-
-      - name: Install project
-        run: poetry install --no-interaction
+          version: ${{ vars.UV_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
 
       - name: Filter advisories
         id: filter_advisories
@@ -89,19 +65,21 @@ jobs:
       - name: Send advisories to Slack
         id: send_to_slack
         if: ${{ steps.filter_advisories.outputs.num_filtered_advisories != '0' }}
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.1.0
         with:
-          channel-id: 'C071VNHPUHZ'
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload-file-path: "./filtered_advisories.json"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.VULN_CHECK_SLACK_BOT_TOKEN }}
 
       - name: Slack failure notification
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8b0eced40b0de447bdb42f68e # v1.26.0
+        uses: slackapi/slack-github-action@v2.1.0
         with:
+          webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+          webhook-type: incoming-webhook
           payload: |
-            {"blocks":[{"type": "section","text": {"type": "mrkdwn","text": ":no_entry: Failed GitHub Action:"}},{"type": "section","fields":[{"type": "mrkdwn","text": "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.workflow }}>"},{"type": "mrkdwn","text": "*Job:*\n${{ github.job }}"},{"type": "mrkdwn","text": "*Repo:*\n${{ github.repository }}"}]}]}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+            {
+                "text": ":warning: Failed GitHub Action:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.workflow }} Repo:*\n${{ github.repository }}"
+            }

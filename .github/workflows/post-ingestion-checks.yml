@@ -26,16 +26,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.11'
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - run: poetry install --no-interaction --no-root
+          version: ${{ vars.UV_VERSION }}
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
 
       - name: Query preprod datahub for counts
         env:
@@ -44,7 +42,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         id: set_preprod_counts
         run: |
-          poetry run python ingestion/post_ingestion_checks.py counts --env preprod \
+          uv run python ingestion/post_ingestion_checks.py counts --env preprod \
           --platforms dbt glue justice-data GOV.UK
 
 
@@ -58,16 +56,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.11'
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+          version: ${{ vars.UV_VERSION }}
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
 
-      - run: poetry install --no-interaction --no-root
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
@@ -81,7 +78,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         id: set_prod_counts
         run: |
-          poetry run python ingestion/post_ingestion_checks.py counts --env prod \
+          uv run python ingestion/post_ingestion_checks.py counts --env prod \
           --platforms dbt glue justice-data GOV.UK
 
       - name: check datasets' IsPartOf relations
@@ -91,7 +88,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         id: set_relations
         run: |
-          poetry run python ingestion/post_ingestion_checks.py relations --env prod \
+          uv run python ingestion/post_ingestion_checks.py relations --env prod \
           --s3-manifest-path "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/manifest.json"
 
 
@@ -104,22 +101,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.11'
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+          version: ${{ vars.UV_VERSION }}
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
 
-      - run: poetry install --no-interaction --no-root
       - name: Compare results
         env:
           PYTHONPATH: ${{ github.workspace }}
         id: compare_results
         run: |
-          poetry run python ingestion/post_ingestion_checks.py compare \
+          uv run python ingestion/post_ingestion_checks.py compare \
           --platforms dbt glue justice-data GOV.UK \
           --prod-results '${{ needs.run-for-prod.outputs.prod_counts }}' \
           --preprod-results '${{ needs.run-for-preprod.outputs.preprod_counts }}'

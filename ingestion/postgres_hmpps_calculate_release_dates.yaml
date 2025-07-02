@@ -38,7 +38,7 @@ transformers:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Prisons and probation"
         - "urn:li:tag:Prison"
-        - "urn:li:tag:Person Sentence Calculations"
+        - "urn:li:tag:Person sentence calculations"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       data_custodian: "${PLACEHOLDER_TECHNICAL_CONTACT}"
