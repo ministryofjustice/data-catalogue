@@ -1,0 +1,49 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: ["dlpes_dwp_hmrc_main_datashare$", "dlpes_hmrc_mini_datashare$"]
+    extract_owners: False
+    extract_transforms: False
+
+transformers:
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Prison"
+        - "urn:li:tag:Probation"
+        - "urn:li:tag:Prisons and probation"
+  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+    config:
+      description_map:
+        dlpes_dwp_hmrc_main_datashare: "dlpes_dwp_hmrc_main_datashare"
+      data_custodian: "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
+      subject_areas:
+        - Prison
+        - Probation
+        - Prisons and probation
+      properties:
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: 3 Years
+        security_classification: Official-Sensitive
+  - type: "simple_add_dataset_ownership"
+    config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
+      owner_urns:
+        - "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
+  - type: "simple_add_dataset_properties"
+    config:
+      semantics: OVERWRITE # OVERWRITE is default behaviour
+      properties:
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: 3 Years
+        security_classification: Official-Sensitive

@@ -1,0 +1,11 @@
+The overarching aim of this share is to improve our
+understanding of the potential links between offending, employment and
+benefits.
+
+The share includes anyone who appears on the Police National Computer with
+at least one caution or conviction for a recordable offence in England and
+Wales since 2000 and who can be successfully matched onto DWP/HMRC records.
+
+This data is matched onto DWP benefit records and HMRC employment records
+held on RAPID from 2008. The share is updated every two to three years.
+To enquire about access, please email datalinkingteam@justice.gov.uk
