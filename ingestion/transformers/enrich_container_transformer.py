@@ -1,5 +1,7 @@
 import logging
 from abc import ABCMeta
+import os
+from pathlib import Path
 from typing import List, Optional, Union
 
 from datahub.configuration.common import ConfigModel
@@ -30,6 +32,7 @@ class EnrichContainerTransformerConfig(ConfigModel):
     subject_areas: list[str]
     ownership_type: str = DATAOWNER
     description: str = ""
+    description_map: dict[str, str] = {}
     properties: dict[str, str] = {}
 
 
@@ -115,7 +118,24 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
         if not current_properties:
             raise Exception("Unable to query current properties")
 
-        if self.config.description:
+        if self.config.description_map:
+            # Use the description map to set the description if available
+            description_file = self.config.description_map.get(current_properties.name)
+            if description_file:
+                try:
+                    path = os.path.join(
+                        Path(__file__).parent.absolute(),
+                        "descriptions",
+                        f"{description_file}.txt",
+                    )
+                    with open(path, "r", encoding="utf-8") as file:
+                        description = file.read().strip()
+                        current_properties.description = description
+                except FileNotFoundError:
+                    logging.warning(
+                        f"Description file {description_file} not found for container {current_properties.name}"
+                    )
+        elif self.config.description:
             current_properties.description = self.config.description
 
         current_properties.customProperties.update(self.config.properties)
