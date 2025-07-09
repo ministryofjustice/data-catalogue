@@ -40,6 +40,8 @@ on:
         required: true
       PLACEHOLDER_TECHNICAL_CONTACT:
         required: true
+      DLPES_DWP_HMRC_DATASHARE_CONTACT:
+        required: true
 
 jobs:
   datahub-ingest-glue-data:
