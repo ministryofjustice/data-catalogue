@@ -15,6 +15,8 @@ transformers:
         - "urn:li:tag:Prison"
         - "urn:li:tag:Probation"
         - "urn:li:tag:Prisons and probation"
+        - "urn:li:tag:Employment and benefits"
+        - "urn:li:tag:Police national computer"
   - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
     config:
       description_map:
@@ -24,6 +26,8 @@ transformers:
         - Prison
         - Probation
         - Prisons and probation
+        - Employment and benefits
+        - Police national computer
       properties:
         dc_slack_channel_name: "#data-linking-databases"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
