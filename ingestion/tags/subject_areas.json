@@ -308,12 +308,27 @@
   {
     "proposedSnapshot": {
       "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
-        "urn": "urn:li:tag:Digital prison reporting",
+        "urn": "urn:li:tag:Police national computer",
         "aspects": [
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
-              "name": "Digital prison reporting",
-              "description": "Data about digital prison reporting, including the use of technology to manage and report on prison activities."
+              "name": "Police national computer",
+              "description": "Data related to the Police National Computer, which includes information on criminal records, vehicle registrations, and missing persons."
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "proposedSnapshot": {
+      "com.linkedin.pegasus2avro.metadata.snapshot.TagSnapshot": {
+        "urn": "urn:li:tag:Employment and benefits",
+        "aspects": [
+          {
+            "com.linkedin.pegasus2avro.tag.TagProperties": {
+              "name": "Employment and benefits",
+              "description": "Data related to employment and benefits, including information on job seekers, unemployment rates, and benefit claims."
             }
           }
         ]
