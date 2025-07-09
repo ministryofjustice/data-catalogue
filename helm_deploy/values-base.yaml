@@ -664,7 +664,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 5.0
+                    weight: 1000.0
                 score_mode: multiply
                 boost_mode: multiply
   kafka:
