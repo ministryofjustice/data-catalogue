@@ -1,0 +1,23 @@
+name: Remove Soft Deleted Entities
+
+on:
+  workflow_dispatch:
+jobs:
+  python-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ vars.UV_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
+
+      - name: run remove_soft_deleted_entities.py
+        id: pytest
+        run: uv run ./scripts/remove_soft_deleted_entities.py
