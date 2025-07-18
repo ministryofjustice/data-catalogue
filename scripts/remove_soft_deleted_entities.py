@@ -151,7 +151,7 @@ def main():
     )
     logging.info(f"Filtered soft deleted results {len(filtered_results)}")
 
-    perform_hard_delete_on_entities(filtered_results=filtered_results[0:1])
+    perform_hard_delete_on_entities(filtered_results=filtered_results)
 
 
 if __name__ == "__main__":
