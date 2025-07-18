@@ -112,7 +112,8 @@ def perform_hard_delete_on_entities(
         if entity_type == "CONTAINER":
             command.append("--recursive")
 
-        logging.info(f"deleting with command {''.join(command)}")
+        command_string = " ".join(command)
+        logging.info(f"deleting with command '{command_string}'")
 
         try:
             result = subprocess.run(
