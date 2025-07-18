@@ -65,7 +65,7 @@ def get_graph_response(
 def get_soft_deleted_entities(
     response: dict[str, dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    search_results = response.get("searchAcrossEntities", {}).get("searchResults")
+    search_results = response.get("searchAcrossEntities", {}).get("searchResults", [])
     return search_results
 
 
@@ -142,10 +142,13 @@ def main():
     )
 
     search_results = get_soft_deleted_entities(response=response)
+    if not search_results:
+        logging.info("No soft deleted entities returned, exiting")
+        sys.exit(0)
+    logging.info(f"Soft deleted results returned {len(search_results)}")
     filtered_results = filter_soft_deleted_entities_by_timestamp(
         search_results=search_results
     )
-    logging.info(f"Soft deleted results returned {len(search_results)}")
     logging.info(f"Filtered soft deleted results {len(filtered_results)}")
 
     perform_hard_delete_on_entities(filtered_results=filtered_results[0:1])
