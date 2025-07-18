@@ -106,6 +106,7 @@ def perform_hard_delete_on_entities(
             "delete",
             "--urn",
             f"{urn}",
+            "--hard",
             "--force",
         ]
 
