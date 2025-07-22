@@ -14,10 +14,4 @@
 - name: Electronic monitoring
 - name: Risk
 - name: Reference data
-- name: Person sentence calculations
-- name: Digital prison reporting
-  description: "Data about digital prison reporting, including the use of technology to manage and report on prison activities."
-- name: Police national computer
-  description: "Data related to the Police National Computer, which includes information on criminal records, vehicle registrations, and missing persons."
-- name: Employment and benefits
-  description: "Data related to employment and benefits, including information on job seekers, unemployment rates, and benefit claims."
+- name: Person Sentence Calculations
