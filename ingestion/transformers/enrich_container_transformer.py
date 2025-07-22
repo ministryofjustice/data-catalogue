@@ -104,7 +104,12 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
             )
 
             if self.config.properties:
-                mcps.append(self.properties_mcp(container_urn))
+                # Attempt to obtain existing properties
+                properties = self.properties_mcp(container_urn)
+                # Properties will be None if the container does not yet exist. It will populate on the 2nd run.
+                # TODO: Create custom properties aspect if it does not exist, requires the name.
+                if properties:
+                    mcps.append(properties)
 
         return mcps
 
@@ -116,7 +121,7 @@ class EnrichContainerTransformer(ContainerTransformer, metaclass=ABCMeta):
             entity_urn=container_urn, aspect_type=ContainerPropertiesClass
         )
         if not current_properties:
-            raise Exception("Unable to query current properties")
+            return None
 
         if self.config.description_map:
             # Use the description map to set the description if available
