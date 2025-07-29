@@ -2,5 +2,27 @@ datahub-gms:
   extraEnvs:
     # Override elasticsearch.bulkProcessor.requestsLimit
     # (default: 500)
-    - name: ELASTICSEARCH_BULKPROCESSOR_REQUESTSLIMIT
-      value: "250"
+    - name: ES_BULK_REQUESTS_LIMIT
+      value: "1000"
+    - name: ES_BULK_FLUSH_PERIOD
+      value: "60"
+
+datahubUpgrade:
+  batchDelayMs: 500
+  restoreIndices:
+    # See https://docs.datahub.com/docs/how/restore-indices/#kubernetes for more parameters
+    enabled: true
+    args:
+      # Uses a key based paging strategy when scrolling through SQL rows instead of offset. Often faster for large sets of data
+      urnBasedPagination: "true"
+      # A SQL "like" statement that matches against the urn column
+      urnLike: "urn:li:dataset:(urn:li:dataPlatform:dbt%"
+      # Specifies number of threads for processing pages of rows to restore
+      numThreads: "1"
+    resources:
+      limits:
+        cpu: 1000m
+      memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
