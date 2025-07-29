@@ -323,12 +323,18 @@ datahubUpgrade:
   restoreIndices:
     # See https://docs.datahub.com/docs/how/restore-indices/#kubernetes for more parameters
     args:
-      # Uses a key based paging strategy when scrolling through SQL rows instead of offset. Often faster for large sets of data
-      urnBasedPagination: "true"
-      # A SQL "like" statement that matches against the urn column
-      urnLike: "urn:li:dataset:(urn:li:dataPlatform:dbt%"
-      # Specifies number of threads for processing pages of rows to restore
-      numThreads: "1"
+      - "-u"
+      - "RestoreIndices"
+      - "-a"
+      - "batchSize=1000"
+      - "-a"
+      - "batchDelayMs=500"
+      - "-a"
+      - "urnBasedPagination=true"
+      - "-a"
+      - "urnLike=urn:li:dataset:(urn:li:dataPlatform:dbt%"
+      - "-a"
+      - "numThreads=1"
     resources:
       limits:
         cpu: 1000m
