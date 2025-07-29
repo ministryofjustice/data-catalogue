@@ -11,8 +11,5 @@ datahubUpgrade:
   restoreIndices:
     # See https://docs.datahub.com/docs/how/restore-indices/#kubernetes for more parameters
     args:
-      # A SQL "like" statement that matches against the urn column
-      urnLike: "urn:li:dataset:(urn:li:dataPlatform:dbt%"
-      # Specifies number of threads for processing pages of rows to restore
-      numThreads: "1"
-      clean: "true"
+      - "-a"
+      - "clean"
