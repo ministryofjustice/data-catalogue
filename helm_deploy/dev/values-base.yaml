@@ -2,5 +2,18 @@ datahub-gms:
   extraEnvs:
     # Override elasticsearch.bulkProcessor.requestsLimit
     # (default: 500)
-    - name: ELASTICSEARCH_BULKPROCESSOR_REQUESTSLIMIT
-      value: "250"
+    - name: ES_BULK_REQUESTS_LIMIT
+      value: "1000"
+    - name: ES_BULK_FLUSH_PERIOD
+      value: "60"
+
+datahubUpgrade:
+  restoreIndices:
+    # See https://docs.datahub.com/docs/how/restore-indices/#kubernetes for more parameters
+    args:
+      # A SQL "like" statement that matches against the urn column
+      urnLike: "urn:li:dataset:%"
+      # Specifies number of threads for processing pages of rows to restore
+      numThreads: "1"
+    # Schedule of CronJob when enabled
+    schedule: "00 09 * * 5" # Every Friday at 09:00 UTC
