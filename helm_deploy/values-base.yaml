@@ -222,8 +222,6 @@ elasticsearchSetupJob:
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
-    # Schedule of CronJob when enabled
-    schedule: "0 8 * * 1-5"
 
 kafkaSetupJob:
   enabled: true
@@ -400,7 +398,7 @@ datahubSystemUpdate:
         # # override global.datahub.timezone
         # timezone: "UTC"
         # override dailyCronWindow
-        interval: "0 18 * * *"
+        interval: "0 09 * * *"
         cleanup_expired_tokens: "true"
         truncate_indices: "true"
         truncate_indices_retention_days: 30
