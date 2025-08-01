@@ -195,7 +195,7 @@ jobs:
           helm upgrade \
           --install ${RELEASE_NAME} datahub/datahub \
           --version ${CHART_VERSION} \
-          --atomic --debug --timeout 30m0s \
+          --atomic --debug --timeout 60m0s \
           --values helm_deploy/values-base.yaml \
           --values helm_deploy/${{inputs.env}}/values-base.yaml \
           --namespace ${{ secrets.kube_namespace }} \
