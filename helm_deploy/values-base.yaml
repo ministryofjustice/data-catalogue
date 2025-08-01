@@ -296,7 +296,7 @@ postgresqlSetupJob:
 ## No code data migration
 datahubUpgrade:
   enabled: true
-  noCodeDataMigration:
+  nocodeMigration:
     enabled: false
   image:
     repository: acryldata/datahub-upgrade
