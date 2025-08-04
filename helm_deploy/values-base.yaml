@@ -296,8 +296,6 @@ postgresqlSetupJob:
 ## No code data migration
 datahubUpgrade:
   enabled: true
-  NoCodeDataMigration:
-    enabled: false
   image:
     repository: acryldata/datahub-upgrade
     # tag: "v0.11.0"  # defaults to .global.datahub.version
@@ -366,13 +364,19 @@ datahubSystemUpdate:
     capabilities:
       drop: ["ALL"]
       add: ["NET_BIND_SERVICE"]
-  nonblocking:
-    enabled: true
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
-    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-4"
     helm.sh/hook-delete-policy: before-hook-creation
+  nonblocking:
+    enabled: true
+    annotations:
+      # This is what defines this resource as a hook. Without this line, the
+      # job is considered part of the release.
+      helm.sh/hook: post-install,post-upgrade
+      helm.sh/hook-delete-policy: before-hook-creation
   podAnnotations: {}
   # Depends on v0.14.2 or greater
   bootstrapMCPs:
