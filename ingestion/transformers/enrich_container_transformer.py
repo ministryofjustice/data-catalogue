@@ -10,7 +10,7 @@ from datahub.emitter.mce_builder import Aspect
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.transformer.dataset_transformer import ContainerTransformer
-from datahub.metadata._schema_classes import (
+from datahub.metadata.schema_classes import (
     ContainerPropertiesClass,
     GlobalTagsClass,
     OwnerClass,
