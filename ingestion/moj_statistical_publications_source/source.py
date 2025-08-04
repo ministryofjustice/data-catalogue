@@ -118,8 +118,11 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
         for collection in collections_metadata:
             last_modified_date = collection.get("last_updated")
             last_modified_datetime_in_ms = (
-                datetime_to_ts_millis(datetime.datetime.fromisoformat(last_modified_date))
-                if last_modified_date else None
+                datetime_to_ts_millis(
+                    datetime.datetime.fromisoformat(last_modified_date)
+                )
+                if last_modified_date
+                else None
             )
 
             custom_properties["dc_team_email"] = collection.get(
@@ -191,10 +194,24 @@ class MojPublicationsAPISource(StatefulIngestionSourceBase):
                 # We'd need to explore a different approach to include multiple collection association
 
                 # There are 133 in multiple collections at time of writing, about 10%
-                parent_collection_ids = [dc.get("slug") for dc in publication["document_collections"]]
-                if any(slug in collections_to_exclude for slug in parent_collection_ids):
+                parent_collection_ids = [
+                    dc.get("slug") for dc in publication["document_collections"]
+                ]
+
+                if any(
+                    slug in collections_to_exclude for slug in parent_collection_ids
+                ):
                     continue
-                parent_collection_titles = [dc.get("title") for dc in publication["document_collections"]]
+
+                parent_collection_titles = [
+                    dc.get("title") for dc in publication["document_collections"]
+                ]
+
+                if parent_collection_titles[0] is None:
+                    logging.info(
+                        f"Parent collection title is None for {publication['description']}, ...skipping."
+                    )
+                    continue
 
                 container_key = mcp_builder.DatabaseKey(
                     database=parent_collection_titles[0],
