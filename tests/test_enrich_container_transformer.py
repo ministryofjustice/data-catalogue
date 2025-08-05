@@ -5,7 +5,7 @@ import datahub.metadata.schema_classes as models
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.graph.client import DatahubClientConfig
-from datahub.metadata._schema_classes import ContainerPropertiesClass
+from datahub.metadata.schema_classes import ContainerPropertiesClass
 from utils import run_container_transformer_pipeline
 
 from ingestion.config import ENV, INSTANCE, PLATFORM
