@@ -656,6 +656,8 @@ global:
                 score_mode: multiply
                 boost_mode: multiply
   kafka:
+    config:
+      log.retention.hours: 24
     bootstrap:
       server: "prerequisites-kafka:9092"
     zookeeper:
