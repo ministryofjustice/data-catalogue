@@ -165,24 +165,6 @@ jobs:
         run: |
           envsubst < helm_deploy/secrets.yaml |
           kubectl -n ${KUBE_NAMESPACE} apply -f -
-      
-      - name: create datahub-gc configmap
-        shell: bash
-        id: create-datahub-gc-configmap
-        env:
-          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
-        run: |
-          kubectl create configmap cleanup-recipe-config \
-            --from-file=helm_deploy/datahub-gc.yaml \
-            --dry-run=client \
-            --output yaml |
-            kubectl label -f- \
-            --dry-run=client \
-            --output yaml \
-            --local grafana_dashboard=cleanup-recipe-config |
-            kubectl apply -f- \
-            --namespace=${KUBE_NAMESPACE}
-
       - name: Populate limit_whitelist values
         shell: bash
         env:
