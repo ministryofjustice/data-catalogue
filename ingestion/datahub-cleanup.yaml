@@ -17,7 +17,7 @@ source:
       keep_last_n: 5
       delete_empty_data_jobs: false
       delete_empty_data_flows: false
-      hard_delete_entities: false
+      hard_delete_entities: true
       batch_size: 500
       max_workers: 10
       delay: 0.25
@@ -35,7 +35,7 @@ source:
     # 5. Soft-Deleted Entities Cleanup
     soft_deleted_entities_cleanup:
       enabled: true
-      retention_days: 10
+      retention_days: 5
       batch_size: 500
       max_workers: 10
       delay: 0.25
