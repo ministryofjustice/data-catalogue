@@ -1,13 +1,3 @@
-# Datahub Ingestion Cron
-datahub-ingestion-cron:
-  enabled: true
-  crons:
-    datahub-cleanup:
-      schedule: "*/10 * * * *" # Every day at 05:00
-      recipe:
-        configmapName: cleanup-recipe-config
-        fileName: datahub-gc.yaml.yml
-
 # Values to start up datahub after starting up the datahub-prerequisites chart with "prerequisites" release name
 datahub-gms:
   enabled: true
