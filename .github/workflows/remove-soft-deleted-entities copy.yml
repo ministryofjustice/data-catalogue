@@ -1,0 +1,39 @@
+name: Remove Soft Deleted Entities
+permissions:
+  id-token: write
+  contents: read
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        description: "Environment to use for secrets"
+        required: true
+        type: string
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API Key for datahub GMS"
+        required: true
+
+jobs:
+  remove_soft_deleted_entities:
+    environment: ${{ inputs.ENVIRONMENT }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ vars.UV_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
+      
+      - name: Install Project Dependencies
+        run: uv sync --locked
+
+      - name: Cleanup soft deleted entities
+        env:
+            DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+            DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+        id: remove-soft-deleted-entities
+        run: uv run ./scripts/remove_soft_deleted_entities.py
