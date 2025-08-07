@@ -165,6 +165,7 @@ jobs:
         run: |
           envsubst < helm_deploy/secrets.yaml |
           kubectl -n ${KUBE_NAMESPACE} apply -f -
+
       - name: Populate limit_whitelist values
         shell: bash
         env:
