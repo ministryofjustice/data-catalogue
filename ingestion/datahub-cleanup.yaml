@@ -1,0 +1,48 @@
+source:
+  type: datahub-gc
+  config:
+    # 1. Index Cleanup
+    truncate_indices: true
+    truncate_index_older_than_days: 30
+    truncation_watch_until: 10000
+    truncation_sleep_between_seconds: 30
+
+    # 2. Expired Token Cleanup
+    cleanup_expired_tokens: true
+
+    # 3. Data Process Cleanup
+    dataprocess_cleanup:
+      enabled: true
+      retention_days: 10
+      keep_last_n: 5
+      delete_empty_data_jobs: false
+      delete_empty_data_flows: false
+      hard_delete_entities: false
+      batch_size: 500
+      max_workers: 10
+      delay: 0.25
+
+    # 4. Execution Request Cleanup
+    execution_request_cleanup:
+      enabled: true
+      keep_history_min_count: 10
+      keep_history_max_count: 1000
+      keep_history_max_days: 30
+      batch_read_size: 100
+      runtime_limit_seconds: 3600
+      max_read_errors: 10
+
+    # 5. Soft-Deleted Entities Cleanup
+    soft_deleted_entities_cleanup:
+      enabled: true
+      retention_days: 10
+      batch_size: 500
+      max_workers: 10
+      delay: 0.25
+      entity_types: null # Optional: list of entity types to clean
+      platform: null # Optional: platform filter
+      env: null # Optional: environment filter
+      query: null # Optional: custom query filter
+      limit_entities_delete: 25000
+      futures_max_at_time: 1000
+      runtime_limit_seconds: 7200
