@@ -1,3 +1,13 @@
+# Datahub Ingestion Cron
+datahub-ingestion-cron:
+  enabled: true
+  crons:
+    datahub-cleanup:
+      schedule: "*/10 * * * *" # Every day at 05:00
+      recipe:
+        configmapName: cleanup-recipe-config
+        fileName: datahub-gc.yaml.yml
+
 # Values to start up datahub after starting up the datahub-prerequisites chart with "prerequisites" release name
 datahub-gms:
   enabled: true
@@ -325,10 +335,8 @@ datahubUpgrade:
       batchDelayMs: "500"
       # Uses a key based paging strategy when scrolling through SQL rows instead of offset. Often faster for large sets of data
       urnBasedPagination: "true"
-      # A SQL "like" statement that matches against the urn column
-      urnLike: "urn:li:dataset:(urn:li:dataPlatform:dbt%"
       # Specifies number of threads for processing pages of rows to restore
-      numThreads: "1"
+      numThreads: "3"
     resources:
       limits:
         cpu: 1000m
@@ -337,7 +345,7 @@ datahubUpgrade:
         cpu: 500m
         memory: 1Gi
     # Schedule of CronJob when enabled
-    schedule: "0 17 * * *"
+    schedule: "30 01 * * 6" # Every Saturday at 01:30
     concurrencyPolicy: Allow
     extraSidecars: []
     extraEnvs:
@@ -384,51 +392,6 @@ datahubSystemUpdate:
       value_configs:
         - "datahub.bootstrapMCPs.default.ingestion.version"
         - "datahub.bootstrapMCPs.default.schedule.timezone"
-    datahubGC:
-      # For information about this recipe https://datahubproject.io/docs/0.14.0/generated/ingestion/sources/datahubgc/#install-the-plugin
-      # Generate values.schedule.interval with a jitter window using a generated config
-      dailyCronWindow:
-        startHour: 18
-        endHour: 21
-      # dynamic overrides, the output to each function is deepMerged with values
-      values_generated_configs:
-        - "datahub.systemUpdate.datahubGC.dailyCronWindow"
-      # Environment variable containing the json value for the template mcp
-      values_env: DATAHUB_GC_BOOTSTRAP_VALUES
-      revision_env: DATAHUB_GC_BOOTSTRAP_REVISION
-      # Base values for the template mcp
-      values:
-        ingestion:
-          name: datahub-gc
-        # schedule:
-        # # override global.datahub.timezone
-        # timezone: "UTC"
-        # override dailyCronWindow
-        interval: "0 09 * * *"
-        cleanup_expired_tokens: "true"
-        truncate_indices: "true"
-        truncate_indices_retention_days: 30
-        dataprocess_cleanup:
-          enabled: "true"
-          retention_days: 30
-          delete_empty_data_jobs: "true"
-          delete_empty_data_flows: "true"
-          hard_delete_entities: "false"
-          keep_last_n: 10
-          batch_size: 500
-          max_workers: 10
-          delay: 0.25
-        execution_request_cleanup:
-          enabled: "true"
-          keep_history_min_count: 10
-          keep_history_max_count: 1000
-          keep_history_max_days: 30
-          batch_read_size: 100
-          runtime_limit_seconds: 3600
-          max_read_errors: 10
-        soft_deleted_entities_cleanup:
-          enabled: "true"
-          retention_days: 30
   resources:
     limits:
       cpu: 800m
