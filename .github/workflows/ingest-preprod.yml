@@ -2,7 +2,7 @@ name: Ingest metadata to preprod on schedule
 
 on:
   schedule:
-    - cron: "0 9 * * *" # 9am UTC
+    - cron: "15 6 * * *" # 6:15am UTC
   workflow_dispatch:
 
 jobs:
