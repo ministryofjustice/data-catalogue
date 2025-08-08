@@ -1,7 +1,7 @@
 name: Ingest metadata to prod
 on:
   schedule:
-    - cron: "30 6 * * *" # 6:30 am UTC
+    - cron: "30 6 * * 1-5" # 6:30am UTC Monday to Friday
   workflow_dispatch:
 
 jobs:

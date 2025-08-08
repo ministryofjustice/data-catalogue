@@ -2,7 +2,7 @@ name: Ingest metadata to dev
 
 on:
   schedule:
-    - cron: "0 6 * * *" # 6am UTC
+    - cron: "0 6 * * 1-5" # 6:00am UTC Monday to Friday
   workflow_dispatch:
 
 jobs:
