@@ -1,8 +1,8 @@
 name: Ingest metadata to dev
 
 on:
-  # schedule:
-  #   - cron: "0 9,14 * * *" # 9am, 2pm UTC
+  schedule:
+    - cron: "0 6 * * 1-5" # 6:00am UTC Monday to Friday
   workflow_dispatch:
 
 jobs:
@@ -95,10 +95,10 @@ jobs:
       PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
       PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
 
-  remove-soft-deleted-entities:
-    uses: ./.github/workflows/remove-soft-deleted-entities.yml
+    
+  run-datahub-cleanup:
+    uses: ./.github/workflows/datahub-cleanup-ingestion.yml
     with:
       ENVIRONMENT: dev
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-
