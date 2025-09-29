@@ -32,8 +32,7 @@ neo4j:
     allowPrivilegeEscalation: false
 
   # Create a volume for neo4j, SSD storage is recommended
-  volumes:
-    {}
+  volumes: {}
     # data:
     #   mode: "dynamic"
     #   dynamic:
@@ -81,6 +80,9 @@ cp-helm-charts:
 # Bitnami version of Kafka that deploys open source Kafka https://artifacthub.io/packages/helm/bitnami/kafka
 kafka:
   enabled: true
+  image:
+    # -- Overwrite default repository of helm chart to point to non-paid bitnami images.
+    repository: bitnamilegacy/kafka
   listeners:
     client:
       protocol: PLAINTEXT
@@ -112,6 +114,9 @@ kafka:
     enabled: false
   zookeeper:
     enabled: true
+    image:
+      # -- Overwrite default repository of helm chart to point to non-paid bitnami images.
+      repository: bitnamilegacy/kafka
     resources:
       limits:
         cpu: 400m
