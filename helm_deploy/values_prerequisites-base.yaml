@@ -82,7 +82,7 @@ kafka:
   enabled: true
   image:
     # -- Overwrite default repository of helm chart to point to non-paid bitnami images.
-    repository: apache/kafka
+    repository: apache/kafka:latest
   listeners:
     client:
       protocol: PLAINTEXT
@@ -116,7 +116,7 @@ kafka:
     enabled: true
     image:
       # -- Overwrite default repository of helm chart to point to non-paid bitnami images.
-      repository: some-zookeeper/zookeeper
+      repository: some-zookeeper/zookeeper:latest
     resources:
       limits:
         cpu: 400m
