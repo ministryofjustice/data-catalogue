@@ -53,7 +53,7 @@ gcloud-sqlproxy:
   enabled: false
 
 cp-helm-charts:
-  enabled: false
+  enabled: true
   # Schema registry is under the community  license
   cp-schema-registry:
     enabled: true
