@@ -602,10 +602,10 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
-                    weight: 1000.0
+                      term:
+                        deprecated:
+                          value: true
+                    weight: 0.5
                 score_mode: multiply
                 boost_mode: multiply
   kafka:
