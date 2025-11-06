@@ -53,7 +53,7 @@ transformers:
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
         dc_where_to_access_dataset: Please contact the team
         dc_access_requirements: ""
-        refresh_period: Daily
+        refresh_period: Every day
         security_classification: Official-Sensitive
   - type: "simple_add_dataset_properties"
     config:
@@ -63,5 +63,5 @@ transformers:
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
         dc_where_to_access_dataset: Please contact the team
         dc_access_requirements: ""
-        refresh_period: Daily
+        refresh_period: Every day
         security_classification: Official-Sensitive
