@@ -33,7 +33,7 @@ transformers:
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: AnalyticalPlatform
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
-        refresh_period: 3 Years
+        refresh_period: Every 3 years
         security_classification: Official-Sensitive
   - type: "simple_add_dataset_ownership"
     config:
@@ -49,5 +49,5 @@ transformers:
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: AnalyticalPlatform
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
-        refresh_period: 3 Years
+        refresh_period: Every 3 years
         security_classification: Official-Sensitive
