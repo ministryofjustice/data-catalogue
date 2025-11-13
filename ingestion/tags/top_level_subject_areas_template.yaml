@@ -1,5 +1,5 @@
 - name: "Corporate operations"
-  description: "Data about MoJ employees, property and finance. For example: staff absences, cost centre analyses, equipment records."
+  description: "Data about MOJ employees, property and finance. For example: staff absences, cost centre analyses, equipment records."
 - name: "Crime and policing"
   description: "Data about law enforcement work and prosecution. For example: investigation outcomes, recorded offences, police referrals to CPS."
 - name: "Courts and tribunals"
