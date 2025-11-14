@@ -7,7 +7,7 @@
           {
             "com.linkedin.pegasus2avro.tag.TagProperties": {
               "name": "Corporate operations",
-              "description": "Data about MoJ employees, property and finance. For example: staff absences, cost centre analyses, equipment records."
+              "description": "Data about MOJ employees, property and finance. For example: staff absences, cost centre analyses, equipment records."
             }
           }
         ]
