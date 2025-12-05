@@ -1,4 +1,4 @@
-name: Remove Soft Deleted Entities
+name: Datahub Cleanup Ingestion
 permissions:
   id-token: write
   contents: read
