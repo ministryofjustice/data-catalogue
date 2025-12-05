@@ -1,8 +1,19 @@
-name: Remove Soft Deleted Entities
+name: Datahub Cleanup Ingestion
 permissions:
   id-token: write
   contents: read
 on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: "Environment to use for secrets"
+        required: true
+        type: string
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API Key for datahub GMS"
+        required: true
+
   workflow_call:
     inputs:
       ENVIRONMENT:
@@ -27,13 +38,13 @@ jobs:
         with:
           version: ${{ vars.UV_VERSION }}
           python-version: ${{ vars.PYTHON_VERSION }}
-      
+
       - name: Install Project Dependencies
         run: uv sync --locked
 
       - name: Run Datahub Cleanup Ingestion
         id: datahub-cleanup-ingestion
         env:
-            DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
-            DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
         run: time uv run datahub ingest -c ingestion/datahub-cleanup.yaml
