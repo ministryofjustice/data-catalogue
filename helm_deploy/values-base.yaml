@@ -604,7 +604,7 @@ global:
                   - filter:
                       exists:
                         field: description
-                    weight: 2.0
+                    weight: 500
                   - filter:
                       term:
                         deprecated:
