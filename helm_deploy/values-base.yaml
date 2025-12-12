@@ -602,6 +602,10 @@ global:
               functionScore:
                 functions:
                   - filter:
+                      exists:
+                        field: description
+                    weight: 2.0
+                  - filter:
                       term:
                         deprecated:
                           value: true
