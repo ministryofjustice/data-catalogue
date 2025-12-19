@@ -603,7 +603,7 @@ global:
                 functions:
                   - filter:
                       exists:
-                        field: description
+                        field: displayName
                     weight: 500
                   - filter:
                       term:
