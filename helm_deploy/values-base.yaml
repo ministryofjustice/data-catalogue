@@ -604,7 +604,7 @@ global:
                   - filter:
                       term:
                         customProperties.keyword:
-                          value: "dc_readable_name=NOMIS (sensitive)"
+                          value: "dc_readable_name="
                     weight: 500
                   - filter:
                       term:
