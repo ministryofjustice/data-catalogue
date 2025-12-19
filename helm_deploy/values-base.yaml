@@ -602,8 +602,9 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      exists:
-                        field: displayName
+                      term:
+                        customProperties.keyword:
+                          value: "dc_readable_name=NOMIS (sensitive)"
                     weight: 500
                   - filter:
                       term:
