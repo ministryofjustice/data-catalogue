@@ -625,11 +625,6 @@ global:
                 functions:
                   - filter:
                       term:
-                        customProperties.keyword:
-                          value: "dc_readable_name="
-                    weight: 500
-                  - filter:
-                      term:
                         deprecated:
                           value: true
                     weight: 0.5
