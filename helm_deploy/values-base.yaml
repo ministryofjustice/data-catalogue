@@ -566,7 +566,7 @@ global:
             # Table names, file names, usernames, etc. dim_case
             - queryRegex: >-
                 ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
-              simpleQuery: true
+              simpleQuery: false
               prefixMatchQuery: true
               exactMatchQuery: true
               functionScore:
