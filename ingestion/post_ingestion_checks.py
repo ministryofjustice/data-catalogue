@@ -136,14 +136,18 @@ def parse_count_by_platform_results(result: dict):
 def counts_by_platform(env: str, platforms: list, graph: DataHubGraph):
     query_results = {}
     for platform in platforms:
+        logging.info(f"Querying {env} DataHub for {platform} platform counts...")
         result = graph.execute_graphql(
             count_by_platform_graph_query, create_query_input(platform)
         )
 
         query_results[platform] = parse_count_by_platform_results(result)
+        logging.info(f"Retrieved counts for {platform}: {json.dumps(query_results[platform], indent=2)}")
 
+    logging.info(f"Writing results to GITHUB_OUTPUT for {env}...")
     with open(os.environ["GITHUB_OUTPUT"], "a") as output_file:
         output_file.write(f"{env.lower()}_results={json.dumps(query_results)}\n")
+    logging.info(f"Successfully wrote {env}_results to GITHUB_OUTPUT")
 
 
 def relations_check(s3_manifest_path: str, graph: DataHubGraph):
