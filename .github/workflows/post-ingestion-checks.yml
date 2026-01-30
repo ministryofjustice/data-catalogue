@@ -20,7 +20,7 @@ jobs:
   run-for-preprod:
     runs-on: ubuntu-latest
     environment: preprod-ingestion
-    needs: wait-for-reindex
+    # needs: wait-for-reindex
     outputs:
       preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
     steps:
@@ -49,7 +49,8 @@ jobs:
   run-for-prod:
     runs-on: ubuntu-latest
     environment: prod-ingestion
-    needs: [wait-for-reindex, run-for-preprod]
+    # needs: [wait-for-reindex, run-for-preprod]
+    needs: [run-for-preprod]
     outputs:
       prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
       missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
@@ -97,7 +98,8 @@ jobs:
     outputs:
       comparison_results: ${{ steps.compare_results.outputs.comparison_results }}
     environment: prod-ingestion
-    needs: [wait-for-reindex, run-for-preprod, run-for-prod]
+    needs: [run-for-preprod, run-for-prod]
+    # needs: [wait-for-reindex, run-for-preprod, run-for-prod]
     steps:
       - uses: actions/checkout@v4
 
@@ -123,7 +125,8 @@ jobs:
   post_ingestion_checks_report:
     runs-on: ubuntu-latest
     environment: prod-ingestion
-    needs: [wait-for-reindex, run-for-prod, compare_results]
+    needs: [run-for-prod, compare_results]
+    # needs: [wait-for-reindex, run-for-prod, compare_results]
     steps:
       - uses: actions/checkout@v4
       - name: Report datasets with missing container relationships
