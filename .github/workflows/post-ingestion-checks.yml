@@ -12,11 +12,11 @@ on:
       - completed
 
 jobs:
-  wait-for-reindex:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for post ingestion opensearch reindex
-        run: sleep 3600  # Delay for 60 minutes (3600 seconds)
+  # wait-for-reindex:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Wait for post ingestion opensearch reindex
+  #       run: sleep 3600  # Delay for 60 minutes (3600 seconds)
   run-for-preprod:
     runs-on: ubuntu-latest
     environment: preprod-ingestion
