@@ -136,7 +136,7 @@ jobs:
         run: |
           echo 'Comparison results: ${{ needs.compare_results.outputs.comparison_results }}'
       - name: Data Hub Ingestion Slack notification - Post Ingestion Check success / failure status
-        if: ${{ toJSON(fromJSON(needs.run-for-prod.outputs.missing_is_part_of)) == '[]' }}
+        if: ${{ toJSON(fromJSON(needs.compare_results.outputs.comparison_results).missing_values) == '{}' }}
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.0
         with:
           webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
