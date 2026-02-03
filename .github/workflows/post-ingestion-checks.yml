@@ -136,12 +136,12 @@ jobs:
         run: |
           echo 'Comparison results: ${{ needs.compare_results.outputs.comparison_results }}'
       - name: Data Hub Ingestion Slack notification - Post Ingestion Check success / failure status
-        if: always()
+        if: ${{ toJSON(fromJSON(needs.run-for-prod.outputs.missing_is_part_of)) == '[]' }}
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.0
         with:
           webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
           payload: |
             {
-              "text": "${{ needs.run-for-prod.outputs.missing_is_part_of == '[]' && needs.compare_results.outputs.comparison_results['missing_values'] == '{}' && needs.compare_results.outputs.comparison_results['mismatched_counts'] == '{}' && '✅ *post ingestion check succeeded*' || '❌ post ingestion check FAILED' }}\nRepository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nBranch: ${{ github.ref_name }}\nTriggered by: ${{ github.event_name }}\nStatus: ${{ job.status }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "${{ toJSON(fromJSON(needs.run-for-prod.outputs.missing_is_part_of)) == '[]' && toJSON(fromJSON(needs.compare_results.outputs.comparison_results).missing_values) == '{}' && toJSON(fromJSON(needs.compare_results.outputs.comparison_results).mismatched_counts) == '{}' && '✅ *post ingestion check succeeded*' || '❌ post ingestion check FAILED' }}\nRepository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nBranch: ${{ github.ref_name }}\nTriggered by: ${{ github.event_name }}\nStatus: ${{ job.status }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             } 
