@@ -12,15 +12,15 @@ on:
       - completed
 
 jobs:
-  # wait-for-reindex:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Wait for post ingestion opensearch reindex
-  #       run: sleep 3600  # Delay for 60 minutes (3600 seconds)
+  wait-for-reindex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for post ingestion opensearch reindex
+        run: sleep 3600  # Delay for 60 minutes (3600 seconds)
   run-for-preprod:
     runs-on: ubuntu-latest
     environment: preprod-ingestion
-    # needs: wait-for-reindex
+    needs: wait-for-reindex
     outputs:
       preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
     steps:
@@ -49,8 +49,7 @@ jobs:
   run-for-prod:
     runs-on: ubuntu-latest
     environment: prod-ingestion
-    # needs: [wait-for-reindex, run-for-preprod]
-    needs: [run-for-preprod]
+    needs: [wait-for-reindex, run-for-preprod]
     outputs:
       prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
       missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
@@ -98,8 +97,7 @@ jobs:
     outputs:
       comparison_results: ${{ steps.compare_results.outputs.comparison_results }}
     environment: prod-ingestion
-    needs: [run-for-preprod, run-for-prod]
-    # needs: [wait-for-reindex, run-for-preprod, run-for-prod]
+    needs: [wait-for-reindex, run-for-preprod, run-for-prod]
     steps:
       - uses: actions/checkout@v4
 
@@ -125,8 +123,7 @@ jobs:
   post_ingestion_checks_report:
     runs-on: ubuntu-latest
     environment: prod-ingestion
-    needs: [run-for-prod, compare_results]
-    # needs: [wait-for-reindex, run-for-prod, compare_results]
+    needs: [wait-for-reindex, run-for-prod, compare_results]
     steps:
       - uses: actions/checkout@v4
       - name: Report datasets with missing container relationships
