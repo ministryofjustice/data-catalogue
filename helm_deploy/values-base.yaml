@@ -157,7 +157,7 @@ acryl-datahub-actions:
   enabled: true
   image:
     repository: acryldata/datahub-actions
-    tag: "v0.2.0"
+    # tag: "v1.2.0" # # defaults to .global.datahub.version
   serviceAccount:
     name: ""
   podSecurityContext:
@@ -189,6 +189,8 @@ elasticsearchSetupJob:
   serviceAccount: ""
   image:
     repository: acryldata/datahub-elasticsearch-setup
+  # Custom labels to add to the Job metadata
+  labels: {}
   resources:
     limits:
       cpu: 500m
@@ -224,10 +226,13 @@ elasticsearchSetupJob:
       add: ["NET_BIND_SERVICE"]
 
 kafkaSetupJob:
-  enabled: true
+  enabled: false
   image:
     repository: acryldata/datahub-kafka-setup
+    tag: v1.2.0.1
     # tag: "v0.11.0" # defaults to .global.datahub.version
+  # Custom labels to add to the Job metadata
+  labels: {}
   resources:
     limits:
       cpu: 1000m
@@ -261,6 +266,8 @@ postgresqlSetupJob:
   enabled: true
   image:
     repository: acryldata/datahub-postgres-setup
+  # Custom labels to add to the Job metadata
+  labels: {}
   resources:
     limits:
       cpu: 500m
@@ -319,6 +326,8 @@ datahubUpgrade:
   podAnnotations: {}
   extraSidecars: []
   restoreIndices:
+    # Custom labels to add to the CronJob metadata
+    labels: {}
     # See https://docs.datahub.com/docs/how/restore-indices/#kubernetes for more parameters
     args:
       batchSize: "1000"
@@ -346,9 +355,67 @@ datahubUpgrade:
             key: database_name
   extraInitContainers: []
 
+## Code for ES replica tweaking
+datahubSystemCronHourly:
+  # This feature is not ready yet, DO NOT enable
+  # Enabled by default in case resources need to be allocated to be able to run this job
+  enabled: false
+  # Custom labels to add to the CronJob metadata
+  labels: {}
+  image:
+    repository: 795586375822.dkr.ecr.us-west-2.amazonaws.com/datahub-upgrade
+    # tag: "v0.2.0"  # defaults to .global.datahub.version
+  podSecurityContext: {}
+    # fsGroup: 1000
+  securityContext: {}
+    # runAsUser: 1000
+  podAnnotations: {}
+  # Add extra sidecar containers to job pod
+  extraSidecars: []
+    # - name: my-image-name
+    #   image: my-image
+    #   imagePullPolicy: Always
+  extraInitContainers: []
+  jvmOpts:
+    XX: ":+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=75.0"
+
 ## Runs system update processes
 ## Includes: Elasticsearch Indices Creation/Reindex (See global.elasticsearch.index for additional configuration)
 datahubSystemUpdate:
+  # Custom labels to add to the Job metadata
+  labels: {}
+  # backOffLimit for the system update job (number of retries before job is considered failed)
+  backOffLimit: 6
+  # useAdmin determines whether to run system update with admin credentials
+  useAdmin: true
+  # ServiceAccount configuration for the system update job (enables RBAC when running upgrade jobs)
+  # Uncomment and set create: true to create a dedicated service account for system-update
+  # serviceAccount:
+  #   create: true
+  #   name: datahub-operator-sa
+  #   rbac: true  # Create Role and RoleBinding for this ServiceAccount
+  # SQL setup configuration (when enabled, runs database setup as part of system update)
+  sql:
+    # Override IAM authentication for Ebean (SQL)
+    iam:
+      enabled: false # Inherit from global.sql.iam.enabled if not set
+    # SQL setup within system-update job (replaces legacy mysqlSetupJob/postgresqlSetupJob when IAM is enabled)
+    setup:
+      enabled: false # Enable SQL database setup
+      createTables: true # Create DataHub tables
+      createDatabase: true # Create the database if it doesn't exist
+      createUser: false # Create SQL user (for non-IAM setups)
+  # Elasticsearch setup configuration (when enabled, runs ES setup as part of system update)
+  elasticsearch:
+    # Override IAM authentication for Elasticsearch
+    iam:
+      enabled: false # Inherit from global.elasticsearch.iam.enabled if not set
+    # Elasticsearch setup within system-update job
+    setup:
+      enabled: false # Enable Elasticsearch user creation
+      createUser: false # CREATE_USER_ES env var - create Elasticsearch user
+      createUserIamRoleArn: "" # CREATE_USER_ES_IAM_ROLE_ARN env var - IAM role ARN to map to the user (only if createUser=true)
+
   image:
     repository: acryldata/datahub-upgrade
   podSecurityContext:
@@ -370,6 +437,8 @@ datahubSystemUpdate:
     helm.sh/hook-delete-policy: before-hook-creation
   nonblocking:
     enabled: true
+    # Custom labels to add to the nonblocking Job metadata
+    labels: {}
     annotations:
       # This is what defines this resource as a hook. Without this line, the
       # job is considered part of the release.
@@ -461,6 +530,9 @@ global:
         ## This setting allows continuing if and only if the cloneIndices setting is also enabled which
         ## ensures a complete backup of the original index is preserved.
         allowDocCountMismatch: false
+        ## Only disable for OpenSearch/ElasticSearch clusters with zone awareness, otherwise optimization should be utilized
+        ## Will use full replication during reindexing which will make the process slower
+        reindexOptimizationEnabled: true
 
     ## Search related configuration
     search:
@@ -611,10 +683,16 @@ global:
   kafka:
     config:
       log.retention.hours: 24
+    broker:
+      persistence:
+        size: 16Gi
     bootstrap:
       server: "prerequisites-kafka:9092"
     zookeeper:
       server: "prerequisites-zookeeper:2181"
+    # Set to false if you don't want datahub to create topics during install/upgrade.
+    precreateTopics: false
+
     # This section defines the names for the kafka topics that DataHub depends on, at a global level. Do not override this config
     # at a sub-chart level.
     topics:
@@ -628,6 +706,7 @@ global:
       metadata_change_log_timeseries_topic_name: "MetadataChangeLog_Timeseries_v1"
       platform_event_topic_name: "PlatformEvent_v1"
       datahub_upgrade_history_topic_name: "DataHubUpgradeHistory_v1"
+      cdc_topic_name: "datahub.metadata_aspect_v2"
     consumer_groups:
       datahub_upgrade_history_kafka_consumer_group_id: {}
       #   gms: "<<release-name>>-duhe-consumer-job-client-gms"
@@ -681,6 +760,22 @@ global:
       #   region: us-east-1
       #   registry: datahub
 
+      # Optional override on whether to configure schema registry clean up policy.
+      # When schema registry type is set to INTERNAL, AWS_GLUE, the configureCleanupPolicy is always set to false.
+      # This is used *only* if schemaregistry.type is set to KAFKA *and* datahub can create/configure
+      # topics (precreateTopics: true).
+      # When using a schema registry that datahub cannot configure, explicitly set this flag to false.
+      configureCleanupPolicy: true
+
+      # AWS IAM authentication for MSK
+      # When enabled, DataHub will use AWS IAM credentials instead of username/password
+      # Applies to all components that use Kafka (both Java/Spring and Python services).
+      iam:
+        enabled:
+          false # Sets SPRING_KAFKA_PROPERTIES_SASL_* environment variables for Java services
+          # and KAFKA_PROPERTIES_* environment variables for Python services
+        awsRegion: "" # AWS region where MSK cluster is located, e.g. "us-west-2"
+
   sql:
     datasource:
       host: ""
@@ -699,7 +794,7 @@ global:
           value: ""
 
   datahub:
-    version: v1.1.0
+    version: v1.3.0.1
     gms:
       port: "8080"
       nodePort: "30001"
