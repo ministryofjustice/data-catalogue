@@ -611,6 +611,9 @@ global:
   kafka:
     config:
       log.retention.hours: 24
+    broker:
+      persistence:
+        size: 16Gi
     bootstrap:
       server: "prerequisites-kafka:9092"
     zookeeper:
