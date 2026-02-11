@@ -634,7 +634,8 @@ global:
                 score_mode: multiply
                 boost_mode: multiply
 
-            # Is a single term with `_`, `.`, or `-`
+            # Is a single term with `_`, `.`, or `-`.
+            # Table names, file names, usernames, etc. dim_case
             - queryRegex: >-
                 ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
               simpleQuery: false
@@ -658,6 +659,27 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
+                  - filter:
+                      term:
+                        deprecated:
+                          value: true
+                    weight: 0.5
+                score_mode: multiply
+                boost_mode: multiply
+
+            # Specific databases to return those results higher
+            - queryRegex: >-
+                ^(?i)(nomis|delius|xhibit|oasys)$
+              simpleQuery: true
+              prefixMatchQuery: true
+              exactMatchQuery: true
+              functionScore:
+                functions:
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
                   - filter:
                       term:
                         deprecated:
