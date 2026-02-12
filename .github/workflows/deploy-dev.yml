@@ -3,10 +3,10 @@ name: Deploy dev
 on:
   pull_request:
     paths:
-      - 'helm_deploy/**'
-      - '.github/workflows/**deploy**'
-      - '!helm_deploy/**test**'
-      - '!.github/workflows/**test**'
+      - "helm_deploy/**"
+      - ".github/workflows/**deploy**"
+      - "!helm_deploy/**test**"
+      - "!.github/workflows/**test**"
   workflow_dispatch:
 
 jobs:
@@ -14,8 +14,8 @@ jobs:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
       env: dev
-      datahub_helm_version: "0.6.7"
-      datahub_prereqs_helm_version: "0.1.15"
+      datahub_helm_version: "0.8.0"
+      datahub_prereqs_helm_version: "0.2.1"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
       kube_cert: "${{ secrets.KUBE_CERT }}"
