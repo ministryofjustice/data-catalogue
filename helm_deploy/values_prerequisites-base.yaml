@@ -92,6 +92,7 @@ kafka:
     replicaCount: 0
   broker:
     persistence:
+      enabled: true
       size: 16Gi
     replicaCount: 2
     # The new minId for broker is 100. If we don't override this, the broker will have id 100
