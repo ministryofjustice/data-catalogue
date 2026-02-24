@@ -194,10 +194,10 @@ elasticsearchSetupJob:
   resources:
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 1Gi
     requests:
       cpu: 300m
-      memory: 256Mi
+      memory: 512Mi
   extraInitContainers: []
   podSecurityContext:
     fsGroup: 1000
