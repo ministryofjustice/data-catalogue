@@ -32,21 +32,21 @@ source:
         - ".*tranche_outcome$"
 
 transformers:
-  - type: "simple_add_dataset_tags"
+  - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
+    config:
+      data_custodian: "${PLACEHOLDER_TECHNICAL_CONTACT}"
+
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Prisons and probation"
         - "urn:li:tag:Prison"
         - "urn:li:tag:Person sentence calculations"
-  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+
+  - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
     config:
-      data_custodian: "${PLACEHOLDER_TECHNICAL_CONTACT}"
-      subject_areas:
-        - Prisons and probation
-        - Prison
-        - Person Sentence Calculations
-      description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform. The Calculate Release Dates Service is used to calculate various sentence release dates based on adjustment, sentence, offence and prisoner data."
+      description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform."
       properties:
         dc_readable_name: "calculate_release_dates"
         dc_slack_channel_name: "#calculate_release_dates_public_channel"
@@ -55,6 +55,15 @@ transformers:
         dc_access_requirements: ""
         refresh_period: Every day
         security_classification: Official-Sensitive
+
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Prisons and probation"
+        - "urn:li:tag:Prison"
+        - "urn:li:tag:Person sentence calculations"
+
   - type: "simple_add_dataset_properties"
     config:
       semantics: OVERWRITE # OVERWRITE is default behaviour

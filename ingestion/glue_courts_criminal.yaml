@@ -3,38 +3,48 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: [
-        "mags_curated_v3$",
-      ]
+      allow: ["mags_curated_v3$"]
     extract_owners: False
     extract_transforms: False
 
 transformers:
+  - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
+    config:
+      data_custodian: "${COURTS_CRIMINAL_TECHNICAL_CONTACT}"
+
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Courts and tribunals"
+        - "urn:li:tag:Criminal courts"
+
   - type: "simple_add_dataset_tags"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Courts and tribunals"
         - "urn:li:tag:Criminal courts"
-  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+
+  - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
     config:
-      data_custodian: "${COURTS_CRIMINAL_TECHNICAL_CONTACT}"
-      subject_areas:
-        - Criminal courts
-        - Courts and tribunals
+      description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform."
       properties:
+        dc_readable_name: "criminal_courts"
         dc_slack_channel_name: "#criminal-courts-databases"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/CH935DZGS
         dc_where_to_access_dataset: AnalyticalPlatform
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
         refresh_period: Every month
         security_classification: Official-Sensitive
+
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
         - "${COURTS_CRIMINAL_TECHNICAL_CONTACT}"
+
   - type: "simple_add_dataset_properties"
     config:
       semantics: OVERWRITE # OVERWRITE is default behaviour

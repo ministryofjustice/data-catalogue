@@ -3,39 +3,53 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: [
-        "sop_transformed_v1_ac$",
-        "sop_derived$",
-        "sop_lookups$",
-        "sop_preprocessed$"
-      ]
+      allow:
+        [
+          "sop_transformed_v1_ac$",
+          "sop_derived$",
+          "sop_lookups$",
+          "sop_preprocessed$",
+        ]
     extract_owners: False
     extract_transforms: False
 
 transformers:
+  - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
+    config:
+      # data_custodian: "${SOP_TECHNICAL_CONTACT}"
+      data_custodian: "urn:li:corpuser:Holly.Furniss"
+
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Corporate operations"
+        - "urn:li:tag:Employees"
+
+  - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
+    config:
+      description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform."
+      properties:
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Every month
+        security_classification: Official-Sensitive
+
   - type: "simple_add_dataset_tags"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Corporate operations"
         - "urn:li:tag:Employees"
-  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
-    config:
-      data_custodian: "${SOP_TECHNICAL_CONTACT}"
-      subject_areas:
-        - Employees
-        - Corporate operations
-      properties:
-        dc_where_to_access_dataset: AnalyticalPlatform
-        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
-        refresh_period: Every month
-        security_classification: Official-Sensitive
+
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
-        - "${SOP_TECHNICAL_CONTACT}"
+        - "urn:li:corpuser:Holly.Furniss"
+        # - "${SOP_TECHNICAL_CONTACT}"
+
   - type: "simple_add_dataset_properties"
     config:
       semantics: OVERWRITE # OVERWRITE is default behaviour

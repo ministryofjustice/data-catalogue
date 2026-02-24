@@ -3,26 +3,25 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: [
-        "familyman_live_v4$",
-        "familyman_derived_live_v4$"
-      ]
+      allow: ["familyman_live_v4$", "familyman_derived_live_v4$"]
     extract_owners: False
     extract_transforms: False
 
 transformers:
-  - type: "simple_add_dataset_tags"
+  - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
+    config:
+      data_custodian: "${COURTS_FAMILY_TECHNICAL_CONTACT}"
+
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Courts and tribunals"
         - "urn:li:tag:Family courts"
-  - type: "ingestion.transformers.enrich_container_transformer.EnrichContainerTransformer"
+
+  - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
     config:
-      data_custodian: "${COURTS_FAMILY_TECHNICAL_CONTACT}"
-      subject_areas:
-        - Family courts
-        - Courts and tribunals
+      description: "This is the backend Postgres database for the Calculate Release Dates service hosted on Cloud Platform."
       properties:
         dc_slack_channel_name: "#family-courts-databases"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C045G66557E
@@ -30,12 +29,21 @@ transformers:
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
         refresh_period: Every month
         security_classification: Official-Sensitive
+
+  - type: "simple_add_dataset_tags"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Courts and tribunals"
+        - "urn:li:tag:Family courts"
+
   - type: "simple_add_dataset_ownership"
     config:
       semantics: OVERWRITE
       ownership_type: "DATAOWNER"
       owner_urns:
         - "${COURTS_FAMILY_TECHNICAL_CONTACT}"
+
   - type: "simple_add_dataset_properties"
     config:
       semantics: OVERWRITE # OVERWRITE is default behaviour
