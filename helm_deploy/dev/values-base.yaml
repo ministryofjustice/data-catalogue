@@ -16,7 +16,7 @@ global:
           enabled: false
     index:
       settingsOverrides: '{"graph_service_v1":{"number_of_shards":"1"},"system_metadata_service_v1":{"number_of_shards":"1"}}'
-      entitySettingsOverrides: '{"dataset":{"number_of_shards":"1"}}'
+      entitySettingsOverrides: '{"dataset":{"number_of_shards":"1"},"usage_event":{"number_of_shards":"1"}}'
   kafka:
     metadataChangeLog:
       hooks:
