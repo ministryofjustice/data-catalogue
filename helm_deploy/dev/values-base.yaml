@@ -3,6 +3,22 @@ datahub-gms:
     # Override elasticsearch.bulkProcessor.requestsLimit
     # (default: 500)
     - name: ES_BULK_REQUESTS_LIMIT
-      value: "1000"
+      value: "250"
     - name: ES_BULK_FLUSH_PERIOD
-      value: "60"
+      value: "15"
+
+global:
+  datahub_analytics_enabled: false
+  elasticsearch:
+    metadataChangeLog:
+      hooks:
+        ingestionScheduler:
+          enabled: false
+    index:
+      settingsOverrides: '{"graph_service_v1":{"number_of_shards":"1"},"system_metadata_service_v1":{"number_of_shards":"1"}}'
+      entitySettingsOverrides: '{"dataset":{"number_of_shards":"1"}}'
+  kafka:
+    metadataChangeLog:
+      hooks:
+        ingestionScheduler:
+          enabled: false
