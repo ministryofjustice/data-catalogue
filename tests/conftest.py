@@ -95,6 +95,11 @@ def mock_datahub_graph(manifest):
                 self.monkey_patch_get_related_entities, self.mock_graph
             )
 
+            # Bind mock_graph's execute_graphql to monkey_patch_execute_graphql
+            self.mock_graph.execute_graphql = types.MethodType(
+                self.monkey_patch_execute_graphql, self.mock_graph
+            )
+
         def monkey_patch_emit_mcp(self, mcpw: MetadataChangeProposalWrapper) -> None:
             """
             Mockey patched implementation of DatahubGraph.emit_mcp that caches the mcp locally in memory.
@@ -133,6 +138,25 @@ def mock_datahub_graph(manifest):
                     )
                 )
             return related_entities
+
+        def monkey_patch_execute_graphql(self, cls, query: str, variables: dict):
+            """
+            Monkey patched implementation of DataHubGraph.execute_graphql used by
+            post ingestion relation checks.
+            """
+            dataset_urn = variables.get("urn") if isinstance(variables, dict) else None
+            has_relation = bool(self.table_database_mappings.get(dataset_urn))
+
+            if "isPartOfRelationship" in query:
+                return {
+                    "dataset": {
+                        "relationships": {
+                            "total": 1 if has_relation else 0,
+                        }
+                    }
+                }
+
+            return {}
 
     mock_datahub_graph_ctx = MockDataHubGraphContext(manifest)
     return mock_datahub_graph_ctx.mock_graph
