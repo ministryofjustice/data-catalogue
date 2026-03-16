@@ -35,6 +35,16 @@ query platformCounts($input: AggregateAcrossEntitiesInput!) {
 }
 """
 
+is_part_of_relationship_graph_query = """
+query isPartOfRelationship($urn: String!) {
+    dataset(urn: $urn) {
+        relationships(input: { types: [\"IsPartOf\"], direction: OUTGOING, count: 1 }) {
+            total
+        }
+    }
+}
+"""
+
 
 def _get_table_database_mappings(manifest):
     # mappings is a dictionary where the key is the dataset urn and the value is the database urn
@@ -92,14 +102,51 @@ def check_is_part_of_relationships(mappings, graph):
     missing_is_part_of = []
 
     for dataset in mappings:
-        relations = list(
-            graph.get_related_entities(
-                dataset,
-                ["IsPartOf"],
-                DataHubGraph.RelationshipDirection.OUTGOING,
+        try:
+            result = graph.execute_graphql(
+                is_part_of_relationship_graph_query,
+                {"urn": dataset},
             )
-        )
-        if not relations:
+        except Exception as e:
+            logging.warning(
+                "Failed to query IsPartOf relationships for dataset %s: %s",
+                dataset,
+                e,
+            )
+            missing_is_part_of.append(dataset)
+            continue
+
+        dataset_result = result.get("dataset")
+        if dataset_result is None:
+            logging.warning(
+                "GraphQL IsPartOf check returned no dataset node for urn %s. Raw response: %s",
+                dataset,
+                result,
+            )
+            missing_is_part_of.append(dataset)
+            continue
+
+        relationships_result = dataset_result.get("relationships")
+        if not isinstance(relationships_result, dict):
+            logging.warning(
+                "GraphQL IsPartOf check returned unexpected relationships payload for urn %s: %s",
+                dataset,
+                relationships_result,
+            )
+            missing_is_part_of.append(dataset)
+            continue
+
+        relation_total = relationships_result.get("total", 0)
+        if not isinstance(relation_total, int):
+            logging.warning(
+                "GraphQL IsPartOf check returned non-integer relationship total for urn %s: %s",
+                dataset,
+                relation_total,
+            )
+            missing_is_part_of.append(dataset)
+            continue
+
+        if relation_total == 0:
             missing_is_part_of.append(dataset)
     return missing_is_part_of
 
