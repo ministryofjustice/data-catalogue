@@ -627,6 +627,11 @@ global:
                           value: true
                     weight: 1.05
                   - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
                       term:
                         deprecated:
                           value: true
@@ -644,6 +649,11 @@ global:
               functionScore:
                 functions:
                   - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
                       term:
                         deprecated:
                           value: true
@@ -660,6 +670,11 @@ global:
               functionScore:
                 functions:
                   - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
                       term:
                         deprecated:
                           value: true
@@ -667,26 +682,26 @@ global:
                 score_mode: multiply
                 boost_mode: multiply
 
-#            # Specific databases to return those results higher
-#            - queryRegex: >-
-#                ^(?i)(nomis|delius|xhibit|oasys)$
-#              simpleQuery: true
-#              prefixMatchQuery: true
-#              exactMatchQuery: true
-#              functionScore:
-#                functions:
-#                  - filter:
-#                      prefix:
-#                        urn:
-#                          value: "urn:li:container:"
-#                    weight: 1000.0
-#                  - filter:
-#                      term:
-#                        deprecated:
-#                          value: true
-#                    weight: 0.5
-#                score_mode: multiply
-#                boost_mode: multiply
+            # Specific databases to return those results higher
+            # - queryRegex: >-
+            #     ^(?i)(nomis|delius|xhibit|oasys)$
+            #   simpleQuery: true
+            #   prefixMatchQuery: true
+            #   exactMatchQuery: true
+            #   functionScore:
+            #     functions:
+            #       - filter:
+            #           prefix:
+            #             urn:
+            #               value: "urn:li:container:"
+            #         weight: 1000.0
+            #       - filter:
+            #           term:
+            #             deprecated:
+            #               value: true
+            #         weight: 0.5
+            #     score_mode: multiply
+            #     boost_mode: multiply
 
             # default
             - queryRegex: .*
@@ -695,6 +710,11 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
                   - filter:
                       term:
                         deprecated:
