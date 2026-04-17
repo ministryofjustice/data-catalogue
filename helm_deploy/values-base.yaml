@@ -635,12 +635,12 @@ global:
                       term:
                         typeNames:
                           value: "Database"
-                    weight: 1200.0
+                    weight: 1400.0
                   - filter:
                       term:
                         typeNames:
                           value: "Model"
-                    weight: 1100.0
+                    weight: 1200.0
                   - filter:
                       term:
                         deprecated:
@@ -667,12 +667,12 @@ global:
                       term:
                         typeNames:
                           value: "Database"
-                    weight: 1200.0
+                    weight: 1400.0
                   - filter:
                       term:
                         typeNames:
                           value: "Model"
-                    weight: 1100.0
+                    weight: 1200.0
                   - filter:
                       term:
                         deprecated:
@@ -698,12 +698,12 @@ global:
                       term:
                         typeNames:
                           value: "Database"
-                    weight: 1200.0
+                    weight: 1400.0
                   - filter:
                       term:
                         typeNames:
                           value: "Model"
-                    weight: 1100.0
+                    weight: 1200.0
                   - filter:
                       term:
                         deprecated:
@@ -729,12 +729,12 @@ global:
                       term:
                         typeNames:
                           value: "Database"
-                    weight: 1200.0
+                    weight: 1400.0
                   - filter:
                       term:
                         typeNames:
                           value: "Model"
-                    weight: 1100.0
+                    weight: 1200.0
                   - filter:
                       term:
                         deprecated:
