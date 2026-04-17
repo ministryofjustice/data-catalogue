@@ -638,6 +638,11 @@ global:
                     weight: 1200.0
                   - filter:
                       term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1100.0
+                  - filter:
+                      term:
                         deprecated:
                           value: true
                     weight: 0.5
@@ -663,6 +668,11 @@ global:
                         typeNames:
                           value: "Database"
                     weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1100.0
                   - filter:
                       term:
                         deprecated:
@@ -691,6 +701,11 @@ global:
                     weight: 1200.0
                   - filter:
                       term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1100.0
+                  - filter:
+                      term:
                         deprecated:
                           value: true
                     weight: 0.5
@@ -715,6 +730,11 @@ global:
                         typeNames:
                           value: "Database"
                     weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1100.0
                   - filter:
                       term:
                         deprecated:
