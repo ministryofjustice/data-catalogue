@@ -627,10 +627,15 @@ global:
                           value: true
                     weight: 1.05
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
-                    weight: 1000.0
+                      bool:
+                        must:
+                          - prefix:
+                              urn:
+                                value: "urn:li:container:"
+                          - term:
+                              typeNames:
+                                value: "Database"
+                    weight: 1400.0
                   - filter:
                       term:
                         deprecated:
@@ -649,10 +654,15 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
-                    weight: 1000.0
+                      bool:
+                        must:
+                          - prefix:
+                              urn:
+                                value: "urn:li:container:"
+                          - term:
+                              typeNames:
+                                value: "Database"
+                    weight: 1400.0
                   - filter:
                       term:
                         deprecated:
@@ -670,10 +680,15 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
-                    weight: 1000.0
+                      bool:
+                        must:
+                          - prefix:
+                              urn:
+                                value: "urn:li:container:"
+                          - term:
+                              typeNames:
+                                value: "Database"
+                    weight: 1400.0
                   - filter:
                       term:
                         deprecated:
@@ -711,10 +726,15 @@ global:
               functionScore:
                 functions:
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:container:"
-                    weight: 1000.0
+                      bool:
+                        must:
+                          - prefix:
+                              urn:
+                                value: "urn:li:container:"
+                          - term:
+                              typeNames:
+                                value: "Database"
+                    weight: 1400.0
                   - filter:
                       term:
                         deprecated:
