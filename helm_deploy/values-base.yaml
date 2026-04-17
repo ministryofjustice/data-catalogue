@@ -635,7 +635,7 @@ global:
                           - term:
                               typeNames:
                                 value: "Database"
-                    weight: 1400.0
+                    weight: 1000.0
                   - filter:
                       term:
                         deprecated:
@@ -662,7 +662,7 @@ global:
                           - term:
                               typeNames:
                                 value: "Database"
-                    weight: 1400.0
+                    weight: 1000.0
                   - filter:
                       term:
                         deprecated:
@@ -688,7 +688,7 @@ global:
                           - term:
                               typeNames:
                                 value: "Database"
-                    weight: 1400.0
+                    weight: 1000.0
                   - filter:
                       term:
                         deprecated:
@@ -734,7 +734,7 @@ global:
                           - term:
                               typeNames:
                                 value: "Database"
-                    weight: 1400.0
+                    weight: 1000.0
                   - filter:
                       term:
                         deprecated:
