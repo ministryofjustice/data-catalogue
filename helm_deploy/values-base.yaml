@@ -630,7 +630,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 1000.0
+                    weight: 100.0
                   - filter:
                       term:
                         typeNames:
@@ -662,7 +662,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 1000.0
+                    weight: 100.0
                   - filter:
                       term:
                         typeNames:
@@ -693,7 +693,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 1000.0
+                    weight: 100.0
                   - filter:
                       term:
                         typeNames:
@@ -724,7 +724,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 1000.0
+                    weight: 100.0
                   - filter:
                       term:
                         typeNames:
