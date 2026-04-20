@@ -665,17 +665,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0
+                    weight: 0.2
                   - filter:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: -1.0
+                    weight: 0.05
                   - filter:
                       term:
                         typeNames:
                           value: "Chart"
-                    weight: -2.0
+                    weight: 0.03
                   - filter:
                       term:
                         deprecated:
@@ -732,17 +732,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0
+                    weight: 0.2
                   - filter:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: -1.0
+                    weight: 0.05
                   - filter:
                       term:
                         typeNames:
                           value: "Chart"
-                    weight: -2.0
+                    weight: 0.03
                   - filter:
                       term:
                         deprecated:
@@ -798,17 +798,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0
+                    weight: 0.2
                   - filter:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: -1.0
+                    weight: 0.05
                   - filter:
                       term:
                         typeNames:
                           value: "Chart"
-                    weight: -2.0
+                    weight: 0.03
                   - filter:
                       term:
                         deprecated:
@@ -864,17 +864,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0
+                    weight: 0.2
                   - filter:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: -1.0
+                    weight: 0.05
                   - filter:
                       term:
                         typeNames:
                           value: "Chart"
-                    weight: -2.0
+                    weight: 0.03
                   - filter:
                       term:
                         deprecated:
