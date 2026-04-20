@@ -774,7 +774,7 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0.5
+                    weight: 0
                   - filter:
                       term:
                         deprecated:
