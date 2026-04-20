@@ -643,6 +643,11 @@ global:
                     weight: 800.0
                   - filter:
                       term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
@@ -650,7 +655,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0.5
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: -1.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Chart"
+                    weight: -2.0
                   - filter:
                       term:
                         deprecated:
@@ -685,6 +700,11 @@ global:
                     weight: 800.0
                   - filter:
                       term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
@@ -692,7 +712,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0.5
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: -1.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Chart"
+                    weight: -2.0
                   - filter:
                       term:
                         deprecated:
@@ -726,6 +756,11 @@ global:
                     weight: 800.0
                   - filter:
                       term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
@@ -733,7 +768,17 @@ global:
                       term:
                         typeNames:
                           value: "Publication collection"
-                    weight: 0.5
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: -1.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Chart"
+                    weight: -2.0
                   - filter:
                       term:
                         deprecated:
@@ -767,6 +812,11 @@ global:
                     weight: 800.0
                   - filter:
                       term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
@@ -775,6 +825,16 @@ global:
                         typeNames:
                           value: "Publication collection"
                     weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: -1.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Chart"
+                    weight: -2.0
                   - filter:
                       term:
                         deprecated:
