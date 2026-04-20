@@ -654,6 +654,16 @@ global:
                   - filter:
                       term:
                         typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
                           value: "Publication collection"
                     weight: 0
                   - filter:
@@ -707,6 +717,16 @@ global:
                       term:
                         typeNames:
                           value: "Model"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
                     weight: 1200.0
                   - filter:
                       term:
@@ -767,6 +787,16 @@ global:
                   - filter:
                       term:
                         typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
                           value: "Publication collection"
                     weight: 0
                   - filter:
@@ -819,6 +849,16 @@ global:
                       term:
                         typeNames:
                           value: "Model"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
                     weight: 1200.0
                   - filter:
                       term:
