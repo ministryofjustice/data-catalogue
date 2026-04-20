@@ -630,7 +630,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 100.0
+                    weight: 1000.0
                   - filter:
                       term:
                         typeNames:
@@ -641,6 +641,11 @@ global:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0.5
                   - filter:
                       term:
                         deprecated:
@@ -662,7 +667,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 100.0
+                    weight: 1000.0
                   - filter:
                       term:
                         typeNames:
@@ -693,7 +698,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 100.0
+                    weight: 1000.0
                   - filter:
                       term:
                         typeNames:
@@ -724,7 +729,7 @@ global:
                       prefix:
                         urn:
                           value: "urn:li:container:"
-                    weight: 100.0
+                    weight: 1000.0
                   - filter:
                       term:
                         typeNames:
