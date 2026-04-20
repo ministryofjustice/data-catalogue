@@ -680,6 +680,11 @@ global:
                     weight: 1200.0
                   - filter:
                       term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0.5
+                  - filter:
+                      term:
                         deprecated:
                           value: true
                     weight: 0.5
@@ -711,6 +716,11 @@ global:
                     weight: 1200.0
                   - filter:
                       term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0.5
+                  - filter:
+                      term:
                         deprecated:
                           value: true
                     weight: 0.5
@@ -740,6 +750,11 @@ global:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0.5
                   - filter:
                       term:
                         deprecated:
