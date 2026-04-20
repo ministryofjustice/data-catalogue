@@ -632,11 +632,6 @@ global:
                           value: "urn:li:container:"
                     weight: 1000.0
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:dataset:"
-                    weight: 1200.0
-                  - filter:
                       term:
                         typeNames:
                           value: "Database"
@@ -704,11 +699,6 @@ global:
                           value: "urn:li:container:"
                     weight: 1000.0
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:dataset:"
-                    weight: 1200.0
-                  - filter:
                       term:
                         typeNames:
                           value: "Database"
@@ -775,11 +765,6 @@ global:
                           value: "urn:li:container:"
                     weight: 1000.0
                   - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:dataset:"
-                    weight: 1200.0
-                  - filter:
                       term:
                         typeNames:
                           value: "Database"
@@ -845,11 +830,6 @@ global:
                         urn:
                           value: "urn:li:container:"
                     weight: 1000.0
-                  - filter:
-                      prefix:
-                        urn:
-                          value: "urn:li:dataset:"
-                    weight: 1200.0
                   - filter:
                       term:
                         typeNames:
