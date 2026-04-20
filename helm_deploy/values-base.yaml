@@ -638,6 +638,11 @@ global:
                     weight: 1400.0
                   - filter:
                       term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
+                  - filter:
+                      term:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
@@ -673,6 +678,11 @@ global:
                         typeNames:
                           value: "Database"
                     weight: 1400.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
                   - filter:
                       term:
                         typeNames:
@@ -711,6 +721,11 @@ global:
                     weight: 1400.0
                   - filter:
                       term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
+                  - filter:
+                      term:
                         typeNames:
                           value: "Model"
                     weight: 1200.0
@@ -745,6 +760,11 @@ global:
                         typeNames:
                           value: "Database"
                     weight: 1400.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
                   - filter:
                       term:
                         typeNames:
