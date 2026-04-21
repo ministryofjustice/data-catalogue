@@ -670,7 +670,7 @@ global:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: 10
+                    weight: 0.02
                   - filter:
                       prefix:
                         urn:
@@ -737,7 +737,7 @@ global:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: 10
+                    weight: 0.02
                   - filter:
                       prefix:
                         urn:
@@ -803,7 +803,7 @@ global:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: 10
+                    weight: 0.02
                   - filter:
                       prefix:
                         urn:
@@ -869,7 +869,7 @@ global:
                       term:
                         typeNames:
                           value: "Publication dataset"
-                    weight: 10
+                    weight: 0.02
                   - filter:
                       prefix:
                         urn:
