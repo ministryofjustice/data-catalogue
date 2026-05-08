@@ -65,7 +65,7 @@ jobs:
       - name: Send advisories to Slack
         id: send_to_slack
         if: ${{ steps.filter_advisories.outputs.num_filtered_advisories != '0' }}
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
+        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c #v3.0.3
         with:
           webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
@@ -75,7 +75,7 @@ jobs:
 
       - name: Slack failure notification
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
+        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c #v3.0.3
         with:
           webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
