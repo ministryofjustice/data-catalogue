@@ -72,3 +72,40 @@ class TestAddLatestFileTimestampTransformer:
         assert aspect.customProperties == {
             "security_classification": "Official-Sensitive"
         }
+
+    def test_excludes_staging_tables(self, monkeypatch):
+        monkeypatch.setattr(
+            AddLatestFileTimestamp,
+            "_build_latest_timestamp_lookup",
+            lambda self, manifest: {},
+        )
+
+        transformer = AddLatestFileTimestamp.create(
+            {
+                "manifest_s3_uri": "s3://test_bucket/prod/run_artefacts/latest/target/manifest.json",
+                "aws_region": "eu-west-1",
+            },
+            PipelineContext(run_id="test_run"),
+        )
+
+        test_cases = [
+            "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.db.stg_table,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.db.staging_table,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:dbt,cadet.awsdatacatalog.db.int_table,PROD)",
+        ]
+
+        for entity_urn in test_cases:
+            aspect = transformer.transform_aspect(
+                entity_urn=entity_urn,
+                aspect_name="datasetProperties",
+                aspect=DatasetPropertiesClass(
+                    name="table1",
+                    customProperties={"security_classification": "Official-Sensitive"},
+                ),
+            )
+
+            assert isinstance(aspect, DatasetPropertiesClass)
+            assert aspect.customProperties == {
+                "security_classification": "Official-Sensitive"
+            }
+            assert "latest_file_timestamp" not in aspect.customProperties
