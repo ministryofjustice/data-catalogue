@@ -61,7 +61,7 @@ jobs:
       - name: Install Project Dependencies
         run: uv sync --locked
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v6.1.2
         with:
           role-to-assume: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
           role-duration-seconds: 3600
