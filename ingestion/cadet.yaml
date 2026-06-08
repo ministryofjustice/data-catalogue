@@ -82,3 +82,7 @@ transformers:
     config:
       properties:
         security_classification: Official-Sensitive
+  - type: "ingestion.transformers.add_latest_file_timestamp.AddLatestFileTimestamp"
+    config:
+      manifest_s3_uri: "s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target/manifest.json"
+      aws_region: "eu-west-1"
