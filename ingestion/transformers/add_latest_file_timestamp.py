@@ -16,6 +16,7 @@ from datahub.metadata.schema_classes import DatasetPropertiesClass
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
+    is_excluded_table_name,
     parse_database_and_table_names,
     validate_fqn,
 )
@@ -77,7 +78,6 @@ class AddLatestFileTimestamp(DatasetTransformer, metaclass=ABCMeta):
 
     def _build_latest_timestamp_lookup(self, manifest: dict) -> Dict[str, str]:
         lookup: Dict[str, str] = {}
-        excluded_patterns = ["stg", "staging", "int", "dummy", "intermediate", "dev", "test", "temp", "example"]
 
         for node in manifest["nodes"].values():
             if node.get("resource_type") != "model":
@@ -87,9 +87,9 @@ class AddLatestFileTimestamp(DatasetTransformer, metaclass=ABCMeta):
                 continue
 
             database_name, table_name = parse_database_and_table_names(node)
-            
+
             # Skip tables that match exclusion patterns
-            if any(pattern in table_name.lower() for pattern in excluded_patterns):
+            if is_excluded_table_name(table_name):
                 logging.info(
                     "Skipping latest_file_timestamp for %s.%s (excluded pattern)",
                     database_name,

@@ -19,6 +19,11 @@ source:
     # Tags, terms and owners from CaDeT should override what's already in the catalogue
     write_semantics: OVERRIDE
 
+    node_name_pattern:
+      deny:
+        # Exclude model names with non-production patterns.
+        - ".*__[^.]*?(stg|staging|int|dummy|intermediate|dev|test|temp|example)[^.]*$"
+
     entities_enabled:
       test_results: "YES"
       seeds: "YES"

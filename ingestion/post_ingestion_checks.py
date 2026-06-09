@@ -11,6 +11,7 @@ from datahub.ingestion.graph.config import DatahubClientConfig
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
+    is_excluded_table_name,
     parse_database_and_table_names,
     validate_fqn,
 )
@@ -56,6 +57,13 @@ def _get_table_database_mappings(manifest):
                 database, table_name = parse_database_and_table_names(
                     manifest["nodes"][node]
                 )
+                if is_excluded_table_name(table_name):
+                    logging.info(
+                        "Skipping post-ingestion check for %s.%s (excluded pattern)",
+                        database,
+                        table_name,
+                    )
+                    continue
 
                 dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                     name=f"{database}.{table_name}",

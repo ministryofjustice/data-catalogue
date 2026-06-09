@@ -4,6 +4,9 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["mags_curated_v3$"]
+    table_pattern:
+      deny:
+        - ".*(stg|staging|int|dummy|intermediate|dev|test|temp|example).*"
     extract_owners: False
     extract_transforms: False
 

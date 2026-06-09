@@ -16,6 +16,18 @@ from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
+EXCLUDED_TABLE_PATTERNS = (
+    "stg",
+    "staging",
+    "int",
+    "dummy",
+    "intermediate",
+    "dev",
+    "test",
+    "temp",
+    "example",
+)
+
 # This is so we can quickly tag entities with subject areas to test, before
 # adding the tags at source. Domains relate to those used in CaDeT.
 # bold and general do not map to any subject area and will need to be handled
@@ -113,6 +125,10 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     node_database_name = node["schema"]
 
     return node_database_name, node_table_name
+
+
+def is_excluded_table_name(table_name: str) -> bool:
+    return any(pattern in table_name.lower() for pattern in EXCLUDED_TABLE_PATTERNS)
 
 
 def get_tags(dbt_manifest_node: dict) -> set[str]:

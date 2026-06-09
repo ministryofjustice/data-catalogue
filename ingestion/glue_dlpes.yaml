@@ -4,6 +4,9 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["dlpes_dwp_hmrc_main_datashare$", "dlpes_hmrc_mini_datashare$"]
+    table_pattern:
+      deny:
+        - ".*(stg|staging|int|dummy|intermediate|dev|test|temp|example).*"
     extract_owners: False
     extract_transforms: False
 

@@ -4,6 +4,9 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["contracts_rio_v1$", "contracts_jaggaer_v1$"]
+    table_pattern:
+      deny:
+        - ".*(stg|staging|int|dummy|intermediate|dev|test|temp|example).*"
     extract_owners: False
     extract_transforms: False
 

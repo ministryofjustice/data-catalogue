@@ -27,6 +27,7 @@ from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
     get_subject_areas,
     get_tags,
+    is_excluded_table_name,
     make_user_mcp,
     parse_database_and_table_names,
     validate_fqn,
@@ -164,6 +165,13 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
+            if is_excluded_table_name(table):
+                logging.info(
+                    "Skipping seed display tags for %s.%s (excluded pattern)",
+                    database,
+                    table,
+                )
+                continue
             domain = domain_lookup.get(database, table)
             tag_names = [
                 "Miscellaneous",
@@ -220,6 +228,13 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
+                    if is_excluded_table_name(table):
+                        logging.info(
+                            "Skipping database metadata for %s.%s (excluded pattern)",
+                            database,
+                            table,
+                        )
+                        continue
                     database_metadata_dict = {}
 
                     try:
