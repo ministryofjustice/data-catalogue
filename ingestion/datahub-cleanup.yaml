@@ -35,7 +35,7 @@ source:
     # 5. Soft-Deleted Entities Cleanup
     soft_deleted_entities_cleanup:
       enabled: true
-      retention_days: 5
+      retention_days: 0
       batch_size: 500
       max_workers: 10
       delay: 0.25
