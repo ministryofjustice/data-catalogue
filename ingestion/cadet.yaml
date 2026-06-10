@@ -21,8 +21,10 @@ source:
 
     node_name_pattern:
       deny:
-        # Exclude model names with non-production patterns.
+        # Exclude model names with non-production patterns in table names.
         - ".*__[^.]*?(stg|staging|int|dummy|intermediate|dev|test|temp|example)[^.]*$"
+        # Exclude model names with non-production patterns in database names.
+        - ".*[^.]*?(stg|staging|int|dummy|intermediate|dev|test|temp|example)[^.]*__[^.]*$"
         # These tables are currently badly formatted in the manifest. The fix for it should
         # go through when the dbt_docs workflow is working
         - ".*use_of_force\\.summary_status_complete_dim.*"

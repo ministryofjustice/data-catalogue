@@ -89,7 +89,7 @@ class AddLatestFileTimestamp(DatasetTransformer, metaclass=ABCMeta):
             database_name, table_name = parse_database_and_table_names(node)
 
             # Skip tables that match exclusion patterns
-            if is_excluded_table_name(table_name):
+            if is_excluded_table_name(table_name, database_name):
                 logging.info(
                     "Skipping latest_file_timestamp for %s.%s (excluded pattern)",
                     database_name,

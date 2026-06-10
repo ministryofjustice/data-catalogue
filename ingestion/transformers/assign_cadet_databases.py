@@ -131,7 +131,7 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     database, table_name = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
-                    if is_excluded_table_name(table_name):
+                    if is_excluded_table_name(table_name, database):
                         logging.info(
                             "Skipping container mapping for %s.%s (excluded pattern)",
                             database,

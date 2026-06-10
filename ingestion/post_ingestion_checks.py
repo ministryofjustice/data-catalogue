@@ -57,7 +57,7 @@ def _get_table_database_mappings(manifest):
                 database, table_name = parse_database_and_table_names(
                     manifest["nodes"][node]
                 )
-                if is_excluded_table_name(table_name):
+                if is_excluded_table_name(table_name, database):
                     logging.info(
                         "Skipping post-ingestion check for %s.%s (excluded pattern)",
                         database,

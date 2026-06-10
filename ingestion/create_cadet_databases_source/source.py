@@ -165,7 +165,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
-            if is_excluded_table_name(table):
+            if is_excluded_table_name(table, database):
                 logging.info(
                     "Skipping seed display tags for %s.%s (excluded pattern)",
                     database,
@@ -228,7 +228,7 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
-                    if is_excluded_table_name(table):
+                    if is_excluded_table_name(table, database):
                         logging.info(
                             "Skipping database metadata for %s.%s (excluded pattern)",
                             database,
