@@ -16,7 +16,7 @@ from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
-EXCLUDED_TABLE_PATTERNS = (
+EXCLUDED_NAME_PATTERNS = (
     "stg",
     "staging",
     "int",
@@ -127,16 +127,12 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     return node_database_name, node_table_name
 
 
-def is_excluded_table_name(table_name: str, database_name: str = "") -> bool:
-    names_to_check = [table_name]
-    if database_name:
-        names_to_check.append(database_name)
+def is_excluded_database_name(database_name: str) -> bool:
+    return any(pattern in database_name.lower() for pattern in EXCLUDED_NAME_PATTERNS)
 
-    return any(
-        pattern in entity_name.lower()
-        for entity_name in names_to_check
-        for pattern in EXCLUDED_TABLE_PATTERNS
-    )
+
+def is_excluded_table_name(table_name: str) -> bool:
+    return any(pattern in table_name.lower() for pattern in EXCLUDED_NAME_PATTERNS)
 
 
 def get_tags(dbt_manifest_node: dict) -> set[str]:

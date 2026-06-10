@@ -21,6 +21,7 @@ from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
     domains_to_subject_areas,
     get_cadet_metadata_json,
+    is_excluded_database_name,
     is_excluded_table_name,
     parse_database_and_table_names,
     validate_fqn,
@@ -131,9 +132,17 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     database, table_name = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
-                    if is_excluded_table_name(table_name, database):
+                    if is_excluded_database_name(database):
                         logging.info(
-                            "Skipping container mapping for %s.%s (excluded pattern)",
+                            "Skipping container mapping for %s.%s (excluded database pattern)",
+                            database,
+                            table_name,
+                        )
+                        continue
+
+                    if is_excluded_table_name(table_name):
+                        logging.info(
+                            "Skipping container mapping for %s.%s (excluded table pattern)",
                             database,
                             table_name,
                         )

@@ -27,6 +27,7 @@ from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
     get_subject_areas,
     get_tags,
+    is_excluded_database_name,
     is_excluded_table_name,
     make_user_mcp,
     parse_database_and_table_names,
@@ -165,9 +166,17 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
-            if is_excluded_table_name(table, database):
+            if is_excluded_database_name(database):
                 logging.info(
-                    "Skipping seed display tags for %s.%s (excluded pattern)",
+                    "Skipping seed display tags for %s.%s (excluded database pattern)",
+                    database,
+                    table,
+                )
+                continue
+
+            if is_excluded_table_name(table):
+                logging.info(
+                    "Skipping seed display tags for %s.%s (excluded table pattern)",
                     database,
                     table,
                 )
@@ -228,9 +237,17 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
-                    if is_excluded_table_name(table, database):
+                    if is_excluded_database_name(database):
                         logging.info(
-                            "Skipping database metadata for %s.%s (excluded pattern)",
+                            "Skipping database metadata for %s.%s (excluded database pattern)",
+                            database,
+                            table,
+                        )
+                        continue
+
+                    if is_excluded_table_name(table):
+                        logging.info(
+                            "Skipping database metadata for %s.%s (excluded table pattern)",
                             database,
                             table,
                         )
