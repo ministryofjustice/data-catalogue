@@ -22,11 +22,22 @@ source:
     node_name_pattern:
       deny:
         # Exclude any node with non-production naming patterns
-        - "(stg|staging|int|dummy|intermediate|dev|test|temp|example)"
+        - ".*(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example).*"
         # Exclude nodes where schema/database starts with non-production patterns
         - "^(stg|staging|int|dummy|intermediate|dev|test|temp|example).*"
         # Exclude database__table patterns
         - ".*(stg|staging|int|dummy|intermediate|dev|test|temp|example)__.*"
+
+    materialized_node_pattern:
+      database_pattern:
+        deny:
+          - ".*(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example).*"
+      schema_pattern:
+        deny:
+          - ".*(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example).*"
+      table_pattern:
+        deny:
+          - ".*(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example).*"
 
     entities_enabled:
       test_results: "YES"
