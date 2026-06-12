@@ -16,6 +16,19 @@ from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
+EXCLUDED_NAME_PATTERNS = (
+    "stg",
+    "staging",
+    "int",
+    "dummy",
+    "intermediate",
+    "dev",
+    "test",
+    "testing",
+    "temp",
+    "example",
+)
+
 # This is so we can quickly tag entities with subject areas to test, before
 # adding the tags at source. Domains relate to those used in CaDeT.
 # bold and general do not map to any subject area and will need to be handled
@@ -115,12 +128,37 @@ def parse_database_and_table_names(node: dict) -> tuple[str, str]:
     return node_database_name, node_table_name
 
 
+def is_excluded_name(name: str | None) -> bool:
+    if not name:
+        return False
+
+    return any(pattern in name.lower() for pattern in EXCLUDED_NAME_PATTERNS)
+
+
+def should_display_dbt_manifest_node(node: dict) -> bool:
+    candidate_values = [
+        node.get("unique_id"),
+        node.get("database"),
+        node.get("schema"),
+        node.get("name"),
+        node.get("alias"),
+        node.get("identifier"),
+    ]
+
+    fqn = node.get("fqn", [])
+    if fqn:
+        candidate_values.append(fqn[-1])
+
+    return not any(is_excluded_name(value) for value in candidate_values)
+
+
 def get_tags(dbt_manifest_node: dict) -> set[str]:
     """Resolve the tags to assign to nodes in datahub."""
     tags = []
-    if "dc_display_in_catalogue" in dbt_manifest_node["tags"]:
+    should_display = should_display_dbt_manifest_node(dbt_manifest_node)
+    if should_display and "dc_display_in_catalogue" in dbt_manifest_node["tags"]:
         tags.append("dc_display_in_catalogue")
-    if dbt_manifest_node["resource_type"] == "seed":
+    if should_display and dbt_manifest_node["resource_type"] == "seed":
         tags.append("dc_display_in_catalogue")
 
     return set(tags)
