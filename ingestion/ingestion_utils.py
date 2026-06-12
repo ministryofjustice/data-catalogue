@@ -135,6 +135,13 @@ def is_excluded_table_name(table_name: str) -> bool:
     return any(pattern in table_name.lower() for pattern in EXCLUDED_NAME_PATTERNS)
 
 
+def is_excluded_name(name: str | None) -> bool:
+    if not name:
+        return False
+
+    return any(pattern in name.lower() for pattern in EXCLUDED_NAME_PATTERNS)
+
+
 def get_tags(dbt_manifest_node: dict) -> set[str]:
     """Resolve the tags to assign to nodes in datahub."""
     tags = []
