@@ -42,6 +42,7 @@ on:
         required: true
       DLPES_DWP_HMRC_DATASHARE_CONTACT:
         required: true
+  workflow_dispatch:
 
 jobs:
   datahub-ingest-glue-data:
