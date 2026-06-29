@@ -4,6 +4,9 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["dlpes_dwp_mini_datashare$"]
+    table_pattern:
+      allow:
+        - "^dwp_mini_.*_lr${DLPES_DWP_MINI_LATEST_RELEASE}_[bcd]$"
     extract_owners: False
     extract_transforms: False
 
@@ -25,22 +28,16 @@ transformers:
   - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
     config:
       description: >-
-        The overarching aim of this share is to improve our
-        understanding of the potential links between offending, employment and
-        benefits.
-
-        The share includes anyone who appears on the Police National Computer with
-        at least one caution or conviction for a recordable offence in England and
-        Wales since 2000 and who can be successfully matched onto DWP/HMRC records.
-
-        This data is matched onto DWP benefit records and HMRC employment records
-        held on RAPID from 2008. The share is updated every two to three years.
+        The overarching aim of this share is to contribute towards the cross-government objective priority to reduce re-offending, by allowing an assessment of how long it takes ex-offenders to claim Universal Credit. 
+        
+        The share includes offenders that have been released from custody or on probation in the last 12 months and are drawn from P-NOMIS and N-DELIUS. The share is updated each quarter by removing those who were last released from custody or entered the care of probation services more than 12 months ago and adding offenders from the latest quarter. The data is matched to various DWP benefit systems and there is a one month time lag.
+        
         To enquire about access, please email datalinkingteam@justice.gov.uk
         """
       properties:
-        dc_readable_name: "calculate_release_dates"
-        dc_slack_channel_name: "#calculate_release_dates_public_channel"
-        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
+        dc_readable_name: "MoJ DWP Mini Datashare"
+        dc_slack_channel_name: "##data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: Please contact the team
         dc_access_requirements: ""
         refresh_period: Every day

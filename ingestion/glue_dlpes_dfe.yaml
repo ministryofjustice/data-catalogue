@@ -3,7 +3,11 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: ["dlpes_dfe_datshare$"]
+      allow: ["dlpes_dfe_datashare$"]
+    table_pattern:
+      deny:
+        - "learner_info_daily"
+        - "learning_delivery_daily"
     extract_owners: False
     extract_transforms: False
 
@@ -25,22 +29,16 @@ transformers:
   - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
     config:
       description: >-
-        The overarching aim of this share is to improve our
-        understanding of the potential links between offending, employment and
-        benefits.
+        The overarching aim of this share is to increase our understanding of the links between childhood characteristics, education outcomes and (re)-offending.
 
-        The share includes anyone who appears on the Police National Computer with
-        at least one caution or conviction for a recordable offence in England and
-        Wales since 2000 and who can be successfully matched onto DWP/HMRC records.
+        The MoJ DfE data share has recently been updated and now includes any one from the PNC from 2000 or later and includes offending up to May 2025 and education data up to the end of academic year 2024/25. The share is updated annually.
 
-        This data is matched onto DWP benefit records and HMRC employment records
-        held on RAPID from 2008. The share is updated every two to three years.
         To enquire about access, please email datalinkingteam@justice.gov.uk
         """
       properties:
-        dc_readable_name: "calculate_release_dates"
-        dc_slack_channel_name: "#calculate_release_dates_public_channel"
-        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C02BD7MFE7K
+        dc_readable_name: "MoJ DfE Datashare"
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: Please contact the team
         dc_access_requirements: ""
         refresh_period: Every day
