@@ -42,7 +42,6 @@ on:
         required: true
       DLPES_DWP_HMRC_DATASHARE_CONTACT:
         required: true
-  workflow_dispatch:
 
 jobs:
   datahub-ingest-glue-data:
@@ -99,7 +98,7 @@ jobs:
           DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
         run: |
           mkdir -p ingestion/processed
-          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes; do
+          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini; do
             envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
           done
 

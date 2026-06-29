@@ -13,51 +13,51 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-cadet-dev:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-em-cadet-dev:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
-      S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
-      BASE_CADET_INGESTION: false
-      CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-dpr-cadet-dev:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet_digital_prison_reporting.yaml
-      S3_TARGET_LOCATION: s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target
-      BASE_CADET_INGESTION: false
-      CADET_INSTANCE: cadet_digital_prison_reporting.awsdatacatalog
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.DPR_CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-justice-data-dev:
-    uses: ./.github/workflows/ingest-justice-data.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-cadet-dev:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+  #     S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-em-cadet-dev:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
+  #     S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
+  #     BASE_CADET_INGESTION: false
+  #     CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-dpr-cadet-dev:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet_digital_prison_reporting.yaml
+  #     S3_TARGET_LOCATION: s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target
+  #     BASE_CADET_INGESTION: false
+  #     CADET_INSTANCE: cadet_digital_prison_reporting.awsdatacatalog
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.DPR_CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-justice-data-dev:
+  #   uses: ./.github/workflows/ingest-justice-data.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   ingest-glue-data-dev:
     uses: ./.github/workflows/ingest-glue-data.yml
     with:
@@ -74,26 +74,26 @@ jobs:
       FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
       PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
       DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
-  ingest-moj-publications-dev:
-    uses: ./.github/workflows/ingest-moj-publications.yml
-    with:
-      ENVIRONMENT: dev
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  ingest-postgres-cdrs:
-    uses: ./.github/workflows/ingest-postgres.yml
-    with:
-      ENVIRONMENT: dev
-      INGESTION_NAME: hmpps_calculate_release_dates
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-      HOST_PORT: ${{ secrets.POSTGRES_HOST_PORT_CALCULATE_RELEASE_DATES_PREPROD }}
-      DATABASE: ${{ secrets.POSTGRES_DATABASE_CALCULATE_RELEASE_DATES_PREPROD }}
-      USER: ${{ secrets.POSTGRES_USER_CALCULATE_RELEASE_DATES_PREPROD }}
-      PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
-      PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
+  # ingest-moj-publications-dev:
+  #   uses: ./.github/workflows/ingest-moj-publications.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-postgres-cdrs:
+  #   uses: ./.github/workflows/ingest-postgres.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #     INGESTION_NAME: hmpps_calculate_release_dates
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  #     HOST_PORT: ${{ secrets.POSTGRES_HOST_PORT_CALCULATE_RELEASE_DATES_PREPROD }}
+  #     DATABASE: ${{ secrets.POSTGRES_DATABASE_CALCULATE_RELEASE_DATES_PREPROD }}
+  #     USER: ${{ secrets.POSTGRES_USER_CALCULATE_RELEASE_DATES_PREPROD }}
+  #     PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
+  #     PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
 
     
   run-datahub-cleanup:
