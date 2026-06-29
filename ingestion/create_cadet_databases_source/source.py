@@ -29,6 +29,7 @@ from ingestion.ingestion_utils import (
     get_tags,
     make_user_mcp,
     parse_database_and_table_names,
+    should_display_dbt_manifest_node,
     validate_fqn,
 )
 from ingestion.utils import report_generator_time, report_time
@@ -168,8 +169,9 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
             tag_names = [
                 "Miscellaneous",
                 "Reference data",
-                "dc_display_in_catalogue",
             ]
+            if should_display_dbt_manifest_node(node):
+                tag_names.append("dc_display_in_catalogue")
             if domains_to_subject_areas.get(domain.lower()):
                 tag_names.append(domains_to_subject_areas.get(domain.lower()))
 
