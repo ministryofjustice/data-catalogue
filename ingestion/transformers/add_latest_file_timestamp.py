@@ -77,8 +77,6 @@ class AddLatestFileTimestamp(DatasetTransformer, metaclass=ABCMeta):
 
     def _build_latest_timestamp_lookup(self, manifest: dict) -> Dict[str, str]:
         lookup: Dict[str, str] = {}
-        excluded_patterns = ["stg", "staging", "int", "dummy", "intermediate", "dev", "test", "temp", "example"]
-
         for node in manifest["nodes"].values():
             if node.get("resource_type") != "model":
                 continue
@@ -87,15 +85,6 @@ class AddLatestFileTimestamp(DatasetTransformer, metaclass=ABCMeta):
                 continue
 
             database_name, table_name = parse_database_and_table_names(node)
-            
-            # Skip tables that match exclusion patterns
-            if any(pattern in table_name.lower() for pattern in excluded_patterns):
-                logging.info(
-                    "Skipping latest_file_timestamp for %s.%s (excluded pattern)",
-                    database_name,
-                    table_name,
-                )
-                continue
             dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                 name=f"{database_name}.{table_name}",
                 platform=PLATFORM,
