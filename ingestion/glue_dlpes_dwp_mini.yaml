@@ -46,7 +46,7 @@ transformers:
       replace_existing: true
       tag_pattern:
         rules:
-          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dwp_mini_datashare\\.dwp_mini_.*_lr${DLPES_DWP_MINI_LATEST_RELEASE}_[bcd](_.*)?,[^\\)]+\\)$":
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dwp_mini_datashare\\.dwp_mini_.*_lr${DLPES_DWP_MINI_LATEST_RELEASE}_[bcd],[^\\)]+\\)$":
             - "urn:li:tag:dc_display_in_catalogue"
             - "urn:li:tag:Prison"
             - "urn:li:tag:Probation"
