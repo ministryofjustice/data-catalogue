@@ -1,6 +1,6 @@
 pipeline_name: ap_cadet_digital_prison_reporting
 source:
-  type: dbt
+  type: ingestion.cadet_dbt_source.source.CadetDBTSource
   config:
     aws_connection:
       aws_region: eu-west-1
