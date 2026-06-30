@@ -4,11 +4,6 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["dlpes_dwp_hmrc_main_datashare$"]
-    table_pattern:
-      deny:
-        - "dwp_hmrc_last_coa_codes"
-        - "dwp_hmrc_last_coa_code_england"
-        - "oa_2011_to_2021_converter"
     extract_owners: False
     extract_transforms: False
 
@@ -43,7 +38,7 @@ transformers:
         To enquire about access, please email datalinkingteam@justice.gov.uk
         """
       properties:
-        dc_readable_name: "Moj DWP HMRC Main Datashare"
+        dc_readable_name: "MoJ DWP HMRC Main Datashare"
         dc_slack_channel_name: "#data-linking-databases"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: Please contact the team
@@ -51,15 +46,25 @@ transformers:
         refresh_period: Every day
         security_classification: Official-Sensitive
 
-  - type: "simple_add_dataset_tags"
+  - type: "pattern_add_dataset_tags"
     config:
-      tag_urns:
-        - "urn:li:tag:dc_display_in_catalogue"
-        - "urn:li:tag:Prison"
-        - "urn:li:tag:Probation"
-        - "urn:li:tag:Prisons and probation"
-        - "urn:li:tag:Employment and benefits"
-        - "urn:li:tag:Police national computer"
+      semantics: OVERWRITE
+      replace_existing: true
+      tag_pattern:
+        rules:
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare\\.(dwp_hmrc_last_coa_codes|dwp_hmrc_last_coa_code_england_wales|oa_2011_to_2021_converter),[^\\)]+\\)$":
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          ".*":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
 
   - type: "simple_add_dataset_ownership"
     config:
