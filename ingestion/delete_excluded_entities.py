@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass
@@ -178,7 +179,18 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_parser().parse_args()
 
-    server_config = DatahubClientConfig.from_env()
+    datahub_gms_url = os.getenv("DATAHUB_GMS_URL")
+    datahub_gms_token = os.getenv("DATAHUB_GMS_TOKEN")
+
+    if not datahub_gms_url or not datahub_gms_token:
+        raise ValueError(
+            "Missing required environment variables DATAHUB_GMS_URL and/or DATAHUB_GMS_TOKEN"
+        )
+
+    server_config = DatahubClientConfig(
+        server=datahub_gms_url,
+        token=datahub_gms_token,
+    )
     graph = DataHubGraph(server_config)
 
     patterns = list(dict.fromkeys(list(EXCLUDED_NAME_PATTERNS) + args.extra_patterns))
