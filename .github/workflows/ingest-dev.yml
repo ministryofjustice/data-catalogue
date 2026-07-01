@@ -112,7 +112,7 @@ jobs:
       ENTITY_TYPES: "dataset container"
       APPLY: false
       HARD_DELETE: false
-      MAX_ENTITIES: 500
+      MAX_ENTITIES: 2500
       FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 25

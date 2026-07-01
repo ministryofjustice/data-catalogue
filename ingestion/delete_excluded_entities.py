@@ -89,6 +89,14 @@ def find_candidates(
             if urn in seen_urns:
                 continue
 
+            # DataHub full-text search can return broad matches for short
+            # patterns (for example, "int"). For dataset entities, enforce a
+            # strict substring check against the parsed dataset name.
+            if urn.startswith("urn:li:dataset:"):
+                parsed_name = parse_name_from_urn(urn).lower()
+                if pattern not in parsed_name:
+                    continue
+
             # Trust DataHub's full-text search match for the query pattern.
             # This avoids false negatives for entities like containers where
             # the URN does not contain the display name.
