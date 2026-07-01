@@ -39,6 +39,13 @@ class CandidateEntity:
     matched_pattern: str
 
 
+def matches_pattern_with_boundaries(value: str, pattern: str) -> bool:
+    return (
+        re.search(rf"(^|[^a-z0-9]){re.escape(pattern)}([^a-z0-9]|$)", value.lower())
+        is not None
+    )
+
+
 def _extract_name_from_container_entity_raw(entity_raw: dict) -> str | None:
     aspects = entity_raw.get("aspects", {})
     container_props = aspects.get("containerProperties", {})
@@ -124,7 +131,7 @@ def find_candidates(
             # strict substring check against the parsed dataset name.
             if urn.startswith("urn:li:dataset:"):
                 parsed_name = parse_name_from_urn(urn).lower()
-                if pattern not in parsed_name:
+                if not matches_pattern_with_boundaries(parsed_name, pattern):
                     continue
 
             if urn.startswith("urn:li:container:"):
@@ -136,7 +143,7 @@ def find_candidates(
                     # Without display name, skip to avoid false positives.
                     continue
 
-                if pattern not in display_name.lower():
+                if not matches_pattern_with_boundaries(display_name, pattern):
                     continue
 
             # Trust DataHub's full-text search match for the query pattern.

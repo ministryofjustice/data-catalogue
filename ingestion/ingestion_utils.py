@@ -29,6 +29,12 @@ EXCLUDED_NAME_PATTERNS = (
     "example",
 )
 
+EXCLUDED_NAME_REGEX = re.compile(
+    r"(^|[^a-z0-9])(?:"
+    + "|".join(re.escape(pattern) for pattern in EXCLUDED_NAME_PATTERNS)
+    + r")([^a-z0-9]|$)"
+)
+
 # This is so we can quickly tag entities with subject areas to test, before
 # adding the tags at source. Domains relate to those used in CaDeT.
 # bold and general do not map to any subject area and will need to be handled
@@ -132,7 +138,7 @@ def is_excluded_name(name: str | None) -> bool:
     if not name:
         return False
 
-    return any(pattern in name.lower() for pattern in EXCLUDED_NAME_PATTERNS)
+    return EXCLUDED_NAME_REGEX.search(name.lower()) is not None
 
 
 def should_display_dbt_manifest_node(node: dict) -> bool:
