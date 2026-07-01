@@ -117,5 +117,6 @@ jobs:
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 25
       REQUIRE_DISPLAY_TAG: true
+      TARGET_URNS: "urn:li:container:fda74ddf12d45f10b3220f22fbe54c38"
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}

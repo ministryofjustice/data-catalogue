@@ -67,6 +67,10 @@ on:
         required: true
         default: true
         type: boolean
+      TARGET_URNS:
+        description: "Optional space-separated explicit URNs to delete"
+        required: false
+        type: string
 
   workflow_call:
     inputs:
@@ -126,6 +130,10 @@ on:
         required: false
         default: true
         type: boolean
+      TARGET_URNS:
+        description: "Optional space-separated explicit URNs to delete"
+        required: false
+        type: string
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API key for DataHub GMS"
@@ -173,6 +181,10 @@ jobs:
 
           if [[ -n "${{ inputs.EXTRA_PATTERNS }}" ]]; then
             ARGS+=(--extra-patterns ${{ inputs.EXTRA_PATTERNS }})
+          fi
+
+          if [[ -n "${{ inputs.TARGET_URNS }}" ]]; then
+            ARGS+=(--target-urns ${{ inputs.TARGET_URNS }})
           fi
 
           if [[ "${{ inputs.APPLY }}" == "true" ]]; then

@@ -162,11 +162,19 @@ def delete_entities(
 ) -> tuple[int, int]:
     success_count = 0
     failure_count = 0
+    delete_mode = "hard" if hard_delete else "soft"
 
     for entity in entities:
+        logger.info(
+            "Deleting entity urn=%s matched_by=%s mode=%s",
+            entity.urn,
+            entity.matched_pattern,
+            delete_mode,
+        )
         try:
             graph.delete_entity(entity.urn, hard=hard_delete)
             success_count += 1
+            logger.info("Deleted entity urn=%s mode=%s", entity.urn, delete_mode)
         except Exception:
             logger.exception("Failed to delete %s", entity.urn)
             failure_count += 1
@@ -250,6 +258,15 @@ def build_parser() -> argparse.ArgumentParser:
             "Use --no-require-display-tag to disable."
         ),
     )
+    parser.add_argument(
+        "--target-urns",
+        nargs="*",
+        default=[],
+        help=(
+            "Explicit list of URNs to include for deletion. "
+            "These are included regardless of name-pattern matching."
+        ),
+    )
     return parser
 
 
@@ -271,14 +288,16 @@ def main() -> int:
     graph = DataHubGraph(server_config)
 
     patterns = list(dict.fromkeys(list(EXCLUDED_NAME_PATTERNS) + args.extra_patterns))
+    explicit_urns = [urn.strip() for urn in args.target_urns if urn and urn.strip()]
 
     logger.info("Using patterns: %s", ", ".join(patterns))
+    logger.info("Explicit target URNs: %d", len(explicit_urns))
     logger.info("Entity types: %s", ", ".join(args.entity_types))
     logger.info("Platform filter: %s", args.platform or "<none>")
     logger.info("Env filter: %s", args.env or "<none>")
     logger.info("Require display tag: %s", args.require_display_tag)
 
-    candidates = find_candidates(
+    pattern_candidates = find_candidates(
         graph=graph,
         patterns=patterns,
         entity_types=args.entity_types,
@@ -288,11 +307,27 @@ def main() -> int:
         require_display_tag=args.require_display_tag,
     )
 
+    candidates_by_urn: dict[str, CandidateEntity] = {
+        candidate.urn: candidate for candidate in pattern_candidates
+    }
+    for urn in explicit_urns:
+        candidates_by_urn.setdefault(
+            urn,
+            CandidateEntity(urn=urn, matched_pattern="explicit_urn"),
+        )
+
+    candidates = list(candidates_by_urn.values())
+
     pattern_counts: dict[str, int] = defaultdict(int)
     for candidate in candidates:
         pattern_counts[candidate.matched_pattern] += 1
 
-    logger.info("Found %d candidate entities", len(candidates))
+    logger.info(
+        "Found %d candidate entities (pattern=%d explicit=%d)",
+        len(candidates),
+        len(pattern_candidates),
+        len(explicit_urns),
+    )
     for pattern, count in sorted(pattern_counts.items()):
         logger.info("  pattern=%s count=%d", pattern, count)
 
