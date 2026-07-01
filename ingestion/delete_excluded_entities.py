@@ -9,12 +9,18 @@ from datahub.ingestion.graph.client import DataHubGraph
 from datahub.ingestion.graph.config import DatahubClientConfig
 from datahub.ingestion.graph.filters import RemovedStatusFilter
 
-try:
-    # Works when executed as `python ingestion/delete_excluded_entities.py`.
-    from ingestion_utils import EXCLUDED_NAME_PATTERNS
-except ModuleNotFoundError:
-    # Works when executed as a package module.
-    from ingestion.ingestion_utils import EXCLUDED_NAME_PATTERNS
+EXCLUDED_NAME_PATTERNS = (
+    "stg",
+    "staging",
+    "int",
+    "dummy",
+    "intermediate",
+    "dev",
+    "test",
+    "testing",
+    "temp",
+    "example",
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
