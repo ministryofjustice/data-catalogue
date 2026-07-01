@@ -116,5 +116,6 @@ jobs:
       FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 25
+      REQUIRE_DISPLAY_TAG: true
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}

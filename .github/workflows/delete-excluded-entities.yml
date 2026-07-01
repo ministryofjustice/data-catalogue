@@ -62,6 +62,11 @@ on:
         description: "Optional extra lowercase substrings, space-separated"
         required: false
         type: string
+      REQUIRE_DISPLAY_TAG:
+        description: "Require dc_display_in_catalogue tag"
+        required: true
+        default: true
+        type: boolean
 
   workflow_call:
     inputs:
@@ -116,6 +121,11 @@ on:
         description: "Optional extra lowercase substrings, space-separated"
         required: false
         type: string
+      REQUIRE_DISPLAY_TAG:
+        description: "Require dc_display_in_catalogue tag"
+        required: false
+        default: true
+        type: boolean
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API key for DataHub GMS"
@@ -175,6 +185,12 @@ jobs:
 
           if [[ "${{ inputs.FORCE }}" == "true" ]]; then
             ARGS+=(--force)
+          fi
+
+          if [[ "${{ inputs.REQUIRE_DISPLAY_TAG }}" == "true" ]]; then
+            ARGS+=(--require-display-tag)
+          else
+            ARGS+=(--no-require-display-tag)
           fi
 
           echo "Running cleanup with args: ${ARGS[*]}"

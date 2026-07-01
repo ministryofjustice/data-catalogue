@@ -39,6 +39,35 @@ class CandidateEntity:
     matched_pattern: str
 
 
+def _extract_name_from_container_entity_raw(entity_raw: dict) -> str | None:
+    aspects = entity_raw.get("aspects", {})
+    container_props = aspects.get("containerProperties", {})
+
+    if not isinstance(container_props, dict):
+        return None
+
+    # Depending on API endpoint/version this can either be direct payload
+    # or wrapped under a `value` key.
+    if isinstance(container_props.get("name"), str):
+        return container_props.get("name")
+
+    value = container_props.get("value")
+    if isinstance(value, dict) and isinstance(value.get("name"), str):
+        return value.get("name")
+
+    return None
+
+
+def get_container_display_name(graph: DataHubGraph, urn: str) -> str | None:
+    try:
+        entity_raw = graph.get_entity_raw(urn, aspects=["containerProperties"])
+    except Exception:
+        logger.exception("Failed to fetch containerProperties for urn=%s", urn)
+        return None
+
+    return _extract_name_from_container_entity_raw(entity_raw)
+
+
 def parse_name_from_urn(urn: str) -> str:
     dataset_match = DATASET_URN_PATTERN.match(urn)
     if dataset_match:
@@ -63,6 +92,7 @@ def find_candidates(
     seen_urns: set[str] = set()
     candidates: list[CandidateEntity] = []
     extra_filters = None
+    container_name_cache: dict[str, str | None] = {}
 
     if require_display_tag:
         extra_filters = [
@@ -95,6 +125,18 @@ def find_candidates(
             if urn.startswith("urn:li:dataset:"):
                 parsed_name = parse_name_from_urn(urn).lower()
                 if pattern not in parsed_name:
+                    continue
+
+            if urn.startswith("urn:li:container:"):
+                if urn not in container_name_cache:
+                    container_name_cache[urn] = get_container_display_name(graph, urn)
+
+                display_name = container_name_cache[urn]
+                if not display_name:
+                    # Without display name, skip to avoid false positives.
+                    continue
+
+                if pattern not in display_name.lower():
                     continue
 
             # Trust DataHub's full-text search match for the query pattern.
