@@ -16,7 +16,7 @@ from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
-EXCLUDED_NAME_PATTERNS = (
+git = (
     "stg",
     "staging",
     "int",
