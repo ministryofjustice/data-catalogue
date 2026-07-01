@@ -103,19 +103,53 @@ def find_candidates(
             }
         ]
 
-    for pattern in patterns:
-        query = pattern
-        logger.info("Searching for entities with query=%s", query)
+    def iter_matching_urns(pattern_query: str):
+        # Containers often do not have an env facet. If env filtering is enabled,
+        # search containers without env so database containers are still found.
+        if env and "container" in entity_types:
+            non_container_types = [et for et in entity_types if et != "container"]
+
+            if non_container_types:
+                for urn in graph.get_urns_by_filter(
+                    entity_types=non_container_types,
+                    query=pattern_query,
+                    batch_size=batch_size,
+                    platform=platform,
+                    env=env,
+                    status=RemovedStatusFilter.NOT_SOFT_DELETED,
+                    extraFilters=extra_filters,
+                ):
+                    yield urn
+
+            for urn in graph.get_urns_by_filter(
+                entity_types=["container"],
+                query=pattern_query,
+                batch_size=batch_size,
+                platform=platform,
+                env=None,
+                status=RemovedStatusFilter.NOT_SOFT_DELETED,
+                extraFilters=extra_filters,
+            ):
+                yield urn
+
+            return
 
         for urn in graph.get_urns_by_filter(
             entity_types=entity_types,
-            query=query,
+            query=pattern_query,
             batch_size=batch_size,
             platform=platform,
             env=env,
             status=RemovedStatusFilter.NOT_SOFT_DELETED,
             extraFilters=extra_filters,
         ):
+            yield urn
+
+    for pattern in patterns:
+        query = pattern
+        logger.info("Searching for entities with query=%s", query)
+
+        for urn in iter_matching_urns(query):
             if urn in seen_urns:
                 continue
 
