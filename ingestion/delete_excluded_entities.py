@@ -58,9 +58,20 @@ def find_candidates(
     batch_size: int,
     platform: str | None,
     env: str | None,
+    require_display_tag: bool,
 ) -> list[CandidateEntity]:
     seen_urns: set[str] = set()
     candidates: list[CandidateEntity] = []
+    extra_filters = None
+
+    if require_display_tag:
+        extra_filters = [
+            {
+                "field": "tags",
+                "condition": "EQUAL",
+                "values": ["urn:li:tag:dc_display_in_catalogue"],
+            }
+        ]
 
     for pattern in patterns:
         query = pattern
@@ -73,6 +84,7 @@ def find_candidates(
             platform=platform,
             env=env,
             status=RemovedStatusFilter.NOT_SOFT_DELETED,
+            extraFilters=extra_filters,
         ):
             if urn in seen_urns:
                 continue
@@ -172,6 +184,15 @@ def build_parser() -> argparse.ArgumentParser:
         default=25,
         help="How many candidate URNs to print.",
     )
+    parser.add_argument(
+        "--require-display-tag",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "Require entities to have urn:li:tag:dc_display_in_catalogue. "
+            "Use --no-require-display-tag to disable."
+        ),
+    )
     return parser
 
 
@@ -198,6 +219,7 @@ def main() -> int:
     logger.info("Entity types: %s", ", ".join(args.entity_types))
     logger.info("Platform filter: %s", args.platform or "<none>")
     logger.info("Env filter: %s", args.env or "<none>")
+    logger.info("Require display tag: %s", args.require_display_tag)
 
     candidates = find_candidates(
         graph=graph,
@@ -206,6 +228,7 @@ def main() -> int:
         batch_size=args.batch_size,
         platform=args.platform,
         env=args.env,
+        require_display_tag=args.require_display_tag,
     )
 
     pattern_counts: dict[str, int] = defaultdict(int)
