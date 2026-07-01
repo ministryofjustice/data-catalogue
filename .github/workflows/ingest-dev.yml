@@ -109,7 +109,7 @@ jobs:
     with:
       ENVIRONMENT: dev
       DATAHUB_ENV: PROD
-      ENTITY_TYPES: "dataset container"
+      ENTITY_TYPES: "container"
       APPLY: false
       HARD_DELETE: false
       MAX_ENTITIES: 5000
