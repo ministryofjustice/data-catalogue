@@ -627,6 +627,56 @@ global:
                           value: true
                     weight: 1.05
                   - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Database"
+                    weight: 1400.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: 0.02
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:chart:"
+                    weight: 0.01
+                  - filter:
                       term:
                         deprecated:
                           value: true
@@ -644,6 +694,56 @@ global:
               functionScore:
                 functions:
                   - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Database"
+                    weight: 1400.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: 0.02
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:chart:"
+                    weight: 0.01
+                  - filter:
                       term:
                         deprecated:
                           value: true
@@ -660,6 +760,56 @@ global:
               functionScore:
                 functions:
                   - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Database"
+                    weight: 1400.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: 0.02
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:chart:"
+                    weight: 0.01
+                  - filter:
                       term:
                         deprecated:
                           value: true
@@ -667,27 +817,7 @@ global:
                 score_mode: multiply
                 boost_mode: multiply
 
-#            # Specific databases to return those results higher
-#            - queryRegex: >-
-#                ^(?i)(nomis|delius|xhibit|oasys)$
-#              simpleQuery: true
-#              prefixMatchQuery: true
-#              exactMatchQuery: true
-#              functionScore:
-#                functions:
-#                  - filter:
-#                      prefix:
-#                        urn:
-#                          value: "urn:li:container:"
-#                    weight: 1000.0
-#                  - filter:
-#                      term:
-#                        deprecated:
-#                          value: true
-#                    weight: 0.5
-#                score_mode: multiply
-#                boost_mode: multiply
-
+            
             # default
             - queryRegex: .*
               simpleQuery: true
@@ -695,6 +825,56 @@ global:
               exactMatchQuery: true
               functionScore:
                 functions:
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:container:"
+                    weight: 1000.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Database"
+                    weight: 1400.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:dbt"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        platform:
+                          value: "urn:li:dataPlatform:glue"
+                    weight: 800.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Model"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Table"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Seed"
+                    weight: 1200.0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication collection"
+                    weight: 0
+                  - filter:
+                      term:
+                        typeNames:
+                          value: "Publication dataset"
+                    weight: 0.02
+                  - filter:
+                      prefix:
+                        urn:
+                          value: "urn:li:chart:"
+                    weight: 0.01
                   - filter:
                       term:
                         deprecated:

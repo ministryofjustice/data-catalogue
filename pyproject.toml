@@ -6,23 +6,23 @@ authors = [{ name = "Murdo Moyse", email = "murdo.moyse@digital.justice.gov.uk" 
 requires-python = "~=3.11.13"
 readme = "README.md"
 dependencies = [
-    "pytest>=8.3.5,<9",
-    "boto3>=1.34.162,<2",
+    "pytest==9.0.3",
+    "boto3>=1.43.3,<2",
     "datahub>=0.999.1,<0.1000",
     "moto>=5.0.28,<6",
     "acryl-datahub[dbt, glue, postgres]==1.3.0",
     "pandas>=2.2.3,<4",
     "semantic-version>=2.10.0,<3",
     "botocore>=1.38.30,<2",
-    "setuptools==78.1.1",
+    "setuptools==82.0.1",
 ]
 
 [dependency-groups]
-dev = ["vcrpy>=7.0.0,<8"]
+dev = ["vcrpy>=7.0.0,<9"]
 
 [tool.uv]
 package = false
-required-version = "0.7.17"
+required-version = ">=0.11.8"
 
 [build-system]
 requires = ["hatchling"]
