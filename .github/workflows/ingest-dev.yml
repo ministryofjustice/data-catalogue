@@ -110,8 +110,8 @@ jobs:
       ENVIRONMENT: dev
       # DATAHUB_ENV: None
       ENTITY_TYPES: "dataset container"
-      APPLY: false
-      HARD_DELETE: false
+      APPLY: true
+      HARD_DELETE: true
       MAX_ENTITIES: 5000
       FORCE: false
       BATCH_SIZE: 2000
