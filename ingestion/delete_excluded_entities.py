@@ -63,7 +63,7 @@ def find_candidates(
     candidates: list[CandidateEntity] = []
 
     for pattern in patterns:
-        query = f"*{pattern}*"
+        query = pattern
         logger.info("Searching for entities with query=%s", query)
 
         for urn in graph.get_urns_by_filter(
@@ -77,12 +77,11 @@ def find_candidates(
             if urn in seen_urns:
                 continue
 
-            # Keep behavior aligned with ingestion_utils.is_excluded_name
-            # by checking if the pattern is present in the parsed name.
-            parsed_name = parse_name_from_urn(urn).lower()
-            if pattern in parsed_name:
-                candidates.append(CandidateEntity(urn=urn, matched_pattern=pattern))
-                seen_urns.add(urn)
+            # Trust DataHub's full-text search match for the query pattern.
+            # This avoids false negatives for entities like containers where
+            # the URN does not contain the display name.
+            candidates.append(CandidateEntity(urn=urn, matched_pattern=pattern))
+            seen_urns.add(urn)
 
     return candidates
 
