@@ -7,14 +7,6 @@
 version: 2
 
 updates:
-  - package-ecosystem: "bundler"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "terraform"
-    directory: "/terraform"
-    schedule:
-      interval: "daily"
   - package-ecosystem: "github-actions"
     commit-message:
       include: "scope"
@@ -24,32 +16,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     commit-message:
       include: "scope"
-      prefix: ":dependabot: pip"
-    cooldown:
-      default-days: 7
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    commit-message:
-      include: "scope"
-      prefix: ":dependabot: npm"
-    cooldown:
-      default-days: 7
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
-    commit-message:
-      include: "scope"
-      prefix: ":dependabot: docker"
+      prefix: ":dependabot: uv"
     cooldown:
       default-days: 7
     directory: "/"
