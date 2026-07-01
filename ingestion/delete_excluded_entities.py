@@ -1,0 +1,229 @@
+import argparse
+import logging
+import re
+from collections import defaultdict
+from dataclasses import dataclass
+from typing import Iterable
+
+from datahub.ingestion.graph.client import DataHubGraph
+from datahub.ingestion.graph.config import DatahubClientConfig
+from datahub.ingestion.graph.filters import RemovedStatusFilter
+
+from ingestion.ingestion_utils import EXCLUDED_NAME_PATTERNS
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+DATASET_URN_PATTERN = re.compile(
+    r"^urn:li:dataset:\\(urn:li:dataPlatform:[^,]+,([^,]+),[^\\)]+\\)$"
+)
+CONTAINER_URN_PATTERN = re.compile(r"^urn:li:container:(.+)$")
+
+
+@dataclass(frozen=True)
+class CandidateEntity:
+    urn: str
+    matched_pattern: str
+
+
+def parse_name_from_urn(urn: str) -> str:
+    dataset_match = DATASET_URN_PATTERN.match(urn)
+    if dataset_match:
+        return dataset_match.group(1)
+
+    container_match = CONTAINER_URN_PATTERN.match(urn)
+    if container_match:
+        return container_match.group(1)
+
+    return urn
+
+
+def find_candidates(
+    graph: DataHubGraph,
+    patterns: Iterable[str],
+    entity_types: list[str],
+    batch_size: int,
+    platform: str | None,
+    env: str | None,
+) -> list[CandidateEntity]:
+    seen_urns: set[str] = set()
+    candidates: list[CandidateEntity] = []
+
+    for pattern in patterns:
+        query = f"*{pattern}*"
+        logger.info("Searching for entities with query=%s", query)
+
+        for urn in graph.get_urns_by_filter(
+            entity_types=entity_types,
+            query=query,
+            batch_size=batch_size,
+            platform=platform,
+            env=env,
+            status=RemovedStatusFilter.NOT_SOFT_DELETED,
+        ):
+            if urn in seen_urns:
+                continue
+
+            # Keep behavior aligned with ingestion_utils.is_excluded_name
+            # by checking if the pattern is present in the parsed name.
+            parsed_name = parse_name_from_urn(urn).lower()
+            if pattern in parsed_name:
+                candidates.append(CandidateEntity(urn=urn, matched_pattern=pattern))
+                seen_urns.add(urn)
+
+    return candidates
+
+
+def delete_entities(
+    graph: DataHubGraph,
+    entities: list[CandidateEntity],
+    hard_delete: bool,
+) -> tuple[int, int]:
+    success_count = 0
+    failure_count = 0
+
+    for entity in entities:
+        try:
+            graph.delete_entity(entity.urn, hard=hard_delete)
+            success_count += 1
+        except Exception:
+            logger.exception("Failed to delete %s", entity.urn)
+            failure_count += 1
+
+    return success_count, failure_count
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Find entities that match EXCLUDED_NAME_PATTERNS and delete them from DataHub. "
+            "By default this is a dry run."
+        )
+    )
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply deletion. If omitted, script runs in dry-run mode.",
+    )
+    parser.add_argument(
+        "--hard-delete",
+        action="store_true",
+        help="Hard delete entities. Default is soft delete.",
+    )
+    parser.add_argument(
+        "--entity-types",
+        nargs="+",
+        default=["dataset"],
+        help=(
+            "Entity types to search, e.g. dataset container chart dashboard. "
+            "Default: dataset"
+        ),
+    )
+    parser.add_argument(
+        "--platform",
+        default=None,
+        help="Optional platform filter, e.g. dbt, glue, postgres.",
+    )
+    parser.add_argument(
+        "--env",
+        default=None,
+        help="Optional DataHub env filter, e.g. PROD, DEV.",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=2000,
+        help="Search page size for scroll query.",
+    )
+    parser.add_argument(
+        "--max-entities",
+        type=int,
+        default=500,
+        help=(
+            "Safety limit. If candidate count exceeds this, script aborts unless --force is provided."
+        ),
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Allow processing even if candidate count exceeds --max-entities.",
+    )
+    parser.add_argument(
+        "--extra-patterns",
+        nargs="*",
+        default=[],
+        help="Additional lowercase substrings to include in matching.",
+    )
+    parser.add_argument(
+        "--show-sample",
+        type=int,
+        default=25,
+        help="How many candidate URNs to print.",
+    )
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+
+    server_config = DatahubClientConfig.from_env()
+    graph = DataHubGraph(server_config)
+
+    patterns = list(dict.fromkeys(list(EXCLUDED_NAME_PATTERNS) + args.extra_patterns))
+
+    logger.info("Using patterns: %s", ", ".join(patterns))
+    logger.info("Entity types: %s", ", ".join(args.entity_types))
+    logger.info("Platform filter: %s", args.platform or "<none>")
+    logger.info("Env filter: %s", args.env or "<none>")
+
+    candidates = find_candidates(
+        graph=graph,
+        patterns=patterns,
+        entity_types=args.entity_types,
+        batch_size=args.batch_size,
+        platform=args.platform,
+        env=args.env,
+    )
+
+    pattern_counts: dict[str, int] = defaultdict(int)
+    for candidate in candidates:
+        pattern_counts[candidate.matched_pattern] += 1
+
+    logger.info("Found %d candidate entities", len(candidates))
+    for pattern, count in sorted(pattern_counts.items()):
+        logger.info("  pattern=%s count=%d", pattern, count)
+
+    for candidate in candidates[: args.show_sample]:
+        logger.info("sample urn=%s", candidate.urn)
+
+    if len(candidates) > args.max_entities and not args.force:
+        logger.error(
+            "Aborting because %d candidates exceed --max-entities=%d. Re-run with --force if intentional.",
+            len(candidates),
+            args.max_entities,
+        )
+        return 2
+
+    if not args.apply:
+        logger.info("Dry run complete. Re-run with --apply to perform deletion.")
+        return 0
+
+    success_count, failure_count = delete_entities(
+        graph=graph,
+        entities=candidates,
+        hard_delete=args.hard_delete,
+    )
+
+    logger.info(
+        "Deletion finished. success=%d failure=%d mode=%s",
+        success_count,
+        failure_count,
+        "hard" if args.hard_delete else "soft",
+    )
+
+    return 1 if failure_count else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
