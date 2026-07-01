@@ -11,6 +11,7 @@ from datahub.ingestion.graph.config import DatahubClientConfig
 from ingestion.config import ENV, INSTANCE, PLATFORM
 from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
+    get_tags,
     parse_database_and_table_names,
     validate_fqn,
 )
@@ -71,7 +72,7 @@ def _get_table_database_mappings(manifest):
                     backcompat_env_as_instance=True,
                 )
                 database_urn = database_key.as_urn()
-                if "dc_display_in_catalogue" in manifest["nodes"][node]["tags"]:
+                if "dc_display_in_catalogue" in get_tags(manifest["nodes"][node]):
                     mappings[dataset_urn] = database_urn
 
     return mappings
