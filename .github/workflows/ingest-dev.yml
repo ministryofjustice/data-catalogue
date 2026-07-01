@@ -108,8 +108,8 @@ jobs:
     uses: ./.github/workflows/delete-excluded-entities.yml
     with:
       ENVIRONMENT: dev
-      DATAHUB_ENV: PROD
-      ENTITY_TYPES: "container"
+      # DATAHUB_ENV: None
+      ENTITY_TYPES: "dataset container"
       APPLY: false
       HARD_DELETE: false
       MAX_ENTITIES: 5000
