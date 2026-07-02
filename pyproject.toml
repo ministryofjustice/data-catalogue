@@ -18,7 +18,8 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["vcrpy>=7.0.0,<9"]
+dev = ["vcrpy>=8.1.1,<9"]
+
 
 [tool.uv]
 package = false
