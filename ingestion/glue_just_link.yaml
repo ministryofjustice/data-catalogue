@@ -34,16 +34,27 @@ transformers:
         refresh_period: Every week
         security_classification: Official-Sensitive
 
-  - type: "simple_add_dataset_tags"
+  - type: "pattern_add_dataset_tags"
     config:
-      tag_urns:
-        - "urn:li:tag:dc_display_in_catalogue"
-        - "urn:li:tag:Criminal courts"
-        - "urn:li:tag:Prison"
-        - "urn:li:tag:Probation"
-        - "urn:li:tag:Risk"
-        - "urn:li:tag:Courts and tribunals"
-        - "urn:li:tag:Prisons and probation"
+      semantics: OVERWRITE
+      replace_existing: true
+      tag_pattern:
+        rules:
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,([^,]*[^a-z0-9])?(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example)([^a-z0-9][^,]*)?,[^\\)]+\\)$":
+            - "urn:li:tag:Criminal courts"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Risk"
+            - "urn:li:tag:Courts and tribunals"
+            - "urn:li:tag:Prisons and probation"
+          ".*":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Criminal courts"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Risk"
+            - "urn:li:tag:Courts and tribunals"
+            - "urn:li:tag:Prisons and probation"
 
   - type: "simple_add_dataset_ownership"
     config:
