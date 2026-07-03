@@ -102,21 +102,21 @@ jobs:
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-excluded-entities-preprod:
-  if: github.event_name == 'workflow_dispatch'
-  uses: ./.github/workflows/delete-excluded-entities.yml
-  with:
-    ENVIRONMENT: preprod
-    DATAHUB_ENV: PROD
-    ENTITY_TYPES: "container dataset"
-    APPLY: false
-    HARD_DELETE: false
-    MAX_ENTITIES: 5000
-    FORCE: false
-    BATCH_SIZE: 2000
-    SHOW_SAMPLE: 25
-    REQUIRE_DISPLAY_TAG: true
-    TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
-  secrets:
-    DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  delete-excluded-entities-dev:
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: dev
+      DATAHUB_ENV: PROD
+      ENTITY_TYPES: "container dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 25
+      REQUIRE_DISPLAY_TAG: true
+      TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   
