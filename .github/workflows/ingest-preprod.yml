@@ -114,7 +114,7 @@ jobs:
       MAX_ENTITIES: 5000
       FORCE: false
       BATCH_SIZE: 2000
-      SHOW_SAMPLE: 25
+      SHOW_SAMPLE: 200
       REQUIRE_DISPLAY_TAG: true
       TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
     secrets:
