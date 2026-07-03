@@ -109,8 +109,8 @@ jobs:
       ENVIRONMENT: preprod-ingestion
       DATAHUB_ENV: PROD
       ENTITY_TYPES: "container dataset"
-      APPLY: false
-      HARD_DELETE: false
+      APPLY: true
+      HARD_DELETE: true
       MAX_ENTITIES: 5000
       FORCE: false
       BATCH_SIZE: 2000
