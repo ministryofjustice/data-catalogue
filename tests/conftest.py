@@ -11,7 +11,8 @@ import pytest
 import yaml
 from avrogen.dict_wrapper import DictWrapper
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
-from datahub.ingestion.graph.client import DataHubGraph, RelatedEntity
+from datahub.ingestion.graph.client import DataHubGraph
+from datahub.ingestion.graph.openapi import RelatedEntity
 from moto import mock_aws
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
