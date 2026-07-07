@@ -67,6 +67,25 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ inputs.ECR_REGION }}
 
+      - name: Detect latest DWP mini release number
+        run: |
+          DLPES_DWP_MINI_LATEST_RELEASE=$(aws glue get-tables \
+            --database-name dlpes_dwp_mini_datashare \
+            --query 'TableList[].Name' \
+            --output text \
+            | tr '\t' '\n' \
+            | sed -nE 's/^dwp_mini_.*_lr([0-9]+)_[bcd]$/\1/p' \
+            | sort -n \
+            | tail -1)
+
+          if [[ -z "${DLPES_DWP_MINI_LATEST_RELEASE}" ]]; then
+            echo "Failed to detect latest DWP mini release from Glue tables" >&2
+            exit 1
+          fi
+
+          echo "Detected DLPES_DWP_MINI_LATEST_RELEASE=${DLPES_DWP_MINI_LATEST_RELEASE}"
+          echo "DLPES_DWP_MINI_LATEST_RELEASE=${DLPES_DWP_MINI_LATEST_RELEASE}" >> "$GITHUB_ENV"
+
       - name: Inject owners to glue ingestion config
         env:
           SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
@@ -79,7 +98,7 @@ jobs:
           DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
         run: |
           mkdir -p ingestion/processed
-          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes; do
+          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini; do
             envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
           done
 
