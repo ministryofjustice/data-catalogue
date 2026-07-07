@@ -22,6 +22,7 @@ EXCLUDED_NAME_PATTERNS = (
     "int",
     "dummy",
     "intermediate",
+    "libra",
     "dev",
     "test",
     "testing",

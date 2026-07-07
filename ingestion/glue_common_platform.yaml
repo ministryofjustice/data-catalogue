@@ -15,7 +15,6 @@ transformers:
   - type: "ingestion.transformers.enrich_container.AddTagTransformer"
     config:
       tag_urns:
-        - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Criminal courts"
         - "urn:li:tag:Courts and tribunals"
 
