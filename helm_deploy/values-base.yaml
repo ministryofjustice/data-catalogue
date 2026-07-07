@@ -993,7 +993,7 @@ global:
           value: ""
 
   datahub:
-    version: v1.5.0.18
+    version: v1.5.0
     gms:
       port: "8080"
       nodePort: "30001"
