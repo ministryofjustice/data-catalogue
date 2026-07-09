@@ -1,3 +1,5 @@
+pipeline_name: glue_dlpes_dfe
+
 source:
   type: glue
   config:
