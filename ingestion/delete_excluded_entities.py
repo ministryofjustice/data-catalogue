@@ -28,9 +28,10 @@ logger = logging.getLogger(__name__)
 
 
 DATASET_URN_PATTERN = re.compile(
-    r"^urn:li:dataset:\\(urn:li:dataPlatform:[^,]+,([^,]+),[^\\)]+\\)$"
+    r"^urn:li:dataset:\\(urn:li:dataPlatform:([^,]+),([^,]+),[^\\)]+\\)$"
 )
 CONTAINER_URN_PATTERN = re.compile(r"^urn:li:container:(.+)$")
+PROTECTED_DATA_PLATFORMS = {"gov.uk"}
 
 
 @dataclass(frozen=True)
@@ -78,13 +79,32 @@ def get_container_display_name(graph: DataHubGraph, urn: str) -> str | None:
 def parse_name_from_urn(urn: str) -> str:
     dataset_match = DATASET_URN_PATTERN.match(urn)
     if dataset_match:
-        return dataset_match.group(1)
+        return dataset_match.group(2)
 
     container_match = CONTAINER_URN_PATTERN.match(urn)
     if container_match:
         return container_match.group(1)
 
     return urn
+
+
+def parse_dataset_platform_from_urn(urn: str) -> str | None:
+    dataset_match = DATASET_URN_PATTERN.match(urn)
+    if not dataset_match:
+        return None
+
+    return dataset_match.group(1)
+
+
+def is_protected_urn(urn: str) -> bool:
+    if not urn.startswith("urn:li:dataset:"):
+        return False
+
+    platform = parse_dataset_platform_from_urn(urn)
+    if not platform:
+        return False
+
+    return platform.lower() in PROTECTED_DATA_PLATFORMS
 
 
 def find_candidates(
@@ -124,6 +144,10 @@ def find_candidates(
             extraFilters=extra_filters,
         ):
             if urn in seen_urns:
+                continue
+
+            if is_protected_urn(urn):
+                logger.info("Skipping protected platform entity urn=%s", urn)
                 continue
 
             # DataHub full-text search can return broad matches for short
@@ -311,6 +335,10 @@ def main() -> int:
         candidate.urn: candidate for candidate in pattern_candidates
     }
     for urn in explicit_urns:
+        if is_protected_urn(urn):
+            logger.info("Skipping explicit protected platform entity urn=%s", urn)
+            continue
+
         candidates_by_urn.setdefault(
             urn,
             CandidateEntity(urn=urn, matched_pattern="explicit_urn"),
