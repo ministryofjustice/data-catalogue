@@ -27,6 +27,7 @@ from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
     get_subject_areas,
     get_tags,
+    is_excluded_name,
     make_user_mcp,
     parse_database_and_table_names,
     should_display_dbt_manifest_node,
@@ -233,6 +234,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
                     database_metadata_dict["domain"] = fqn[1]
                     database_tags = database_metadata_dict.get("tags", [])
+                    # Keep excluded databases hidden even if metadata tags include
+                    # dc_display_in_catalogue.
+                    if is_excluded_name(database):
+                        database_tags = [
+                            tag
+                            for tag in database_tags
+                            if tag != "dc_display_in_catalogue"
+                        ]
                     if "tags" in database_metadata_dict:
                         database_metadata_dict.pop("tags")
                     database_metadata_tuple = tuple(database_metadata_dict.items())

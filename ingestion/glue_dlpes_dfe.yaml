@@ -4,8 +4,13 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["dlpes_dfe_datashare$"]
+    table_pattern:
+      allow: ["^dfe_.*$"]
     extract_owners: False
     extract_transforms: False
+    stateful_ingestion:
+      enabled: true
+      remove_stale_metadata: true
 
 transformers:
   - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
@@ -37,7 +42,7 @@ transformers:
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: Please contact the team
         dc_access_requirements: ""
-        refresh_period: Every day
+        refresh_period: Annually
         security_classification: Official-Sensitive
 
   - type: "pattern_add_dataset_tags"
@@ -46,14 +51,20 @@ transformers:
       replace_existing: true
       tag_pattern:
         rules:
-          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dfe_datashare\\.(learner_info_daily|learning_delivery_daily),[^\\)]+\\)$":
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dfe_datashare\\.dfe_[^,]*,[^\\)]+\\)$":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dfe_datashare\\.[^,]+,[^\\)]+\\)$":
             - "urn:li:tag:Prison"
             - "urn:li:tag:Probation"
             - "urn:li:tag:Prisons and probation"
             - "urn:li:tag:Employment and benefits"
             - "urn:li:tag:Police national computer"
           ".*":
-            - "urn:li:tag:dc_display_in_catalogue"
             - "urn:li:tag:Prison"
             - "urn:li:tag:Probation"
             - "urn:li:tag:Prisons and probation"
@@ -75,5 +86,5 @@ transformers:
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: AnalyticalPlatform
         dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
-        refresh_period: Every 3 years
+        refresh_period: Annually
         security_classification: Official-Sensitive

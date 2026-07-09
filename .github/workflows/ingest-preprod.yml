@@ -123,7 +123,7 @@ jobs:
   #     BATCH_SIZE: 2000
   #     SHOW_SAMPLE: 200
   #     REQUIRE_DISPLAY_TAG: true
-  #     TARGET_URNS: "urn:li:container:05665414ccb09b4f32ee2b4c30e71529"
+  #     TARGET_URNS: "urn:li:container:05665414ccb09b4f32ee2b4c30e71529 urn:li:container:fda74ddf12d45f10b3220f22fbe54c38 urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   
