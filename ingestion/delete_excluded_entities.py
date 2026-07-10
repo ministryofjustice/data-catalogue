@@ -224,6 +224,60 @@ def find_candidates(
     return candidates
 
 
+def find_database_scope_candidates(
+    graph: DataHubGraph,
+    batch_size: int,
+    platform: str | None,
+    env: str | None,
+    require_display_tag: bool,
+    dataset_database: str | None,
+    keep_table_prefix: str | None,
+) -> list[CandidateEntity]:
+    if not dataset_database:
+        return []
+
+    extra_filters = None
+    if require_display_tag:
+        extra_filters = [
+            {
+                "field": "tags",
+                "condition": "EQUAL",
+                "values": ["urn:li:tag:dc_display_in_catalogue"],
+            }
+        ]
+
+    candidates: list[CandidateEntity] = []
+    seen_urns: set[str] = set()
+
+    logger.info(
+        "Searching for database-scoped datasets in database=%s", dataset_database
+    )
+
+    for urn in graph.get_urns_by_filter(
+        entity_types=["dataset"],
+        query=dataset_database,
+        batch_size=batch_size,
+        platform=platform,
+        env=env,
+        status=RemovedStatusFilter.NOT_SOFT_DELETED,
+        extraFilters=extra_filters,
+    ):
+        if urn in seen_urns:
+            continue
+
+        if is_protected_urn(urn):
+            logger.info("Skipping protected platform entity urn=%s", urn)
+            continue
+
+        if not is_dataset_in_scope(urn, dataset_database, keep_table_prefix):
+            continue
+
+        candidates.append(CandidateEntity(urn=urn, matched_pattern="database_scope"))
+        seen_urns.add(urn)
+
+    return candidates
+
+
 def delete_entities(
     graph: DataHubGraph,
     entities: list[CandidateEntity],
@@ -394,8 +448,19 @@ def main() -> int:
         keep_table_prefix=args.keep_table_prefix,
     )
 
+    database_scope_candidates = find_database_scope_candidates(
+        graph=graph,
+        batch_size=args.batch_size,
+        platform=args.platform,
+        env=args.env,
+        require_display_tag=args.require_display_tag,
+        dataset_database=args.dataset_database,
+        keep_table_prefix=args.keep_table_prefix,
+    )
+
     candidates_by_urn: dict[str, CandidateEntity] = {
-        candidate.urn: candidate for candidate in pattern_candidates
+        candidate.urn: candidate
+        for candidate in [*pattern_candidates, *database_scope_candidates]
     }
     for urn in explicit_urns:
         if is_protected_urn(urn):
@@ -422,9 +487,10 @@ def main() -> int:
         pattern_counts[candidate.matched_pattern] += 1
 
     logger.info(
-        "Found %d candidate entities (pattern=%d explicit=%d)",
+        "Found %d candidate entities (pattern=%d database_scope=%d explicit=%d)",
         len(candidates),
         len(pattern_candidates),
+        len(database_scope_candidates),
         len(explicit_urns),
     )
     for pattern, count in sorted(pattern_counts.items()):
