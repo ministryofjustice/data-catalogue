@@ -79,6 +79,10 @@ on:
         description: "Optional table prefix to keep within DATASET_DATABASE"
         required: false
         type: string
+      DELETE_TABLE_PREFIX:
+        description: "Optional table prefix to delete within DATASET_DATABASE (only tables starting with this prefix are selected)"
+        required: false
+        type: string
 
   workflow_call:
     inputs:
@@ -150,6 +154,10 @@ on:
         description: "Optional table prefix to keep within DATASET_DATABASE"
         required: false
         type: string
+      DELETE_TABLE_PREFIX:
+        description: "Optional table prefix to delete within DATASET_DATABASE (only tables starting with this prefix are selected)"
+        required: false
+        type: string
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API key for DataHub GMS"
@@ -209,6 +217,10 @@ jobs:
 
           if [[ -n "${{ inputs.KEEP_TABLE_PREFIX }}" ]]; then
             ARGS+=(--keep-table-prefix "${{ inputs.KEEP_TABLE_PREFIX }}")
+          fi
+
+          if [[ -n "${{ inputs.DELETE_TABLE_PREFIX }}" ]]; then
+            ARGS+=(--delete-table-prefix "${{ inputs.DELETE_TABLE_PREFIX }}")
           fi
 
           if [[ "${{ inputs.APPLY }}" == "true" ]]; then

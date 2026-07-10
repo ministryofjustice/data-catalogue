@@ -16,6 +16,8 @@ EXCLUDED_NAME_PATTERNS = (
     "int",
     "dummy",
     "intermediate",
+    "libra",
+    "xhibit",
     "dev",
     "test",
     "testing",
@@ -124,11 +126,12 @@ def is_dataset_in_scope(
     urn: str,
     dataset_database: str | None,
     keep_table_prefix: str | None,
+    delete_table_prefix: str | None = None,
 ) -> bool:
     if not urn.startswith("urn:li:dataset:"):
         return True
 
-    if not dataset_database and not keep_table_prefix:
+    if not dataset_database and not keep_table_prefix and not delete_table_prefix:
         return True
 
     dataset_parts = parse_dataset_database_and_table_from_urn(urn)
@@ -140,7 +143,12 @@ def is_dataset_in_scope(
     if dataset_database and database_name != dataset_database:
         return False
 
+    # Keep-prefix: skip tables we want to preserve.
     if keep_table_prefix and table_name.startswith(keep_table_prefix):
+        return False
+
+    # Delete-prefix: only include tables matching the prefix.
+    if delete_table_prefix and not table_name.startswith(delete_table_prefix):
         return False
 
     return True
@@ -156,6 +164,7 @@ def find_candidates(
     require_display_tag: bool,
     dataset_database: str | None,
     keep_table_prefix: str | None,
+    delete_table_prefix: str | None = None,
 ) -> list[CandidateEntity]:
     seen_urns: set[str] = set()
     candidates: list[CandidateEntity] = []
@@ -191,7 +200,9 @@ def find_candidates(
                 logger.info("Skipping protected platform entity urn=%s", urn)
                 continue
 
-            if not is_dataset_in_scope(urn, dataset_database, keep_table_prefix):
+            if not is_dataset_in_scope(
+                urn, dataset_database, keep_table_prefix, delete_table_prefix
+            ):
                 logger.info("Skipping out-of-scope dataset urn=%s", urn)
                 continue
 
@@ -232,6 +243,7 @@ def find_database_scope_candidates(
     require_display_tag: bool,
     dataset_database: str | None,
     keep_table_prefix: str | None,
+    delete_table_prefix: str | None = None,
 ) -> list[CandidateEntity]:
     if not dataset_database:
         return []
@@ -269,7 +281,9 @@ def find_database_scope_candidates(
             logger.info("Skipping protected platform entity urn=%s", urn)
             continue
 
-        if not is_dataset_in_scope(urn, dataset_database, keep_table_prefix):
+        if not is_dataset_in_scope(
+            urn, dataset_database, keep_table_prefix, delete_table_prefix
+        ):
             continue
 
         candidates.append(CandidateEntity(urn=urn, matched_pattern="database_scope"))
@@ -453,6 +467,13 @@ def build_parser() -> argparse.ArgumentParser:
             "Optional table prefix to keep. Any dataset in --dataset-database whose table name starts with this prefix is skipped."
         ),
     )
+    parser.add_argument(
+        "--delete-table-prefix",
+        default=None,
+        help=(
+            "Optional table prefix to delete. Only datasets in --dataset-database whose table name starts with this prefix are selected."
+        ),
+    )
     return parser
 
 
@@ -484,6 +505,7 @@ def main() -> int:
     logger.info("Require display tag: %s", args.require_display_tag)
     logger.info("Dataset database scope: %s", args.dataset_database or "<none>")
     logger.info("Keep table prefix: %s", args.keep_table_prefix or "<none>")
+    logger.info("Delete table prefix: %s", args.delete_table_prefix or "<none>")
 
     pattern_candidates = find_candidates(
         graph=graph,
@@ -495,6 +517,7 @@ def main() -> int:
         require_display_tag=args.require_display_tag,
         dataset_database=args.dataset_database,
         keep_table_prefix=args.keep_table_prefix,
+        delete_table_prefix=args.delete_table_prefix,
     )
 
     database_scope_candidates = find_database_scope_candidates(
@@ -505,11 +528,24 @@ def main() -> int:
         require_display_tag=args.require_display_tag,
         dataset_database=args.dataset_database,
         keep_table_prefix=args.keep_table_prefix,
+        delete_table_prefix=args.delete_table_prefix,
+    )
+
+    # Expand child datasets for ALL container URNs: both pattern-matched and explicit.
+    # This ensures that when a container is found via name-pattern matching (e.g.
+    # common_platform_dev_sdp_v3 matches "dev"), its child tables are also deleted.
+    all_container_urns_to_expand = list(
+        {
+            candidate.urn
+            for candidate in [*pattern_candidates, *database_scope_candidates]
+            if candidate.urn.startswith("urn:li:container:")
+        }
+        | {urn for urn in explicit_urns if urn.startswith("urn:li:container:")}
     )
 
     container_child_candidates = find_container_child_dataset_candidates(
         graph=graph,
-        container_urns=explicit_urns,
+        container_urns=all_container_urns_to_expand,
         batch_size=args.batch_size,
         platform=args.platform,
         env=args.env,
@@ -532,6 +568,7 @@ def main() -> int:
             urn,
             dataset_database=args.dataset_database,
             keep_table_prefix=args.keep_table_prefix,
+            delete_table_prefix=args.delete_table_prefix,
         ):
             logger.info("Skipping explicit out-of-scope dataset urn=%s", urn)
             continue
