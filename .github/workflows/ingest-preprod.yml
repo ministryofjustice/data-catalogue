@@ -126,7 +126,8 @@ jobs:
       REQUIRE_DISPLAY_TAG: false
       DATASET_DATABASE: dlpes_dfe_datashare
       KEEP_TABLE_PREFIX: dfe_
-      TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff urn:li:container:79a308f89d0bd8e72208b2a161fd007f urn:li:container:0389eb884562f28075dc4d91ff8c40da urn:li:container:6773d8bf44c409af2dfa65cf8506348f urn:li:dataset:(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare.dwp_hmrc_last_coa_code_england_wales,PROD) urn:li:dataset:(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare.dwp_hmrc_last_coa_codes,PROD) urn:li:dataset:(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare.oa_2011_to_2021_converter,PROD)"
+      # TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff urn:li:container:79a308f89d0bd8e72208b2a161fd007f urn:li:container:0389eb884562f28075dc4d91ff8c40da urn:li:container:6773d8bf44c409af2dfa65cf8506348f urn:li:dataset:(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare.dwp_hmrc_last_coa_code_england_wales,PROD) urn:li:dataset:(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare.dwp_hmrc_last_coa_codes,PROD) urn:li:dataset:(urn:li:dataPlatform:glue,dlpes_dwp_hmrc_main_datashare.oa_2011_to_2021_converter,PROD)"
+      TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
