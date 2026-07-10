@@ -278,6 +278,55 @@ def find_database_scope_candidates(
     return candidates
 
 
+def find_container_child_dataset_candidates(
+    graph: DataHubGraph,
+    container_urns: list[str],
+    batch_size: int,
+    platform: str | None,
+    env: str | None,
+) -> list[CandidateEntity]:
+    candidates_by_urn: dict[str, CandidateEntity] = {}
+
+    for container_urn in container_urns:
+        if not container_urn.startswith("urn:li:container:"):
+            continue
+
+        database_name = get_container_display_name(graph, container_urn)
+        if not database_name:
+            logger.info(
+                "Could not resolve display name for container urn=%s; skipping child dataset expansion",
+                container_urn,
+            )
+            continue
+
+        logger.info(
+            "Expanding container urn=%s to child datasets in database=%s",
+            container_urn,
+            database_name,
+        )
+
+        child_candidates = find_database_scope_candidates(
+            graph=graph,
+            batch_size=batch_size,
+            platform=platform,
+            env=env,
+            require_display_tag=False,
+            dataset_database=database_name,
+            keep_table_prefix=None,
+        )
+
+        for candidate in child_candidates:
+            candidates_by_urn.setdefault(
+                candidate.urn,
+                CandidateEntity(
+                    urn=candidate.urn,
+                    matched_pattern="explicit_container_child",
+                ),
+            )
+
+    return list(candidates_by_urn.values())
+
+
 def delete_entities(
     graph: DataHubGraph,
     entities: list[CandidateEntity],
@@ -458,9 +507,21 @@ def main() -> int:
         keep_table_prefix=args.keep_table_prefix,
     )
 
+    container_child_candidates = find_container_child_dataset_candidates(
+        graph=graph,
+        container_urns=explicit_urns,
+        batch_size=args.batch_size,
+        platform=args.platform,
+        env=args.env,
+    )
+
     candidates_by_urn: dict[str, CandidateEntity] = {
         candidate.urn: candidate
-        for candidate in [*pattern_candidates, *database_scope_candidates]
+        for candidate in [
+            *pattern_candidates,
+            *database_scope_candidates,
+            *container_child_candidates,
+        ]
     }
     for urn in explicit_urns:
         if is_protected_urn(urn):
@@ -487,10 +548,11 @@ def main() -> int:
         pattern_counts[candidate.matched_pattern] += 1
 
     logger.info(
-        "Found %d candidate entities (pattern=%d database_scope=%d explicit=%d)",
+        "Found %d candidate entities (pattern=%d database_scope=%d container_child=%d explicit=%d)",
         len(candidates),
         len(pattern_candidates),
         len(database_scope_candidates),
+        len(container_child_candidates),
         len(explicit_urns),
     )
     for pattern, count in sorted(pattern_counts.items()):
