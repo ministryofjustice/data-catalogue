@@ -110,7 +110,7 @@ jobs:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
   delete-excluded-entities-preprod:
-    needs: ingest-glue-data-preprod
+    if: github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/delete-excluded-entities.yml
     with:
       ENVIRONMENT: preprod-ingestion
