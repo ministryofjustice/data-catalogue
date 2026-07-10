@@ -115,7 +115,7 @@ jobs:
     with:
       ENVIRONMENT: preprod-ingestion
       DATAHUB_ENV: PROD
-      ENTITY_TYPES: "dataset"
+      ENTITY_TYPES: "container dataset"
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
@@ -125,6 +125,7 @@ jobs:
       REQUIRE_DISPLAY_TAG: true
       DATASET_DATABASE: dlpes_dfe_datashare
       KEEP_TABLE_PREFIX: dfe_
+      TARGET_URNS: "urn:li:container:0389eb884562f28075dc4d91ff8c40da"
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   
