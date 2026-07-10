@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 DATASET_URN_PATTERN = re.compile(
-    r"^urn:li:dataset:\\(urn:li:dataPlatform:([^,]+),([^,]+),[^\\)]+\\)$"
+    r"^urn:li:dataset:\(urn:li:dataPlatform:([^,]+),([^,]+),[^\)]+\)$"
 )
 CONTAINER_URN_PATTERN = re.compile(r"^urn:li:container:(.+)$")
 PROTECTED_DATA_PLATFORMS = {"gov.uk"}
