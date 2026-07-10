@@ -96,6 +96,19 @@ def parse_dataset_platform_from_urn(urn: str) -> str | None:
     return dataset_match.group(1)
 
 
+def parse_dataset_database_and_table_from_urn(urn: str) -> tuple[str, str] | None:
+    dataset_match = DATASET_URN_PATTERN.match(urn)
+    if not dataset_match:
+        return None
+
+    dataset_name = dataset_match.group(2)
+    if "." not in dataset_name:
+        return None
+
+    database_name, table_name = dataset_name.split(".", 1)
+    return database_name, table_name
+
+
 def is_protected_urn(urn: str) -> bool:
     if not urn.startswith("urn:li:dataset:"):
         return False
@@ -107,6 +120,32 @@ def is_protected_urn(urn: str) -> bool:
     return platform.lower() in PROTECTED_DATA_PLATFORMS
 
 
+def is_dataset_in_scope(
+    urn: str,
+    dataset_database: str | None,
+    keep_table_prefix: str | None,
+) -> bool:
+    if not urn.startswith("urn:li:dataset:"):
+        return True
+
+    if not dataset_database and not keep_table_prefix:
+        return True
+
+    dataset_parts = parse_dataset_database_and_table_from_urn(urn)
+    if not dataset_parts:
+        return False
+
+    database_name, table_name = dataset_parts
+
+    if dataset_database and database_name != dataset_database:
+        return False
+
+    if keep_table_prefix and table_name.startswith(keep_table_prefix):
+        return False
+
+    return True
+
+
 def find_candidates(
     graph: DataHubGraph,
     patterns: Iterable[str],
@@ -115,6 +154,8 @@ def find_candidates(
     platform: str | None,
     env: str | None,
     require_display_tag: bool,
+    dataset_database: str | None,
+    keep_table_prefix: str | None,
 ) -> list[CandidateEntity]:
     seen_urns: set[str] = set()
     candidates: list[CandidateEntity] = []
@@ -148,6 +189,10 @@ def find_candidates(
 
             if is_protected_urn(urn):
                 logger.info("Skipping protected platform entity urn=%s", urn)
+                continue
+
+            if not is_dataset_in_scope(urn, dataset_database, keep_table_prefix):
+                logger.info("Skipping out-of-scope dataset urn=%s", urn)
                 continue
 
             # DataHub full-text search can return broad matches for short
@@ -291,6 +336,20 @@ def build_parser() -> argparse.ArgumentParser:
             "These are included regardless of name-pattern matching."
         ),
     )
+    parser.add_argument(
+        "--dataset-database",
+        default=None,
+        help=(
+            "Optional dataset database name to scope deletion to, e.g. dlpes_dfe_datashare."
+        ),
+    )
+    parser.add_argument(
+        "--keep-table-prefix",
+        default=None,
+        help=(
+            "Optional table prefix to keep. Any dataset in --dataset-database whose table name starts with this prefix is skipped."
+        ),
+    )
     return parser
 
 
@@ -320,6 +379,8 @@ def main() -> int:
     logger.info("Platform filter: %s", args.platform or "<none>")
     logger.info("Env filter: %s", args.env or "<none>")
     logger.info("Require display tag: %s", args.require_display_tag)
+    logger.info("Dataset database scope: %s", args.dataset_database or "<none>")
+    logger.info("Keep table prefix: %s", args.keep_table_prefix or "<none>")
 
     pattern_candidates = find_candidates(
         graph=graph,
@@ -329,6 +390,8 @@ def main() -> int:
         platform=args.platform,
         env=args.env,
         require_display_tag=args.require_display_tag,
+        dataset_database=args.dataset_database,
+        keep_table_prefix=args.keep_table_prefix,
     )
 
     candidates_by_urn: dict[str, CandidateEntity] = {
@@ -337,6 +400,14 @@ def main() -> int:
     for urn in explicit_urns:
         if is_protected_urn(urn):
             logger.info("Skipping explicit protected platform entity urn=%s", urn)
+            continue
+
+        if not is_dataset_in_scope(
+            urn,
+            dataset_database=args.dataset_database,
+            keep_table_prefix=args.keep_table_prefix,
+        ):
+            logger.info("Skipping explicit out-of-scope dataset urn=%s", urn)
             continue
 
         candidates_by_urn.setdefault(

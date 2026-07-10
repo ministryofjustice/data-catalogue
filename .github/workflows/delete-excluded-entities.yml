@@ -71,6 +71,14 @@ on:
         description: "Optional space-separated explicit URNs to delete"
         required: false
         type: string
+      DATASET_DATABASE:
+        description: "Optional dataset database name to scope deletion to"
+        required: false
+        type: string
+      KEEP_TABLE_PREFIX:
+        description: "Optional table prefix to keep within DATASET_DATABASE"
+        required: false
+        type: string
 
   workflow_call:
     inputs:
@@ -134,6 +142,14 @@ on:
         description: "Optional space-separated explicit URNs to delete"
         required: false
         type: string
+      DATASET_DATABASE:
+        description: "Optional dataset database name to scope deletion to"
+        required: false
+        type: string
+      KEEP_TABLE_PREFIX:
+        description: "Optional table prefix to keep within DATASET_DATABASE"
+        required: false
+        type: string
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API key for DataHub GMS"
@@ -185,6 +201,14 @@ jobs:
 
           if [[ -n "${{ inputs.TARGET_URNS }}" ]]; then
             ARGS+=(--target-urns ${{ inputs.TARGET_URNS }})
+          fi
+
+          if [[ -n "${{ inputs.DATASET_DATABASE }}" ]]; then
+            ARGS+=(--dataset-database "${{ inputs.DATASET_DATABASE }}")
+          fi
+
+          if [[ -n "${{ inputs.KEEP_TABLE_PREFIX }}" ]]; then
+            ARGS+=(--keep-table-prefix "${{ inputs.KEEP_TABLE_PREFIX }}")
           fi
 
           if [[ "${{ inputs.APPLY }}" == "true" ]]; then
