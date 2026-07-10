@@ -160,6 +160,7 @@ jobs:
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 25
       REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: libra
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
@@ -176,5 +177,6 @@ jobs:
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 25
       REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: xhibit_preprocessed
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}

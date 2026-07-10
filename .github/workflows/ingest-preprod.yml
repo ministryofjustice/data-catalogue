@@ -157,10 +157,11 @@ jobs:
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
-      FORCE: true
+      FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
       REQUIRE_DISPLAY_TAG: true
+      DATASET_DATABASE: libra
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
@@ -173,10 +174,11 @@ jobs:
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
-      FORCE: true
+      FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
       REQUIRE_DISPLAY_TAG: true
+      DATASET_DATABASE: xhibit_preprocessed
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   
