@@ -125,7 +125,7 @@ jobs:
       REQUIRE_DISPLAY_TAG: true
       DATASET_DATABASE: dlpes_dfe_datashare
       KEEP_TABLE_PREFIX: dfe_
-      TARGET_URNS: "urn:li:container:0389eb884562f28075dc4d91ff8c40da"
+      TARGET_URNS: "urn:li:container:0389eb884562f28075dc4d91ff8c40da urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   
