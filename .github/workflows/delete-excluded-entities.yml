@@ -207,7 +207,11 @@ jobs:
             ARGS+=(--extra-patterns ${{ inputs.EXTRA_PATTERNS }})
           fi
 
-          [[ -z "${{ inputs.TARGET_URNS }}" ]] || ARGS+=(--target-urns "${{ inputs.TARGET_URNS }}")
+          if [[ -n "${{ inputs.TARGET_URNS }}" ]]; then
+            for urn in ${{ inputs.TARGET_URNS }}; do
+              ARGS+=(--target-urns "$urn")
+            done
+          fi
 
           if [[ -n "${{ inputs.DATASET_DATABASE }}" ]]; then
             ARGS+=(--dataset-database "${{ inputs.DATASET_DATABASE }}")
