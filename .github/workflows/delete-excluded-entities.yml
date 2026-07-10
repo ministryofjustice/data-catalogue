@@ -207,8 +207,9 @@ jobs:
             ARGS+=(--extra-patterns ${{ inputs.EXTRA_PATTERNS }})
           fi
 
-          if [[ -n "${{ inputs.TARGET_URNS }}" ]]; then
-            for urn in ${{ inputs.TARGET_URNS }}; do
+          target_urns_input='${{ inputs.TARGET_URNS }}'
+          if test -n "$target_urns_input"; then
+            for urn in $target_urns_input; do
               ARGS+=(--target-urns "$urn")
             done
           fi
