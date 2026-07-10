@@ -142,7 +142,7 @@ jobs:
       FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
+      REQUIRE_DISPLAY_TAG: true
       DATASET_DATABASE: dlpes_dwp_hmrc_main_datashare
       DELETE_TABLE_PREFIX: cohort
     secrets:
@@ -157,10 +157,10 @@ jobs:
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
-      FORCE: false
+      FORCE: true
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
+      REQUIRE_DISPLAY_TAG: true
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
@@ -173,10 +173,10 @@ jobs:
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
-      FORCE: false
+      FORCE: true
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
+      REQUIRE_DISPLAY_TAG: true
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   

@@ -208,7 +208,7 @@ jobs:
           fi
 
           if [[ -n "${{ inputs.TARGET_URNS }}" ]]; then
-            ARGS+=(--target-urns ${{ inputs.TARGET_URNS }})
+            ARGS+=(--target-urns \"${{ inputs.TARGET_URNS }}\")
           fi
 
           if [[ -n "${{ inputs.DATASET_DATABASE }}" ]]; then
