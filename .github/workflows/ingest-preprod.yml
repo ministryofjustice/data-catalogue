@@ -9,7 +9,7 @@ on:
         description: "Space-separated glue config suffixes to ingest (without glue_ prefix)."
         required: false
         # default: "contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini"
-        default: "dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini"
+        default: "dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini dlpes_dwp_hmrc_main"
         type: string
 
 jobs:
