@@ -5,7 +5,7 @@ source:
     database_pattern:
       allow: ["dlpes_dfe_datashare$"]
     table_pattern:
-      allow: ["^dfe_.*$"]
+      allow: ["^dlpes_dfe_datashare\\.dfe_.*$"]
     extract_owners: False
     extract_transforms: False
 
