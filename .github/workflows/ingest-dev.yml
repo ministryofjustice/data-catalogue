@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: "0 6 * * 1-5" # 6:00am UTC Monday to Friday
   workflow_dispatch:
+    inputs:
+      GLUE_CONFIGS:
+        description: "Space-separated glue config suffixes to ingest (without glue_ prefix)."
+        required: false
+        # default: "contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini"
+        default: "contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini dlpes_dwp_hmrc_main"
+        type: string
 
 jobs:
   ingest-ownership-types-dev:
@@ -67,6 +74,7 @@ jobs:
     uses: ./.github/workflows/ingest-glue-data.yml
     with:
       ENVIRONMENT: dev
+      GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
@@ -109,74 +117,75 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-excluded-entities-dev:
-    needs: ingest-glue-data-dev
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: dev
-      DATAHUB_ENV: PROD
-      ENTITY_TYPES: "dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 25
-      REQUIRE_DISPLAY_TAG: true
-      DATASET_DATABASE: dlpes_dfe_datashare
-      KEEP_TABLE_PREFIX: dfe_
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-excluded-entities-dev:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #     DATAHUB_ENV: PROD
+  #     ENTITY_TYPES: "container dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: dlpes_dfe_datashare
+  #     KEEP_TABLE_PREFIX: dfe_
+  #     TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-cohort-tables-dev:
-    needs: ingest-glue-data-dev
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: dev
-      DATAHUB_ENV: PROD
-      ENTITY_TYPES: "dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 25
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: dlpes_dwp_hmrc_main_datashare
-      DELETE_TABLE_PREFIX: cohort
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-cohort-tables-dev:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #     DATAHUB_ENV: PROD
+  #     ENTITY_TYPES: "dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: dlpes_dwp_hmrc_main_datashare
+  #     DELETE_TABLE_PREFIX: cohort
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-libra-dev:
-    needs: ingest-cadet-dev
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: dev
-      ENTITY_TYPES: "container dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 25
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: libra
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-libra-dev:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #     ENTITY_TYPES: "container dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: libra
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-xhibit-dev:
-    needs: ingest-glue-data-dev
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: dev
-      ENTITY_TYPES: "container dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 25
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: xhibit_preprocessed
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-xhibit-dev:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #     ENTITY_TYPES: "container dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: xhibit_preprocessed
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
