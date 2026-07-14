@@ -13,13 +13,13 @@ on:
         type: string
 
 jobs:
-  # ingest-ownership-types-preprod:
-  #   uses: ./.github/workflows/ingest-yaml.yml
-  #   with:
-  #     ENVIRONMENT: preprod-ingestion
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-ownership-types-preprod:
+    uses: ./.github/workflows/ingest-yaml.yml
+    with:
+      ENVIRONMENT: preprod-ingestion
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
   # ingest-cadet-preprod:
   #   uses: ./.github/workflows/ingest-cadet-metadata.yml
