@@ -16,6 +16,11 @@ on:
         description: "Environment to use for secrets"
         required: true
         type: string
+      GLUE_CONFIGS:
+        description: "Space-separated glue config suffixes to ingest (without glue_ prefix), e.g. 'dlpes_dwp_hmrc_main dlpes_dfe'"
+        required: false
+        type: string
+        default: "contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini"
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -96,9 +101,14 @@ jobs:
           FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
           PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
           DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
+          GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
         run: |
           mkdir -p ingestion/processed
-          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini; do
+          for config in $GLUE_CONFIGS; do
+            if [[ ! -f "ingestion/glue_${config}.yaml" ]]; then
+              echo "Missing ingestion/glue_${config}.yaml" >&2
+              exit 1
+            fi
             envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
           done
 
@@ -107,9 +117,15 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
+          GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
         run: |
-          for ingestion in ingestion/processed/glue_*.yaml; do
+          for config in $GLUE_CONFIGS; do
+            ingestion="ingestion/processed/glue_${config}.yaml"
+            echo "::group::Ingesting ${ingestion}"
+            date -u +"Started at %Y-%m-%dT%H:%M:%SZ"
             time uv run datahub ingest -c "$ingestion"
+            date -u +"Finished at %Y-%m-%dT%H:%M:%SZ"
+            echo "::endgroup::"
           done
 
       - name: Notify on failure
