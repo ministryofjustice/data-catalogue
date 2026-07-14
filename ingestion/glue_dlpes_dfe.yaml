@@ -4,8 +4,6 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["dlpes_dfe_datashare$"]
-    table_pattern:
-      allow: ["^dlpes_dfe_datashare\\.dfe_.*$"]
     extract_owners: False
     extract_transforms: False
 
