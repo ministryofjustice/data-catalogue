@@ -14,17 +14,17 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  ingest-cadet-preprod:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: preprod-ingestion
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-cadet-preprod:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: preprod-ingestion
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+  #     S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
   ingest-em-cadet-preprod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml

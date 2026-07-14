@@ -19,7 +19,7 @@ transformers:
     config:
       data_custodian: "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
 
-  - type: "simple_add_dataset_tags"
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
@@ -53,6 +53,13 @@ transformers:
       replace_existing: true
       tag_pattern:
         rules:
+          "^urn:li:container:.*$":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
           "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dfe_datashare\\.dfe_[^,]*,[^\\)]+\\)$":
             - "urn:li:tag:dc_display_in_catalogue"
             - "urn:li:tag:Prison"
