@@ -12,7 +12,7 @@ transformers:
     config:
       data_custodian: "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
 
-  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
+  - type: "simple_add_dataset_tags"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
@@ -71,6 +71,7 @@ transformers:
     config:
       semantics: OVERWRITE # OVERWRITE is default behaviour
       properties:
+        dc_readable_name: "MoJ HMRC Mini Datashare"
         dc_slack_channel_name: "#data-linking-databases"
         dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
         dc_where_to_access_dataset: AnalyticalPlatform

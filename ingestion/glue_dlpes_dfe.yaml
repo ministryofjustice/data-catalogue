@@ -19,7 +19,7 @@ transformers:
     config:
       data_custodian: "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
 
-  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
+  - type: "simple_add_dataset_tags"
     config:
       tag_urns:
         - "urn:li:tag:dc_display_in_catalogue"
