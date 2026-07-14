@@ -102,12 +102,12 @@ jobs:
       PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
       PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
   
-  run-datahub-cleanup:
-    uses: ./.github/workflows/datahub-cleanup-ingestion.yml
-    with:
-      ENVIRONMENT: preprod-ingestion
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # run-datahub-cleanup:
+  #   uses: ./.github/workflows/datahub-cleanup-ingestion.yml
+  #   with:
+  #     ENVIRONMENT: preprod-ingestion
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
 # libra, xhibit_preprocessed
   # delete-excluded-entities-preprod:
