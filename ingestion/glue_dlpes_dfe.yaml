@@ -1,5 +1,3 @@
-pipeline_name: glue_dlpes_dfe
-
 source:
   type: glue
   config:
@@ -10,9 +8,6 @@ source:
       allow: ["^dfe_.*$"]
     extract_owners: False
     extract_transforms: False
-    stateful_ingestion:
-      enabled: true
-      remove_stale_metadata: true
 
 transformers:
   - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
