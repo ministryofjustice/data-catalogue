@@ -19,25 +19,25 @@ on:
         type: boolean
 
 jobs:
-  ingest-ownership-types-dev:
-    uses: ./.github/workflows/ingest-yaml.yml
-    with:
-      ENVIRONMENT: dev
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-ownership-types-dev:
+  #   uses: ./.github/workflows/ingest-yaml.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  ingest-cadet-dev:
-    uses: ./.github/workflows/ingest-cadet-metadata.yml
-    with:
-      ECR_REGION: eu-west-1
-      ENVIRONMENT: dev
-      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  # ingest-cadet-dev:
+  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
+  #   with:
+  #     ECR_REGION: eu-west-1
+  #     ENVIRONMENT: dev
+  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+  #     S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
   # ingest-em-cadet-dev:
   #   uses: ./.github/workflows/ingest-cadet-metadata.yml
@@ -163,25 +163,25 @@ jobs:
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  # delete-libra-dev:
-  #   if: github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/delete-excluded-entities.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #     DATAHUB_ENV: PROD
-  #     ENTITY_TYPES: "dataset"
-  #     APPLY: true
-  #     HARD_DELETE: true
-  #     MAX_ENTITIES: 5000
-  #     FORCE: false
-  #     BATCH_SIZE: 2000
-  #     SHOW_SAMPLE: 200
-  #     REQUIRE_DISPLAY_TAG: false
-  #     DATASET_DATABASE: libra
-  #     TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
-  #     FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: ${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  delete-libra-dev:
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: dev
+      DATAHUB_ENV: PROD
+      ENTITY_TYPES: "dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 200
+      REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: libra
+      TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: ${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
   # delete-xhibit-dev:
   #   if: github.event_name == 'workflow_dispatch'
