@@ -164,14 +164,14 @@ jobs:
     with:
       ENVIRONMENT: dev
       DATAHUB_ENV: PROD
-      ENTITY_TYPES: "container dataset"
+      ENTITY_TYPES: "dataset"
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
       FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
+      REQUIRE_DISPLAY_TAG: true
       DATASET_DATABASE: libra
       TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
     secrets:
@@ -196,22 +196,22 @@ jobs:
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-common_platform_dev_sdp_v3-dev:
-    if: github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: dev
-      DATAHUB_ENV: PROD
-      ENTITY_TYPES: "dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: common_platform_dev_sdp_v3
-      TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-common_platform_dev_sdp_v3-dev:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: dev
+  #     DATAHUB_ENV: PROD
+  #     ENTITY_TYPES: "dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: common_platform_dev_sdp_v3
+  #     TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
