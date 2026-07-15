@@ -293,11 +293,11 @@ def find_database_scope_candidates(
 
 
 def find_container_child_dataset_urns_via_graphql(
-        graph: DataHubGraph,
-        container_urn: str,
-        batch_size: int,
+    graph: DataHubGraph,
+    container_urn: str,
+    batch_size: int,
 ) -> list[str]:
-        query = """
+    query = """
         query getContainerChildren($urn: String!, $start: Int!, $count: Int!) {
             container(urn: $urn) {
                 relationships(
@@ -321,40 +321,50 @@ def find_container_child_dataset_urns_via_graphql(
         }
         """
 
-        start = 0
-        total = None
-        child_dataset_urns: list[str] = []
+    start = 0
+    total = None
+    child_dataset_urns: list[str] = []
 
-        while total is None or start < total:
-                response = graph.execute_graphql(
-                        query,
-                        {
-                                "urn": container_urn,
-                                "start": start,
-                                "count": batch_size,
-                        },
-                )
+    while total is None or start < total:
+        response = graph.execute_graphql(
+            query,
+            {
+                "urn": container_urn,
+                "start": start,
+                "count": batch_size,
+            },
+        )
 
-                relationships = (
-                        response.get("container", {})
-                        .get("relationships", {})
-                )
-                total = relationships.get("total", 0)
-                rel_items = relationships.get("relationships", [])
+        # DataHub client responses can be either flattened ({"container": ...})
+        # or nested under a GraphQL "data" envelope ({"data": {"container": ...}}).
+        payload = response.get("data", response) if isinstance(response, dict) else {}
+        relationships = payload.get("container", {}).get("relationships", {})
+        total = relationships.get("total", 0)
+        rel_items = relationships.get("relationships", [])
 
-                for rel in rel_items:
-                        entity = rel.get("entity", {})
-                        if entity.get("type") == "DATASET":
-                                urn = entity.get("urn")
-                                if isinstance(urn, str) and urn.startswith("urn:li:dataset:"):
-                                        child_dataset_urns.append(urn)
+        for rel in rel_items:
+            entity = rel.get("entity", {})
+            urn = entity.get("urn")
+            if isinstance(urn, str) and urn.startswith("urn:li:dataset:"):
+                child_dataset_urns.append(urn)
 
-                if not rel_items:
-                        break
+        if not rel_items:
+            break
 
-                start += batch_size
+        start += batch_size
 
-        return child_dataset_urns
+    # Deduplicate while preserving order for predictable logs and execution.
+    unique_child_dataset_urns = list(dict.fromkeys(child_dataset_urns))
+    logger.info(
+        "GraphQL child discovery complete for container urn=%s total_children=%d",
+        container_urn,
+        len(unique_child_dataset_urns),
+    )
+    if unique_child_dataset_urns:
+        for urn in unique_child_dataset_urns[:10]:
+            logger.info("GraphQL child sample urn=%s", urn)
+
+    return unique_child_dataset_urns
 
 
 def find_container_child_dataset_candidates(
@@ -410,6 +420,11 @@ def find_container_child_dataset_candidates(
                         matched_pattern="explicit_container_child_graphql",
                     ),
                 )
+            logger.info(
+                "Expanded container urn=%s via GraphQL into %d candidate child datasets",
+                container_urn,
+                len(child_dataset_urns),
+            )
             continue
 
         logger.info(
