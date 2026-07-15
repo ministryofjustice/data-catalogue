@@ -180,7 +180,8 @@ jobs:
     uses: ./.github/workflows/delete-excluded-entities.yml
     with:
       ENVIRONMENT: dev
-      ENTITY_TYPES: "container dataset"
+      DATAHUB_ENV: PROD
+      ENTITY_TYPES: "dataset"
       APPLY: true
       HARD_DELETE: true
       MAX_ENTITIES: 5000
@@ -189,5 +190,6 @@ jobs:
       SHOW_SAMPLE: 200
       REQUIRE_DISPLAY_TAG: false
       DATASET_DATABASE: xhibit_preprocessed
+      TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
