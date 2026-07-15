@@ -12,6 +12,11 @@ on:
         # default: "contracts courts_criminal courts_family fines just_link sop dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini dlpes_dwp_hmrc_main"
         default: "xhibit_preprocessed"
         type: string
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force child expansion for container URNs when container display name cannot be resolved"
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   # ingest-ownership-types-dev:
@@ -174,6 +179,7 @@ jobs:
       REQUIRE_DISPLAY_TAG: true
       DATASET_DATABASE: libra
       TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: ${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 

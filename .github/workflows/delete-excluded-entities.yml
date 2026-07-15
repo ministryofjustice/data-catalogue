@@ -83,6 +83,11 @@ on:
         description: "Optional table prefix to delete within DATASET_DATABASE (only tables starting with this prefix are selected)"
         required: false
         type: string
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion via GraphQL even when container display name cannot be resolved"
+        required: false
+        default: false
+        type: boolean
 
   workflow_call:
     inputs:
@@ -158,6 +163,11 @@ on:
         description: "Optional table prefix to delete within DATASET_DATABASE (only tables starting with this prefix are selected)"
         required: false
         type: string
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion via GraphQL even when container display name cannot be resolved"
+        required: false
+        default: false
+        type: boolean
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API key for DataHub GMS"
@@ -224,6 +234,10 @@ jobs:
 
           if [[ -n "${{ inputs.DELETE_TABLE_PREFIX }}" ]]; then
             ARGS+=(--delete-table-prefix "${{ inputs.DELETE_TABLE_PREFIX }}")
+          fi
+
+          if [[ "${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}" == "true" ]]; then
+            ARGS+=(--force-expand-container-children-without-name)
           fi
 
           if [[ "${{ inputs.APPLY }}" == "true" ]]; then

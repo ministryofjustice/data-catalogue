@@ -292,12 +292,78 @@ def find_database_scope_candidates(
     return candidates
 
 
+def find_container_child_dataset_urns_via_graphql(
+        graph: DataHubGraph,
+        container_urn: str,
+        batch_size: int,
+) -> list[str]:
+        query = """
+        query getContainerChildren($urn: String!, $start: Int!, $count: Int!) {
+            container(urn: $urn) {
+                relationships(
+                    input: {
+                        types: ["IsPartOf"],
+                        direction: INCOMING,
+                        includeSoftDelete: false,
+                        start: $start,
+                        count: $count
+                    }
+                ) {
+                    total
+                    relationships {
+                        entity {
+                            urn
+                            type
+                        }
+                    }
+                }
+            }
+        }
+        """
+
+        start = 0
+        total = None
+        child_dataset_urns: list[str] = []
+
+        while total is None or start < total:
+                response = graph.execute_graphql(
+                        query,
+                        {
+                                "urn": container_urn,
+                                "start": start,
+                                "count": batch_size,
+                        },
+                )
+
+                relationships = (
+                        response.get("container", {})
+                        .get("relationships", {})
+                )
+                total = relationships.get("total", 0)
+                rel_items = relationships.get("relationships", [])
+
+                for rel in rel_items:
+                        entity = rel.get("entity", {})
+                        if entity.get("type") == "DATASET":
+                                urn = entity.get("urn")
+                                if isinstance(urn, str) and urn.startswith("urn:li:dataset:"):
+                                        child_dataset_urns.append(urn)
+
+                if not rel_items:
+                        break
+
+                start += batch_size
+
+        return child_dataset_urns
+
+
 def find_container_child_dataset_candidates(
     graph: DataHubGraph,
     container_urns: list[str],
     batch_size: int,
     platform: str | None,
     env: str | None,
+    force_expand_without_container_name: bool = False,
 ) -> list[CandidateEntity]:
     candidates_by_urn: dict[str, CandidateEntity] = {}
 
@@ -307,10 +373,43 @@ def find_container_child_dataset_candidates(
 
         database_name = get_container_display_name(graph, container_urn)
         if not database_name:
+            if not force_expand_without_container_name:
+                logger.info(
+                    "Could not resolve display name for container urn=%s; skipping child dataset expansion",
+                    container_urn,
+                )
+                continue
+
             logger.info(
-                "Could not resolve display name for container urn=%s; skipping child dataset expansion",
+                "Could not resolve display name for container urn=%s; forcing child dataset expansion via GraphQL",
                 container_urn,
             )
+
+            try:
+                child_dataset_urns = find_container_child_dataset_urns_via_graphql(
+                    graph=graph,
+                    container_urn=container_urn,
+                    batch_size=batch_size,
+                )
+            except Exception:
+                logger.exception(
+                    "Failed to expand container urn=%s via GraphQL",
+                    container_urn,
+                )
+                continue
+
+            for child_urn in child_dataset_urns:
+                if is_protected_urn(child_urn):
+                    logger.info("Skipping protected platform entity urn=%s", child_urn)
+                    continue
+
+                candidates_by_urn.setdefault(
+                    child_urn,
+                    CandidateEntity(
+                        urn=child_urn,
+                        matched_pattern="explicit_container_child_graphql",
+                    ),
+                )
             continue
 
         logger.info(
@@ -474,6 +573,13 @@ def build_parser() -> argparse.ArgumentParser:
             "Optional table prefix to delete. Only datasets in --dataset-database whose table name starts with this prefix are selected."
         ),
     )
+    parser.add_argument(
+        "--force-expand-container-children-without-name",
+        action="store_true",
+        help=(
+            "If set, container child expansion falls back to GraphQL relationships even when container display name cannot be resolved."
+        ),
+    )
     return parser
 
 
@@ -506,6 +612,10 @@ def main() -> int:
     logger.info("Dataset database scope: %s", args.dataset_database or "<none>")
     logger.info("Keep table prefix: %s", args.keep_table_prefix or "<none>")
     logger.info("Delete table prefix: %s", args.delete_table_prefix or "<none>")
+    logger.info(
+        "Force expand container children without name: %s",
+        args.force_expand_container_children_without_name,
+    )
 
     pattern_candidates = find_candidates(
         graph=graph,
@@ -549,6 +659,7 @@ def main() -> int:
         batch_size=args.batch_size,
         platform=args.platform,
         env=args.env,
+        force_expand_without_container_name=args.force_expand_container_children_without_name,
     )
 
     candidates_by_urn: dict[str, CandidateEntity] = {
