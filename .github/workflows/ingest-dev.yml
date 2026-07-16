@@ -117,12 +117,12 @@ jobs:
   #     PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
 
     
-  # run-datahub-cleanup:
-  #   uses: ./.github/workflows/datahub-cleanup-ingestion.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  run-datahub-cleanup:
+    uses: ./.github/workflows/datahub-cleanup-ingestion.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
   # delete-excluded-entities-dev:
   #   if: github.event_name == 'workflow_dispatch'
