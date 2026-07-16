@@ -168,7 +168,6 @@ jobs:
     uses: ./.github/workflows/delete-excluded-entities.yml
     with:
       ENVIRONMENT: dev
-      DATAHUB_ENV: PROD
       ENTITY_TYPES: "dataset"
       APPLY: true
       HARD_DELETE: true
