@@ -90,7 +90,7 @@ jobs:
       DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
 
   repair-dfe-container-relationships-preprod:
-    # needs: ingest-glue-data-preprod
+    needs: ingest-glue-data-preprod
     runs-on: ubuntu-latest
     environment: preprod-ingestion
     steps:
