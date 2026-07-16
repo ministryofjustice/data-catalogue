@@ -37,6 +37,12 @@ from ingestion.utils import report_generator_time, report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
+EXCLUDED_DATABASES = {"libra"}
+
+
+def is_excluded_database(database: str) -> bool:
+    return database.lower() in EXCLUDED_DATABASES
+
 properties_to_add = {
     "security_classification": "Official-Sensitive",
 }
@@ -166,6 +172,13 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
+            if is_excluded_database(database):
+                logging.info(
+                    "Skipping seed tag MCP for excluded database '%s'",
+                    database,
+                )
+                continue
+
             domain = domain_lookup.get(database, table)
             tag_names = [
                 "Miscellaneous",
@@ -223,6 +236,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
+
+                    if is_excluded_database(database):
+                        logging.info(
+                            "Skipping excluded database '%s' while building database containers",
+                            database,
+                        )
+                        continue
+
                     database_metadata_dict = {}
 
                     try:
