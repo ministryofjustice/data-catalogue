@@ -289,6 +289,40 @@ def find_database_scope_candidates(
         candidates.append(CandidateEntity(urn=urn, matched_pattern="database_scope"))
         seen_urns.add(urn)
 
+    if candidates:
+        return candidates
+
+    logger.info(
+        "No database-scoped candidates found via search for database=%s; falling back to dataset URN scan",
+        dataset_database,
+    )
+
+    for urn in graph.get_urns_by_filter(
+        entity_types=["dataset"],
+        query="*",
+        batch_size=batch_size,
+        platform=platform,
+        env=env,
+        status=RemovedStatusFilter.NOT_SOFT_DELETED,
+        extraFilters=extra_filters,
+    ):
+        if urn in seen_urns:
+            continue
+
+        if is_protected_urn(urn):
+            logger.info("Skipping protected platform entity urn=%s", urn)
+            continue
+
+        if not is_dataset_in_scope(
+            urn, dataset_database, keep_table_prefix, delete_table_prefix
+        ):
+            continue
+
+        candidates.append(
+            CandidateEntity(urn=urn, matched_pattern="database_scope_urn_scan")
+        )
+        seen_urns.add(urn)
+
     return candidates
 
 
