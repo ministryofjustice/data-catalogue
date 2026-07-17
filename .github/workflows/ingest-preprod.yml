@@ -199,16 +199,16 @@ jobs:
     uses: ./.github/workflows/delete-excluded-entities.yml
     with:
       ENVIRONMENT: preprod-ingestion
-      ENTITY_TYPES: "dataset"
+      ENTITY_TYPES: "container dataset"
       APPLY: true
       HARD_DELETE: true
-      MAX_ENTITIES: 5000
+      MAX_ENTITIES: 5000 
       FORCE: false
       BATCH_SIZE: 2000
       SHOW_SAMPLE: 200
       REQUIRE_DISPLAY_TAG: false
       DATASET_DATABASE: libra
-      # TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
+      TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
       # FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: true
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
