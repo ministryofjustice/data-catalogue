@@ -9,7 +9,7 @@ dependencies = [
     "pytest==9.0.3",
     "boto3>=1.43.3,<2",
     "datahub>=0.999.1,<0.1000",
-    "moto>=5.0.28,<6",
+    "moto>=5.2.2,<6",
     "acryl-datahub[dbt, glue, postgres]==1.5.0.18",
     "pandas>=2.2.3,<3",
     "semantic-version>=2.10.0,<3",
