@@ -104,10 +104,15 @@ def parse_dataset_database_and_table_from_urn(urn: str) -> tuple[str, str] | Non
         return None
 
     dataset_name = dataset_match.group(2)
-    if "." not in dataset_name:
+    parts = dataset_name.split(".")
+    if len(parts) < 2:
         return None
 
-    database_name, table_name = dataset_name.split(".", 1)
+    # Handle both classic names (database.table) and dbt-style fully
+    # qualified names (e.g. cadet.awsdatacatalog.libra.addresses_wap).
+    # In the latter case, database and table are the last two segments.
+    database_name = parts[-2]
+    table_name = parts[-1]
     return database_name, table_name
 
 
