@@ -199,7 +199,6 @@ jobs:
     uses: ./.github/workflows/delete-excluded-entities.yml
     with:
       ENVIRONMENT: preprod-ingestion
-      PLATFORM: dbt
       ENTITY_TYPES: "container dataset"
       APPLY: true
       HARD_DELETE: true
