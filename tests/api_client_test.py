@@ -67,12 +67,16 @@ test_published_details = [
 
 @pytest.fixture
 def client(default_owner_email):
-    return JusticeDataAPIClient("https://data.justice.gov.uk/api", default_owner_email)
+    with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data_publications.yaml"):
+        return JusticeDataAPIClient(
+            "https://data.justice.gov.uk/api", default_owner_email
+        )
 
 
 def test_list_all(client):
-    response = client.list_all()
-    assert response
+    with vcr.use_cassette("tests/fixtures/vcr_cassettes/fetch_justice_data.yaml"):
+        response = client.list_all()
+        assert response
 
 
 ids_with_prison_domain = [
