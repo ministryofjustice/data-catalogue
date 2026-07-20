@@ -53,7 +53,7 @@ jobs:
         run: time uv run datahub ingest -c ingestion/ingest_tags.yaml
 
       - name: Notify on failure
-        uses: slackapi/slack-github-action@fc46ded2fc4d7f11bfa62864526f920cf1a1167d #v3.0.4
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc #v3.0.5
         if: failure()
         with:
           webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
