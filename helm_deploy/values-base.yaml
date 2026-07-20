@@ -263,7 +263,7 @@ mysqlSetupJob:
   enabled: false
 
 postgresqlSetupJob:
-  enabled: true
+  enabled: false
   image:
     repository: acryldata/datahub-postgres-setup
   # Custom labels to add to the Job metadata
@@ -401,7 +401,7 @@ datahubSystemUpdate:
       enabled: false # Inherit from global.sql.iam.enabled if not set
     # SQL setup within system-update job (replaces legacy mysqlSetupJob/postgresqlSetupJob when IAM is enabled)
     setup:
-      enabled: false # Enable SQL database setup
+      enabled: true # Enable SQL database setup
       createTables: true # Create DataHub tables
       createDatabase: true # Create the database if it doesn't exist
       createUser: false # Create SQL user (for non-IAM setups)
