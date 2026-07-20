@@ -14,80 +14,80 @@ on:
         type: string
 
 jobs:
-  # ingest-ownership-types-preprod:
-  #   uses: ./.github/workflows/ingest-yaml.yml
-  #   with:
-  #     ENVIRONMENT: preprod-ingestion
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-ownership-types-preprod:
+    uses: ./.github/workflows/ingest-yaml.yml
+    with:
+      ENVIRONMENT: preprod-ingestion
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-cadet-preprod:
-  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: preprod-ingestion
-  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-  #     S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-cadet-preprod:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: preprod-ingestion
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-em-cadet-preprod:
-  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: preprod-ingestion
-  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
-  #     S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
-  #     BASE_CADET_INGESTION: false
-  #     CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-em-cadet-preprod:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: preprod-ingestion
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet_electronic_monitoring.yaml
+      S3_TARGET_LOCATION: s3://emds-prod-cadt/em_data_artefacts/prod/run_artefacts/emds-deploy-docs/latest/target
+      BASE_CADET_INGESTION: false
+      CADET_INSTANCE: cadet_electronic_monitoring.awsdatacatalog
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-dpr-cadet-preprod:
-  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: preprod-ingestion
-  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet_digital_prison_reporting.yaml
-  #     S3_TARGET_LOCATION: s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target
-  #     BASE_CADET_INGESTION: false
-  #     CADET_INSTANCE: cadet_digital_prison_reporting.awsdatacatalog
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.DPR_CADET_METADATA_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-dpr-cadet-preprod:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: preprod-ingestion
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet_digital_prison_reporting.yaml
+      S3_TARGET_LOCATION: s3://dpr-structured-historical-production/data/prod/run_artefacts/deploy-digital-prisons-reporting-docs/latest/target
+      BASE_CADET_INGESTION: false
+      CADET_INSTANCE: cadet_digital_prison_reporting.awsdatacatalog
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.DPR_CADET_METADATA_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-justice-data-preprod:
-  #   uses: ./.github/workflows/ingest-justice-data.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: preprod-ingestion
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-justice-data-preprod:
+    uses: ./.github/workflows/ingest-justice-data.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: preprod-ingestion
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-glue-data-preprod:
-  #   uses: ./.github/workflows/ingest-glue-data.yml
-  #   with:
-  #     ENVIRONMENT: preprod-ingestion
-  #     GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  #     SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
-  #     CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
-  #     COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
-  #     COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
-  #     JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
-  #     FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
-  #     PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
-  #     DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
+  ingest-glue-data-preprod:
+    uses: ./.github/workflows/ingest-glue-data.yml
+    with:
+      ENVIRONMENT: preprod-ingestion
+      GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
+      CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
+      COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
+      COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
+      JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
+      FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
+      PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
+      DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
 
   # Use this job to fix broken parent-child relationships in any database.
   # The below is for the dlpes_dfe_datashare dataset, which is used for the DfE datashare. 
@@ -124,37 +124,37 @@ jobs:
   #           --env PROD \
   #           --apply
   
-  # ingest-moj-publications-preprod:
-  #   uses: ./.github/workflows/ingest-moj-publications.yml
-  #   with:
-  #     ENVIRONMENT: preprod-ingestion
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-moj-publications-preprod:
+    uses: ./.github/workflows/ingest-moj-publications.yml
+    with:
+      ENVIRONMENT: preprod-ingestion
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-postgres-cdrs:
-  #   uses: ./.github/workflows/ingest-postgres.yml
-  #   with:
-  #     ENVIRONMENT: preprod-ingestion
-  #     INGESTION_NAME: hmpps_calculate_release_dates
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  #     HOST_PORT: ${{ secrets.POSTGRES_HOST_PORT_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     DATABASE: ${{ secrets.POSTGRES_DATABASE_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     USER: ${{ secrets.POSTGRES_USER_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
+  ingest-postgres-cdrs:
+    uses: ./.github/workflows/ingest-postgres.yml
+    with:
+      ENVIRONMENT: preprod-ingestion
+      INGESTION_NAME: hmpps_calculate_release_dates
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      HOST_PORT: ${{ secrets.POSTGRES_HOST_PORT_CALCULATE_RELEASE_DATES_PREPROD }}
+      DATABASE: ${{ secrets.POSTGRES_DATABASE_CALCULATE_RELEASE_DATES_PREPROD }}
+      USER: ${{ secrets.POSTGRES_USER_CALCULATE_RELEASE_DATES_PREPROD }}
+      PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
+      PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
   
-  # run-datahub-cleanup:
-  #   uses: ./.github/workflows/datahub-cleanup-ingestion.yml
-  #   with:
-  #     ENVIRONMENT: preprod-ingestion
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  run-datahub-cleanup:
+    uses: ./.github/workflows/datahub-cleanup-ingestion.yml
+    with:
+      ENVIRONMENT: preprod-ingestion
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-# libra, xhibit_preprocessed
-  # delete-excluded-entities-preprod:
+
+  # delete-dfe-preprod:
   #   if: github.event_name == 'workflow_dispatch'
   #   uses: ./.github/workflows/delete-excluded-entities.yml
   #   with:
@@ -194,58 +194,58 @@ jobs:
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-libra-preprod:
-    if: github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: preprod-ingestion
-      ENTITY_TYPES: "container dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000 
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: libra
-      TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
-      # FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: true
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-libra-preprod:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: preprod-ingestion
+  #     ENTITY_TYPES: "container dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000 
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: libra
+  #     TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
+  #     # FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: true
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  delete-xhibit-preprod:
-    if: github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: preprod-ingestion
-      ENTITY_TYPES: "container dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: xhibit_preprocessed
-      TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-xhibit-preprod:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: preprod-ingestion
+  #     ENTITY_TYPES: "container dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: xhibit_preprocessed
+  #     TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
   
-  delete-common_platform_dev_sdp_v3-dev:
-    if: github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/delete-excluded-entities.yml
-    with:
-      ENVIRONMENT: preprod-ingestion
-      DATAHUB_ENV: PROD
-      ENTITY_TYPES: "container dataset"
-      APPLY: true
-      HARD_DELETE: true
-      MAX_ENTITIES: 5000
-      FORCE: false
-      BATCH_SIZE: 2000
-      SHOW_SAMPLE: 200
-      REQUIRE_DISPLAY_TAG: false
-      DATASET_DATABASE: common_platform_dev_sdp_v3
-      TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
-    secrets:
-      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  # delete-common_platform_dev_sdp_v3-dev:
+  #   if: github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  #   with:
+  #     ENVIRONMENT: preprod-ingestion
+  #     DATAHUB_ENV: PROD
+  #     ENTITY_TYPES: "container dataset"
+  #     APPLY: true
+  #     HARD_DELETE: true
+  #     MAX_ENTITIES: 5000
+  #     FORCE: false
+  #     BATCH_SIZE: 2000
+  #     SHOW_SAMPLE: 200
+  #     REQUIRE_DISPLAY_TAG: false
+  #     DATASET_DATABASE: common_platform_dev_sdp_v3
+  #     TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
