@@ -185,7 +185,7 @@ datahub-ingestion-cron:
   enabled: false
 
 elasticsearchSetupJob:
-  enabled: true
+  enabled: false
   serviceAccount: ""
   image:
     repository: acryldata/datahub-elasticsearch-setup
@@ -412,7 +412,7 @@ datahubSystemUpdate:
       enabled: false # Inherit from global.elasticsearch.iam.enabled if not set
     # Elasticsearch setup within system-update job
     setup:
-      enabled: false # Enable Elasticsearch user creation
+      enabled: true # Enable Elasticsearch user creation
       createUser: false # CREATE_USER_ES env var - create Elasticsearch user
       createUserIamRoleArn: "" # CREATE_USER_ES_IAM_ROLE_ARN env var - IAM role ARN to map to the user (only if createUser=true)
 
@@ -993,7 +993,7 @@ global:
           value: ""
 
   datahub:
-    version: v1.3.0.1
+    version: v1.5.0
     gms:
       port: "8080"
       nodePort: "30001"

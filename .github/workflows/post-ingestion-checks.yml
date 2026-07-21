@@ -24,11 +24,11 @@ jobs:
     outputs:
       preprod_counts: ${{ steps.set_preprod_counts.outputs.preprod_results }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
 
       - name: Install UV
         id: setup-uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
           version: ${{ vars.UV_VERSION }}
       
@@ -54,18 +54,18 @@ jobs:
       prod_counts: ${{ steps.set_prod_counts.outputs.prod_results }}
       missing_is_part_of: ${{ steps.set_relations.outputs.missing_is_part_of }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
 
       - name: Install UV
         id: setup-uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
           version: ${{ vars.UV_VERSION }}
       
       - name: Install Project Dependencies
         run: uv sync --locked
 
-      - uses: aws-actions/configure-aws-credentials@v6.2.0
+      - uses: aws-actions/configure-aws-credentials@v6.2.2
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
           role-duration-seconds: 14400
@@ -99,11 +99,11 @@ jobs:
     environment: prod-ingestion
     needs: [wait-for-reindex, run-for-preprod, run-for-prod]
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
 
       - name: Install UV
         id: setup-uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
           version: ${{ vars.UV_VERSION }}
       
@@ -125,7 +125,7 @@ jobs:
     environment: prod-ingestion
     needs: [wait-for-reindex, run-for-prod, compare_results]
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - name: Report datasets with missing container relationships
         run: |
           echo 'Missing IsPartOf relations: ${{ needs.run-for-prod.outputs.missing_is_part_of }}'
@@ -134,7 +134,7 @@ jobs:
           echo 'Comparison results: ${{ needs.compare_results.outputs.comparison_results }}'
       - name: Data Hub Ingestion Slack notification - Post Ingestion Check success / failure status
         if: always()
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v2.1.0
+        uses: slackapi/slack-github-action@fc46ded2fc4d7f11bfa62864526f920cf1a1167d # v2.1.0
         with:
           webhook: ${{ secrets.SLACK_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
