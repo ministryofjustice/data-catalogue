@@ -9,6 +9,24 @@ on:
         required: false
         default: "contracts courts_criminal courts_family fines just_link sop dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini dlpes_dwp_hmrc_main"
         type: string
+      DELETE_JOB_SET:
+        description: "Optional delete preset to run after ingestion"
+        required: false
+        default: none
+        type: choice
+        options:
+          - none
+          - dfe
+          - cohort
+          - libra
+          - xhibit
+          - common_platform
+          - all
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion for libra delete when container display name cannot be resolved"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   ingest-ownership-types-prod:
@@ -115,98 +133,12 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
-  # delete-dfe-prod:
-  #   if: github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/delete-excluded-entities.yml
+  # run-delete-jobs-prod:
+  #   if: github.event_name == 'workflow_dispatch' && inputs.DELETE_JOB_SET != 'none'
+  #   uses: ./.github/workflows/ingest-delete-jobs.yml
   #   with:
   #     ENVIRONMENT: prod-ingestion
-  #     DATAHUB_ENV: PROD
-  #     ENTITY_TYPES: "dataset"
-  #     APPLY: true
-  #     HARD_DELETE: true
-  #     MAX_ENTITIES: 5000
-  #     FORCE: false
-  #     BATCH_SIZE: 2000
-  #     SHOW_SAMPLE: 200
-  #     REQUIRE_DISPLAY_TAG: false
-  #     DATASET_DATABASE: dlpes_dfe_datashare
-  #     KEEP_TABLE_PREFIX: dfe_
-  #     TARGET_URNS: "urn:li:container:0389eb884562f28075dc4d91ff8c40da"
-  #     # Avoid deleting container URNs for this flow; keep cleanup dataset-scoped.
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-
-  # delete-cohort-tables-prod:
-  #   if: github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/delete-excluded-entities.yml
-  #   with:
-  #     ENVIRONMENT: prod-ingestion
-  #     DATAHUB_ENV: PROD
-  #     ENTITY_TYPES: "dataset"
-  #     APPLY: true
-  #     HARD_DELETE: true
-  #     MAX_ENTITIES: 5000
-  #     FORCE: false
-  #     BATCH_SIZE: 2000
-  #     SHOW_SAMPLE: 200
-  #     REQUIRE_DISPLAY_TAG: false
-  #     DATASET_DATABASE: dlpes_dwp_hmrc_main_datashare
-  #     DELETE_TABLE_PREFIX: cohort
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-
-  # delete-libra-prod:
-  #   if: github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/delete-excluded-entities.yml
-  #   with:
-  #     ENVIRONMENT: prod-ingestion
-  #     ENTITY_TYPES: "container dataset"
-  #     APPLY: true
-  #     HARD_DELETE: true
-  #     MAX_ENTITIES: 5000 
-  #     FORCE: false
-  #     BATCH_SIZE: 2000
-  #     SHOW_SAMPLE: 200
-  #     REQUIRE_DISPLAY_TAG: false
-  #     DATASET_DATABASE: libra
-  #     TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
-  #     # FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: true
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-
-  # delete-xhibit-prod:
-  #   if: github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/delete-excluded-entities.yml
-  #   with:
-  #     ENVIRONMENT: prod-ingestion
-  #     ENTITY_TYPES: "container dataset"
-  #     APPLY: true
-  #     HARD_DELETE: true
-  #     MAX_ENTITIES: 5000
-  #     FORCE: false
-  #     BATCH_SIZE: 2000
-  #     SHOW_SAMPLE: 200
-  #     REQUIRE_DISPLAY_TAG: false
-  #     DATASET_DATABASE: xhibit_preprocessed
-  #     TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  
-  # delete-common_platform_dev_sdp_v3-dev:
-  #   if: github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/delete-excluded-entities.yml
-  #   with:
-  #     ENVIRONMENT: prod-ingestion
-  #     DATAHUB_ENV: PROD
-  #     ENTITY_TYPES: "container dataset"
-  #     APPLY: true
-  #     HARD_DELETE: true
-  #     MAX_ENTITIES: 5000
-  #     FORCE: false
-  #     BATCH_SIZE: 2000
-  #     SHOW_SAMPLE: 200
-  #     REQUIRE_DISPLAY_TAG: false
-  #     DATASET_DATABASE: common_platform_dev_sdp_v3
-  #     TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
+  #     DELETE_JOB_SET: ${{ inputs.DELETE_JOB_SET }}
+  #     FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: ${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}
   #   secrets:
   #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
