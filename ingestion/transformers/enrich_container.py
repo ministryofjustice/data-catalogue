@@ -41,22 +41,22 @@ class AddTagTransformerConfig(ConfigModel):
     semantics: str = "OVERWRITE"
     tag_urns: list[str]
 
+# To be deleted once deployed to production successfully
+# def _extract_name_from_container_entity_raw(entity_raw: dict) -> str | None:
+#     aspects = entity_raw.get("aspects", {})
+#     container_props = aspects.get("containerProperties", {})
 
-def _extract_name_from_container_entity_raw(entity_raw: dict) -> str | None:
-    aspects = entity_raw.get("aspects", {})
-    container_props = aspects.get("containerProperties", {})
+#     if not isinstance(container_props, dict):
+#         return None
 
-    if not isinstance(container_props, dict):
-        return None
+#     if isinstance(container_props.get("name"), str):
+#         return container_props.get("name")
 
-    if isinstance(container_props.get("name"), str):
-        return container_props.get("name")
+#     value = container_props.get("value")
+#     if isinstance(value, dict) and isinstance(value.get("name"), str):
+#         return value.get("name")
 
-    value = container_props.get("value")
-    if isinstance(value, dict) and isinstance(value.get("name"), str):
-        return value.get("name")
-
-    return None
+#     return None
 
 
 
@@ -158,31 +158,32 @@ class AddPropertiesTransformer(ContainerTransformer):
         # Currently handles description and custom properties only
         new_description = self.config.description or ""
         new_custom_properties = self.config.properties or {}
+        
+        # To be deleted after successful deployment to production
+        # if aspect is None:
+        #     try:
+        #         entity_raw = self.ctx.graph.get_entity_raw(
+        #             entity_urn, aspects=["containerProperties"]
+        #         )
+        #     except Exception:
+        #         logging.exception(
+        #             "Failed to fetch containerProperties for urn=%s", entity_urn
+        #         )
+        #         return aspect
 
-        if aspect is None:
-            try:
-                entity_raw = self.ctx.graph.get_entity_raw(
-                    entity_urn, aspects=["containerProperties"]
-                )
-            except Exception:
-                logging.exception(
-                    "Failed to fetch containerProperties for urn=%s", entity_urn
-                )
-                return aspect
+        #     container_name = _extract_name_from_container_entity_raw(entity_raw)
+        #     if not container_name:
+        #         logging.warning(
+        #             "Could not resolve container name for urn=%s; skipping properties update",
+        #             entity_urn,
+        #         )
+        #         return aspect
 
-            container_name = _extract_name_from_container_entity_raw(entity_raw)
-            if not container_name:
-                logging.warning(
-                    "Could not resolve container name for urn=%s; skipping properties update",
-                    entity_urn,
-                )
-                return aspect
-
-            aspect = ContainerPropertiesClass(
-                name=container_name,
-                description=new_description or None,
-                customProperties=new_custom_properties,
-            )
+        #     aspect = ContainerPropertiesClass(
+        #         name=container_name,
+        #         description=new_description or None,
+        #         customProperties=new_custom_properties,
+        #     )
         
         # Default behaviour is to overwrite existing description and properties with options provided
         if self.config.semantics == "OVERWRITE":
