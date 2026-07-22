@@ -1,0 +1,262 @@
+name: Delete Excluded DataHub Entities
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: "Environment to use for secrets/vars"
+        required: true
+        type: choice
+        options:
+          - dev
+          - preprod
+          - prod
+      PLATFORM:
+        description: "Optional platform filter (e.g. dbt, glue, postgres)"
+        required: false
+        type: string
+      DATAHUB_ENV:
+        description: "Optional DataHub env filter (e.g. DEV, PROD)"
+        required: false
+        type: string
+      ENTITY_TYPES:
+        description: "Space-separated entity types (e.g. dataset container)"
+        required: false
+        default: "dataset"
+        type: string
+      APPLY:
+        description: "Apply deletion (false = dry run)"
+        required: true
+        default: false
+        type: boolean
+      HARD_DELETE:
+        description: "Hard delete entities (otherwise soft delete)"
+        required: true
+        default: false
+        type: boolean
+      MAX_ENTITIES:
+        description: "Safety cap for total matched entities"
+        required: true
+        default: 500
+        type: number
+      FORCE:
+        description: "Allow processing above MAX_ENTITIES"
+        required: true
+        default: false
+        type: boolean
+      BATCH_SIZE:
+        description: "Search batch size"
+        required: true
+        default: 2000
+        type: number
+      SHOW_SAMPLE:
+        description: "Number of sample URNs to print"
+        required: true
+        default: 25
+        type: number
+      EXTRA_PATTERNS:
+        description: "Optional extra lowercase substrings, space-separated"
+        required: false
+        type: string
+      REQUIRE_DISPLAY_TAG:
+        description: "Require dc_display_in_catalogue tag"
+        required: true
+        default: true
+        type: boolean
+      TARGET_URNS:
+        description: "Optional space-separated explicit URNs to delete"
+        required: false
+        type: string
+      DATASET_DATABASE:
+        description: "Optional dataset database name to scope deletion to"
+        required: false
+        type: string
+      KEEP_TABLE_PREFIX:
+        description: "Optional table prefix to keep within DATASET_DATABASE"
+        required: false
+        type: string
+      DELETE_TABLE_PREFIX:
+        description: "Optional table prefix to delete within DATASET_DATABASE (only tables starting with this prefix are selected)"
+        required: false
+        type: string
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion via GraphQL even when container display name cannot be resolved"
+        required: false
+        default: false
+        type: boolean
+
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        description: "Environment to use for secrets/vars"
+        required: true
+        type: string
+      PLATFORM:
+        description: "Optional platform filter (e.g. dbt, glue, postgres)"
+        required: false
+        type: string
+      DATAHUB_ENV:
+        description: "Optional DataHub env filter (e.g. DEV, PROD)"
+        required: false
+        type: string
+      ENTITY_TYPES:
+        description: "Space-separated entity types (e.g. dataset container)"
+        required: false
+        default: "dataset"
+        type: string
+      APPLY:
+        description: "Apply deletion (false = dry run)"
+        required: false
+        default: false
+        type: boolean
+      HARD_DELETE:
+        description: "Hard delete entities (otherwise soft delete)"
+        required: false
+        default: false
+        type: boolean
+      MAX_ENTITIES:
+        description: "Safety cap for total matched entities"
+        required: false
+        default: 500
+        type: number
+      FORCE:
+        description: "Allow processing above MAX_ENTITIES"
+        required: false
+        default: false
+        type: boolean
+      BATCH_SIZE:
+        description: "Search batch size"
+        required: false
+        default: 2000
+        type: number
+      SHOW_SAMPLE:
+        description: "Number of sample URNs to print"
+        required: false
+        default: 25
+        type: number
+      EXTRA_PATTERNS:
+        description: "Optional extra lowercase substrings, space-separated"
+        required: false
+        type: string
+      REQUIRE_DISPLAY_TAG:
+        description: "Require dc_display_in_catalogue tag"
+        required: false
+        default: true
+        type: boolean
+      TARGET_URNS:
+        description: "Optional space-separated explicit URNs to delete"
+        required: false
+        type: string
+      DATASET_DATABASE:
+        description: "Optional dataset database name to scope deletion to"
+        required: false
+        type: string
+      KEEP_TABLE_PREFIX:
+        description: "Optional table prefix to keep within DATASET_DATABASE"
+        required: false
+        type: string
+      DELETE_TABLE_PREFIX:
+        description: "Optional table prefix to delete within DATASET_DATABASE (only tables starting with this prefix are selected)"
+        required: false
+        type: string
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion via GraphQL even when container display name cannot be resolved"
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API key for DataHub GMS"
+        required: true
+
+jobs:
+  delete-excluded-entities:
+    name: Delete excluded entities
+    environment: ${{ inputs.ENVIRONMENT }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@6ee6290f1cbc4156c0bdd66691b2c144ef8df19a # v7.4.0
+        with:
+          version: ${{ vars.UV_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
+
+      - name: Install Project Dependencies
+        run: uv sync --locked
+
+      - name: Run excluded-entity cleanup
+        env:
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+        run: |
+          ARGS=(
+            --entity-types ${{ inputs.ENTITY_TYPES }}
+            --max-entities ${{ inputs.MAX_ENTITIES }}
+            --batch-size ${{ inputs.BATCH_SIZE }}
+            --show-sample ${{ inputs.SHOW_SAMPLE }}
+          )
+
+          if [[ -n "${{ inputs.PLATFORM }}" ]]; then
+            ARGS+=(--platform "${{ inputs.PLATFORM }}")
+          fi
+
+          if [[ -n "${{ inputs.DATAHUB_ENV }}" ]]; then
+            ARGS+=(--env "${{ inputs.DATAHUB_ENV }}")
+          fi
+
+          if [[ -n "${{ inputs.EXTRA_PATTERNS }}" ]]; then
+            ARGS+=(--extra-patterns ${{ inputs.EXTRA_PATTERNS }})
+          fi
+
+          target_urns_input='${{ inputs.TARGET_URNS }}'
+          if test -n "$target_urns_input"; then
+            for urn in $target_urns_input; do
+              ARGS+=(--target-urns "$urn")
+            done
+          fi
+
+          if [[ -n "${{ inputs.DATASET_DATABASE }}" ]]; then
+            ARGS+=(--dataset-database "${{ inputs.DATASET_DATABASE }}")
+          fi
+
+          if [[ -n "${{ inputs.KEEP_TABLE_PREFIX }}" ]]; then
+            ARGS+=(--keep-table-prefix "${{ inputs.KEEP_TABLE_PREFIX }}")
+          fi
+
+          if [[ -n "${{ inputs.DELETE_TABLE_PREFIX }}" ]]; then
+            ARGS+=(--delete-table-prefix "${{ inputs.DELETE_TABLE_PREFIX }}")
+          fi
+
+          if [[ "${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}" == "true" ]]; then
+            ARGS+=(--force-expand-container-children-without-name)
+          fi
+
+          if [[ "${{ inputs.APPLY }}" == "true" ]]; then
+            ARGS+=(--apply)
+          fi
+
+          if [[ "${{ inputs.HARD_DELETE }}" == "true" ]]; then
+            ARGS+=(--hard-delete)
+          fi
+
+          if [[ "${{ inputs.FORCE }}" == "true" ]]; then
+            ARGS+=(--force)
+          fi
+
+          if [[ "${{ inputs.REQUIRE_DISPLAY_TAG }}" == "true" ]]; then
+            ARGS+=(--require-display-tag)
+          else
+            ARGS+=(--no-require-display-tag)
+          fi
+
+          echo "Running cleanup with args: ${ARGS[*]}"
+          uv run python ingestion/delete_excluded_entities.py "${ARGS[@]}"

@@ -6,7 +6,10 @@ from typing import List, Optional
 from datahub.configuration.common import ConfigModel
 from datahub.emitter.mce_builder import Aspect
 from datahub.ingestion.api.common import PipelineContext
-from datahub.ingestion.transformer.dataset_transformer import ContainerTransformer
+from datahub.ingestion.transformer.dataset_transformer import (
+    ContainerTransformer,
+    TagTransformer,
+)
 from datahub.metadata.schema_classes import (
     OwnerClass,
     OwnershipClass, 
@@ -37,6 +40,23 @@ class AddPropertiesTransformerConfig(ConfigModel):
 class AddTagTransformerConfig(ConfigModel):
     semantics: str = "OVERWRITE"
     tag_urns: list[str]
+
+# To be deleted once deployed to production successfully
+# def _extract_name_from_container_entity_raw(entity_raw: dict) -> str | None:
+#     aspects = entity_raw.get("aspects", {})
+#     container_props = aspects.get("containerProperties", {})
+
+#     if not isinstance(container_props, dict):
+#         return None
+
+#     if isinstance(container_props.get("name"), str):
+#         return container_props.get("name")
+
+#     value = container_props.get("value")
+#     if isinstance(value, dict) and isinstance(value.get("name"), str):
+#         return value.get("name")
+
+#     return None
 
 
 
@@ -139,6 +159,32 @@ class AddPropertiesTransformer(ContainerTransformer):
         new_description = self.config.description or ""
         new_custom_properties = self.config.properties or {}
         
+        # To be deleted after successful deployment to production
+        # if aspect is None:
+        #     try:
+        #         entity_raw = self.ctx.graph.get_entity_raw(
+        #             entity_urn, aspects=["containerProperties"]
+        #         )
+        #     except Exception:
+        #         logging.exception(
+        #             "Failed to fetch containerProperties for urn=%s", entity_urn
+        #         )
+        #         return aspect
+
+        #     container_name = _extract_name_from_container_entity_raw(entity_raw)
+        #     if not container_name:
+        #         logging.warning(
+        #             "Could not resolve container name for urn=%s; skipping properties update",
+        #             entity_urn,
+        #         )
+        #         return aspect
+
+        #     aspect = ContainerPropertiesClass(
+        #         name=container_name,
+        #         description=new_description or None,
+        #         customProperties=new_custom_properties,
+        #     )
+        
         # Default behaviour is to overwrite existing description and properties with options provided
         if self.config.semantics == "OVERWRITE":
             # If we have an existing aspect, overwrite the description and custom properties
@@ -150,7 +196,7 @@ class AddPropertiesTransformer(ContainerTransformer):
                     aspect.customProperties = new_custom_properties
         return aspect
     
-class AddTagTransformer(ContainerTransformer):
+class AddTagTransformer(TagTransformer):
     """Transformer that adds configured tags to containers."""
 
     ctx: PipelineContext
@@ -165,9 +211,6 @@ class AddTagTransformer(ContainerTransformer):
     def create(cls, config_dict: dict, ctx: PipelineContext) -> "AddTagTransformer":
         config = AddTagTransformerConfig.parse_obj(config_dict)
         return cls(config, ctx)
-
-    def entity_types(self) -> List[str]:
-        return ENTITY_TYPES
     
     def aspect_name(self) -> str:
         return "globalTags"

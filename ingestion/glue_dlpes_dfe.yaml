@@ -1,0 +1,92 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: ["dlpes_dfe_datashare$"]
+    extract_owners: False
+    extract_transforms: False
+
+transformers:
+  - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
+    config:
+      data_custodian: "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
+
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Prison"
+        - "urn:li:tag:Probation"
+        - "urn:li:tag:Prisons and probation"
+        - "urn:li:tag:Employment and benefits"
+        - "urn:li:tag:Police national computer"
+
+  - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
+    config:
+      description: >-
+        The overarching aim of this share is to increase our understanding of the links between childhood characteristics, education outcomes and (re)-offending.
+
+        The MoJ DfE data share has recently been updated and now includes any one from the PNC from 2000 or later and includes offending up to May 2025 and education data up to the end of academic year 2024/25. The share is updated annually.
+
+        To enquire about access, please email datalinkingteam@justice.gov.uk
+        """
+      properties:
+        dc_readable_name: "MoJ DfE Datashare"
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
+        dc_where_to_access_dataset: Please contact the team
+        dc_access_requirements: ""
+        refresh_period: Annually
+        security_classification: Official-Sensitive
+
+  - type: "pattern_add_dataset_tags"
+    config:
+      semantics: OVERWRITE
+      replace_existing: true
+      tag_pattern:
+        rules:
+          "^urn:li:container:.*$":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dfe_datashare\\.dfe_[^,]*,[^\\)]+\\)$":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,dlpes_dfe_datashare\\.[^,]+,[^\\)]+\\)$":
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          ".*":
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+
+  - type: "simple_add_dataset_ownership"
+    config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
+      owner_urns:
+        - "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
+
+  - type: "simple_add_dataset_properties"
+    config:
+      semantics: OVERWRITE # OVERWRITE is default behaviour
+      properties:
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Annually
+        security_classification: Official-Sensitive

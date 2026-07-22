@@ -8,6 +8,15 @@ from ingestion.ingestion_utils import is_excluded_name
 
 logger = logging.getLogger(__name__)
 
+EXCLUDED_DATABASES = {"libra"}
+
+
+def is_excluded_database(database: str | None) -> bool:
+    if not database:
+        return False
+
+    return database.lower() in EXCLUDED_DATABASES
+
 
 @config_class(DBTCoreConfig)
 class CadetDBTSource(DBTCoreSource):
@@ -22,8 +31,28 @@ class CadetDBTSource(DBTCoreSource):
     def loadManifestAndCatalog(self):
         nodes, *metadata = super().loadManifestAndCatalog()
 
-        display_tag = f"{self.config.tag_prefix}dc_display_in_catalogue"
+        # Hard-exclude selected databases from CaDeT ingestion.
+        filtered_nodes = []
+        excluded_count = 0
         for node in nodes:
+            if is_excluded_database(node.schema):
+                excluded_count += 1
+                logger.info(
+                    "Excluding dbt node %s from ingestion because schema '%s' is denied",
+                    node.dbt_name,
+                    node.schema,
+                )
+                continue
+            filtered_nodes.append(node)
+
+        if excluded_count:
+            logger.info(
+                "Excluded %d dbt nodes from ingestion by database denylist",
+                excluded_count,
+            )
+
+        display_tag = f"{self.config.tag_prefix}dc_display_in_catalogue"
+        for node in filtered_nodes:
             excluded_values = {
                 "dbt_name": node.dbt_name,
                 "database": node.database,
@@ -45,4 +74,4 @@ class CadetDBTSource(DBTCoreSource):
                         )
                     break
 
-        return (nodes, *metadata)
+        return (filtered_nodes, *metadata)

@@ -16,6 +16,11 @@ on:
         description: "Environment to use for secrets"
         required: true
         type: string
+      GLUE_CONFIGS:
+        description: "Space-separated glue config suffixes to ingest (without glue_ prefix), e.g. 'dlpes_dwp_hmrc_main dlpes_dfe'"
+        required: false
+        type: string
+        default: "contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes_dfe dlpes_dwp_mini dlpes_dwp_hmrc_main dlpes_hmrc_mini"
     secrets:
       DATAHUB_GMS_TOKEN:
         description: "API Key for datahub GMS"
@@ -67,6 +72,25 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ inputs.ECR_REGION }}
 
+      - name: Detect latest DWP mini release number
+        run: |
+          DLPES_DWP_MINI_LATEST_RELEASE=$(aws glue get-tables \
+            --database-name dlpes_dwp_mini_datashare \
+            --query 'TableList[].Name' \
+            --output text \
+            | tr '\t' '\n' \
+            | sed -nE 's/^dwp_mini_.*_lr([0-9]+)_[bcd]$/\1/p' \
+            | sort -n \
+            | tail -1)
+
+          if [[ -z "${DLPES_DWP_MINI_LATEST_RELEASE}" ]]; then
+            echo "Failed to detect latest DWP mini release from Glue tables" >&2
+            exit 1
+          fi
+
+          echo "Detected DLPES_DWP_MINI_LATEST_RELEASE=${DLPES_DWP_MINI_LATEST_RELEASE}"
+          echo "DLPES_DWP_MINI_LATEST_RELEASE=${DLPES_DWP_MINI_LATEST_RELEASE}" >> "$GITHUB_ENV"
+
       - name: Inject owners to glue ingestion config
         env:
           SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
@@ -77,9 +101,14 @@ jobs:
           FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
           PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
           DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
+          GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
         run: |
           mkdir -p ingestion/processed
-          for config in contracts courts_criminal courts_family fines just_link sop xhibit_preprocessed common_platform dlpes; do
+          for config in $GLUE_CONFIGS; do
+            if [[ ! -f "ingestion/glue_${config}.yaml" ]]; then
+              echo "Missing ingestion/glue_${config}.yaml" >&2
+              exit 1
+            fi
             envsubst < ingestion/glue_${config}.yaml > ingestion/processed/glue_${config}.yaml
           done
 
@@ -88,9 +117,15 @@ jobs:
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
           DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
           DATAHUB_TELEMETRY_ENABLED: false
+          GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
         run: |
-          for ingestion in ingestion/processed/glue_*.yaml; do
+          for config in $GLUE_CONFIGS; do
+            ingestion="ingestion/processed/glue_${config}.yaml"
+            echo "::group::Ingesting ${ingestion}"
+            date -u +"Started at %Y-%m-%dT%H:%M:%SZ"
             time uv run datahub ingest -c "$ingestion"
+            date -u +"Finished at %Y-%m-%dT%H:%M:%SZ"
+            echo "::endgroup::"
           done
 
       - name: Notify on failure

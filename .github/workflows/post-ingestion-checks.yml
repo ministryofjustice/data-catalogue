@@ -6,10 +6,10 @@ permissions:
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Ingest metadata to prod"] # Name of the first workflow
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["Ingest metadata to prod"] # Name of the first workflow
+  #   types:
+  #     - completed
 
 jobs:
   wait-for-reindex:

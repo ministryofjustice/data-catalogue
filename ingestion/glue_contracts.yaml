@@ -27,11 +27,17 @@ transformers:
         refresh_period: Every day
         security_classification: Official-Sensitive
 
-  - type: "simple_add_dataset_tags"
+  - type: "pattern_add_dataset_tags"
     config:
-      tag_urns:
-        - "urn:li:tag:dc_display_in_catalogue"
-        - "urn:li:tag:Corporate operations"
+      semantics: OVERWRITE
+      replace_existing: true
+      tag_pattern:
+        rules:
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,([^,]*[^a-z0-9])?(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example)([^a-z0-9][^,]*)?,[^\\)]+\\)$":
+            - "urn:li:tag:Corporate operations"
+          ".*":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Corporate operations"
 
   - type: "simple_add_dataset_ownership"
     config:
