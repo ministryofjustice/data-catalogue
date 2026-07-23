@@ -474,6 +474,13 @@ global:
     port: "8080"
     useSSL: "false"
 
+    # Pin the search engine explicitly. AWS OpenSearch reports an ES-compatible
+    # version (7.10.2) with no distribution marker, so AUTO_DETECT misidentifies
+    # it as ELASTICSEARCH_7 and uses the unsupported ILM API (PUT /_ilm/... -> 401),
+    # which fails the system-update job. Force OpenSearch 2.x and disable detection.
+    engineType: "OPENSEARCH_2"
+    autoDetect: "false"
+
     metadataChangeLog:
       hooks:
         siblings:
