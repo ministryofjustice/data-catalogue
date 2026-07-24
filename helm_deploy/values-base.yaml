@@ -31,8 +31,8 @@ datahub-gms:
     failureThreshold: 8
   theme_v2:
     enabled: true
-    default: false
-    toggeable: true
+    default: true
+    toggleable: false
   service:
     type: ClusterIP
   serviceMonitor:
