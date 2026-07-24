@@ -70,6 +70,9 @@ def adj_example_1(bucket: str, key: str, raw_data: pd.DataFrame) -> pd.DataFrame
         subset=["Establishment", "Religion", "Offence"], sort=False
     ).reset_index()
     transformed_data.columns = ["Establishment", "Religion", "Offence", "Count"]
+    transformed_data = transformed_data.sort_values(
+        ["Establishment", "Religion", "Offence"]
+    ).reset_index(drop=True)
 
     logging.info("Data is transformed")
     return transformed_data
@@ -82,6 +85,9 @@ def adj_example_2(bucket: str, key: str, raw_data: pd.DataFrame) -> pd.DataFrame
         subset=["Establishment"], sort=False
     ).reset_index()
     transformed_data.columns = ["Establishment", "Count"]
+    transformed_data = transformed_data.sort_values(
+        ["Establishment"]
+    ).reset_index(drop=True)
 
     logging.info("Data is transformed")
     return transformed_data
@@ -95,6 +101,9 @@ def punishments_example_1(
         subset=["Establishment"], sort=False
     ).reset_index()
     transformed_data.columns = ["Establishment", "Count"]
+    transformed_data = transformed_data.sort_values(
+        ["Establishment"]
+    ).reset_index(drop=True)
 
     logging.info("Data is transformed")
     return transformed_data
