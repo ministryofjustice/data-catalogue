@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/deploy-workflow.yml
     with:
       env: preprod
-      datahub_helm_version: "0.11.0"
+      datahub_helm_version: "1.0.3"
       datahub_prereqs_helm_version: "0.2.1"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
@@ -37,7 +37,7 @@ jobs:
     needs: [deploy-preprod]
     with:
       env: prod
-      datahub_helm_version: "0.11.0"
+      datahub_helm_version: "1.0.3"
       datahub_prereqs_helm_version: "0.2.1"
     secrets:
       kube_namespace: "${{ secrets.KUBE_NAMESPACE }}"
