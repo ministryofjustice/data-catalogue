@@ -1,4 +1,4 @@
-pipeline_name: ap_cadet
+pipeline_name: ap_cadet_2
 source:
   type: ingestion.cadet_dbt_source.source.CadetDBTSource
   config:
@@ -45,7 +45,7 @@ source:
       sources: "YES"
       test_definitions: "YES"
     stateful_ingestion:
-      enabled: true
+      enabled: false
       remove_stale_metadata: false
 
     # SQLglot sometimes raises RecursionError with valid SQL.
