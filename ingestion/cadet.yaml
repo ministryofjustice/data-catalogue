@@ -46,7 +46,7 @@ source:
       test_definitions: "YES"
     stateful_ingestion:
       enabled: true
-      remove_stale_metadata: true
+      remove_stale_metadata: false
 
     # SQLglot sometimes raises RecursionError with valid SQL.
     # See https://github.com/ministryofjustice/find-moj-data/issues/477
