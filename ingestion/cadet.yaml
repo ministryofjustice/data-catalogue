@@ -37,6 +37,9 @@ source:
 
         # This table has a huge number of columns, which breaks things.
         - "source.mojap_derived_tables.data_eng_uploader_prod_calc_release_dates.survey_data"
+
+        # 403 on schemaMetadata read for this database; skip until permissions are resolved.
+        - ".*statistics_forward_look_database.*"
     entities_enabled:
       test_results: "YES"
       seeds: "YES"
