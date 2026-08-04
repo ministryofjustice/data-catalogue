@@ -3,6 +3,7 @@ import logging
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
 from datahub.ingestion.source.dbt.dbt_core import DBTCoreConfig, DBTCoreSource
+from requests.exceptions import HTTPError
 
 from ingestion.ingestion_utils import is_excluded_name
 
@@ -23,12 +24,36 @@ class CadetDBTSource(DBTCoreSource):
     def __init__(self, config: DBTCoreConfig, ctx: PipelineContext):
         super().__init__(config, ctx)
 
+    @staticmethod
+    def _wrap_graph_get_aspect(graph):
+        original_get_aspect = graph.get_aspect
+
+        def safe_get_aspect(urn, aspect_type, *args, **kwargs):
+            try:
+                return original_get_aspect(urn, aspect_type, *args, **kwargs)
+            except HTTPError as exc:
+                response = getattr(exc, "response", None)
+                status_code = getattr(response, "status_code", None)
+                if status_code == 403 and getattr(aspect_type, "__name__", "") == "SchemaMetadata":
+                    logger.warning(
+                        "Skipping forbidden schemaMetadata lookup for %s; falling back to dbt catalog schema",
+                        urn,
+                    )
+                    return None
+                raise
+
+        graph.get_aspect = safe_get_aspect
+
     @classmethod
     def create(cls, config_dict, ctx):
         config = DBTCoreConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
     def loadManifestAndCatalog(self):
+        graph = getattr(self.ctx, "graph", None)
+        if graph is not None:
+            self._wrap_graph_get_aspect(graph)
+
         nodes, *metadata = super().loadManifestAndCatalog()
 
         # Hard-exclude selected databases from CaDeT ingestion.
