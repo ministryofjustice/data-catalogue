@@ -32,25 +32,25 @@ on:
           - all
 
 jobs:
-  # ingest-ownership-types-dev:
-  #   uses: ./.github/workflows/ingest-yaml.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-ownership-types-dev:
+    uses: ./.github/workflows/ingest-yaml.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-cadet-dev:
-  #   uses: ./.github/workflows/ingest-cadet-metadata.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: dev
-  #     CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
-  #     S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-cadet-dev:
+    uses: ./.github/workflows/ingest-cadet-metadata.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: dev
+      CADET_INGESTION_RECIPE_PATH: ingestion/cadet.yaml
+      S3_TARGET_LOCATION: s3://mojap-derived-tables/prod/run_artefacts/deploy-docs/latest/target
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
   ingest-em-cadet-dev:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
@@ -80,62 +80,62 @@ jobs:
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.DPR_CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-justice-data-dev:
-  #   uses: ./.github/workflows/ingest-justice-data.yml
-  #   with:
-  #     ECR_REGION: eu-west-1
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-justice-data-dev:
+    uses: ./.github/workflows/ingest-justice-data.yml
+    with:
+      ECR_REGION: eu-west-1
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-glue-data-dev:
-  #   uses: ./.github/workflows/ingest-glue-data.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #     GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  #     SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
-  #     CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
-  #     COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
-  #     COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
-  #     JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
-  #     FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
-  #     PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
-  #     DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
+  ingest-glue-data-dev:
+    uses: ./.github/workflows/ingest-glue-data.yml
+    with:
+      ENVIRONMENT: dev
+      GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      SOP_TECHNICAL_CONTACT: ${{ secrets.SOP_TECHNICAL_CONTACT }}
+      CONTRACTS_TECHNICAL_CONTACT: ${{ secrets.CONTRACTS_TECHNICAL_CONTACT }}
+      COURTS_CRIMINAL_TECHNICAL_CONTACT: ${{ secrets.COURTS_CRIMINAL_TECHNICAL_CONTACT }}
+      COURTS_FAMILY_TECHNICAL_CONTACT: ${{ secrets.COURTS_FAMILY_TECHNICAL_CONTACT }}
+      JUST_LINK_TECHNICAL_CONTACT: ${{ secrets.JUST_LINK_TECHNICAL_CONTACT }}
+      FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
+      PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
+      DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
 
-  # ingest-moj-publications-dev:
-  #   uses: ./.github/workflows/ingest-moj-publications.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  ingest-moj-publications-dev:
+    uses: ./.github/workflows/ingest-moj-publications.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
   
-  # ingest-postgres-cdrs:
-  #   uses: ./.github/workflows/ingest-postgres.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #     INGESTION_NAME: hmpps_calculate_release_dates
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
-  #     SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
-  #     HOST_PORT: ${{ secrets.POSTGRES_HOST_PORT_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     DATABASE: ${{ secrets.POSTGRES_DATABASE_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     USER: ${{ secrets.POSTGRES_USER_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
-  #     PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
+  ingest-postgres-cdrs:
+    uses: ./.github/workflows/ingest-postgres.yml
+    with:
+      ENVIRONMENT: dev
+      INGESTION_NAME: hmpps_calculate_release_dates
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+      SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+      HOST_PORT: ${{ secrets.POSTGRES_HOST_PORT_CALCULATE_RELEASE_DATES_PREPROD }}
+      DATABASE: ${{ secrets.POSTGRES_DATABASE_CALCULATE_RELEASE_DATES_PREPROD }}
+      USER: ${{ secrets.POSTGRES_USER_CALCULATE_RELEASE_DATES_PREPROD }}
+      PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CALCULATE_RELEASE_DATES_PREPROD }}
+      PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
 
     
-  # run-datahub-cleanup:
-  #   uses: ./.github/workflows/datahub-cleanup-ingestion.yml
-  #   with:
-  #     ENVIRONMENT: dev
-  #   secrets:
-  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+  run-datahub-cleanup:
+    uses: ./.github/workflows/datahub-cleanup-ingestion.yml
+    with:
+      ENVIRONMENT: dev
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
 
   # run-delete-jobs-dev:
   #   if: github.event_name == 'workflow_dispatch' && inputs.DELETE_JOB_SET != 'none'
