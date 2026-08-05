@@ -3,6 +3,30 @@ on:
   schedule:
     - cron: "30 6 * * 1-5" # 6:30am UTC Monday to Friday
   workflow_dispatch:
+    inputs:
+      GLUE_CONFIGS:
+        description: "Space-separated glue config suffixes to ingest (without glue_ prefix)."
+        required: false
+        default: "contracts courts_criminal courts_family fines just_link sop dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini dlpes_dwp_hmrc_main"
+        type: string
+      DELETE_JOB_SET:
+        description: "Optional delete preset to run after ingestion"
+        required: false
+        default: none
+        type: choice
+        options:
+          - none
+          - dfe
+          - cohort
+          - libra
+          - xhibit
+          - common_platform
+          - all
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion for libra delete when container display name cannot be resolved"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   ingest-ownership-types-prod:
@@ -12,6 +36,7 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  
   ingest-cadet-prod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
@@ -23,6 +48,7 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  
   ingest-em-cadet-prod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
@@ -36,6 +62,7 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.EM_CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  
   ingest-dpr-cadet-prod:
     uses: ./.github/workflows/ingest-cadet-metadata.yml
     with:
@@ -49,6 +76,7 @@ jobs:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       CADET_METADATA_ROLE_TO_ASSUME: ${{ secrets.DPR_CADET_METADATA_ROLE_TO_ASSUME }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  
   ingest-justice-data-prod:
     uses: ./.github/workflows/ingest-justice-data.yml
     with:
@@ -57,10 +85,12 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  
   ingest-glue-data-prod:
     uses: ./.github/workflows/ingest-glue-data.yml
     with:
       ENVIRONMENT: prod-ingestion
+      GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}
@@ -73,6 +103,7 @@ jobs:
       FINES_TECHNICAL_CONTACT: ${{ secrets.FINES_TECHNICAL_CONTACT }}
       PLACEHOLDER_TECHNICAL_CONTACT: ${{ secrets.PLACEHOLDER_TECHNICAL_CONTACT }}
       DLPES_DWP_HMRC_DATASHARE_CONTACT: ${{ secrets.DLPES_DWP_HMRC_DATASHARE_CONTACT }}
+  
   ingest-moj-publications-prod:
     uses: ./.github/workflows/ingest-moj-publications.yml
     with:
@@ -80,6 +111,7 @@ jobs:
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       SLACK_ALERT_WEBHOOK: ${{ secrets.SLACK_ALERT_WEBHOOK }}
+  
   ingest-postgres-cdrs:
     uses: ./.github/workflows/ingest-postgres.yml
     with:
@@ -100,3 +132,13 @@ jobs:
       ENVIRONMENT: prod-ingestion
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+
+  # run-delete-jobs-prod:
+  #   if: github.event_name == 'workflow_dispatch' && inputs.DELETE_JOB_SET != 'none'
+  #   uses: ./.github/workflows/ingest-delete-jobs.yml
+  #   with:
+  #     ENVIRONMENT: prod-ingestion
+  #     DELETE_JOB_SET: ${{ inputs.DELETE_JOB_SET }}
+  #     FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: ${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}
+  #   secrets:
+  #     DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}

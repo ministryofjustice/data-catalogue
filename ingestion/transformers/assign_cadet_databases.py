@@ -28,6 +28,12 @@ from ingestion.utils import report_time
 
 logging.basicConfig(level=logging.DEBUG)
 
+EXCLUDED_DATABASES = {"libra"}
+
+
+def is_excluded_database(database: str) -> bool:
+    return database.lower() in EXCLUDED_DATABASES
+
 
 class AssignCadetDatabasesConfig(ConfigModel):
     # dataset_urn -> data product urn
@@ -130,6 +136,13 @@ class AssignCadetDatabases(DatasetTransformer, metaclass=ABCMeta):
                     database, table_name = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
+
+                    if is_excluded_database(database):
+                        logging.info(
+                            "Skipping excluded database '%s' for dataset-to-container mapping",
+                            database,
+                        )
+                        continue
 
                     dataset_urn = mce_builder.make_dataset_urn_with_platform_instance(
                         name=f"{database}.{table_name}",
