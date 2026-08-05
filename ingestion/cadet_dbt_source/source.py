@@ -61,7 +61,7 @@ class CadetDBTSource(DBTCoreSource):
 
         normalised_count = 0
         for node in filtered_nodes:
-            for column in node.columns or []:
+            for column in getattr(node, "columns", None) or []:
                 normalised_type = normalise_column_type(column.data_type)
                 if normalised_type != column.data_type:
                     logger.info(
