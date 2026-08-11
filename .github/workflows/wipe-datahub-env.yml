@@ -1,0 +1,108 @@
+name: Wipe DataHub Environment
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: "GitHub Environment to use for secrets/vars"
+        required: true
+        type: choice
+        options:
+          - dev
+      DATAHUB_ENV:
+        description: "DataHub env filter"
+        required: true
+        default: DEV
+        type: string
+      PLATFORM:
+        description: "Optional platform filter (blank for all)"
+        required: false
+        default: ""
+        type: string
+      APPLY:
+        description: "Apply deletion (false = dry run)"
+        required: true
+        default: false
+        type: boolean
+      HARD_DELETE:
+        description: "Hard delete entities"
+        required: true
+        default: true
+        type: boolean
+      MAX_ENTITIES:
+        description: "Safety cap"
+        required: true
+        default: 50000
+        type: number
+      FORCE:
+        description: "Allow above MAX_ENTITIES"
+        required: true
+        default: false
+        type: boolean
+      CONFIRM_TEXT:
+        description: "Type exactly WIPE_DATAHUB to proceed with APPLY=true"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  wipe-datahub-env:
+    name: Wipe DataHub env slice
+    environment: ${{ inputs.ENVIRONMENT }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install UV
+        id: setup-uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          version: ${{ vars.UV_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
+
+      - name: Install Project Dependencies
+        run: uv sync --locked
+
+      - name: Guardrail confirmation
+        if: ${{ inputs.APPLY }}
+        run: |
+          if [[ "${{ inputs.CONFIRM_TEXT }}" != "WIPE_DATAHUB" ]]; then
+            echo "APPLY=true requires CONFIRM_TEXT=WIPE_DATAHUB" >&2
+            exit 1
+          fi
+
+      - name: Run DataHub env wipe
+        env:
+          DATAHUB_GMS_URL: ${{ vars.DATAHUB_GMS_URL }}
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+        run: |
+          ARGS=(
+            --env "${{ inputs.DATAHUB_ENV }}"
+            --batch-size 2000
+            --max-entities "${{ inputs.MAX_ENTITIES }}"
+            --show-sample 50
+          )
+
+          if [[ -n "${{ inputs.PLATFORM }}" ]]; then
+            ARGS+=(--platform "${{ inputs.PLATFORM }}")
+          fi
+
+          if [[ "${{ inputs.FORCE }}" == "true" ]]; then
+            ARGS+=(--force)
+          fi
+
+          if [[ "${{ inputs.HARD_DELETE }}" == "true" ]]; then
+            ARGS+=(--hard-delete)
+          fi
+
+          if [[ "${{ inputs.APPLY }}" == "true" ]]; then
+            ARGS+=(--apply)
+          fi
+
+          uv run python ingestion/wipe_datahub_env.py "${ARGS[@]}"
