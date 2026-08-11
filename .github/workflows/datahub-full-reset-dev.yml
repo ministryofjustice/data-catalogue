@@ -18,6 +18,16 @@ on:
         required: true
         default: "1.0.3"
         type: string
+      RESET_KAFKA:
+        description: "Also reset DataHub Kafka topics and consumer groups"
+        required: true
+        default: false
+        type: boolean
+      KAFKA_BOOTSTRAP_SERVER:
+        description: "Kafka bootstrap server for DataHub topics"
+        required: true
+        default: "prerequisites-kafka:9092"
+        type: string
       APPLY:
         description: "Apply reset (false = dry run)"
         required: true
@@ -110,6 +120,50 @@ jobs:
             --no-align \
             --command "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';"
 
+      - name: Kafka reset preflight
+        if: ${{ inputs.RESET_KAFKA }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          KAFKA_BOOTSTRAP_SERVER: ${{ inputs.KAFKA_BOOTSTRAP_SERVER }}
+        run: |
+          set -euo pipefail
+
+          KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=prerequisites,app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          if [[ -z "${KAFKA_POD}" ]]; then
+            KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          fi
+
+          if [[ -z "${KAFKA_POD}" ]]; then
+            echo "No Kafka broker pod found in namespace ${KUBE_NAMESPACE}." >&2
+            exit 1
+          fi
+
+          echo "Kafka broker pod: ${KAFKA_POD}"
+          echo "Kafka bootstrap server: ${KAFKA_BOOTSTRAP_SERVER}"
+
+          mapfile -t MATCHING_TOPICS < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(MetadataChangeEvent_v4|FailedMetadataChangeEvent_v4|MetadataAuditEvent_v4|DataHubUsageEvent_v1|MetadataChangeProposal_v1|FailedMetadataChangeProposal_v1|MetadataChangeLog_Versioned_v1|MetadataChangeLog_Timeseries_v1|PlatformEvent_v1|DataHubUpgradeHistory_v1|datahub\.metadata_aspect_v2)$' || true
+          )
+
+          echo "Matching DataHub topics: ${#MATCHING_TOPICS[@]}"
+          for topic_name in "${MATCHING_TOPICS[@]}"; do
+            echo "  ${topic_name}"
+          done
+
+          mapfile -t MATCHING_GROUPS < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-consumer-groups.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(datahub_doc_propagation_action|ingestion_executor|datahub_slack_action|datahub_teams_action|datahub-usage-event-consumer-job-client|generic-mae-consumer-job-client|generic-platform-event-job-client|mce-consumer-job-client|generic-mce-consumer-job-client)$' || true
+          )
+
+          echo "Matching DataHub consumer groups: ${#MATCHING_GROUPS[@]}"
+          for group_name in "${MATCHING_GROUPS[@]}"; do
+            echo "  ${group_name}"
+          done
+
       - name: Stop DataHub workloads
         if: ${{ inputs.APPLY }}
         shell: bash
@@ -157,6 +211,51 @@ jobs:
             --username "${POSTGRES_USERNAME}" \
             --dbname "${POSTGRES_DB_NAME}" \
             --command "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO ${POSTGRES_USERNAME}; GRANT ALL ON SCHEMA public TO public;"
+
+      - name: Reset DataHub Kafka topics and consumer groups
+        if: ${{ inputs.APPLY && inputs.RESET_KAFKA }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          KAFKA_BOOTSTRAP_SERVER: ${{ inputs.KAFKA_BOOTSTRAP_SERVER }}
+        run: |
+          set -euo pipefail
+
+          KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=prerequisites,app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          if [[ -z "${KAFKA_POD}" ]]; then
+            KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          fi
+
+          if [[ -z "${KAFKA_POD}" ]]; then
+            echo "No Kafka broker pod found in namespace ${KUBE_NAMESPACE}." >&2
+            exit 1
+          fi
+
+          echo "Resetting Kafka state via pod ${KAFKA_POD}"
+
+          mapfile -t TOPICS_TO_DELETE < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(MetadataChangeEvent_v4|FailedMetadataChangeEvent_v4|MetadataAuditEvent_v4|DataHubUsageEvent_v1|MetadataChangeProposal_v1|FailedMetadataChangeProposal_v1|MetadataChangeLog_Versioned_v1|MetadataChangeLog_Timeseries_v1|PlatformEvent_v1|DataHubUpgradeHistory_v1|datahub\.metadata_aspect_v2)$' || true
+          )
+
+          for topic_name in "${TOPICS_TO_DELETE[@]}"; do
+            echo "Deleting topic ${topic_name}"
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --delete --topic '${topic_name}'" || true
+          done
+
+          mapfile -t GROUPS_TO_DELETE < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-consumer-groups.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(datahub_doc_propagation_action|ingestion_executor|datahub_slack_action|datahub_teams_action|datahub-usage-event-consumer-job-client|generic-mae-consumer-job-client|generic-platform-event-job-client|mce-consumer-job-client|generic-mce-consumer-job-client)$' || true
+          )
+
+          for group_name in "${GROUPS_TO_DELETE[@]}"; do
+            echo "Deleting consumer group ${group_name}"
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-consumer-groups.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --delete --group '${group_name}'" || true
+          done
 
       - name: Add helm repo
         if: ${{ inputs.APPLY }}
