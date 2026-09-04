@@ -11,11 +11,6 @@ on:
           - dev
           - preprod
           - prod
-      DATAHUB_HELM_VERSION:
-        description: "DataHub helm chart version"
-        required: true
-        default: "1.0.3"
-        type: string
       BATCH_SIZE:
         description: "Restore-indices batch size"
         required: true
@@ -51,8 +46,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    env:
-      RELEASE_NAME: datahub
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
@@ -72,38 +65,26 @@ jobs:
           kubectl config set-context "${KUBE_CLUSTER}" --cluster="${KUBE_CLUSTER}" --user=deploy-user --namespace="${KUBE_NAMESPACE}"
           kubectl config use-context "${KUBE_CLUSTER}"
 
-      - name: Add helm repo
-        shell: bash
-        run: helm repo add datahub https://helm.datahubproject.io/
-
-      - name: Update helm repo
-        shell: bash
-        run: helm repo update datahub
-
-      - name: Apply restore-indices helm values
+      - name: Build restore-indices container args
+        id: args
         shell: bash
         env:
-          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-          CHART_VERSION: ${{ inputs.DATAHUB_HELM_VERSION }}
           BATCH_SIZE: ${{ inputs.BATCH_SIZE }}
           BATCH_DELAY_MS: ${{ inputs.BATCH_DELAY_MS }}
           NUM_THREADS: ${{ inputs.NUM_THREADS }}
           URN_BASED_PAGINATION: ${{ inputs.URN_BASED_PAGINATION }}
           CLEAN: ${{ inputs.CLEAN }}
-        # The CronJob template reads its args from
-        # datahubUpgrade.restoreIndices.image.args, a plain string list (not
-        # the dict-shaped datahubUpgrade.restoreIndices.args a previous
-        # version of this step was setting - those keys were never read by
-        # the template, so BATCH_SIZE/BATCH_DELAY_MS/NUM_THREADS/
-        # URN_BASED_PAGINATION never actually took effect). Rebuilding the
-        # whole list here and passing it with --set-json is what the
-        # template actually consumes.
+        # Full arg list for the `datahub-upgrade` container, rebuilt from the
+        # workflow inputs (the CronJob's baked-in
+        # datahubUpgrade.restoreIndices.image.args from values-base.yaml is
+        # replaced wholesale on the one-off Job below, not merged).
         #
-        # "clean" is deliberately left out of the base chart args (see
-        # values-base.yaml) since it wipes every search/graph index before
-        # rebuilding - appended here only when CLEAN=true is explicitly
-        # requested.
+        # "clean" is appended only when CLEAN=true is explicitly requested -
+        # it truncates every search/graph index to zero before rebuilding
+        # from Postgres (full search outage until it finishes) rather than
+        # filling gaps on top of the existing indices.
         run: |
+          set -euo pipefail
           ARGS=$(jq -nc \
             --arg batchSize "$BATCH_SIZE" \
             --arg batchDelayMs "$BATCH_DELAY_MS" \
@@ -116,58 +97,87 @@ jobs:
               "-a", ("urnBasedPagination=" + $urnBasedPagination),
               "-a", ("numThreads=" + $numThreads)]
              + (if $clean then ["-a", "clean"] else [] end)')
-
-          helm upgrade \
-            --install ${RELEASE_NAME} datahub/datahub \
-            --version "${CHART_VERSION}" \
-            --namespace "${KUBE_NAMESPACE}" \
-            --reuse-values \
-            --set-json datahubUpgrade.restoreIndices.image.args="${ARGS}"
-
-      - name: re-apply GMS v1.6.0 workarounds
-        shell: bash
-        env:
-          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-        # The helm upgrade above reconciles the whole datahub release,
-        # including GMS's Deployment - since the v1.6.0 topic-split/
-        # max-poll-records fix (see deploy-workflow.yml) is applied via
-        # `kubectl set env` rather than a Helm value, that upgrade silently
-        # wipes both settings back to the chart's defaults. A GMS pod already
-        # running keeps working on its old in-memory config until something
-        # next recreates it, so this can sit unnoticed until a later restart
-        # (rollout, node move, OOM, ...) exposes it - as happened during this
-        # step's own absence, when a routine restart rolled in the reverted
-        # spec and reintroduced the dual-topic crash. Re-applying here keeps
-        # this workflow's own helm upgrade from ever leaving that regression
-        # latent. Remove once DataHub ships fixes upstream for both issues
-        # (see deploy-workflow.yml for the full explanation of each).
-        run: |
-          kubectl set env deployment/datahub-datahub-gms -n ${KUBE_NAMESPACE} \
-            METADATA_CHANGE_LOG_TIMESERIES_TOPIC_NAME=zz_disabled_timeseries_mae_split_workaround \
-            SPRING_KAFKA_PROPERTIES_MAX_POLL_RECORDS=25
+          echo "args_json=${ARGS}" >> "$GITHUB_OUTPUT"
+          echo "Restore-indices container args: ${ARGS}"
 
       - name: Trigger one-off restore-indices job from cronjob
         shell: bash
         env:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          ARGS_JSON: ${{ steps.args.outputs.args_json }}
+        # This used to `helm upgrade --install` the whole datahub release
+        # just to bake the args above into the restore-indices CronJob, then
+        # spawn a Job from it. That upgrade re-ran DataHub's pre/post-upgrade
+        # hook jobs (elasticsearch-setup, system-update, nocode migration)
+        # and waited on them with Helm's 5-minute default timeout, which
+        # reliably times out on prod ("post-upgrade hooks failed: timed out
+        # waiting for the condition"). A timed-out upgrade left the release
+        # half-reconciled and, because the failure skipped the rest of this
+        # workflow, also left the GMS v1.6.0 `kubectl set env` workarounds
+        # (owned by deploy-workflow.yml) stripped back to chart defaults -
+        # a latent dual-topic crash waiting for the next GMS restart.
+        #
+        # The helm upgrade was only ever a vehicle for setting CronJob args,
+        # so we now skip Helm entirely: render the Job straight from the
+        # CronJob's jobTemplate and override just the restore-indices
+        # container's args. Nothing else in the release is touched.
         run: |
-          CRONJOB_NAME=$(kubectl get cronjobs -n "${KUBE_NAMESPACE}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep 'restore-indices' | head -1)
+          set -euo pipefail
+
+          CRONJOB_NAME=$(kubectl get cronjobs -n "${KUBE_NAMESPACE}" \
+            -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
+            | grep 'restore-indices' | head -1)
           if [[ -z "${CRONJOB_NAME}" ]]; then
             echo "No restore-indices cronjob found in namespace ${KUBE_NAMESPACE}." >&2
             exit 1
           fi
+          echo "Using cronjob: ${CRONJOB_NAME}"
 
           JOB_NAME="restore-indices-manual-$(date +%s)"
-          kubectl create job --from=cronjob/${CRONJOB_NAME} "${JOB_NAME}" -n "${KUBE_NAMESPACE}"
+
+          kubectl create job --from=cronjob/"${CRONJOB_NAME}" "${JOB_NAME}" \
+            -n "${KUBE_NAMESPACE}" --dry-run=client -o json \
+            | jq --argjson args "${ARGS_JSON}" \
+                '.spec.template.spec.containers[0].args = $args' \
+            | kubectl apply -n "${KUBE_NAMESPACE}" -f -
+
           echo "JOB_NAME=${JOB_NAME}" >> "$GITHUB_ENV"
+
+          echo "Effective container args on ${JOB_NAME}:"
+          kubectl get job "${JOB_NAME}" -n "${KUBE_NAMESPACE}" \
+            -o jsonpath='{.spec.template.spec.containers[0].args}'
+          echo
 
       - name: Wait for restore-indices job completion
         shell: bash
         env:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           JOB_NAME: ${{ env.JOB_NAME }}
+        # Poll for either terminal condition rather than `kubectl wait
+        # --for=condition=complete`, which cannot also detect a failed Job
+        # and would just burn the full timeout on failure.
         run: |
-          kubectl wait --for=condition=complete --timeout=2h job/${JOB_NAME} -n "${KUBE_NAMESPACE}"
+          set -euo pipefail
+          deadline=$(( $(date +%s) + 7200 ))
+          while true; do
+            complete=$(kubectl get job "${JOB_NAME}" -n "${KUBE_NAMESPACE}" \
+              -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null || true)
+            failed=$(kubectl get job "${JOB_NAME}" -n "${KUBE_NAMESPACE}" \
+              -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}' 2>/dev/null || true)
+            if [[ "${complete}" == "True" ]]; then
+              echo "restore-indices job completed."
+              break
+            fi
+            if [[ "${failed}" == "True" ]]; then
+              echo "restore-indices job failed." >&2
+              exit 1
+            fi
+            if (( $(date +%s) > deadline )); then
+              echo "Timed out waiting for restore-indices job after 2h." >&2
+              exit 1
+            fi
+            sleep 20
+          done
 
       - name: Print restore-indices job logs
         if: always()
@@ -176,7 +186,9 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           JOB_NAME: ${{ env.JOB_NAME }}
         run: |
-          POD_NAME=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l job-name="${JOB_NAME}" -o jsonpath='{.items[0].metadata.name}')
-          if [[ -n "${POD_NAME}" ]]; then
-            kubectl logs "${POD_NAME}" -n "${KUBE_NAMESPACE}" --all-containers=true
+          if [[ -z "${JOB_NAME:-}" ]]; then
+            echo "No job was created; nothing to log."
+            exit 0
           fi
+          kubectl logs -n "${KUBE_NAMESPACE}" "job/${JOB_NAME}" \
+            --all-containers=true --tail=-1 --prefix=true || true
