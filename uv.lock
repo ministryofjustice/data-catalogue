@@ -288,7 +288,7 @@ name = "cffi"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycparser", marker = "implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'" },
+    { name = "pycparser", marker = "implementation_name != 'PyPy'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/eb/56/b1ba7935a17738ae8453301356628e8147c79dbb825bcbc73dc7401f9846/cffi-2.0.0.tar.gz", hash = "sha256:44d1b5909021139fe36001ae048dbdde8214afa20200eda0f64c068cac5d5529", size = 523588, upload-time = "2025-09-08T23:24:04.541Z" }
 wheels = [
@@ -504,7 +504,7 @@ dev = [
 requires-dist = [
     { name = "acryl-datahub", extras = ["dbt", "glue", "postgres"], specifier = "==1.6.0" },
     { name = "boto3", specifier = ">=1.43.55,<2" },
-    { name = "botocore", specifier = ">=1.43.36,<2" },
+    { name = "botocore", specifier = ">=1.43.55,<2" },
     { name = "datahub", specifier = ">=0.999.1,<0.1000" },
     { name = "moto", specifier = ">=5.2.2,<6" },
     { name = "pandas", specifier = ">=3.0.5,<4" },
