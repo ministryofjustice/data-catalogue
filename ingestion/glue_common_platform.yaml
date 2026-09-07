@@ -3,7 +3,9 @@ source:
   config:
     aws_region: "eu-west-1"
     database_pattern:
-      allow: ["common_platform_dev_sdp_v3$"]
+      deny: ["common_platform_dev_sdp_v3$"]
+    table_pattern:
+      deny: [".*"]
     extract_owners: False
     extract_transforms: False
 
@@ -15,7 +17,6 @@ transformers:
   - type: "ingestion.transformers.enrich_container.AddTagTransformer"
     config:
       tag_urns:
-        - "urn:li:tag:dc_display_in_catalogue"
         - "urn:li:tag:Criminal courts"
         - "urn:li:tag:Courts and tribunals"
 
@@ -30,12 +31,19 @@ transformers:
         refresh_period: Every week
         security_classification: Official-Sensitive
 
-  - type: "simple_add_dataset_tags"
+  - type: "pattern_add_dataset_tags"
     config:
-      tag_urns:
-        - "urn:li:tag:dc_display_in_catalogue"
-        - "urn:li:tag:Courts and tribunals"
-        - "urn:li:tag:Criminal courts"
+      semantics: OVERWRITE
+      replace_existing: true
+      tag_pattern:
+        rules:
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,([^,]*[^a-z0-9])?(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example)([^a-z0-9][^,]*)?,[^\\)]+\\)$":
+            - "urn:li:tag:Courts and tribunals"
+            - "urn:li:tag:Criminal courts"
+          ".*":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Courts and tribunals"
+            - "urn:li:tag:Criminal courts"
 
   - type: "simple_add_dataset_properties"
     config:
