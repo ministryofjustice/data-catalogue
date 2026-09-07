@@ -27,6 +27,7 @@ from ingestion.ingestion_utils import (
     get_cadet_metadata_json,
     get_subject_areas,
     get_tags,
+    is_excluded_name,
     make_user_mcp,
     parse_database_and_table_names,
     should_display_dbt_manifest_node,
@@ -35,6 +36,12 @@ from ingestion.ingestion_utils import (
 from ingestion.utils import report_generator_time, report_time
 
 logging.basicConfig(level=logging.DEBUG)
+
+EXCLUDED_DATABASES = {"libra"}
+
+
+def is_excluded_database(database: str) -> bool:
+    return database.lower() in EXCLUDED_DATABASES
 
 properties_to_add = {
     "security_classification": "Official-Sensitive",
@@ -165,6 +172,13 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
         ]
         for node in seed_nodes:
             database, table = parse_database_and_table_names(node)
+            if is_excluded_database(database):
+                logging.info(
+                    "Skipping seed tag MCP for excluded database '%s'",
+                    database,
+                )
+                continue
+
             domain = domain_lookup.get(database, table)
             tag_names = [
                 "Miscellaneous",
@@ -222,6 +236,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
                     database, table = parse_database_and_table_names(
                         manifest["nodes"][node]
                     )
+
+                    if is_excluded_database(database):
+                        logging.info(
+                            "Skipping excluded database '%s' while building database containers",
+                            database,
+                        )
+                        continue
+
                     database_metadata_dict = {}
 
                     try:
@@ -233,6 +255,14 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
 
                     database_metadata_dict["domain"] = fqn[1]
                     database_tags = database_metadata_dict.get("tags", [])
+                    # Keep excluded databases hidden even if metadata tags include
+                    # dc_display_in_catalogue.
+                    if is_excluded_name(database):
+                        database_tags = [
+                            tag
+                            for tag in database_tags
+                            if tag != "dc_display_in_catalogue"
+                        ]
                     if "tags" in database_metadata_dict:
                         database_metadata_dict.pop("tags")
                     database_metadata_tuple = tuple(database_metadata_dict.items())

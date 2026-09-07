@@ -72,4 +72,4 @@ transformers:
       domain_pattern:
         rules:
           'urn:li:dataset:\(urn:li:dataPlatform:dbt,cadet_digital_prison_reporting\.awsdatacatalog\.curated_prisons_history*':
-            ["Prison"]
+            ["urn:li:domain:Prison"]
