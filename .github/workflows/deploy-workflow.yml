@@ -69,7 +69,7 @@ jobs:
       id-token: write # This is required for requesting the JWT
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Create cert certificate-authority
         id: create-cert-authority
@@ -213,7 +213,104 @@ jobs:
           --set global.sql.datasource.username=${POSTGRES_USERNAME} \
           --set global.sql.datasource.extraEnvs[0].value=${POSTGRES_DB_NAME}
 
-      - name: allow CP prometheus scraping 
+      - name: apply GMS v1.6.0 workarounds
+        # Now applied to every environment this workflow deploys to (dev,
+        # preprod, prod - the only three inputs.env ever takes, per
+        # deploy-dev.yml/deploy-staged.yml), so no env gate here.
+        shell: bash
+        id: gms-timeseries-workaround
+        env:
+          KUBE_NAMESPACE: ${{ secrets.kube_namespace }}
+        # Two related v1.6.0 GMS fixes, both applied via `kubectl set env`
+        # directly on the live Deployment rather than as Helm values, and
+        # both discovered/validated running RestoreIndices against dev:
+        #
+        # 1. METADATA_CHANGE_LOG_TIMESERIES_TOPIC_NAME - GMS's embedded MAE
+        #    consumer crashes on startup (org.apache.avro.
+        #    InvalidNumberEncodingException) when subscribed to both
+        #    MetadataChangeLog_Versioned_v1 and MetadataChangeLog_Timeseries_v1
+        #    at once. Redirecting Timeseries to a placeholder here leaves GMS
+        #    handling Versioned only; Timeseries is handled instead by the
+        #    standalone consumer deployed in the next step.
+        #
+        # 2. SPRING_KAFKA_PROPERTIES_MAX_POLL_RECORDS - separately, GMS got
+        #    stuck in an infinite rebalance loop during a RestoreIndices
+        #    backfill: a batch of expensive-to-process records (dbt sibling-
+        #    association lookups) took longer than max.poll.interval.ms
+        #    (300000ms default) to get through at the default
+        #    max.poll.records=500, so Kafka kept evicting the consumer before
+        #    it could commit, and it retried the same batch forever. Reducing
+        #    the batch size gives it enough headroom to always commit within
+        #    the timeout. 100 initially looked safe (hours with zero timeouts
+        #    in dev), but both dev and preprod later hit an even more
+        #    expensive batch that still stalled it at 100 - one environment
+        #    crash-looped, the other stalled permanently with no active
+        #    consumer group members until GMS was restarted. 25 has since run
+        #    stable through both environments' full backfill to zero lag.
+        #
+        # Both are applied via `kubectl set env` rather than a
+        # datahub-gms.extraEnvs values entry: appending a second same-named
+        # env var relies on "last one wins", which does NOT hold when Helm
+        # patches an existing Deployment (confirmed by testing - the key was
+        # dropped entirely by the API server's strategic merge patch, causing
+        # the upgrade to fail outright). METADATA_CHANGE_LOG_TIMESERIES_TOPIC_NAME
+        # also can't be a global.kafka.topics values override, since that
+        # value is shared by every component in the release
+        # (acryl-datahub-actions, the restore-indices CronJob, the
+        # system-update jobs) and redirecting it for all of them risks
+        # silently breaking things like RestoreIndices backfilling
+        # Timeseries data. `kubectl set env` scopes both changes to GMS
+        # alone and replaces the values in place, no duplicate involved.
+        #
+        # Remove this step once DataHub ships fixes upstream for both issues.
+        run: |
+          kubectl set env deployment/datahub-datahub-gms -n ${KUBE_NAMESPACE} \
+            METADATA_CHANGE_LOG_TIMESERIES_TOPIC_NAME=zz_disabled_timeseries_mae_split_workaround \
+            SPRING_KAFKA_PROPERTIES_MAX_POLL_RECORDS=25
+
+      - name: deploy standalone timeseries MAE consumer (v1.6.0 workaround)
+        # Must always run alongside the step above, which has redirected GMS
+        # off this topic in every environment - without it, GMS would still
+        # fight this consumer over the same topic.
+        shell: bash
+        id: deploy-mae-timeseries-workaround
+        env:
+          CHART_VERSION: ${{ inputs.datahub_helm_version }}
+          OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
+          POSTGRES_HOST: ${{ secrets.postgres_host }}
+          POSTGRES_URL: ${{ secrets.postgres_url }}
+          POSTGRES_USERNAME: ${{ secrets.postgres_username }}
+        # Renders (never installs) the datahub-mae-consumer subchart with
+        # standalone-consumer values so we can extract just its
+        # Deployment/Service and apply them directly. This works around a
+        # v1.6.0 GMS bug (see helm_deploy/mae-consumer-timeseries-values.yaml
+        # for the full explanation) that the chart's normal
+        # datahub_standalone_consumers_enabled flag can't express, since that
+        # flag would also disable GMS's own embedded consumer.
+        #
+        # Enabling that flag also renders datahub-mce-consumer as a side
+        # effect (same shared flag) - `--show-only` filters the output but
+        # Helm still evaluates every template first, so the DB --set
+        # overrides below are required for a clean render even though the
+        # MAE consumer itself never uses them.
+        #
+        # Remove this step once DataHub ships a fix upstream.
+        run: |
+          helm template datahub datahub/datahub \
+          --version ${CHART_VERSION} \
+          --values helm_deploy/values-base.yaml \
+          --values helm_deploy/${{inputs.env}}/values-base.yaml \
+          --values helm_deploy/mae-consumer-timeseries-values.yaml \
+          --namespace ${{ secrets.kube_namespace }} \
+          --set global.elasticsearch.host=${OPENSEARCH_PROXY_HOST} \
+          --set global.sql.datasource.host=${POSTGRES_HOST} \
+          --set global.sql.datasource.url=${POSTGRES_URL} \
+          --set global.sql.datasource.username=${POSTGRES_USERNAME} \
+          --show-only charts/datahub-mae-consumer/templates/service.yaml \
+          --show-only charts/datahub-mae-consumer/templates/deployment.yaml \
+          | kubectl apply -n ${{ secrets.kube_namespace }} -f -
+
+      - name: allow CP prometheus scraping
         shell: bash
         id: allow-prom-scrape
         env:
