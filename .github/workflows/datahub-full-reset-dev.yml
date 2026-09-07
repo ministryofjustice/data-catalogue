@@ -1,0 +1,311 @@
+name: DataHub Full Reset (DEV)
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: "Target GitHub environment"
+        required: true
+        type: choice
+        options:
+          - dev
+      DATAHUB_HELM_VERSION:
+        description: "DataHub helm chart version"
+        required: true
+        default: "1.0.3"
+        type: string
+      RESET_KAFKA:
+        description: "Also reset DataHub Kafka topics and consumer groups"
+        required: true
+        default: false
+        type: boolean
+      KAFKA_BOOTSTRAP_SERVER:
+        description: "Kafka bootstrap server for DataHub topics"
+        required: true
+        default: "prerequisites-kafka:9092"
+        type: string
+      APPLY:
+        description: "Apply reset (false = dry run)"
+        required: true
+        default: false
+        type: boolean
+      CONFIRM_TEXT:
+        description: "Type exactly FULL_RESET_DEV to proceed with APPLY=true"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  reset-dev-datahub-storage:
+    name: Full reset DataHub storage in DEV
+    environment: ${{ inputs.ENVIRONMENT }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      RELEASE_NAME: datahub
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Create cert certificate-authority
+        shell: bash
+        run: echo "${{ secrets.KUBE_CERT }}" > ca.crt
+
+      - name: Authenticate to the cluster
+        shell: bash
+        env:
+          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+        run: |
+          kubectl config set-cluster "${KUBE_CLUSTER}" --certificate-authority=ca.crt --server="https://${KUBE_CLUSTER}"
+          kubectl config set-credentials deploy-user --token="${{ secrets.KUBE_TOKEN }}"
+          kubectl config set-context "${KUBE_CLUSTER}" --cluster="${KUBE_CLUSTER}" --user=deploy-user --namespace="${KUBE_NAMESPACE}"
+          kubectl config use-context "${KUBE_CLUSTER}"
+
+      - name: Install PostgreSQL client
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Resolve OpenSearch endpoint
+        shell: bash
+        env:
+          OPENSEARCH_PROXY_HOST: ${{ secrets.OPENSEARCH_PROXY_HOST }}
+        run: |
+          if [[ "${OPENSEARCH_PROXY_HOST}" =~ ^https?:// ]]; then
+            echo "OPENSEARCH_URL=${OPENSEARCH_PROXY_HOST}" >> "$GITHUB_ENV"
+          else
+            echo "OPENSEARCH_URL=https://${OPENSEARCH_PROXY_HOST}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Guardrail confirmation
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        run: |
+          if [[ "${{ inputs.CONFIRM_TEXT }}" != "FULL_RESET_DEV" ]]; then
+            echo "APPLY=true requires CONFIRM_TEXT=FULL_RESET_DEV" >&2
+            exit 1
+          fi
+
+      - name: Preflight summary
+        shell: bash
+        env:
+          OPENSEARCH_URL: ${{ env.OPENSEARCH_URL }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME }}
+        run: |
+          set -euo pipefail
+
+          echo "Namespace: ${{ secrets.KUBE_NAMESPACE }}"
+          echo "Release: ${RELEASE_NAME}"
+          echo "OpenSearch endpoint: ${OPENSEARCH_URL}"
+
+          echo "Current OpenSearch index count:"
+          curl -ksS "${OPENSEARCH_URL}/_cat/indices?h=index" | sed '/^$/d' | wc -l
+
+          echo "Current PostgreSQL public table count:"
+          export PGPASSWORD="${POSTGRES_PASSWORD}"
+          psql \
+            --host "${POSTGRES_HOST}" \
+            --username "${POSTGRES_USERNAME}" \
+            --dbname "${POSTGRES_DB_NAME}" \
+            --tuples-only \
+            --no-align \
+            --command "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';"
+
+      - name: Kafka reset preflight
+        if: ${{ inputs.RESET_KAFKA }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          KAFKA_BOOTSTRAP_SERVER: ${{ inputs.KAFKA_BOOTSTRAP_SERVER }}
+        run: |
+          set -euo pipefail
+
+          KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=prerequisites,app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          if [[ -z "${KAFKA_POD}" ]]; then
+            KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          fi
+
+          if [[ -z "${KAFKA_POD}" ]]; then
+            echo "No Kafka broker pod found in namespace ${KUBE_NAMESPACE}." >&2
+            exit 1
+          fi
+
+          echo "Kafka broker pod: ${KAFKA_POD}"
+          echo "Kafka bootstrap server: ${KAFKA_BOOTSTRAP_SERVER}"
+
+          mapfile -t MATCHING_TOPICS < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(MetadataChangeEvent_v4|FailedMetadataChangeEvent_v4|MetadataAuditEvent_v4|DataHubUsageEvent_v1|MetadataChangeProposal_v1|FailedMetadataChangeProposal_v1|MetadataChangeLog_Versioned_v1|MetadataChangeLog_Timeseries_v1|PlatformEvent_v1|DataHubUpgradeHistory_v1|datahub\.metadata_aspect_v2)$' || true
+          )
+
+          echo "Matching DataHub topics: ${#MATCHING_TOPICS[@]}"
+          for topic_name in "${MATCHING_TOPICS[@]}"; do
+            echo "  ${topic_name}"
+          done
+
+          mapfile -t MATCHING_GROUPS < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-consumer-groups.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(datahub_doc_propagation_action|ingestion_executor|datahub_slack_action|datahub_teams_action|datahub-usage-event-consumer-job-client|generic-mae-consumer-job-client|generic-platform-event-job-client|mce-consumer-job-client|generic-mce-consumer-job-client)$' || true
+          )
+
+          echo "Matching DataHub consumer groups: ${#MATCHING_GROUPS[@]}"
+          for group_name in "${MATCHING_GROUPS[@]}"; do
+            echo "  ${group_name}"
+          done
+
+      - name: Stop DataHub workloads
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+        run: |
+          set -euo pipefail
+          kubectl scale deployment -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=${RELEASE_NAME} --replicas=0 || true
+          kubectl scale statefulset -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=${RELEASE_NAME} --replicas=0 || true
+
+      - name: Wipe OpenSearch indices
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        env:
+          OPENSEARCH_URL: ${{ env.OPENSEARCH_URL }}
+        run: |
+          set -euo pipefail
+
+          mapfile -t INDICES < <(curl -ksS "${OPENSEARCH_URL}/_cat/indices?h=index" | sed '/^$/d')
+          if [[ ${#INDICES[@]} -eq 0 ]]; then
+            echo "No indices found."
+            exit 0
+          fi
+
+          echo "Deleting ${#INDICES[@]} indices"
+          for index_name in "${INDICES[@]}"; do
+            echo "Deleting index: ${index_name}"
+            curl -ksS -X DELETE "${OPENSEARCH_URL}/${index_name}" >/dev/null
+          done
+
+      - name: Reset DataHub PostgreSQL public schema
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        env:
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME }}
+        run: |
+          set -euo pipefail
+          export PGPASSWORD="${POSTGRES_PASSWORD}"
+
+          psql \
+            --host "${POSTGRES_HOST}" \
+            --username "${POSTGRES_USERNAME}" \
+            --dbname "${POSTGRES_DB_NAME}" \
+            --command "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO ${POSTGRES_USERNAME}; GRANT ALL ON SCHEMA public TO public;"
+
+      - name: Reset DataHub Kafka topics and consumer groups
+        if: ${{ inputs.APPLY && inputs.RESET_KAFKA }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          KAFKA_BOOTSTRAP_SERVER: ${{ inputs.KAFKA_BOOTSTRAP_SERVER }}
+        run: |
+          set -euo pipefail
+
+          KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=prerequisites,app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          if [[ -z "${KAFKA_POD}" ]]; then
+            KAFKA_POD=$(kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name=kafka -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+          fi
+
+          if [[ -z "${KAFKA_POD}" ]]; then
+            echo "No Kafka broker pod found in namespace ${KUBE_NAMESPACE}." >&2
+            exit 1
+          fi
+
+          echo "Resetting Kafka state via pod ${KAFKA_POD}"
+
+          mapfile -t TOPICS_TO_DELETE < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(MetadataChangeEvent_v4|FailedMetadataChangeEvent_v4|MetadataAuditEvent_v4|DataHubUsageEvent_v1|MetadataChangeProposal_v1|FailedMetadataChangeProposal_v1|MetadataChangeLog_Versioned_v1|MetadataChangeLog_Timeseries_v1|PlatformEvent_v1|DataHubUpgradeHistory_v1|datahub\.metadata_aspect_v2)$' || true
+          )
+
+          for topic_name in "${TOPICS_TO_DELETE[@]}"; do
+            echo "Deleting topic ${topic_name}"
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --delete --topic '${topic_name}'" || true
+          done
+
+          mapfile -t GROUPS_TO_DELETE < <(
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-consumer-groups.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --list" \
+              | grep -E '^(datahub_doc_propagation_action|ingestion_executor|datahub_slack_action|datahub_teams_action|datahub-usage-event-consumer-job-client|generic-mae-consumer-job-client|generic-platform-event-job-client|mce-consumer-job-client|generic-mce-consumer-job-client)$' || true
+          )
+
+          for group_name in "${GROUPS_TO_DELETE[@]}"; do
+            echo "Deleting consumer group ${group_name}"
+            kubectl exec -n "${KUBE_NAMESPACE}" "${KAFKA_POD}" -- bash -lc \
+              "/opt/bitnami/kafka/bin/kafka-consumer-groups.sh --bootstrap-server '${KAFKA_BOOTSTRAP_SERVER}' --delete --group '${group_name}'" || true
+          done
+
+      - name: Add helm repo
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        run: helm repo add datahub https://helm.datahubproject.io/
+
+      - name: Update helm repo
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        run: helm repo update datahub
+
+      - name: Re-bootstrap DataHub via helm
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          CHART_VERSION: ${{ inputs.DATAHUB_HELM_VERSION }}
+        run: |
+          set -euo pipefail
+          helm upgrade \
+            --install ${RELEASE_NAME} datahub/datahub \
+            --version "${CHART_VERSION}" \
+            --namespace "${KUBE_NAMESPACE}" \
+            --reuse-values \
+            --wait \
+            --timeout 120m
+
+      - name: Restart DataHub workloads
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+        run: |
+          set -euo pipefail
+          kubectl scale deployment -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=${RELEASE_NAME} --replicas=1 || true
+          kubectl scale statefulset -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=${RELEASE_NAME} --replicas=1 || true
+
+      - name: Wait for key DataHub deployments
+        if: ${{ inputs.APPLY }}
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+        run: |
+          set -euo pipefail
+          kubectl rollout status deployment/datahub-datahub-gms -n "${KUBE_NAMESPACE}" --timeout=20m || true
+          kubectl rollout status deployment/datahub-datahub-frontend-react -n "${KUBE_NAMESPACE}" --timeout=20m || true
+          kubectl get pods -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/instance=${RELEASE_NAME}
+
+      - name: Dry-run reminder
+        if: ${{ !inputs.APPLY }}
+        shell: bash
+        run: |
+          echo "Dry run completed. Re-run with APPLY=true and CONFIRM_TEXT=FULL_RESET_DEV to execute reset."

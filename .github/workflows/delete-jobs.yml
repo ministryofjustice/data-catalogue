@@ -1,0 +1,148 @@
+name: Ingestion Delete Jobs
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: "Environment to use for secrets/vars"
+        required: true
+        type: choice
+        options:
+          - dev
+          - preprod-ingestion
+          - prod-ingestion
+      DELETE_JOB_SET:
+        description: "Delete preset to run"
+        required: true
+        default: none
+        type: choice
+        options:
+          - none
+          - dfe
+          - cohort
+          - libra
+          - xhibit
+          - common_platform
+          - all
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion for libra delete when container display name is missing"
+        required: false
+        default: false
+        type: boolean
+
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        description: "Environment to use for secrets/vars"
+        required: true
+        type: string
+      DELETE_JOB_SET:
+        description: "Delete preset to run"
+        required: false
+        default: none
+        type: string
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME:
+        description: "Force container child expansion for libra delete when container display name is missing"
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      DATAHUB_GMS_TOKEN:
+        description: "API key for DataHub GMS"
+        required: true
+
+jobs:
+  delete-dfe:
+    if: ${{ inputs.DELETE_JOB_SET == 'dfe' || inputs.DELETE_JOB_SET == 'all' }}
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      DATAHUB_ENV: PROD
+      ENTITY_TYPES: "container dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 200
+      REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: dlpes_dfe_datashare
+      KEEP_TABLE_PREFIX: dfe_
+      TARGET_URNS: 'urn:li:container:37d2f0503bb87bcbe056f62acfe25bff'
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+
+  delete-cohort:
+    if: ${{ inputs.DELETE_JOB_SET == 'cohort' || inputs.DELETE_JOB_SET == 'all' }}
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      DATAHUB_ENV: PROD
+      ENTITY_TYPES: "dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 200
+      REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: dlpes_dwp_hmrc_main_datashare
+      DELETE_TABLE_PREFIX: cohort
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+
+  delete-libra:
+    if: ${{ inputs.DELETE_JOB_SET == 'libra' || inputs.DELETE_JOB_SET == 'all' }}
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      ENTITY_TYPES: "container dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 200
+      REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: libra
+      TARGET_URNS: "urn:li:container:79a308f89d0bd8e72208b2a161fd007f"
+      FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME: ${{ inputs.FORCE_EXPAND_CONTAINER_CHILDREN_WITHOUT_NAME }}
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+
+  delete-xhibit:
+    if: ${{ inputs.DELETE_JOB_SET == 'xhibit' || inputs.DELETE_JOB_SET == 'all' }}
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      ENTITY_TYPES: "container dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 200
+      REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: xhibit_preprocessed
+      TARGET_URNS: "urn:li:container:37d2f0503bb87bcbe056f62acfe25bff"
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+
+  delete-common-platform:
+    if: ${{ inputs.DELETE_JOB_SET == 'common_platform' || inputs.DELETE_JOB_SET == 'all' }}
+    uses: ./.github/workflows/delete-excluded-entities.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      DATAHUB_ENV: PROD
+      ENTITY_TYPES: "container dataset"
+      APPLY: true
+      HARD_DELETE: true
+      MAX_ENTITIES: 5000
+      FORCE: false
+      BATCH_SIZE: 2000
+      SHOW_SAMPLE: 200
+      REQUIRE_DISPLAY_TAG: false
+      DATASET_DATABASE: common_platform_dev_sdp_v3
+      TARGET_URNS: "urn:li:container:6773d8bf44c409af2dfa65cf8506348f"
+    secrets:
+      DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}

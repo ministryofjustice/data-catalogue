@@ -1,0 +1,87 @@
+source:
+  type: glue
+  config:
+    aws_region: "eu-west-1"
+    database_pattern:
+      allow: ["dlpes_hmrc_mini_datashare$"]
+    extract_owners: False
+    extract_transforms: False
+
+transformers:
+  - type: "ingestion.transformers.enrich_container.AddOwnershipTransformer"
+    config:
+      data_custodian: "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
+
+  - type: "ingestion.transformers.enrich_container.AddTagTransformer"
+    config:
+      tag_urns:
+        - "urn:li:tag:dc_display_in_catalogue"
+        - "urn:li:tag:Prison"
+        - "urn:li:tag:Probation"
+        - "urn:li:tag:Prisons and probation"
+        - "urn:li:tag:Employment and benefits"
+        - "urn:li:tag:Police national computer"
+
+  - type: "ingestion.transformers.enrich_container.AddPropertiesTransformer"
+    config:
+      description: >-
+        The overarching aim of this share is to contribute towards the cross-government objective priority to reduce re-offending, assisting in the analysis of the success of prison and probation providers in preparing offenders to achieve positive economic outcomes.
+
+        The share includes offenders that have been released from custody or on probation in the last 12 months and are drawn from P-NOMIS and N-DELIUS. The share is updated each quarter by removing those who were last released from custody or entered the care of probation services more than 12 months ago and adding offenders from the latest quarter. The data is matched to PAYE and self-employment and there is a one month time lag.
+
+        To enquire about access, please email datalinkingteam@justice.gov.uk
+        """
+      properties:
+        dc_readable_name: "MoJ HMRC Mini Datashare"
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
+        dc_where_to_access_dataset: Please contact the team
+        dc_access_requirements: ""
+        refresh_period: Quarterly
+        security_classification: Official-Sensitive
+
+  - type: "pattern_add_dataset_tags"
+    config:
+      semantics: OVERWRITE
+      replace_existing: true
+      tag_pattern:
+        rules:
+          "^urn:li:container:.*$":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          "^urn:li:dataset:\\(urn:li:dataPlatform:glue,([^,]*[^a-z0-9])?(stg|staging|int|dummy|intermediate|dev|test|testing|temp|example)([^a-z0-9][^,]*)?,[^\\)]+\\)$":
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+          ".*":
+            - "urn:li:tag:dc_display_in_catalogue"
+            - "urn:li:tag:Prison"
+            - "urn:li:tag:Probation"
+            - "urn:li:tag:Prisons and probation"
+            - "urn:li:tag:Employment and benefits"
+            - "urn:li:tag:Police national computer"
+
+  - type: "simple_add_dataset_ownership"
+    config:
+      semantics: OVERWRITE
+      ownership_type: "DATAOWNER"
+      owner_urns:
+        - "${DLPES_DWP_HMRC_DATASHARE_CONTACT}"
+
+  - type: "simple_add_dataset_properties"
+    config:
+      semantics: OVERWRITE # OVERWRITE is default behaviour
+      properties:
+        dc_readable_name: "MoJ HMRC Mini Datashare"
+        dc_slack_channel_name: "#data-linking-databases"
+        dc_slack_channel_url: https://moj.enterprise.slack.com/archives/C01VDDG5V5W
+        dc_where_to_access_dataset: AnalyticalPlatform
+        dc_access_requirements: https://user-guidance.analytical-platform.service.justice.gov.uk/tools/create-a-derived-table/database-access/#database-access
+        refresh_period: Quarterly
+        security_classification: Official-Sensitive
