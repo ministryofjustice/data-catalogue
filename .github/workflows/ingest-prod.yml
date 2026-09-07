@@ -90,7 +90,7 @@ jobs:
     uses: ./.github/workflows/ingest-glue-data.yml
     with:
       ENVIRONMENT: prod-ingestion
-      GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS }}
+      GLUE_CONFIGS: ${{ inputs.GLUE_CONFIGS || 'contracts courts_criminal courts_family fines just_link sop dlpes_dfe dlpes_dwp_mini dlpes_hmrc_mini dlpes_dwp_hmrc_main' }}
     secrets:
       DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
       GLUE_ROLE_TO_ASSUME: ${{ secrets.GLUE_ROLE_TO_ASSUME }}

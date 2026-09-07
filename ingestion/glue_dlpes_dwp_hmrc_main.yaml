@@ -4,6 +4,8 @@ source:
     aws_region: "eu-west-1"
     database_pattern:
       allow: ["dlpes_dwp_hmrc_main_datashare$"]
+    table_pattern:
+      deny: ["cohort1.*$", "cohort2.*$"]
     extract_owners: False
     extract_transforms: False
 

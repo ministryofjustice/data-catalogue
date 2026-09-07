@@ -9,6 +9,7 @@ from ingestion.ingestion_utils import is_excluded_name
 logger = logging.getLogger(__name__)
 
 EXCLUDED_DATABASES = {"libra"}
+TYPE_NORMALISATION_MAP = {"bool": "boolean"}
 
 
 def is_excluded_database(database: str | None) -> bool:
@@ -16,6 +17,13 @@ def is_excluded_database(database: str | None) -> bool:
         return False
 
     return database.lower() in EXCLUDED_DATABASES
+
+
+def normalise_column_type(column_type: str | None) -> str | None:
+    if not column_type:
+        return column_type
+
+    return TYPE_NORMALISATION_MAP.get(column_type.lower(), column_type)
 
 
 @config_class(DBTCoreConfig)
@@ -50,6 +58,24 @@ class CadetDBTSource(DBTCoreSource):
                 "Excluded %d dbt nodes from ingestion by database denylist",
                 excluded_count,
             )
+
+        normalised_count = 0
+        for node in filtered_nodes:
+            for column in getattr(node, "columns", None) or []:
+                normalised_type = normalise_column_type(column.data_type)
+                if normalised_type != column.data_type:
+                    logger.info(
+                        "Normalising dbt column type for %s.%s from %s to %s",
+                        node.dbt_name,
+                        column.name,
+                        column.data_type,
+                        normalised_type,
+                    )
+                    column.data_type = normalised_type
+                    normalised_count += 1
+
+        if normalised_count:
+            logger.info("Normalised %d dbt column types before ingestion", normalised_count)
 
         display_tag = f"{self.config.tag_prefix}dc_display_in_catalogue"
         for node in filtered_nodes:
