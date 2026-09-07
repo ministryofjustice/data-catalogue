@@ -1,0 +1,50 @@
+# Values used ONLY to render the standalone MAE consumer manifest applied by
+# the "deploy standalone timeseries consumer" step in deploy-workflow.yml.
+#
+# This file is never passed to the real `helm upgrade datahub` install of the
+# main release - it exists purely so `helm template` can produce a correct
+# Deployment/Service for a single-purpose consumer that handles
+# MetadataChangeLog_Timeseries_v1 only, working around the v1.6.0 GMS bug
+# where the embedded MAE consumer crashes on startup
+# (org.apache.avro.InvalidNumberEncodingException) if subscribed to both
+# MetadataChangeLog_Versioned_v1 and MetadataChangeLog_Timeseries_v1 at once.
+#
+# GMS keeps handling MetadataChangeLog_Versioned_v1 - it's redirected off
+# Timeseries separately, via `kubectl set env` in the "redirect GMS off the
+# Timeseries topic" step in deploy-workflow.yml (not a values override here:
+# that step's comment explains why global.kafka.topics can't safely be
+# touched - it's shared by acryl-datahub-actions, the restore-indices
+# CronJob, and the system-update jobs too).
+#
+# This file only needs to redirect Versioned to a placeholder for this one
+# standalone render, so the two consumers never overlap or
+# duplicate-process the same topic. That's safe as a values override here
+# (rather than `kubectl set env`) because this Deployment is applied fresh
+# via `helm template | kubectl apply` each run, not patched from values
+# containing a pre-existing duplicate key.
+#
+# Remove this file and its use in deploy-workflow.yml once DataHub ships a
+# fix and the "redirect GMS off the Timeseries topic" step is removed.
+
+global:
+  datahub_standalone_consumers_enabled: true
+  datahub:
+    version: v1.6.0
+    systemUpdate:
+      enabled: false
+  kafka:
+    topics:
+      metadata_change_log_versioned_topic_name: zz_disabled_versioned_mae_split_workaround
+    consumer_groups:
+      metadata_change_log_kafka_consumer_group_id: generic-mae-consumer-job-client-timeseries-only
+
+datahub-mae-consumer:
+  securityContext:
+    runAsUser: 1000
+    allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
+    runAsNonRoot: true
+    capabilities:
+      drop: ["ALL"]
+      add: ["NET_BIND_SERVICE"]
