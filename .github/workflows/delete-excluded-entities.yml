@@ -185,7 +185,7 @@ jobs:
 
       - name: Install UV
         id: setup-uv
-        uses: astral-sh/setup-uv@6ee6290f1cbc4156c0bdd66691b2c144ef8df19a # v7.4.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           version: ${{ vars.UV_VERSION }}
           python-version: ${{ vars.PYTHON_VERSION }}
