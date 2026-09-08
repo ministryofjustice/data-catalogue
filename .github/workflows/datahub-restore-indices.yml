@@ -36,6 +36,11 @@ on:
         required: true
         default: true
         type: boolean
+      CLEAN:
+        description: "Wipe all search/graph indices before restoring (full rebuild from Postgres) - only for suspected stuck/orphaned entities a normal restore won't fix. Causes a full search outage until the rebuild completes."
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   run-restore-indices:
@@ -50,7 +55,7 @@ jobs:
       RELEASE_NAME: datahub
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Create cert certificate-authority
         shell: bash
@@ -84,16 +89,62 @@ jobs:
           BATCH_DELAY_MS: ${{ inputs.BATCH_DELAY_MS }}
           NUM_THREADS: ${{ inputs.NUM_THREADS }}
           URN_BASED_PAGINATION: ${{ inputs.URN_BASED_PAGINATION }}
+          CLEAN: ${{ inputs.CLEAN }}
+        # The CronJob template reads its args from
+        # datahubUpgrade.restoreIndices.image.args, a plain string list (not
+        # the dict-shaped datahubUpgrade.restoreIndices.args a previous
+        # version of this step was setting - those keys were never read by
+        # the template, so BATCH_SIZE/BATCH_DELAY_MS/NUM_THREADS/
+        # URN_BASED_PAGINATION never actually took effect). Rebuilding the
+        # whole list here and passing it with --set-json is what the
+        # template actually consumes.
+        #
+        # "clean" is deliberately left out of the base chart args (see
+        # values-base.yaml) since it wipes every search/graph index before
+        # rebuilding - appended here only when CLEAN=true is explicitly
+        # requested.
         run: |
+          ARGS=$(jq -nc \
+            --arg batchSize "$BATCH_SIZE" \
+            --arg batchDelayMs "$BATCH_DELAY_MS" \
+            --arg numThreads "$NUM_THREADS" \
+            --arg urnBasedPagination "$URN_BASED_PAGINATION" \
+            --argjson clean "$CLEAN" \
+            '["-u", "RestoreIndices",
+              "-a", ("batchSize=" + $batchSize),
+              "-a", ("batchDelayMs=" + $batchDelayMs),
+              "-a", ("urnBasedPagination=" + $urnBasedPagination),
+              "-a", ("numThreads=" + $numThreads)]
+             + (if $clean then ["-a", "clean"] else [] end)')
+
           helm upgrade \
             --install ${RELEASE_NAME} datahub/datahub \
             --version "${CHART_VERSION}" \
             --namespace "${KUBE_NAMESPACE}" \
             --reuse-values \
-            --set datahubUpgrade.restoreIndices.args.batchSize="${BATCH_SIZE}" \
-            --set datahubUpgrade.restoreIndices.args.batchDelayMs="${BATCH_DELAY_MS}" \
-            --set datahubUpgrade.restoreIndices.args.numThreads="${NUM_THREADS}" \
-            --set datahubUpgrade.restoreIndices.args.urnBasedPagination="${URN_BASED_PAGINATION}"
+            --set-json datahubUpgrade.restoreIndices.image.args="${ARGS}"
+
+      - name: re-apply GMS v1.6.0 workarounds
+        shell: bash
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+        # The helm upgrade above reconciles the whole datahub release,
+        # including GMS's Deployment - since the v1.6.0 topic-split/
+        # max-poll-records fix (see deploy-workflow.yml) is applied via
+        # `kubectl set env` rather than a Helm value, that upgrade silently
+        # wipes both settings back to the chart's defaults. A GMS pod already
+        # running keeps working on its old in-memory config until something
+        # next recreates it, so this can sit unnoticed until a later restart
+        # (rollout, node move, OOM, ...) exposes it - as happened during this
+        # step's own absence, when a routine restart rolled in the reverted
+        # spec and reintroduced the dual-topic crash. Re-applying here keeps
+        # this workflow's own helm upgrade from ever leaving that regression
+        # latent. Remove once DataHub ships fixes upstream for both issues
+        # (see deploy-workflow.yml for the full explanation of each).
+        run: |
+          kubectl set env deployment/datahub-datahub-gms -n ${KUBE_NAMESPACE} \
+            METADATA_CHANGE_LOG_TIMESERIES_TOPIC_NAME=zz_disabled_timeseries_mae_split_workaround \
+            SPRING_KAFKA_PROPERTIES_MAX_POLL_RECORDS=25
 
       - name: Trigger one-off restore-indices job from cronjob
         shell: bash

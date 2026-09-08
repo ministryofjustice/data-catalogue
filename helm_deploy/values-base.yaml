@@ -326,16 +326,39 @@ datahubUpgrade:
   podAnnotations: {}
   extraSidecars: []
   restoreIndices:
+    image:
+      # NOTE: no "-a" "clean" here deliberately. That flag truncates every
+      # search/graph index to zero before rebuilding from Postgres, rather
+      # than just filling gaps on top of what's already indexed - it caused a
+      # full multi-day search outage on dev when this CronJob ran with it
+      # during the v1.6.0 MAE consumer incident. Without clean, a restore
+      # re-emits current Postgres state on top of the existing indices, which
+      # is safe to run any time the consumer is healthy. If clean is
+      # genuinely needed (suspected stuck/orphaned entities a normal restore
+      # won't fix), request it explicitly via the CLEAN input on the
+      # "DataHub Restore Indices" GitHub Actions workflow rather than baking
+      # it in here.
+      args:
+        - "-u"
+        - "RestoreIndices"
+        - "-a"
+        - "batchSize=1000"
+        - "-a"
+        - "batchDelayMs=500"
+        - "-a"
+        - "urnBasedPagination=true"
+        - "-a"
+        - "numThreads=3"
     # Custom labels to add to the CronJob metadata
     labels: {}
     # See https://docs.datahub.com/docs/how/restore-indices/#kubernetes for more parameters
-    args:
-      batchSize: "1000"
-      batchDelayMs: "500"
-      # Uses a key based paging strategy when scrolling through SQL rows instead of offset. Often faster for large sets of data
-      urnBasedPagination: "true"
-      # Specifies number of threads for processing pages of rows to restore
-      numThreads: "3"
+    # args:
+    #   batchSize: "1000"
+    #   batchDelayMs: "500"
+    #   # Uses a key based paging strategy when scrolling through SQL rows instead of offset. Often faster for large sets of data
+    #   urnBasedPagination: "true"
+    #   # Specifies number of threads for processing pages of rows to restore
+    #   numThreads: "3"
     resources:
       limits:
         cpu: 1000m
