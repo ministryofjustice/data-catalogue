@@ -504,7 +504,7 @@ dev = [
 requires-dist = [
     { name = "acryl-datahub", extras = ["dbt", "glue", "postgres"], specifier = "==1.6.0" },
     { name = "boto3", specifier = ">=1.43.55,<2" },
-    { name = "botocore", specifier = ">=1.43.36,<2" },
+    { name = "botocore", specifier = ">=1.43.55,<2" },
     { name = "datahub", specifier = ">=0.999.1,<0.1000" },
     { name = "moto", specifier = ">=5.2.2,<6" },
     { name = "pandas", specifier = ">=3.0.5,<4" },
