@@ -1,17 +1,16 @@
 import logging
 from datetime import datetime
-from typing import Iterable, List, Optional
+from typing import Iterable
 
 import datahub.emitter.mce_builder as mce_builder
 import datahub.emitter.mcp_builder as mcp_builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
-from datahub.ingestion.api.source import MetadataWorkUnitProcessor, SourceReport
+from datahub.ingestion.api.source import SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.common.subtypes import DatasetContainerSubTypes
 from datahub.ingestion.source.state.stale_entity_removal_handler import (
-    StaleEntityRemovalHandler,
     StaleEntityRemovalSourceReport,
 )
 from datahub.ingestion.source.state.stateful_ingestion_base import (
@@ -61,14 +60,6 @@ class CreateCadetDatabases(StatefulIngestionSourceBase):
     def create(cls, config_dict, ctx):
         config = CreateCadetDatabasesConfig.parse_obj(config_dict)
         return cls(config, ctx)
-
-    def get_workunit_processors(self) -> List[Optional[MetadataWorkUnitProcessor]]:
-        return [
-            *super().get_workunit_processors(),
-            StaleEntityRemovalHandler.create(
-                self, self.config, self.ctx
-            ).workunit_processor,
-        ]
 
     @report_generator_time
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:

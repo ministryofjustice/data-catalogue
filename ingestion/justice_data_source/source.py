@@ -16,7 +16,6 @@ from datahub.ingestion.api.decorators import (
 from datahub.ingestion.api.source import CapabilityReport, TestConnectionReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.state.stale_entity_removal_handler import (
-    StaleEntityRemovalHandler,
     StaleEntityRemovalSourceReport,
 )
 from datahub.ingestion.source.state.stateful_ingestion_base import (
@@ -75,21 +74,10 @@ class JusticeDataAPISource(StatefulIngestionSourceBase):
         self.platform_name = "justice-data"
         self.web_url = self.config.base_url.removesuffix("/api").removesuffix("/api/")
 
-        # Create and register the stateful ingestion use-case handler.
-        self.stale_entity_removal_handler = StaleEntityRemovalHandler.create(
-            self, self.config, ctx
-        )
-
     @classmethod
     def create(cls, config_dict, ctx):
         config = JusticeDataAPIConfig.parse_obj(config_dict)
         return cls(ctx, config)
-
-    def get_workunit_processors(self):
-        return [
-            *super().get_workunit_processors(),
-            self.stale_entity_removal_handler.workunit_processor,
-        ]
 
     @report_generator_time
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:
