@@ -43,7 +43,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 @platform_name("File")
 @config_class(MojPublicationsAPIConfig)
-@support_status(SupportStatus.CERTIFIED)
+@support_status(SupportStatus.GA)
 class MojPublicationsAPISource(StatefulIngestionSourceBase):
     """
     This plugin pulls metadata from the gov.uk publications search and content APIs
