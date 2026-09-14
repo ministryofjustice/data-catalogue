@@ -50,7 +50,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 @platform_name("File")
 @config_class(JusticeDataAPIConfig)
-@support_status(SupportStatus.CERTIFIED)
+@support_status(SupportStatus.GA)
 class JusticeDataAPISource(StatefulIngestionSourceBase):
     """
     This plugin pulls metadata from the Justice Data API
