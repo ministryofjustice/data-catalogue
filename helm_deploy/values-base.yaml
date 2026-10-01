@@ -607,6 +607,21 @@ global:
           # functionScores - See the following for function score syntax
           # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/query-dsl-function-score-query.html
 
+          # Restrict which fields free-text search matches against.
+          # The UI only uses the `default` label.
+          # `replace` cannot be combined with `add`/`remove`.
+          fieldConfigurations:
+            default:
+              searchFields:
+                replace:
+                  - name
+                  - description
+              highlightFields:
+                enabled: true
+                replace:
+                  - name
+                  - description
+
           queryConfigurations:
             # Select */explore all
             # Attempt to rank active incidents at the top followed by enrichment factors
