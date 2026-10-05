@@ -614,16 +614,27 @@ global:
           fieldConfigurations:
             # GMS applies the label named by ELASTICSEARCH_QUERY_SEARCH_FIELD_CONFIG_DEFAULT,
             # which defaults to `legacy`.
+            # Names must be search index fields; unknown names are dropped with a warning.
+            # dc_* properties are all indexed under the single `customProperties` field,
+            # so they can't be selected individually.
             legacy:
               searchFields:
                 replace:
                   - name
+                  - qualifiedName
                   - description
+                  - fieldPaths
+                  - fieldDescriptions
+                  - tags
               highlightFields:
                 enabled: true
                 replace:
                   - name
+                  - qualifiedName
                   - description
+                  - fieldPaths
+                  - fieldDescriptions
+                  - tags
 
           queryConfigurations:
             # Select */explore all
