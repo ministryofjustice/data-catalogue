@@ -610,7 +610,8 @@ global:
           # Restrict which fields free-text search matches against.
           # `replace` cannot be combined with `add`/`remove`.
           # Note: exact/prefix match queries (exactMatchQuery/prefixMatchQuery) ignore this
-          # and still search all fields.
+          # and still search all fields, so they're disabled below and replaced with a
+          # boolQuery limited to name/qualifiedName.
           fieldConfigurations:
             # GMS applies the label named by ELASTICSEARCH_QUERY_SEARCH_FIELD_CONFIG_DEFAULT,
             # which defaults to `legacy`.
@@ -748,8 +749,31 @@ global:
             - queryRegex: >-
                 ^[a-zA-Z0-9]\S+[_.-]\S+[a-zA-Z0-9]$
               simpleQuery: false
-              prefixMatchQuery: true
-              exactMatchQuery: true
+              # Built-in exact/prefix matching searches every field (it ignores
+              # fieldConfigurations), so it's disabled and re-added for the
+              # allowed name fields only via boolQuery.
+              prefixMatchQuery: false
+              exactMatchQuery: false
+              boolQuery: &restrictedExactMatch
+                should:
+                  - term:
+                      name.keyword:
+                        value: "{{unquoted_query_string}}"
+                        case_insensitive: true
+                        boost: 20.0
+                  - term:
+                      qualifiedName.keyword:
+                        value: "{{unquoted_query_string}}"
+                        case_insensitive: true
+                        boost: 20.0
+                  - match_phrase_prefix:
+                      name.delimited:
+                        query: "{{unquoted_query_string}}"
+                        boost: 16.0
+                  - match_phrase_prefix:
+                      qualifiedName.delimited:
+                        query: "{{unquoted_query_string}}"
+                        boost: 16.0
               functionScore:
                 functions:
                   - filter:
@@ -814,8 +838,9 @@ global:
             - queryRegex: >-
                 ^["'].+["']$
               simpleQuery: false
-              prefixMatchQuery: true
-              exactMatchQuery: true
+              prefixMatchQuery: false
+              exactMatchQuery: false
+              boolQuery: *restrictedExactMatch
               functionScore:
                 functions:
                   - filter:
@@ -880,8 +905,9 @@ global:
             # default
             - queryRegex: .*
               simpleQuery: true
-              prefixMatchQuery: true
-              exactMatchQuery: true
+              prefixMatchQuery: false
+              exactMatchQuery: false
+              boolQuery: *restrictedExactMatch
               functionScore:
                 functions:
                   - filter:
