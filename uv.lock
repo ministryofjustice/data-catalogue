@@ -12,7 +12,7 @@ resolution-markers = [
 
 [[package]]
 name = "acryl-datahub"
-version = "1.7.0.10"
+version = "1.7.0.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -44,16 +44,15 @@ dependencies = [
     { name = "requests-file" },
     { name = "ruamel-yaml" },
     { name = "sentry-sdk" },
-    { name = "setuptools" },
     { name = "tabulate" },
     { name = "toml" },
     { name = "typing-extensions" },
     { name = "typing-inspect" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/ca/86290add8bc81f6734d44f821d8d327daefe5edb9bbe5220f6c4e9721dc0/acryl_datahub-1.7.0.10.tar.gz", hash = "sha256:b94e9cc78a425d7763582bbc45e85129a807b2a2021a9687df262d2510225661", size = 4542140, upload-time = "2026-09-07T08:25:08.657Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3d/6a/1eb7e56b01887f21106881674837227baad798873b268145690a6c196428/acryl_datahub-1.7.0.13.tar.gz", hash = "sha256:07bb3ee25cfe66d764b7274b2c7a8d2978b84c1459f162ba92b10f19eab92ea1", size = 4667128, upload-time = "2026-09-24T09:31:39.636Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/5d/71841b06176265bb059c1eb02b271b9735fd61e97239739bba913904adb0/acryl_datahub-1.7.0.10-py3-none-any.whl", hash = "sha256:0f1f03f4697ae97f2cc482188e7442d170854e5d88da973039a9f5139315f5b3", size = 5410266, upload-time = "2026-09-07T08:25:04.008Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/2e/a44651a1815082b4266d5e2d2db7a8abe8b5c2b700a8feb8b1f4025f6e04/acryl_datahub-1.7.0.13-py3-none-any.whl", hash = "sha256:ac37f305d2709c18bec2ef76b363ead2c3679145097193888d5cf466f51f425b", size = 5543224, upload-time = "2026-09-24T09:31:34.413Z" },
 ]
 
 [package.optional-dependencies]
@@ -431,7 +430,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "acryl-datahub", extras = ["dbt", "glue", "postgres"], specifier = "==1.7.0.10" },
+    { name = "acryl-datahub", extras = ["dbt", "glue", "postgres"], specifier = "==1.7.0.13" },
     { name = "boto3", specifier = ">=1.43.55,<2" },
     { name = "botocore", specifier = ">=1.43.55,<2" },
     { name = "datahub", specifier = ">=0.999.1,<0.1000" },
@@ -1175,15 +1174,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/10/59/eb90c45cb836cf8bec973bba10230ddad1c55e2b2e9ffa9d7d7368948358/sentry_sdk-2.32.0.tar.gz", hash = "sha256:9016c75d9316b0f6921ac14c8cd4fb938f26002430ac5be9945ab280f78bec6b", size = 334932, upload-time = "2025-06-27T08:10:02.89Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/01/a1/fc4856bd02d2097324fb7ce05b3021fb850f864b83ca765f6e37e92ff8ca/sentry_sdk-2.32.0-py2.py3-none-any.whl", hash = "sha256:6cf51521b099562d7ce3606da928c473643abe99b00ce4cb5626ea735f4ec345", size = 356122, upload-time = "2025-06-27T08:10:01.424Z" },
-]
-
-[[package]]
-name = "setuptools"
-version = "81.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0d/1c/73e719955c59b8e424d015ab450f51c0af856ae46ea2da83eba51cc88de1/setuptools-81.0.0.tar.gz", hash = "sha256:487b53915f52501f0a79ccfd0c02c165ffe06631443a886740b91af4b7a5845a", size = 1198299, upload-time = "2026-02-06T21:10:39.601Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/e3/c164c88b2e5ce7b24d667b9bd83589cf4f3520d97cad01534cd3c4f55fdb/setuptools-81.0.0-py3-none-any.whl", hash = "sha256:fdd925d5c5d9f62e4b74b30d6dd7828ce236fd6ed998a08d81de62ce5a6310d6", size = 1062021, upload-time = "2026-02-06T21:10:37.175Z" },
 ]
 
 [[package]]
