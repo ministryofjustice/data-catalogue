@@ -9,6 +9,14 @@ datahub-gms:
 
 global:
   datahub_analytics_enabled: false
+  # Dev runs ahead of preprod/prod while the v1.7 upgrade is tested here.
+  # Needs helm chart 1.1.x (see deploy-dev.yml). Move to values-base.yaml once
+  # preprod/prod are upgraded too.
+  datahub:
+    version: v1.7.0.1
+    managed_ingestion:
+      enabled: true
+      defaultCliVersion: "1.7.0.9"
   elasticsearch:
     metadataChangeLog:
       hooks:

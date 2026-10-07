@@ -1075,6 +1075,11 @@ global:
       ## The following options control settings for datahub-upgrade job which will
       ## managed ES indices and other update related work
       enabled: true
+      # Chart 1.1.x turns zero-downtime upgrades (ZDU stage 20) on by default.
+      # Keep it off for the v1.6.0 -> v1.7.0.1 upgrade; DataHub recommends
+      # enabling it alongside a later OpenSearch version bump.
+      zdu:
+        enable: false
 
     encryptionKey:
       secretRef: "datahub-encryption-secrets"
