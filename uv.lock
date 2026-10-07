@@ -12,7 +12,7 @@ resolution-markers = [
 
 [[package]]
 name = "acryl-datahub"
-version = "1.7.0.13"
+version = "1.7.0.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -50,9 +50,9 @@ dependencies = [
     { name = "typing-inspect" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3d/6a/1eb7e56b01887f21106881674837227baad798873b268145690a6c196428/acryl_datahub-1.7.0.13.tar.gz", hash = "sha256:07bb3ee25cfe66d764b7274b2c7a8d2978b84c1459f162ba92b10f19eab92ea1", size = 4667128, upload-time = "2026-09-24T09:31:39.636Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/30/7c4b98a6dc3dfe37a8ce601fd6785469bbb12c9a4e471173072e98142a4d/acryl_datahub-1.7.0.14.tar.gz", hash = "sha256:4956e380d7c745d93092a0c0db75cf3ff1d3d62c93198a88a1a3487e2f451c58", size = 4874851, upload-time = "2026-09-29T18:13:45.155Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/2e/a44651a1815082b4266d5e2d2db7a8abe8b5c2b700a8feb8b1f4025f6e04/acryl_datahub-1.7.0.13-py3-none-any.whl", hash = "sha256:ac37f305d2709c18bec2ef76b363ead2c3679145097193888d5cf466f51f425b", size = 5543224, upload-time = "2026-09-24T09:31:34.413Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/7c/0786e5db52dcec510303a085f96ce698e8648abcc94c6000e8b62ffb7d8e/acryl_datahub-1.7.0.14-py3-none-any.whl", hash = "sha256:ed2b1d2c8d75dbef8840a0e878ca2c6c20d4d4af3ce7c92714a541576eb04c58", size = 5766413, upload-time = "2026-09-29T18:13:38.637Z" },
 ]
 
 [package.optional-dependencies]
@@ -430,7 +430,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "acryl-datahub", extras = ["dbt", "glue", "postgres"], specifier = "==1.7.0.13" },
+    { name = "acryl-datahub", extras = ["dbt", "glue", "postgres"], specifier = "==1.7.0.14" },
     { name = "boto3", specifier = ">=1.43.55,<2" },
     { name = "botocore", specifier = ">=1.43.55,<2" },
     { name = "datahub", specifier = ">=0.999.1,<0.1000" },
