@@ -130,6 +130,7 @@ datahub-frontend:
         SecRule ARGS:json.urn "@contains performance_kpis_intermediate" "id:1008,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=933150"
         SecRule ARGS:json.urn "@contains nomis_internet" "id:1009,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=933150"
         SecRule REQUEST_COOKIES:REDIRECT_URL "@contains mkdir" "id:1010,phase:2,t:lowercase,nolog,pass,ctl:ruleRemoveById=933150"
+        SecRule REQUEST_URI "@beginsWith /api/gms/openapi/v3/entity/dataset/batchGet" "id:1011,phase:1,t:none,nolog,pass,ctl:ruleRemoveById=930120,ctl:ruleRemoveById=930130,ctl:ruleRemoveById=933150"
         SecDefaultAction "phase:2,pass,log,tag:github_team=data-catalogue"
         SecDefaultAction "phase:4,pass,log,tag:github_team=data-catalogue"
     tls:
