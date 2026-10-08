@@ -63,7 +63,10 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd #v6.3.0
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-          role-duration-seconds: 21600 # must cover timeout-minutes above
+          # Capped at the role's MaxSessionDuration (4h). Only the start of the run uses AWS
+          # (S3 manifest/catalog reads, Glue + S3 lookups in AddLatestFileTimestamp),
+          # so the job can run past this - see timeout-minutes above.
+          role-duration-seconds: 14400
           aws-region: ${{ inputs.ECR_REGION }}
 
       - name: Check cadet manifest and catalog exist
