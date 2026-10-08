@@ -47,7 +47,7 @@ on:
 jobs:
   datahub-ingest:
     environment: ${{ inputs.ENVIRONMENT }}
-    timeout-minutes: 240
+    timeout-minutes: 360
     runs-on: ubuntu-latest
     steps:
       - run: echo "ENVIRONMENT=${{inputs.ENVIRONMENT}}; URL=${{vars.DATAHUB_GMS_URL}}"
@@ -63,7 +63,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd #v6.3.0
         with:
           role-to-assume: ${{ secrets.CADET_METADATA_ROLE_TO_ASSUME }}
-          role-duration-seconds: 14400
+          role-duration-seconds: 21600 # must cover timeout-minutes above
           aws-region: ${{ inputs.ECR_REGION }}
 
       - name: Check cadet manifest and catalog exist
