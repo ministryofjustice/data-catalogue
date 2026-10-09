@@ -29,7 +29,8 @@
 global:
   datahub_standalone_consumers_enabled: true
   datahub:
-    version: v1.6.0
+    # version is inherited from values-base.yaml / <env>/values-base.yaml so
+    # this consumer always matches the GMS version deployed to that env.
     systemUpdate:
       enabled: false
   kafka:
