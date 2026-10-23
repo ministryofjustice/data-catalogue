@@ -61,6 +61,24 @@ The recipe file for this component can be found [here](cadet.yaml)
 
 The workflow for the cadet ingestion can be found [here](../.github/workflows/ingest-cadet-metadata.yml)
 
+### Other CaDeT dbt projects
+
+Each dbt project in create-a-derived-table is ingested separately, from the docs artefacts that project publishes to S3. Currently ingested:
+
+| dbt project | Recipe | Platform instance |
+| --- | --- | --- |
+| `mojap_derived_tables` | [cadet.yaml](cadet.yaml) | `cadet` |
+| `hmpps_electronic_monitoring_data_tables` | [cadet_electronic_monitoring.yaml](cadet_electronic_monitoring.yaml) | `cadet_electronic_monitoring` |
+| `hmpps_digital_prisons_reporting_tables` | [cadet_digital_prison_reporting.yaml](cadet_digital_prison_reporting.yaml) | `cadet_digital_prison_reporting` |
+| `hmpps_probation_data_tables` | [cadet_probation.yaml](cadet_probation.yaml) | `cadet_probation` |
+
+To onboard a new project:
+
+1. In create-a-derived-table, the project needs a scheduled docs workflow (see `deploy-docs-template.yml`) that runs `create_database_metadata_json.py` and `dbt docs generate`, and exports `manifest.json`, `catalog.json`, `run_results.json` and `database_metadata.json` to `<s3_data_dir>/prod/run_artefacts/<workflow name>/latest/target/`. Tagging models with `dc_display_in_catalogue` alone is not enough.
+2. Add a recipe here pointing at that S3 location, with its own `platform_instance`.
+3. Add a job to `ingest-dev.yml`, `ingest-preprod.yml` and `ingest-prod.yml` with `BASE_CADET_INGESTION: false` and `CADET_INSTANCE: <platform_instance>.awsdatacatalog`, using a role that can read the S3 location.
+4. Map any new domains (the folder under `models/`) to a subject area in `domains_to_subject_areas` in [ingestion_utils.py](ingestion_utils.py).
+
 ---
 
 ## Glue ingestion
