@@ -53,6 +53,7 @@ domains_to_subject_areas = {
     "prison": "Prisons and probation",
     "probation": "Prisons and probation",
     "property": "Corporate operations",
+    "public_protection": "Prisons and probation",
     "risk": "Prisons and probation",
 }
 
