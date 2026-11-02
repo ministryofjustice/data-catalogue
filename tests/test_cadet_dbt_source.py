@@ -1,11 +1,26 @@
 from types import SimpleNamespace
 
+from datahub.ingestion.source.dbt.dbt_common import DBTProject
 from datahub.ingestion.source.dbt.dbt_core import DBTCoreSource
 
 from ingestion.cadet_dbt_source.source import CadetDBTSource
 
 
-def test_load_manifest_and_catalog_removes_display_tag_for_excluded_nodes(monkeypatch):
+def make_project(nodes):
+    return DBTProject(
+        nodes=nodes,
+        exposures=[],
+        metrics=None,
+        platform_instance=None,
+        project_name="project",
+        manifest_path="manifest.json",
+        artifact_props={},
+        catalog_generated_at=None,
+        manifest_generated_at=None,
+    )
+
+
+def test_load_projects_removes_display_tag_for_excluded_nodes(monkeypatch):
     excluded_node = SimpleNamespace(
         dbt_name="model.project.staging_fms__stg_alm_asset_fms",
         database="awsdatacatalog",
@@ -23,21 +38,21 @@ def test_load_manifest_and_catalog_removes_display_tag_for_excluded_nodes(monkey
         tags=["dc_display_in_catalogue", "business_critical"],
     )
 
-    def fake_load_manifest_and_catalog(self):
-        return ([excluded_node, included_node], "m_schema", "m_ver", "athena", None, None)
+    def fake_load_projects(self):
+        yield make_project([excluded_node, included_node])
 
-    monkeypatch.setattr(DBTCoreSource, "loadManifestAndCatalog", fake_load_manifest_and_catalog)
+    monkeypatch.setattr(DBTCoreSource, "load_projects", fake_load_projects)
 
     source = CadetDBTSource.__new__(CadetDBTSource)
     source.config = SimpleNamespace(tag_prefix="")
 
-    nodes, *_ = CadetDBTSource.loadManifestAndCatalog(source)
+    (project,) = CadetDBTSource.load_projects(source)
 
-    assert nodes[0].tags == ["business_critical"]
-    assert nodes[1].tags == ["dc_display_in_catalogue", "business_critical"]
+    assert project.nodes[0].tags == ["business_critical"]
+    assert project.nodes[1].tags == ["dc_display_in_catalogue", "business_critical"]
 
 
-def test_load_manifest_and_catalog_respects_tag_prefix(monkeypatch):
+def test_load_projects_respects_tag_prefix(monkeypatch):
     prefixed_node = SimpleNamespace(
         dbt_name="model.project.staging_fms__stg_example",
         database="awsdatacatalog",
@@ -47,14 +62,14 @@ def test_load_manifest_and_catalog_respects_tag_prefix(monkeypatch):
         tags=["dbt:dc_display_in_catalogue", "dbt:team_alpha"],
     )
 
-    def fake_load_manifest_and_catalog(self):
-        return ([prefixed_node], "m_schema", "m_ver", "athena", None, None)
+    def fake_load_projects(self):
+        yield make_project([prefixed_node])
 
-    monkeypatch.setattr(DBTCoreSource, "loadManifestAndCatalog", fake_load_manifest_and_catalog)
+    monkeypatch.setattr(DBTCoreSource, "load_projects", fake_load_projects)
 
     source = CadetDBTSource.__new__(CadetDBTSource)
     source.config = SimpleNamespace(tag_prefix="dbt:")
 
-    nodes, *_ = CadetDBTSource.loadManifestAndCatalog(source)
+    (project,) = CadetDBTSource.load_projects(source)
 
-    assert nodes[0].tags == ["dbt:team_alpha"]
+    assert project.nodes[0].tags == ["dbt:team_alpha"]
