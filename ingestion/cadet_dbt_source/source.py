@@ -1,7 +1,10 @@
+import dataclasses
 import logging
+from typing import Iterator
 
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.decorators import config_class
+from datahub.ingestion.source.dbt.dbt_common import DBTNode, DBTProject
 from datahub.ingestion.source.dbt.dbt_core import DBTCoreConfig, DBTCoreSource
 
 from ingestion.ingestion_utils import is_excluded_name
@@ -36,9 +39,11 @@ class CadetDBTSource(DBTCoreSource):
         config = DBTCoreConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
-    def loadManifestAndCatalog(self):
-        nodes, *metadata = super().loadManifestAndCatalog()
+    def load_projects(self) -> Iterator[DBTProject]:
+        for project in super().load_projects():
+            yield dataclasses.replace(project, nodes=self._process_nodes(project.nodes))
 
+    def _process_nodes(self, nodes: list[DBTNode]) -> list[DBTNode]:
         # Hard-exclude selected databases from CaDeT ingestion.
         filtered_nodes = []
         excluded_count = 0
@@ -100,4 +105,4 @@ class CadetDBTSource(DBTCoreSource):
                         )
                     break
 
-        return (filtered_nodes, *metadata)
+        return filtered_nodes
