@@ -6,7 +6,7 @@ authors = [{ name = "Murdo Moyse", email = "murdo.moyse@digital.justice.gov.uk" 
 requires-python = "~=3.11.13"
 readme = "README.md"
 dependencies = [
-    "pytest==9.1.1",
+    "pytest==9.2.0",
     "boto3>=1.43.55,<2",
     "datahub>=0.999.1,<0.1000",
     "pandas>=3.0.5,<4",
