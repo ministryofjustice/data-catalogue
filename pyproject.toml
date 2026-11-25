@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["vcrpy>=8.3.0,<9"]
+dev = ["vcrpy>=8.3.0,<10"]
 
 
 [tool.uv]
